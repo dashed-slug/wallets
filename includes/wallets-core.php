@@ -171,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.7.1',
+					'2.7.2',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.7.1',
+					'2.7.2',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.7.1'
+					'2.7.2'
 				);
 			}
 		}
@@ -1088,125 +1088,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @return boolean|number Exchange rate or false.
 		 */
 		public static function get_exchange_rate( $from, $to ) {
-			$from = strtoupper( $from );
-			$to = strtoupper( $to );
-
-			$rate = false;
-
-			if ( $from == $to ) {
-				$rate = 1;
-
-			} elseif ( self::is_fiat( $from ) ) {
-
-				if ( self::is_fiat( $to ) ) {
-					$rate = self::get_exchange_rate_fixer( $from, $to );
-
-				} elseif ( self::is_crypto( $to ) ) {
-					$rate1 = self::get_exchange_rate_fixer( $from, 'USD' );
-					$rate2 = self::get_exchange_rate_bittrex( 'USD', 'BTC' );
-					$rate3 = self::get_exchange_rate_bittrex( 'BTC', $to );
-					$rate = $rate1 * $rate2 * $rate3;
-				}
-
-			} elseif ( self::is_crypto( $from ) ) {
-
-				if ( self::is_fiat( $to ) ) {
-					$rate1 = self::get_exchange_rate_bittrex( $from, 'BTC' );
-					$rate2 = self::get_exchange_rate_bittrex( 'BTC', 'USD' );
-					$rate3 = self::get_exchange_rate_fixer( 'USD', $to );
-					$rate = $rate1 * $rate2 * $rate3;
-
-				} elseif ( self::is_crypto( $to ) ) {
-					$rate1 = self::get_exchange_rate_bittrex( $from, 'BTC' );
-					$rate2 = self::get_exchange_rate_bittrex( 'BTC', $to );
-					$rate = $rate1 * $rate2;
-				}
-			}
-
-			return $rate;
+			return Dashed_Slug_Wallets_Rates::get_exchange_rate( $from, $to );
 		}
 
-		private static function get_exchange_rate_fixer( $from, $to ) {
-			if ( $from == $to ) {
-				return 1;
-			}
-
-			$url = "http://api.fixer.io/latest?symbols=$from&base=$to";
-			$json = self::file_get_cached_contents( $url );
-			if ( false !== $json ) {
-				$obj = json_decode( $json );
-				if ( !isset( $obj->error ) && isset( $obj->rates ) && isset( $obj->rates->{$from} ) ) {
-					return floatval( $obj->rates->{$from} );
-				}
-			}
-			return false;
-		}
-
-		private static function get_exchange_rate_bittrex( $from, $to ) {
-			if ( $from == $to ) {
-				return 1;
-			}
-			if ( 'USD' == $from ) {
-				$from = 'USDT';
-			}
-			if ( 'USD' == $to ) {
-				$to = 'USDT';
-			}
-
-			$url = "https://bittrex.com/api/v1.1/public/getticker?market=$from-$to";
-			$json = self::file_get_cached_contents( $url );
-			if ( false !== $json ) {
-				$obj = json_decode( $json );
-				if ( isset( $obj->success ) && $obj->success ) {
-					if ( isset( $obj->result ) && isset( $obj->result->Bid ) ) {
-						return floatval( $obj->result->Bid );
-					}
-				}
-			}
-		}
-
-		private static function file_get_cached_contents( $url ) {
-			$result = get_transient( 'wallets-url-cache-' . md5( $url ) );
-			if ( false === $result ) {
-				$result = file_get_contents( $url );
-				if ( is_string( $result ) ) {
-					set_transient( 'wallets-url-cache-' . md5( $url ), $result, 15 * MINUTE_IN_SECONDS );
-				}
-			}
-			return $result;
-		}
-
+		/**
+		 * True if the symbol corresponds to a known fiat currency
+		 * @param unknown $symbol A currency symbol
+		 * @return boolean True if fiat
+		 */
 		public static function is_fiat( $symbol ) {
-			$all_fiat = array( 'USD' );
-			$url = 'https://api.fixer.io/latest?base=USD';
-			$json = self::file_get_cached_contents( $url );
-			if ( false !== $json ) {
-				$obj = json_decode( $json );
-				if ( isset( $obj->rates ) ) {
-					foreach ( $obj->rates as $fixer_symbol => $rate) {
-						$all_fiat[] = $fixer_symbol;
-					}
-				}
-			}
-			return array_search( $symbol, $all_fiat ) !== false;
+			return Dashed_Slug_Wallets_Rates::is_fiat( $symbol );
 		}
 
+		/**
+		 * True if the symbol corresponds to a known cryptocurrency
+		 * @param unknown $symbol A currency symbol
+		 * @return boolean True if crypto
+		 */
 		public static function is_crypto( $symbol ) {
-			$all_cryptos = array();
-			$url = 'https://bittrex.com/api/v1.1/public/getmarkets';
-			$json = self::file_get_cached_contents( $url );
-			if ( false !== $json ) {
-				$obj = json_decode( $json );
-				if ( isset( $obj->success ) && $obj->success ) {
-					if ( isset( $obj->result ) && is_array( $obj->result ) ) {
-						$all_cryptos = array();
-						foreach ( $obj->result as $market ) {
-							$all_cryptos[] = $market->MarketCurrency;
-						}
-					}
-				}
-			}
-			return array_search( $symbol, $all_cryptos ) !== false;
+			return Dashed_Slug_Wallets_Rates::is_crypto( $symbol );
 		}
 	}
 }

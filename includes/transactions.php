@@ -25,6 +25,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 			// these are attached to the cron job and process transactions
 			add_action( 'wallets_periodic_checks', array( &$this, 'cron' ) );
+
+			// this is to allow uploading csv
+			if ( 'wallets-menu-transactions' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
+				add_filter( 'upload_mimes', array( &$this, 'custom_upload_mimes' ) );
+			}
+		}
+
+		public function custom_upload_mimes( $existing_mimes=array() ) {
+			$existing_mimes['csv'] = 'text/csv';
+			return $existing_mimes;
 		}
 
 		public function cron() {

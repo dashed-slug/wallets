@@ -13,12 +13,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 		public function __construct() {
 			add_action( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_menu' : 'admin_menu', array( &$this, 'action_admin_menu' ) );
 
-			add_filter( 'upload_mimes', array( &$this, 'custom_upload_mimes' ) );
+			$page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+			if ( 'wallets-menu-wallets' == $page ) {
+				add_action( 'admin_enqueue_scripts', array( &$this, 'action_admin_enqueue_scripts' ) );
+			}
 		}
 
-		function custom_upload_mimes( $existing_mimes=array() ) {
-			$existing_mimes['csv'] = 'text/csv';
-			return $existing_mimes;
+		public function action_admin_enqueue_scripts() {
+			wp_enqueue_script( 'jquery' );
+
+			wp_enqueue_script(
+				'blockchain-info',
+				plugins_url( 'pay-now-button.min.js', "wallets/assets/scripts/pay-now-button.min.js" ),
+				array( 'jquery' )
+			);
 		}
 
 		public function action_admin_menu() {
@@ -93,6 +101,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<h4><?php esc_html_e( 'Like the Facebook page to learn the latest news:', 'wallets' ); ?></h4>
 
 				<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdashedslug%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId=1048870338583588" width="500" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+
+				<h4><?php esc_html_e( 'The dashed-slug can also be found on SteemIt:', 'wallets' ); ?></h4>
+
+				<a href="https://steemit.com/@dashed-slug.net">https://steemit.com/@dashed-slug.net</a>
+
 			</div>
 
 			<div class="card">
@@ -113,7 +126,53 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<ol>
 					<li><?php echo __( 'Donate via <a href="https://flattr.com/profile/dashed-slug">flattr</a>', '/* @echo slug *' ); ?>.</li>
 					<li><?php echo __( 'Donate a few shatoshi to the dashed-slug Bitcoin address: ' .
-						'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', '/* @echo slug *' ); ?></li>
+						'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', '/* @echo slug *' ); ?>
+
+						<div
+							style="font-size:16px;margin:0 auto;width:300px"
+							class="blockchain-btn"
+							data-address="1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy"
+							data-shared="false">
+
+							<div
+								class="blockchain stage-begin">
+
+								<img
+									src="https://blockchain.info/Resources/buttons/donate_64.png" />
+						    </div>
+
+						    <div
+								class="blockchain stage-loading"
+								style="text-align:center">
+
+						        <img
+									src="https://blockchain.info/Resources/loading-large.gif" />
+						    </div>
+
+						    <div
+								class="blockchain stage-ready">
+
+							     <p
+									align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
+
+								<p
+									align="center"
+									class="qr-code"></p>
+						    </div>
+
+						    <div
+								class="blockchain stage-paid">
+								Donation of <b>[[value]] BTC</b> Received. Thank You.
+						    </div>
+
+						    <div
+								class="blockchain stage-error">
+
+						        <font
+									color="red">[[error]]</font>
+						    </div>
+						</div>
+					</li>
 				</ol>
 
 				<p><?php esc_html_e( 'Your support is greatly appreciated.', 'wallets' ); ?></p>

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,7 @@ The dashed-slug is a social slug:
 - Facebook: [https://www.facebook.com/dashedslug](https://www.facebook.com/dashedslug)
 - Google+: [https://plus.google.com/103549774963556626441](https://plus.google.com/103549774963556626441)
 - RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
+- SteemIt: [https://steemit.com/@dashed-slug.net](https://steemit.com/@dashed-slug.net)
 - Youtube channel: [https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA](https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA)
 
 == Installation ==
@@ -345,6 +346,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.7.2 =
+- Add: Exchange rates API now uses a choice of Bittrex, Poloniex or Novaexchange APIs.
+- Add: Blockchain.info donation button in about section.
+- Add: SteamIt social link in about section.
 
 = 2.7.1 =
 - Fix: Bug where wrong coin address was displayed in cold storage section.
@@ -599,7 +605,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.7.1 fixes a bug in cold storage deposit addresses.
+Version 2.7.2 introduces configurable exchange rate providers that affect price calculation in some app extensions.
 
 == Donating ==
 

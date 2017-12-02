@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the Bitcoin_and_Altcoin_Wallets package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: src/includes/rates.php:99
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:13+0200\n"
+"POT-Creation-Date: 2017-12-02 19:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,26 +69,27 @@ msgid "Export transactions to .csv"
 msgstr ""
 
 #: src/includes/adapters-list.php:90 src/includes/adapters-list.php:124
-#: src/includes/admin-menu.php:51 src/includes/caps.php:95
+#: src/includes/admin-menu.php:59 src/includes/caps.php:95
 #: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:54
 #: src/includes/coin-adapter-json.php:75 src/includes/coin-adapter-rpc.php:224
 #: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
 #: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
 #: src/includes/cold-storage.php:135 src/includes/confirmations.php:297
 #: src/includes/cron.php:279 src/includes/email.php:505
-#: src/includes/qrcode.php:65 src/includes/transactions.php:82
-#: src/includes/transactions.php:731 src/includes/transactions.php:912
-#: src/includes/transactions.php:933 src/includes/transactions.php:954
-#: src/includes/transactions.php:974 src/includes/transactions.php:994
+#: src/includes/qrcode.php:65 src/includes/rates.php:94
+#: src/includes/transactions.php:92 src/includes/transactions.php:741
+#: src/includes/transactions.php:922 src/includes/transactions.php:943
+#: src/includes/transactions.php:964 src/includes/transactions.php:984
+#: src/includes/transactions.php:1004
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/adapters-list.php:96 src/includes/caps.php:90
 #: src/includes/cold-storage.php:114 src/includes/json-api.php:232
-#: src/includes/json-api.php:260 src/includes/transactions.php:737
-#: src/includes/transactions.php:916 src/includes/transactions.php:937
-#: src/includes/transactions.php:958 src/includes/transactions.php:978
-#: src/includes/transactions.php:998
+#: src/includes/json-api.php:260 src/includes/transactions.php:747
+#: src/includes/transactions.php:926 src/includes/transactions.php:947
+#: src/includes/transactions.php:968 src/includes/transactions.php:988
+#: src/includes/transactions.php:1008
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -106,20 +108,20 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:29 src/includes/wallets-core.php:213
+#: src/includes/admin-menu.php:37 src/includes/wallets-core.php:213
 #: src/includes/wallets-core.php:223
 msgid "Wallets"
 msgstr ""
 
-#: src/includes/admin-menu.php:39
+#: src/includes/admin-menu.php:47
 msgid "About"
 msgstr ""
 
-#: src/includes/admin-menu.php:58
+#: src/includes/admin-menu.php:66
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: src/includes/admin-menu.php:60
+#: src/includes/admin-menu.php:68
 msgid ""
 "By using this free plugin you accept all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
@@ -132,69 +134,73 @@ msgid ""
 "a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:69
+#: src/includes/admin-menu.php:77
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:71 src/includes/cold-storage.php:305
+#: src/includes/admin-menu.php:79 src/includes/cold-storage.php:305
 #: src/includes/cold-storage.php:318
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
 msgstr ""
 
-#: src/includes/admin-menu.php:72
+#: src/includes/admin-menu.php:80
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:73
+#: src/includes/admin-menu.php:81
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: src/includes/admin-menu.php:74
+#: src/includes/admin-menu.php:82
 msgid ""
 "If you are connecting to an RPC API on a different machine than that of your "
 "WordPress server over an untrusted network, make sure to tunnel your "
 "connection via ssh or stunnel."
 msgstr ""
 
-#: src/includes/admin-menu.php:77
+#: src/includes/admin-menu.php:85
 msgid "See more here"
 msgstr ""
 
-#: src/includes/admin-menu.php:78
+#: src/includes/admin-menu.php:86
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate "
 "that you have understood and agreed to this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:83
+#: src/includes/admin-menu.php:91
 msgid "Follow the slime:"
 msgstr ""
 
-#: src/includes/admin-menu.php:85
+#: src/includes/admin-menu.php:93
 msgid "Subscribe to the YouTube channel:"
 msgstr ""
 
-#: src/includes/admin-menu.php:89
+#: src/includes/admin-menu.php:97
 msgid "+1 the Google+ page to learn the latest news:"
 msgstr ""
 
-#: src/includes/admin-menu.php:93
+#: src/includes/admin-menu.php:101
 msgid "Like the Facebook page to learn the latest news:"
 msgstr ""
 
-#: src/includes/admin-menu.php:99
+#: src/includes/admin-menu.php:105
+msgid "The dashed-slug can also be found on SteemIt:"
+msgstr ""
+
+#: src/includes/admin-menu.php:112
 msgid "Have your say!"
 msgstr ""
 
-#: src/includes/admin-menu.php:102
+#: src/includes/admin-menu.php:115
 msgid ""
 "Did you find this plugin useful? Leave a review on <a href=\"https://"
 "wordpress.org/support/plugin/wallets/reviews/\">wordpress.org</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:103
+#: src/includes/admin-menu.php:116
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a href=\"https://wordpress."
 "org/support/plugin/wallets\">wordpress.org support forum</a> for the main "
@@ -202,60 +208,60 @@ msgid ""
 "net</a> support forums for the extensions."
 msgstr ""
 
-#: src/includes/admin-menu.php:104
+#: src/includes/admin-menu.php:117
 msgid ""
 "Something else on your mind? <a href=\"https://dashed-slug.net/contact"
 "\">Contact me</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:109
+#: src/includes/admin-menu.php:122
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: src/includes/admin-menu.php:111
+#: src/includes/admin-menu.php:124
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: src/includes/admin-menu.php:114
+#: src/includes/admin-menu.php:127
 msgid ""
 "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: src/includes/admin-menu.php:115
+#: src/includes/admin-menu.php:128
 msgid ""
 "Donate a few shatoshi to the dashed-slug Bitcoin address: <a href="
 "\"bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-"
 "slug&message=donation\">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:119
+#: src/includes/admin-menu.php:178
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: src/includes/admin-menu.php:123
+#: src/includes/admin-menu.php:182
 msgid "App extensions"
 msgstr ""
 
-#: src/includes/admin-menu.php:125
+#: src/includes/admin-menu.php:184
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: src/includes/admin-menu.php:132
+#: src/includes/admin-menu.php:191
 msgid "Coin adapters"
 msgstr ""
 
-#: src/includes/admin-menu.php:134
+#: src/includes/admin-menu.php:193
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for additional "
 "cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:158
+#: src/includes/admin-menu.php:217
 msgid "Installed"
 msgstr ""
 
@@ -1120,7 +1126,7 @@ msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:199 src/includes/json-api.php:226
-#: src/includes/json-api.php:254 src/includes/transactions.php:695
+#: src/includes/json-api.php:254 src/includes/transactions.php:705
 #: src/includes/wallets-core.php:448 src/includes/wallets-core.php:542
 #: src/includes/wallets-core.php:596 src/includes/wallets-core.php:652
 #: src/includes/wallets-core.php:723 src/includes/wallets-core.php:865
@@ -1198,6 +1204,41 @@ msgstr ""
 
 #: src/includes/qrcode.php:112
 msgid "Here you can control whether addresses are displayed as QR Codes."
+msgstr ""
+
+#: src/includes/rates.php:34
+msgid "Exchange rates settings"
+msgstr ""
+
+#: src/includes/rates.php:41
+msgid "Rates provider"
+msgstr ""
+
+#: src/includes/rates.php:47
+msgid "Pick the API that you wish to use as a source of exchange rates. "
+msgstr ""
+
+#: src/includes/rates.php:58
+msgid "Rates cache expiry (minutes)"
+msgstr ""
+
+#: src/includes/rates.php:64
+msgid ""
+"The exchange rates will be cached for this many minutes before being "
+"updated. "
+msgstr ""
+
+#: src/includes/rates.php:97
+msgid "/* @echo name */ Exchange Rates settings"
+msgstr ""
+
+#: src/includes/rates.php:170
+#, php-format
+msgid ""
+"App extensions, such as the <a href=\"%s\">WooCommerce</a> and <a href=\"%s"
+"\">Events Manager</a> payment gateways, use exchange rates for price "
+"calculation. Choose which API will be used to pull exchange rates between "
+"various cryptocurrencies."
 msgstr ""
 
 #: src/includes/sidebar-widgets.php:33
@@ -1329,19 +1370,19 @@ msgstr ""
 msgid "&#8635; Reset retries"
 msgstr ""
 
-#: src/includes/transactions.php:87
+#: src/includes/transactions.php:97
 msgid "/* @echo name */ Transactions"
 msgstr ""
 
-#: src/includes/transactions.php:91
+#: src/includes/transactions.php:101
 msgid "Transaction updated."
 msgstr ""
 
-#: src/includes/transactions.php:99
+#: src/includes/transactions.php:109
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/transactions.php:101
+#: src/includes/transactions.php:111
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Pending transactions will be skipped if they have not been "
@@ -1349,29 +1390,29 @@ msgid ""
 "imported, unless if they already exist in your DB."
 msgstr ""
 
-#: src/includes/transactions.php:106
+#: src/includes/transactions.php:116
 msgid "Import"
 msgstr ""
 
-#: src/includes/transactions.php:366
+#: src/includes/transactions.php:376
 #, php-format
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: src/includes/transactions.php:720
+#: src/includes/transactions.php:730
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:757
+#: src/includes/transactions.php:767
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:765
+#: src/includes/transactions.php:775
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""

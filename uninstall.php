@@ -72,6 +72,10 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_confirm_move_email_subject' );
 	wallets_delete_option( 'wallets_confirm_move_email_message' );
 
+	//remove exchange rate providers settings
+	wallets_delete_option( 'wallets_rates_provider' );
+	wallets_delete_option( 'wallets_rates_cache_expiry' );
+
 	// remove bitcoin builtin adapter settings
 	$option_slug = 'wallets-bitcoin-core-node-settings';
 	wallets_delete_option( "{$option_slug}-general-enabled" );
