@@ -232,7 +232,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				( 'move' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ) ) {
 
 				if ( $item['admin_confirm'] ) {
-					$actions['admin_unconfirm'] = sprintf( '<a href="%s" title="%s">%s</a>',
+					$actions['admin_unconfirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
 								'page' => 'wallets-menu-transactions',
@@ -246,10 +246,10 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if admin confirmation is required.', 'wallets' ),
-						__( 'Admin unaccept', 'wallets' )
+						__( '&#x2717; Admin unaccept', 'wallets' )
 					);
 				} else {
-					$actions['admin_confirm'] = sprintf( '<a href="%s" title="%s">%s</a>',
+					$actions['admin_confirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
 								'page' => 'wallets-menu-transactions',
@@ -263,7 +263,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Transaction will be marked as CONFIRMED by admin.', 'wallets' ),
-						__( 'Admin accept', 'wallets' )
+						__( '&#x2713; Admin accept', 'wallets' )
 					);
 				}
 			}
@@ -285,7 +285,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				( 'move' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) ) {
 
 				if ( $item['user_confirm'] ) {
-					$actions['user_unconfirm'] = sprintf( '<a href="%s" title="%s">%s</a>',
+					$actions['user_unconfirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
 								'page' => 'wallets-menu-transactions',
@@ -299,10 +299,10 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Mark this transaction as NOT CONFIRMED by user. A new confirmation email will be sent to the user.', 'wallets' ),
-						__( 'User unaccept', 'wallets' )
+						__( '&#x2717; User unaccept', 'wallets' )
 					);
 				} else {
-					$actions['user_confirm'] = sprintf( '<a href="%s" title="%s">%s</a>',
+					$actions['user_confirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
 								'page' => 'wallets-menu-transactions',
@@ -316,7 +316,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Transaction will be marked as CONFIRMED by user.', 'wallets' ),
-						__( 'User accept', 'wallets' )
+						__( '&#x2713; User accept', 'wallets' )
 					);
 				}
 			}
@@ -332,7 +332,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		$actions = array();
 		if ( 'done' != $item['status'] && 'deposit' != 'category' ) {
-			$actions['reset_retries'] = sprintf( '<a href="%s" title="%s">%s</a>',
+			$actions['reset_retries'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
 				add_query_arg(
 					array(
 						'page' => 'wallets-menu-transactions',
@@ -346,7 +346,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 					call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 				),
 				__( 'Reset the number of retries for this transaction', 'wallets' ),
-				__( 'Reset retries', 'wallets' )
+				__( '&#8635; Reset retries', 'wallets' )
 			);
 		}
 

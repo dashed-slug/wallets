@@ -538,7 +538,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'address' => $tx->address,
 								'txid' => $tx->txid,
 								'symbol' => $tx->symbol,
-								'amount' => $tx->amount,
+								'amount' => number_format( $tx->amount, 10, '.', '' ),
 								'created_time' => $tx->created_time,
 								'updated_time' => $current_time_gmt,
 								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
@@ -554,7 +554,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								Dashed_Slug_Wallets::$table_name_txs,
 								$new_tx_data,
 								array(
-									'%d', '%s', '%d', '%s', '%s', '%s', '%20.10f', '%s', '%s', '%d', '%s', '%d'
+									'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d'
 								)
 							);
 
@@ -597,8 +597,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'address' => $tx->address,
 								'txid' => $tx->txid,
 								'symbol' => $tx->symbol,
-								'amount' => $tx->amount,
-								'fee' => $tx->fee,
+								'amount' => number_format( $tx->amount, 10, '.', '' ),
+								'fee' => number_format( $tx->fee, 10, '.', '' ),
 								'comment' => $tx->comment,
 								'created_time' => $tx->created_time,
 								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
@@ -609,7 +609,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$affected = $wpdb->insert(
 								Dashed_Slug_Wallets::$table_name_txs,
 								$new_tx_data,
-								array( '%d', '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%d', '%s', '%d' )
+								array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d' )
 							);
 
 							if ( ! $affected ) {

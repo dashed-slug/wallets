@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.6.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:08+0200\n"
+"POT-Creation-Date: 2017-12-02 19:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,7 +70,7 @@ msgstr ""
 #: src/includes/adapters-list.php:90 src/includes/adapters-list.php:124
 #: src/includes/admin-menu.php:51 src/includes/caps.php:95
 #: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:54
-#: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:224
+#: src/includes/coin-adapter-json.php:75 src/includes/coin-adapter-rpc.php:224
 #: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
 #: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
 #: src/includes/confirmations.php:297 src/includes/cron.php:279
@@ -358,8 +358,20 @@ msgstr ""
 msgid "HTTP request timeout (seconds)"
 msgstr ""
 
-#: src/includes/coin-adapter-json.php:53
+#: src/includes/coin-adapter-json.php:45
+msgid ""
+"How long your server will wait for an answer from the remote API (in "
+"seconds)."
+msgstr ""
+
+#: src/includes/coin-adapter-json.php:56
 msgid "HTTP cache expiry (seconds)"
+msgstr ""
+
+#: src/includes/coin-adapter-json.php:62
+msgid ""
+"For how long cacheable requests are cached by your server rather than being "
+"fetched from the remote API (in seconds)."
 msgstr ""
 
 #: src/includes/coin-adapter-rpc.php:46
@@ -1163,7 +1175,7 @@ msgid ""
 msgstr ""
 
 #: src/includes/transactions-list.php:249
-msgid "Admin unaccept"
+msgid "&#x2717; Admin unaccept"
 msgstr ""
 
 #: src/includes/transactions-list.php:265
@@ -1171,7 +1183,7 @@ msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
 #: src/includes/transactions-list.php:266
-msgid "Admin accept"
+msgid "&#x2713; Admin accept"
 msgstr ""
 
 #: src/includes/transactions-list.php:301
@@ -1181,7 +1193,7 @@ msgid ""
 msgstr ""
 
 #: src/includes/transactions-list.php:302
-msgid "User unaccept"
+msgid "&#x2717; User unaccept"
 msgstr ""
 
 #: src/includes/transactions-list.php:318
@@ -1189,7 +1201,7 @@ msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
 #: src/includes/transactions-list.php:319
-msgid "User accept"
+msgid "&#x2713; User accept"
 msgstr ""
 
 #: src/includes/transactions-list.php:348
@@ -1197,7 +1209,7 @@ msgid "Reset the number of retries for this transaction"
 msgstr ""
 
 #: src/includes/transactions-list.php:349
-msgid "Reset retries"
+msgid "&#8635; Reset retries"
 msgstr ""
 
 #: src/includes/transactions.php:87

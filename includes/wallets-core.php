@@ -171,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.6.1',
+					'2.6.2',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.6.1',
+					'2.6.2',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.6.1'
+					'2.6.2'
 				);
 			}
 		}
@@ -756,8 +756,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'account' => get_current_user_id(),
 					'address' => $address,
 					'symbol' => $symbol,
-					'amount' => -floatval( $amount ),
-					'fee' => $fee,
+					'amount' => -number_format( $amount, 10, '.', '' ),
+					'fee' => number_format( $fee, 10, '.', '' ),
 					'created_time' => $time,
 					'updated_time' => $time,
 					'comment' => $comment,
@@ -769,7 +769,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow,
-					array( '%d', '%s', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%s' )
+					array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -881,8 +881,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'other_account' => intval( $toaccount ),
 					'txid' => "$txid-send",
 					'symbol' => $symbol,
-					'amount' => -$amount,
-					'fee' => $fee,
+					'amount' => -number_format( $amount, 10, '.', '' ),
+					'fee' => number_format( $fee, 10, '.', '' ),
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
 					'comment' => $comment,
@@ -899,7 +899,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'other_account' => $fromaccount,
 					'txid' => "$txid-receive",
 					'symbol' => $symbol,
-					'amount' => $amount - $fee,
+					'amount' => number_format( $amount - $fee, 10, '.', '' ),
 					'fee' => 0,
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
@@ -911,7 +911,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow1,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%s' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -923,7 +923,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow2,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' )
 				);
 
 				if ( false === $affected ) {

@@ -40,7 +40,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 				array( &$this, 'settings_int8_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-http",
-				array( 'label_for' => "{$this->option_slug}-http-timeout" )
+				array(
+					'label_for' => "{$this->option_slug}-http-timeout",
+					'description' => __( 'How long your server will wait for an answer from the remote API (in seconds).', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -54,7 +57,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 				array( &$this, 'settings_int8_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-http",
-				array( 'label_for' => "{$this->option_slug}-http-cacheexpiry" )
+				array(
+					'label_for' => "{$this->option_slug}-http-cacheexpiry",
+					'description' => __( 'For how long cacheable requests are cached by your server rather than being fetched from the remote API (in seconds).', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -109,10 +115,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 					}
 					return $json_data;
 				} else {
-					throw new Exception( 'Response was not 200 OK.' );
+					throw new Exception( sprintf(
+						'Response was not 200 OK but %d. Response body: %s',
+						$response['response']['code'],
+						$response['body']
+					) );
 				}
 			}
-			throw new Exception( 'No response available from network' );
+			throw new Exception( 'No response available from network!' );
 		}
 
 		protected function get_json_cached( $url, $data = array(), $headers = array() ) {

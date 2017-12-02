@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -329,6 +329,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.6.2 =
+- Fix: SQL formatting issue.
+- Add: Text descriptions for adapter HTTP settings.
+- Add: JSON coin adapter base class now does more verbose error reporting on API communication errors.
+- Improve: Actions in transactions list admin screen are now buttons.
+
 = 2.6.1 =
 - Fix: Query formatting issue.
 
@@ -564,7 +570,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.6.1 fixes a server-side bug causing transactions to not be able to be inserted to the database. Please upgrade.
+Version 2.6.2 is a bugfix release. Please upgrade.
 
 == Donating ==
 

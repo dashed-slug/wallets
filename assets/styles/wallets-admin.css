@@ -21,3 +21,7 @@ body.toplevel_page_wallets-menu-wallets #wpbody-content .card {
 #balanceboxitemdiv .tabs-panel-active .menu-item-object-id{
 	visibility:hidden;
 }
+
+body.wallets_page_wallets-menu-transactions table td .button {
+	font-size: smaller;
+}
