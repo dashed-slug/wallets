@@ -165,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.0'
+					'2.3.1'
 				);
 			}
 		}
@@ -248,7 +248,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 6;
+			$current_db_revision = 7;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 
@@ -287,6 +287,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				// all existing transactions are assumed done
 				if ( ! $status_col_exists ) {
+					// added for safety because dbDelta failed on 2.3.0
+					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN status enum('unconfirmed','pending','done','failed','cancelled') NOT NULL DEFAULT 'unconfirmed' COMMENT 'state of transaction'" );
+					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed'" );
+					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction'" );
+					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email'" );
+					$wpdb->query( "ALTER TABLE $table_name_txs ADD KEY `blogid_idx` (`blog_id`)" );
+
 					$wpdb->query( "UPDATE $table_name_txs SET status = 'done'" );
 				}
 
