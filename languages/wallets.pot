@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.2\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:04+0200\n"
+"POT-Creation-Date: 2017-12-02 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,52 +23,48 @@ msgid "Adapter name"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:20
-msgid "Coin Icon"
+#: src/includes/transactions-list.php:34 src/includes/views/balance.php:4
+#: src/includes/views/deposit.php:4 src/includes/views/move.php:4
+#: src/includes/views/transactions.php:4 src/includes/views/withdraw.php:4
+msgid "Coin"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:21
-msgid "Coin Symbol"
+msgid "Wallet Balance"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:22
-msgid "Coin Name"
+msgid "Sum of User Balances"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:23
-msgid "Total Balance"
-msgstr ""
-
-#: src/includes/admin-menu-adapter-list.php:24
 msgid "Adapter Status"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:63
+#: src/includes/admin-menu-adapter-list.php:93
 msgid "Responding"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:65
+#: src/includes/admin-menu-adapter-list.php:95
 msgid "n/a"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:66
+#: src/includes/admin-menu-adapter-list.php:96
 #, php-format
 msgid "Not Responding: %s"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:117
+#: src/includes/admin-menu-adapter-list.php:168
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:118
+#: src/includes/admin-menu-adapter-list.php:169
 msgid "Settings"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:123
+#: src/includes/admin-menu-adapter-list.php:174
+#: src/includes/admin-menu-adapter-list.php:175
 msgid "Export transactions to .csv"
-msgstr ""
-
-#: src/includes/admin-menu-adapter-list.php:124
-msgid "Export"
 msgstr ""
 
 #: src/includes/admin-menu.php:41 src/includes/admin-menu.php:86
@@ -95,7 +91,7 @@ msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
 #: src/includes/admin-menu.php:64 src/includes/admin-menu.php:74
-#: src/includes/wallets-core.php:185 src/includes/wallets-core.php:194
+#: src/includes/wallets-core.php:185 src/includes/wallets-core.php:195
 msgid "Wallets"
 msgstr ""
 
@@ -826,9 +822,9 @@ msgstr ""
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:197 src/includes/json-api.php:224
 #: src/includes/json-api.php:252 src/includes/transactions.php:683
-#: src/includes/wallets-core.php:413 src/includes/wallets-core.php:506
-#: src/includes/wallets-core.php:574 src/includes/wallets-core.php:645
-#: src/includes/wallets-core.php:789 src/includes/wallets-core.php:936
+#: src/includes/wallets-core.php:415 src/includes/wallets-core.php:508
+#: src/includes/wallets-core.php:576 src/includes/wallets-core.php:647
+#: src/includes/wallets-core.php:791 src/includes/wallets-core.php:938
 msgid "Not allowed"
 msgstr ""
 
@@ -917,12 +913,6 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/includes/transactions-list.php:34 src/includes/views/balance.php:4
-#: src/includes/views/deposit.php:4 src/includes/views/move.php:4
-#: src/includes/views/transactions.php:4 src/includes/views/withdraw.php:4
-msgid "Coin"
-msgstr ""
-
 #: src/includes/transactions-list.php:35 src/includes/views/transactions.php:14
 msgid "Amount (+fee)"
 msgstr ""
@@ -972,47 +962,47 @@ msgstr ""
 msgid "Verified by user"
 msgstr ""
 
-#: src/includes/transactions-list.php:231
+#: src/includes/transactions-list.php:248
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: src/includes/transactions-list.php:232
+#: src/includes/transactions-list.php:249
 msgid "Admin unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:248
+#: src/includes/transactions-list.php:265
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: src/includes/transactions-list.php:249
+#: src/includes/transactions-list.php:266
 msgid "Admin accept"
 msgstr ""
 
-#: src/includes/transactions-list.php:284
+#: src/includes/transactions-list.php:301
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: src/includes/transactions-list.php:285
+#: src/includes/transactions-list.php:302
 msgid "User unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:301
+#: src/includes/transactions-list.php:318
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: src/includes/transactions-list.php:302
+#: src/includes/transactions-list.php:319
 msgid "User accept"
 msgstr ""
 
-#: src/includes/transactions-list.php:331
+#: src/includes/transactions-list.php:348
 msgid "Reset the number of retries for this transaction"
 msgstr ""
 
-#: src/includes/transactions-list.php:332
+#: src/includes/transactions-list.php:349
 msgid "Reset retries"
 msgstr ""
 
@@ -1134,7 +1124,15 @@ msgstr ""
 msgid "Address label"
 msgstr ""
 
-#: src/includes/wallets-core.php:220
+#: src/includes/wallets-core.php:186 src/includes/wallets-core.php:196
+msgid "Visit plugin site"
+msgstr ""
+
+#: src/includes/wallets-core.php:187 src/includes/wallets-core.php:197
+msgid "Support"
+msgstr ""
+
+#: src/includes/wallets-core.php:222
 #, php-format
 msgid ""
 "The \"%1$s\" coin adapter can conflict with another adapter \"%2$s\" that is "
@@ -1142,40 +1140,40 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: src/includes/wallets-core.php:243
+#: src/includes/wallets-core.php:245
 #, php-format
 msgid ""
 "/* @echo name */ could NOT create a transactions table \"%s\" in the "
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:420
+#: src/includes/wallets-core.php:422
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:424
+#: src/includes/wallets-core.php:426
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:681
+#: src/includes/wallets-core.php:683
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:706
+#: src/includes/wallets-core.php:708
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:712 src/includes/wallets-core.php:829
+#: src/includes/wallets-core.php:714 src/includes/wallets-core.php:831
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:793
+#: src/includes/wallets-core.php:795
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:823
+#: src/includes/wallets-core.php:825
 msgid "Cannot move negative amount"
 msgstr ""

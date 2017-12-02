@@ -131,6 +131,23 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		$this->items = $wpdb->get_results( $sql_query, ARRAY_A );
 	}
 
+	private function user_link( $user_login ) {
+		static $memoize = array();
+
+		if ( ! isset( $memoize[ $user_login ] ) ) {
+			$network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
+
+			$user = get_user_by( 'login', $user_login );
+			if ( $user ) {
+				$link = call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "user-edit.php?user_id={$user->ID}" );
+				$memoize[ $user_login ] = "<a href=\"$link\">$user_login</a>";
+			} else {
+				$memoize[ $user_login ] = $user_login;
+			}
+		}
+		return $memoize[ $user_login ];
+	}
+
 	public function column_default( $item, $column_name ) {
 
 		switch( $column_name ) {
@@ -152,19 +169,19 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				if ( 'deposit' == $item['category'] ) {
 					return  esc_html( $item['address'] );
 				} elseif ( 'withdraw' == $item['category'] ) {
-					return esc_html( $item['account_name'] );
+					return $this->user_link( $item['account_name'] );
 				} elseif ( 'move' == $item['category'] ) {
-					return esc_html( $item['account_name'] );
+					return $this->user_link( $item['account_name'] );
 				}
 				break;
 
 			case 'to':
 				if ( 'deposit' == $item['category'] ) {
-					return  esc_html( $item['account_name'] );
+					return  $this->user_link( $item['account_name'] );
 				} elseif ( 'withdraw' == $item['category'] ) {
 					return esc_html( $item['address'] );
 				} elseif ( 'move' == $item['category'] ) {
-					return esc_html( $item['other_account_name'] );
+					return $this->user_link( $item['other_account_name'] );
 				}
 				break;
 

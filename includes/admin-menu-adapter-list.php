@@ -17,10 +17,9 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		return array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
 			'adapter_name' => esc_html__( 'Adapter name', 'wallets' ),
-			'icon' => esc_html__( 'Coin Icon', 'wallets' ),
-			'symbol' => esc_html__( 'Coin Symbol', 'wallets' ),
-			'name' => esc_html__( 'Coin Name', 'wallets' ),
-			'balance' => esc_html__( 'Total Balance', 'wallets' ),
+			'coin' => esc_html__( 'Coin', 'wallets' ),
+			'balance' => esc_html__( 'Wallet Balance', 'wallets' ),
+			'balances' => esc_html__( 'Sum of User Balances', 'wallets' ),
 			'status' => esc_html__( 'Adapter Status', 'wallets' ),
 		);
 	}
@@ -31,18 +30,47 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 	public function get_sortable_columns() {
         return array(
-			'symbol' => array( 'symbol', false ),
-			'name' => array( 'name', true ),
-			'adapter_name' => array( 'name', false ),
+			'adapter_name' => array( 'name', true ),
+			'coin' => array( 'name', false),
 			'balance' => array( 'balance', false),
+			'balances' => array( 'balances', false),
         );
     }
 
     function usort_reorder( $a, $b ) {
 		$order = empty( $_GET['order'] ) ? 'asc' : filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-		$orderby = empty( $_GET['orderby'] ) ? 'name' : filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
+		$orderby = empty( $_GET['orderby'] ) ? 'adapter_name' : filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
 		$result = strcmp( $a[ $orderby ], $b[ $orderby ] );
 		return $order === 'asc' ? $result : -$result;
+    }
+
+    private function get_balances() {
+		global $wpdb;
+
+		$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+		$user_balances_query = $wpdb->prepare( "
+			SELECT
+				SUM(amount) as balance,
+				symbol
+			FROM
+				$table_name_txs
+			WHERE
+				( blog_id = %d || %d ) AND
+				status = 'done'
+			GROUP BY
+				symbol
+			",
+			get_current_blog_id(),
+			is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+		);
+
+		$results = $wpdb->get_results( $user_balances_query );
+		$balances = array();
+		foreach ( $results as $row ) {
+			$balances[ $row->symbol ] = $row->balance;
+		}
+		return $balances;
     }
 
     public function prepare_items() {
@@ -56,6 +84,8 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		$adapters = Dashed_Slug_Wallets::get_instance()->get_coin_adapters();
 		$this->items = array();
 
+		$balances = $this->get_balances();
+
 		foreach ( $adapters as $symbol => &$adapter ) {
 
 			try {
@@ -68,15 +98,24 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 			$format = $adapter->get_sprintf();
 
-			$this->items[] = array(
+			$new_row = array(
+				'sprintf' => $format,
 				'icon' => $adapter->get_icon_url(),
 				'symbol' => $adapter->get_symbol(),
 				'name' => $adapter->get_name(),
 				'adapter_name' => $adapter->get_adapter_name(),
-				'balance' => sprintf( $format, $balance ),
+				'balance' => $balance,
 				'status' => $status,
 				'settings_url' => $adapter->get_settings_url(),
 			);
+
+			if ( isset( $balances[ $symbol ] ) ) {
+				$new_row['balances'] = $balances[ $symbol ];
+			} else {
+				$new_row['balances'] = 0;
+			}
+
+			$this->items[] = $new_row;
 		};
 
 		usort( $this->items, array( &$this, 'usort_reorder' ) );
@@ -84,14 +123,26 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 	public function column_default( $item, $column_name ) {
 		switch( $column_name ) {
-			case 'symbol':
-			case 'name':
 			case 'adapter_name':
-			case 'balance':
 			case 'status':
 				return esc_html( $item[ $column_name ] );
- 			case 'icon':
-				return '<img src="' . esc_attr( $item['icon'] ) . '" style="width: 32px"/>';
+			case 'balance':
+				return
+					( $item[ 'balance' ] < $item['balances'] ? '<span style="color:red;">' : '<span>' ) .
+					sprintf( $item['sprintf'], $item[ $column_name ] ) .
+					'</span>';
+			case 'balances':
+				return
+					sprintf( $item['sprintf'], $item[ $column_name ] );
+			case 'coin':
+				return
+					sprintf(
+						'<img src="%s" /> ' .
+						'<span> %s (%s)</span>',
+						esc_attr( $item['icon'] ),
+						esc_attr( $item['name'] ),
+						esc_attr( $item['symbol'] )
+					);
 			default:
 				return '';
 		}
@@ -121,7 +172,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		$actions['export'] = sprintf(
 				'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
 				esc_attr__( 'Export transactions to .csv', 'wallets') . '">' .
-				__( 'Export', 'wallets' ) . '</a>',
+				__( 'Export transactions to .csv', 'wallets' ) . '</a>',
 
 				esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
 				'export',

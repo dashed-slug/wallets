@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,6 +191,7 @@ You currently have the following alternative options:
 1. Use the [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
 2. Use the [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
 3. Install and configure the [bittiraha-walletd](https://github.com/prasos/bittiraha-walletd) wallet. Point your RPC API settings to that wallet. This is a wallet based on `bitcoinj` and does not store the blockchain locally.
+4. Install and configure an [Electrum wallet](https://electrum.org) and the [Electrum Bitcoin RPC Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/electrum-bitcoin-rpc-adapter-extension/). Don't forget to disable the built-in Bitcoin core adapter.
 
 = How can I integrate the Bitcoin and Altcoin Wallets plugin with my site's frontend? =
 
@@ -267,6 +268,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.4.3 =
+- Improve: Adapter list now shows both funds in wallets and funds in user accounts
+- Improve: In adapters list, coin name, coin icon and coin symbol are now merged into one "Coin" column
+- Add: Usernames in transaction list are links to user profiles
+- Add: Link to support forum from plugin list
+- Add: Added mention of Electrum coin adapter in FAQ section
 
 = 2.4.2 =
 - Improve: `get_new_address()` deprecated in favor of `get_deposit_address()`.
@@ -450,7 +458,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.4.2 contains a minor bug fix and minor iprovements on version 2.4.1. These improvements are necessary for the upcoming faucet plugin.
+Version 2.4.3 contains minor iprovements on version 2.4.2. Upgrade at your convenience.
 
 == Donating ==
 

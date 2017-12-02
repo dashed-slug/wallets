@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.4.2'
+					'2.4.3'
 				);
 			}
 		}
@@ -183,7 +183,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public function filter_plugin_action_links( $links ) {
 			$links[] = '<a href="' . admin_url( 'admin.php?page=wallets-menu-wallets' ) . '">'
 				. __( 'Wallets', 'wallets' ) . '</a>';
-			$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin" style="color: #dd9933;">dashed-slug.net</a>';
+			$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin">' . __( 'Visit plugin site', 'wallets' ) . '</a>';
+			$links[] = '<a href="https://wordpress.org/support/plugin/wallets" style="color: #dd9933;">' . __( 'Support', 'wallets' ) . '</a>';
 			return $links;
 		}
 
@@ -192,7 +193,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			if ( 'wallets/wallets.php' == $plugin_file ) {
 				$links[] = '<a href="' . network_admin_url( 'admin.php?page=wallets-menu-wallets' ) . '">'
 					. __( 'Wallets', 'wallets' ) . '</a>';
-				$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin" style="color: #dd9933;">dashed-slug.net</a>';
+				$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin">' . __( 'Visit plugin site', 'wallets' ) . '</a>';
+				$links[] = '<a href="https://wordpress.org/support/plugin/wallets" style="color: #dd9933;">' . __( 'Support', 'wallets' ) . '</a>';
 			}
 			return $links;
 		}
