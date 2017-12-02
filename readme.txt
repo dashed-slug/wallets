@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitco
 
 = At a glance =
 
-[Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin)
+[Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin)
 is a FREE WordPress plugin by [dashed-slug](https://dashed-slug.net).
 
 It enables financial transactions on your site via Bitcoins and other cryptocurrencies.
@@ -133,6 +133,20 @@ What follows is step-by-step instructions:
 
 You should now be ready to use *Bitcoin and Altcoin Wallets*.
 
+= Disclaimer =
+
+**By using this free plugin you assume all responsibility for handling the account balances for all your users.**
+Under no circumstances is **dashed-slug.net** or any of its affiliates responsible for any damages incurred by the use of this plugin.
+
+Every effort has been made to harden the security of this plugin, but its safe operation depends on your site being secure overall.
+You, the site administrator, must take all necessary precautions to secure your WordPress installation before you connect it to any live wallets.
+
+You are strongly recommended to take the following actions (at a minimum):
+
+- [educate yourself about hardening WordPress security](https://codex.wordpress.org/Hardening_WordPress)
+- [install a security plugin such as Wordfence](https://infinitewp.com/addons/wordfence/?ref=260)
+
+By continuing to use the Bitcoin and Altcoin Wallets plugin, you agree that you have read and understood this disclaimer.
 
 = Further reading =
 
@@ -212,6 +226,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 1.0.2 =
+* Clearer disclaimer
+* Fixed a broken link
 
 = 1.0.1 =
 * Fixed some string escaping issues
