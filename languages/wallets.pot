@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.3\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -78,7 +78,7 @@ msgstr ""
 #: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
 #: src/includes/coin-adapter.php:156 src/includes/coin-adapter.php:165
 #: src/includes/coin-adapter.php:185 src/includes/coin-adapter.php:238
-#: src/includes/cron.php:170 src/includes/email.php:307
+#: src/includes/cron.php:175 src/includes/email.php:307
 #: src/includes/qrcode.php:60
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
@@ -417,47 +417,47 @@ msgstr ""
 msgid "These are the settings for this %s adapter"
 msgstr ""
 
-#: src/includes/cron.php:48
+#: src/includes/cron.php:53
 msgid "Every five minutes"
 msgstr ""
 
-#: src/includes/cron.php:53
+#: src/includes/cron.php:58
 msgid "Every ten minutes"
 msgstr ""
 
-#: src/includes/cron.php:58
+#: src/includes/cron.php:63
 msgid "Every twenty minutes"
 msgstr ""
 
-#: src/includes/cron.php:63
+#: src/includes/cron.php:68
 msgid "Every half an hour"
 msgstr ""
 
-#: src/includes/cron.php:68
+#: src/includes/cron.php:73
 msgid "Every one hour"
 msgstr ""
 
-#: src/includes/cron.php:73
+#: src/includes/cron.php:78
 msgid "Every four hours"
 msgstr ""
 
-#: src/includes/cron.php:133
+#: src/includes/cron.php:138
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/cron.php:140
+#: src/includes/cron.php:145
 msgid "Double-check for missing deposits and addresses"
 msgstr ""
 
-#: src/includes/cron.php:173
+#: src/includes/cron.php:178
 msgid "/* @echo name */ cron settings"
 msgstr ""
 
-#: src/includes/cron.php:174
+#: src/includes/cron.php:179
 msgid "Cron settings."
 msgstr ""
 
-#: src/includes/cron.php:184
+#: src/includes/cron.php:189
 msgid ""
 "Deposit addresses and deposits can be overlooked if their callback "
 "notification mechanism is not correctly setup, or if they do not have a "

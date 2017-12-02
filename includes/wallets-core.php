@@ -75,7 +75,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
 			add_action( 'delete_blog', array( &$this, 'action_delete_blog' ), 10, 2 );
-			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'action_plugin_action_links' ) );
+			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'filter_plugin_action_links' ) );
 
 			// bind the built-in rpc coin adapter
 			add_action( 'wallets_declare_adapters', array( &$this, 'action_wallets_declare_adapters' ) );
@@ -168,7 +168,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.2.3'
+					'2.2.4'
 				);
 			}
 		}
@@ -179,7 +179,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		/** @internal */
-		public function action_plugin_action_links( $links ) {
+		public function filter_plugin_action_links( $links ) {
 			$links[] = '<a href="' . admin_url( 'admin.php?page=wallets-menu-settings' ) . '">'
 				. __( 'Settings', 'wallets' ) . '</a>';
 			$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin" style="color: #dd9933;">dashed-slug.net</a>';
@@ -1005,6 +1005,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$address->created_time = date( DATE_ISO8601, $address->created_time );
 			}
 
+			// Disable errors about duplicate inserts, since $wpdb has no INSERT IGNORE
+			$suppress_errors = $wpdb->suppress_errors;
+			$wpdb->suppress_errors();
+
 			$wpdb->insert(
 				$table_name_adds,
 				array(
@@ -1016,6 +1020,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				),
 				array( '%d', '%d', '%s', '%s', '%s' )
 			);
+
+			$wpdb->suppress_errors( $suppress_errors );
 		}
 	}
 }

@@ -13,7 +13,6 @@
 			self.selectedCoin = ko.observable();
 
 			self.users = ko.observableArray([]);
-			self.moveCoin = ko.observable();
 			self.moveUser = ko.observable();
 			self.moveAmount = ko.observable();
 			self.moveComment = ko.observable();
@@ -211,6 +210,18 @@
 				});
 			};
 
+			self.resetMove = function() {
+				self.moveAmount( '' );
+				self.moveComment( '' );
+			};
+
+			self.resetWithdraw = function() {
+				self.withdrawAddress( '' );
+				self.withdrawAmount( '' );
+				self.withdrawComment( '' );
+				self.withdrawCommentTo( '' );
+			};
+
 			$('html').on( 'wallets_do_move wallets_do_withdraw', function( event, response ) {
 				if ( response.result != 'success' ) {
 					// on error show the message and stop event propagation
@@ -219,19 +230,20 @@
 				} else {
 					// on success reload transactions and clear form
 					self.getTransactions();
-					event.target.reset();
 				}
 
 			});
 
 			$('html').on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
 				if ( response.result == 'success' ) {
+					self.resetMove();
 					alert( 'Successfully sent ' + amount + ' ' + symbol );
 				}
 			});
 
 			$('html').on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
 				if ( response.result == 'success' ) {
+					self.resetWithdraw();
 					alert( 'Successfully withdrew ' + amount + ' ' + symbol + ' to ' + address );
 				}
 			});

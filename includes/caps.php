@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'2.2.3'
+				'2.2.4'
 			);
 		}
 
@@ -175,6 +175,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				</thead>
 				<tbody>
 				<?php foreach ( get_editable_roles() as $role_name => $role_info ): ?>
+					<?php if ( 'administrator' != $role_name ): ?>
 					<tr>
 						<th><?php echo $role_name; ?></th>
 						<?php foreach ( $this->caps as $capability => $description ):
@@ -184,6 +185,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 							</td>
 						<?php endforeach; ?>
 					</tr>
+					<?php endif; ?>
 			<?php endforeach; ?>
 				</tbody>
 			</table>

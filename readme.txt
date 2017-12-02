@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.4
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -258,6 +258,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.2.4 =
+- Add: User is warned if WP_CRON_DISABLED is set.
+- Fix: Administrator is now unable to remove capabilities from self for safety.
+- Fix: Fees fields were being cleared when the clear button was pressed or after a successful transaction.
+- Fix: Suppress duplicate warnings in logs when inserting existing user address
+- Fix: Moment.js third-party lib was being reminified.
+
 = 2.2.3 =
 - Add: Multisite (aka network) installs now supported
 - Improve: If user does not have wallets capability the frontend is not burdened with wallets scripts or styles
@@ -368,7 +375,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.2.3 introduces compatibility with multisite (aka network installs).
+Version 2.2.4 fixes a collection of minor issues.
 
 == Donating ==
 

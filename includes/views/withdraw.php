@@ -9,6 +9,6 @@
 	<label class="commentto"><?php esc_html_e( 'Address label', 'wallets' ); ?>: <input type="text" data-bind="value: withdrawCommentTo" /></label>
 	<hr />
 	<input type="submit" value="<?php esc_attr_e( 'Send', 'wallets' ); ?>" />
-	<input type="reset" value="<?php esc_attr_e( 'Reset form', 'wallets' ); ?>" />
+	<input type="button" data-bind="click: $root.resetWithdraw" value="<?php esc_attr_e( 'Reset form', 'wallets' ); ?>" />
 	<?php wp_nonce_field( 'wallets-withdraw' ); ?>
 </form>

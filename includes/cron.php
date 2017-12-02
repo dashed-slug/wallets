@@ -21,6 +21,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
 			}
 
+			if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
+				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+				$notices->warning( 'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
+					'If you dismiss this notice without enabling cron, some coin adapters might not work correctly.', 'wallets-cron-disabled' );
+			}
 		}
 
 		public static function action_activate() {
