@@ -443,7 +443,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @api
 		 * @return number The fee removed from a user's balance when they do a withdrawal.
 		 */
-		public final function get_withdraw_fee() {
+		public function get_withdraw_fee() {
 			return floatval( $this->get_adapter_option( 'fees-withdraw' ) );
 		}
 
@@ -459,7 +459,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @api
 		 * @return number The fee removed from a user's balance when they transfer funds to another user.
 		 */
-		public final function get_move_fee() {
+		public function get_move_fee() {
 			return floatval( $this->get_adapter_option( 'fees-move' ) );
 		}
 

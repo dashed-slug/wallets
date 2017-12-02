@@ -1,9 +1,5 @@
 <?php
 
-if ( 'wallets-menu-wallets' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
-	include_once( 'admin-menu-adapter-list.php' );
-}
-
 /**
  * This is the main "Wallets" admin screen that features the coin adapters list. The list itself is implemented in admin-menu-adapter-list.php .
  */
@@ -14,10 +10,8 @@ defined( 'ABSPATH' ) || die( '-1' );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 	class Dashed_Slug_Wallets_Admin_Menu {
 
-
 		public function __construct() {
 			add_action( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_menu' : 'admin_menu', array( &$this, 'action_admin_menu' ) );
-			add_action( 'admin_init', array( &$this, 'admin_init' ) );
 
 			add_filter( 'upload_mimes', array( &$this, 'custom_upload_mimes' ) );
 		}
@@ -25,35 +19,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 		function custom_upload_mimes( $existing_mimes=array() ) {
 			$existing_mimes['csv'] = 'text/csv';
 			return $existing_mimes;
-		}
-
-		public function admin_init() {
-			$core = Dashed_Slug_Wallets::get_instance();
-
-			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
-			$symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
-			$adapter = $core->get_coin_adapters( $symbol );
-
-			switch ( $action ) {
-
-				case 'export':
-					if ( ! current_user_can( 'manage_wallets' ) )  {
-						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-					}
-
-					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
-
-					if ( ! wp_verify_nonce( $nonce, "wallets-export-tx-$symbol" ) ) {
-						wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
-					}
-
-					if ( is_object( $adapter ) ) {
-						$this->csv_export( array( $adapter->get_symbol() ) );
-						exit;
-					}
-					break;
-			}
-
 		}
 
 		public function action_admin_menu() {
@@ -71,7 +36,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				add_submenu_page(
 					'wallets-menu-wallets',
 					'Bitcoin and Altcoin Wallets',
-					__( 'Wallets' ),
+					__( 'About' ),
 					'manage_wallets',
 					'wallets-menu-wallets',
 					array( &$this, 'wallets_page_cb' )
@@ -84,11 +49,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 		public function wallets_page_cb() {
 			if ( ! current_user_can( 'manage_wallets' ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-			}
+			} ?>
 
-			$admin_adapter_list = new DSWallets_Admin_Menu_Adapter_List();
 
-			?><h1><?php echo 'Bitcoin and Altcoin Wallets' ?></h1>
+			<h1><?php echo 'Bitcoin and Altcoin Wallets' ?></h1>
 
 			<div class="notice notice-warning"><h2><?php
 			esc_html_e( 'IMPORTANT SECURITY DISCLAIMER:', 'wallets' ); ?></h2>
@@ -115,65 +79,66 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			'you indicate that you have understood and agreed to this disclaimer.', 'wallets' );
 			?></p></div>
 
-			<h2><?php esc_html_e( 'Coin adapters currently enabled:', 'wallets' ); ?></h2>
-			<div class="wrap"><?php
-				$admin_adapter_list->prepare_items();
-				$admin_adapter_list->display();
-			?></div>
+			<div class="card">
+				<h2><?php esc_html_e( 'Follow the slime:', 'wallets' ); ?></h2>
 
-			<div class="card"><h2><?php
-				esc_html_e( 'Wallet plugin extensions', 'wallets' ); ?></h2><p><?php esc_html_e(
-				'Bitcoin and Altcoin Wallets is a plugin that offers basic deposit-transfer-withdraw functionality. ', 'wallets' );
-				esc_html_e( 'You can install', 'wallets' ); ?></p><ol>
+				<h4><?php esc_html_e( 'Subscribe to the YouTube channel:', 'wallets' ); ?></h4>
+
+				<div class="g-ytsubscribe" data-channelid="UCZ1XhSSWnzvB2B_-Cy1tTjA" data-layout="full" data-count="default"></div>
+
+				<h4><?php esc_html_e( '+1 the Google+ page to learn the latest news:', 'wallets' ); ?></h4>
+
+				<div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/0/103549774963556626441" data-rel="publisher"></div>
+
+				<h4><?php esc_html_e( 'Like the Facebook page to learn the latest news:', 'wallets' ); ?></h4>
+
+				<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdashedslug%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId=1048870338583588" width="500" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+			</div>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Download cool plugin extensions:', 'wallets' ); ?></h2>
+
+				<p><?php esc_html_e( 'Bitcoin and Altcoin Wallets is a plugin that offers basic deposit-transfer-withdraw functionality. ', 'wallets' ); ?></p>
+
+				<p><?php esc_html_e( 'You can install', 'wallets' ); ?></p>
+				<ol>
 					<li><?php esc_html_e( '"coin adapters" to make the plugin talk with other cryptocurrencies. ', 'wallets' ); ?></li>
 					<li><?php esc_html_e( '"app extensions". App extensions are plugins that utilize the core API ' .
 									'to supply some user functionality. ', '/& @echo slug */' ); ?></li>
-				</ol><p><a href="<?php echo 'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin'; ?>" target="_blank">
-					<?php esc_html_e( 'Visit the dashed-slug to see what\'s available', 'wallets' ); ?>
-				</a></p></div><?php
+				</ol>
+
+				<p><a href="<?php echo 'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin'; ?>" target="_blank">
+						<?php esc_html_e( 'Visit the dashed-slug to see what\'s available', 'wallets' ); ?>
+				</a></p>
+			</div>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Have your say!', 'wallets' ); ?></h2>
+
+				<ol>
+					<li><?php echo __( 'Did you find this plugin useful? Leave a review on <a href="https://wordpress.org/support/plugin/wallets/reviews/">wordpress.org</a>.', 'wallets' ); ?></li>
+					<li><?php echo __( 'Do you need help? Did you find a bug? Visit the <a href="https://wordpress.org/support/plugin/wallets">wordpress.org support forum</a> for the main plugin or the <a href="https://www.dashed-slug.net/support/">dashed-slug.net</a> support forums for the extensions.', 'wallets' ); ?></li>
+					<li><?php echo __( 'Something else on your mind? <a href="https://dashed-slug.net/contact">Contact me</a>.', 'wallets' ); ?></li>
+				</ol>
+			</div>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Show your appreciation with a donation!', 'wallets' ); ?></h2>
+
+				<p><?php esc_html_e( 'Want to help with development? Help me buy the coffee that makes this all possible!', 'wallets' ); ?></p>
+
+				<ol>
+					<li><?php echo __( 'Donate via <a href="https://flattr.com/profile/dashed-slug">flattr</a>', '/* @echo slug *' ); ?>.</li>
+					<li><?php echo __( 'Donate a few shatoshi to the dashed-slug Bitcoin address: ' .
+						'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', '/* @echo slug *' ); ?></li>
+				</ol>
+
+				<p><?php esc_html_e( 'Your support is greatly appreciated.', 'wallets' ); ?></p>
+
+			<div style="clear: left;"></div>
+			<?php
 		}
 
-		private function csv_export( $symbols ) {
-			sort( $symbols );
-
-			$filename = 'wallet-transactions-' . implode(',', $symbols ) . '-' . date( DATE_RFC3339 ) . '.csv';
-			header( 'Content-Type: application/csv; charset=UTF-8' );
-			header( "Content-Disposition: attachment; filename=\"$filename\";" );
-
-			global $wpdb;
-			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$fh = fopen('php://output', 'w');
-
-			$symbols_set = array();
-			foreach ( $symbols as $symbol ) {
-				$symbols_set[] = "'$symbol'";
-			}
-			$symbols_set = implode(',', $symbols_set );
-
-			$tx_columns = Dashed_Slug_Wallets_TXs::$tx_columns;
-
-			$rows = $wpdb->get_results(
-				$wpdb->prepare(
-					"
-					SELECT
-						$tx_columns
-					FROM
-						{$table_name_txs}
-					WHERE
-						symbol IN ( $symbols_set ) AND
-						( blog_id = %d || %d )
-					",
-					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
-				),
-				ARRAY_N
-			);
-
-			echo Dashed_Slug_Wallets_TXs::$tx_columns . "\n";
-			foreach ( $rows as &$row ) {
-				fputcsv( $fh, $row, ',' );
-			}
-		}
 
 	}
 	new Dashed_Slug_Wallets_Admin_Menu();

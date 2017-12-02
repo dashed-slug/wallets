@@ -27,8 +27,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
 				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
-				$notices->warning( 'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
-					'If you dismiss this notice without enabling cron, some coin adapters might not work correctly.', 'wallets-cron-disabled' );
+				$notices->warning( __( 'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
+					'Until you fix this, transactions will not be executed. ' .
+					'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'),
+					'wallets-cron-disabled' );
+			} else {
+				$last_cron_run = intval( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run' ) );
+
+				if ( $last_cron_run ) {
+
+					$schedules = $this->filter_cron_schedules( array() );
+					$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+					$interval = $schedules[ $cron_interval ]['interval'];
+
+					if ( $last_cron_run < ( time() - $interval * 1.5 ) ) {
+						Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
+							__( 'The wp_cron job has not run in a while and might be disabled. Until you fix this, transactions will not be executed. ' .
+								'Check the accompanying PDF manual for ways to debug and solve the issue.',
+								'wallets' ),
+							'wallets-cron-not-running' );
+					}
+				}
 			}
 		}
 
@@ -141,6 +160,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				$this->call_cron_on_all_adapters();
 
 			}
+
+			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 		}
 
 		private function call_cron_on_all_adapters() {
@@ -161,6 +182,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public function action_admin_init() {
+
 			// bind settings subpage
 
 			add_settings_section(

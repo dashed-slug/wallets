@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.3\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -18,62 +18,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. />', // TODO bulk actions
-#: src/includes/admin-menu-adapter-list.php:19
+#: src/includes/adapters-list-table.php:19
 msgid "Adapter name"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:20
+#: src/includes/adapters-list-table.php:20
 #: src/includes/transactions-list.php:34 src/includes/views/balance.php:4
 #: src/includes/views/deposit.php:4 src/includes/views/move.php:4
 #: src/includes/views/transactions.php:4 src/includes/views/withdraw.php:4
 msgid "Coin"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:21
+#: src/includes/adapters-list-table.php:21
 msgid "Wallet Balance"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:22
+#: src/includes/adapters-list-table.php:22
 msgid "Sum of User Balances"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:23
+#: src/includes/adapters-list-table.php:23
 msgid "Adapter Status"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:93
+#: src/includes/adapters-list-table.php:93
 msgid "Responding"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:95
+#: src/includes/adapters-list-table.php:95
 msgid "n/a"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:96
+#: src/includes/adapters-list-table.php:96
 #, php-format
 msgid "Not Responding: %s"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:168
+#: src/includes/adapters-list-table.php:168
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:169
+#: src/includes/adapters-list-table.php:169
 msgid "Settings"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:174
-#: src/includes/admin-menu-adapter-list.php:175
+#: src/includes/adapters-list-table.php:174
+#: src/includes/adapters-list-table.php:175
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: src/includes/admin-menu.php:41 src/includes/admin-menu.php:86
-#: src/includes/caps.php:95 src/includes/caps.php:145
-#: src/includes/coin-adapter-bitcoin.php:54
+#: src/includes/adapters-list.php:90 src/includes/adapters-list.php:124
+#: src/includes/admin-menu.php:51 src/includes/caps.php:95
+#: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:54
 #: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
 #: src/includes/coin-adapter.php:159 src/includes/coin-adapter.php:168
 #: src/includes/coin-adapter.php:188 src/includes/coin-adapter.php:241
-#: src/includes/confirmations.php:297 src/includes/cron.php:257
+#: src/includes/confirmations.php:297 src/includes/cron.php:279
 #: src/includes/email.php:505 src/includes/qrcode.php:65
 #: src/includes/transactions.php:82 src/includes/transactions.php:719
 #: src/includes/transactions.php:900 src/includes/transactions.php:921
@@ -82,7 +82,7 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/includes/admin-menu.php:47 src/includes/caps.php:90
+#: src/includes/adapters-list.php:96 src/includes/caps.php:90
 #: src/includes/json-api.php:230 src/includes/json-api.php:258
 #: src/includes/transactions.php:725 src/includes/transactions.php:904
 #: src/includes/transactions.php:925 src/includes/transactions.php:946
@@ -90,16 +90,35 @@ msgstr ""
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: src/includes/admin-menu.php:64 src/includes/admin-menu.php:74
-#: src/includes/wallets-core.php:185 src/includes/wallets-core.php:195
+#: src/includes/adapters-list.php:129
+msgid "/* @echo name */ coin adapters list"
+msgstr ""
+
+#: src/includes/adapters-list.php:130
+msgid ""
+"This plugin uses Coin Adapters to communicate with actual coin wallets. A "
+"Bitcoin core adapter is built-in, and you can download more coin adapters "
+"for free from the dashed-slug website."
+msgstr ""
+
+#: src/includes/adapters-list.php:132
+msgid "Coin adapters currently enabled:"
+msgstr ""
+
+#: src/includes/admin-menu.php:29 src/includes/wallets-core.php:185
+#: src/includes/wallets-core.php:195
 msgid "Wallets"
 msgstr ""
 
-#: src/includes/admin-menu.php:94
+#: src/includes/admin-menu.php:39
+msgid "About"
+msgstr ""
+
+#: src/includes/admin-menu.php:58
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: src/includes/admin-menu.php:96
+#: src/includes/admin-menu.php:60
 msgid ""
 "By using this free plugin you accept all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
@@ -112,71 +131,133 @@ msgid ""
 "a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:105
+#: src/includes/admin-menu.php:69
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:107
+#: src/includes/admin-menu.php:71
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
 msgstr ""
 
-#: src/includes/admin-menu.php:108
+#: src/includes/admin-menu.php:72
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:109
+#: src/includes/admin-menu.php:73
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: src/includes/admin-menu.php:110
+#: src/includes/admin-menu.php:74
 msgid ""
 "If you are connecting to an RPC API on a different machine than that of your "
 "WordPress server over an untrusted network, make sure to tunnel your "
 "connection via ssh or stunnel."
 msgstr ""
 
-#: src/includes/admin-menu.php:113
+#: src/includes/admin-menu.php:77
 msgid "See more here"
 msgstr ""
 
-#: src/includes/admin-menu.php:114
+#: src/includes/admin-menu.php:78
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate "
 "that you have understood and agreed to this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:118
-msgid "Coin adapters currently enabled:"
+#: src/includes/admin-menu.php:83
+msgid "Follow the slime:"
 msgstr ""
 
-#: src/includes/admin-menu.php:125
-msgid "Wallet plugin extensions"
+#: src/includes/admin-menu.php:85
+msgid "Subscribe to the YouTube channel:"
 msgstr ""
 
-#: src/includes/admin-menu.php:126
+#: src/includes/admin-menu.php:89
+msgid "+1 the Google+ page to learn the latest news:"
+msgstr ""
+
+#: src/includes/admin-menu.php:93
+msgid "Like the Facebook page to learn the latest news:"
+msgstr ""
+
+#: src/includes/admin-menu.php:99
+msgid "Download cool plugin extensions:"
+msgstr ""
+
+#: src/includes/admin-menu.php:101
 msgid ""
 "/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
 "functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:127
+#: src/includes/admin-menu.php:103
 msgid "You can install"
 msgstr ""
 
-#: src/includes/admin-menu.php:128
+#: src/includes/admin-menu.php:105
 msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:129
+#: src/includes/admin-menu.php:106
 msgid ""
 "\"app extensions\". App extensions are plugins that utilize the core API to "
 "supply some user functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:132
+#: src/includes/admin-menu.php:111
 msgid "Visit the dashed-slug to see what's available"
+msgstr ""
+
+#: src/includes/admin-menu.php:116
+msgid "Have your say!"
+msgstr ""
+
+#: src/includes/admin-menu.php:119
+msgid ""
+"Did you find this plugin useful? Leave a review on <a href=\"https://"
+"wordpress.org/support/plugin/wallets/reviews/\">wordpress.org</a>."
+msgstr ""
+
+#: src/includes/admin-menu.php:120
+msgid ""
+"Do you need help? Did you find a bug? Visit the <a href=\"https://wordpress."
+"org/support/plugin/wallets\">wordpress.org support forum</a> for the main "
+"plugin or the <a href=\"https://www.dashed-slug.net/support/\">dashed-slug."
+"net</a> support forums for the extensions."
+msgstr ""
+
+#: src/includes/admin-menu.php:121
+msgid ""
+"Something else on your mind? <a href=\"https://dashed-slug.net/contact"
+"\">Contact me</a>."
+msgstr ""
+
+#: src/includes/admin-menu.php:126
+msgid "Show your appreciation with a donation!"
+msgstr ""
+
+#: src/includes/admin-menu.php:128
+msgid ""
+"Want to help with development? Help me buy the coffee that makes this all "
+"possible!"
+msgstr ""
+
+#: src/includes/admin-menu.php:131
+msgid ""
+"Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
+msgstr ""
+
+#: src/includes/admin-menu.php:132
+msgid ""
+"Donate a few shatoshi to the dashed-slug Bitcoin address: <a href="
+"\"bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-"
+"slug&message=donation\">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>."
+msgstr ""
+
+#: src/includes/admin-menu.php:136
+msgid "Your support is greatly appreciated."
 msgstr ""
 
 #: src/includes/caps.php:25
@@ -622,68 +703,82 @@ msgid ""
 "will need to click to confirm the withdrawal."
 msgstr ""
 
-#: src/includes/cron.php:71
+#: src/includes/cron.php:30
+msgid ""
+"WordPress cron is disabled. Check wp-config.php for the constant "
+"DISABLE_WP_CRON. Until you fix this, transactions will not be executed. "
+"Check the accompanying PDF manual for ways to debug and solve the issue."
+msgstr ""
+
+#: src/includes/cron.php:45
+msgid ""
+"The wp_cron job has not run in a while and might be disabled. Until you fix "
+"this, transactions will not be executed. Check the accompanying PDF manual "
+"for ways to debug and solve the issue."
+msgstr ""
+
+#: src/includes/cron.php:90
 msgid "minute"
 msgstr ""
 
-#: src/includes/cron.php:76
+#: src/includes/cron.php:95
 msgid "three minutes"
 msgstr ""
 
-#: src/includes/cron.php:81
+#: src/includes/cron.php:100
 msgid "five minutes"
 msgstr ""
 
-#: src/includes/cron.php:86
+#: src/includes/cron.php:105
 msgid "ten minutes"
 msgstr ""
 
-#: src/includes/cron.php:91
+#: src/includes/cron.php:110
 msgid "twenty minutes"
 msgstr ""
 
-#: src/includes/cron.php:96
+#: src/includes/cron.php:115
 msgid "half an hour"
 msgstr ""
 
-#: src/includes/cron.php:168
+#: src/includes/cron.php:190
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/cron.php:175
+#: src/includes/cron.php:197
 msgid "Run every"
 msgstr ""
 
-#: src/includes/cron.php:189
+#: src/includes/cron.php:211
 msgid "Max batch size"
 msgstr ""
 
-#: src/includes/cron.php:195
+#: src/includes/cron.php:217
 msgid "Up to this many transactions will be attempted per run of the cron job."
 msgstr ""
 
-#: src/includes/cron.php:206
+#: src/includes/cron.php:228
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: src/includes/cron.php:212
+#: src/includes/cron.php:234
 msgid "Failed withdrawals will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:223
+#: src/includes/cron.php:245
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: src/includes/cron.php:229
+#: src/includes/cron.php:251
 msgid ""
 "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:260
+#: src/includes/cron.php:282
 msgid "/* @echo name */ cron settings"
 msgstr ""
 
-#: src/includes/cron.php:261
+#: src/includes/cron.php:283
 msgid ""
 "You can set here the periodicity of all recurring tasks for this plugin. "
 "Every time cron runs, a batch of transactions is attempted. You can choose "
@@ -694,7 +789,7 @@ msgid ""
 "enabled adapters."
 msgstr ""
 
-#: src/includes/cron.php:290
+#: src/includes/cron.php:312
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron job."
 msgstr ""

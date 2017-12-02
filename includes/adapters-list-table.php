@@ -11,7 +11,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
+class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 	public function get_columns() {
 		return array(

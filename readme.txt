@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.4.3
+Stable tag: 2.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -269,6 +269,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.4.4 =
+- Improve: Adapters now live in their own special panel.
+- Add: About page with social actions and latest news.
+- Add: Doublecheck to see if WordPress cron is executing and inform user if not.
+
 = 2.4.3 =
 - Improve: Adapter list now shows both funds in wallets and funds in user accounts
 - Improve: In adapters list, coin name, coin icon and coin symbol are now merged into one "Coin" column
@@ -458,7 +463,8 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.4.3 contains minor iprovements on version 2.4.2. Upgrade at your convenience.
+Version 2.4.4 contains improvements necessary for the latest version of the CoinPayments adapter.
+You must upgrade if you need to install the latest CoinPayments adapter.
 
 == Donating ==
 

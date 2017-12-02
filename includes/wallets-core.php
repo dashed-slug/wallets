@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.4.3'
+					'2.4.4'
 				);
 			}
 		}
