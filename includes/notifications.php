@@ -3,17 +3,23 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-if ( ! class_exists( 'Dashed_Slug_Wallets_Email' ) ) {
-	class Dashed_Slug_Wallets_Email {
+if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
+	class Dashed_Slug_Wallets_Notifications {
+
+		private $emails_enabled = false;
+		private $buddypress_enabled = false;
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
+
+			$this->emails_enabled = Dashed_Slug_Wallets::get_option( 'wallets_email_enabled' );
+			$this->buddypress_enabled = Dashed_Slug_Wallets::get_option( 'wallets_buddypress_enabled' );
 
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-				add_action( 'network_admin_edit_wallets-menu-email', array( &$this, 'update_network_options' ) );
+				add_action( 'network_admin_edit_wallets-menu-notifications', array( &$this, 'update_network_options' ) );
 			}
 
 			add_action( 'wallets_withdraw', array( &$this, 'action_withdraw' ) );
@@ -26,9 +32,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Email' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_enabled', 'on' );
+
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_subject', __( 'You have performed a withdrawal. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -40,12 +48,12 @@ Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
-EMAIL
+NOTIFICATION
 				, 'wallets' ) );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_subject', __( 'Your withdrawal request has FAILED permanently. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -58,13 +66,13 @@ Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
-EMAIL
+NOTIFICATION
 				, 'wallets' ) );
 
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_subject', __( 'You have sent funds to another user. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -76,12 +84,12 @@ Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
-EMAIL
+NOTIFICATION
 				, 'wallets' ) );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_subject', __( 'You request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -94,13 +102,13 @@ Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
-EMAIL
+NOTIFICATION
 				, 'wallets' ) );
 
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_subject', __( 'You have received funds from another user. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -111,12 +119,12 @@ Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
-EMAIL
+NOTIFICATION
 				, 'wallets' ) );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_subject', __( 'You have performed a ###SYMBOL### deposit.', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -128,42 +136,87 @@ Transaction ID: ###TXID###
 Transacton seen at: ###CREATED_TIME###
 Extra transaction info (optional): ###EXTRA###
 
-EMAIL
+NOTIFICATION
 				, 'wallets' ) );
 
 		}
 
 		public function action_admin_init() {
+			// main
+
+			add_settings_section(
+				'wallets_email_main_section',
+				__( 'Notification settings for ALL events', 'wallets' ),
+				array( &$this, 'wallets_notification_all_section_cb' ),
+				'wallets-menu-notifications'
+			);
+
+			add_settings_field(
+				'wallets_email_enabled',
+				__( 'Notify users via e-mail', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for' => 'wallets_email_enabled',
+					'description' => __( 'If checked, users will receive notifications over e-mail.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_email_enabled'
+			);
+
+			add_settings_field(
+				'wallets_buddypress_enabled',
+				__( 'Notify users via BuddyPress private messages', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for' => 'wallets_buddypress_enabled',
+					'description' => __( 'If checked, users will receive notifications via BuddyPress private messages. ' .
+						'You must make sure that the "Private Messaging" BuddyPress component is enabled.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_buddypress_enabled'
+			);
+
+
 			// withdrawal
 			add_settings_section(
 				'wallets_email_withdraw_section',
-				__( 'E-mail notification settings for SUCCESSFUL withdrawals', 'wallets' ),
-				array( &$this, 'wallets_email_section_cb' ),
-				'wallets-menu-email'
+				__( 'Notification settings for SUCCESSFUL withdrawals', 'wallets' ),
+				array( &$this, 'wallets_notification_section_cb' ),
+				'wallets-menu-notifications'
 			);
 
 			add_settings_field(
 				'wallets_email_withdraw_enabled',
 				__( 'Notify users about SUCCESSFUL withdrawals', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_section',
 				array(
 					'label_for' => 'wallets_email_withdraw_enabled',
-					'description' => __( 'Check to enable this type of e-mails.', 'wallets' ),
+					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_enabled'
 			);
 
 			add_settings_field(
 				'wallets_email_withdraw_subject',
-				__( 'Template for e-mail subject line:', 'wallets' ),
+				__( 'Template for subject line:', 'wallets' ),
 				array( &$this, 'text_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_section',
 				array(
 					'label_for' => 'wallets_email_withdraw_subject',
@@ -172,15 +225,15 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_subject'
 			);
 
 			add_settings_field(
 				'wallets_email_withdraw_message',
-				__( 'Template for e-mail message body:', 'wallets' ),
+				__( 'Template for message body:', 'wallets' ),
 				array( &$this, 'textarea_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_section',
 				array(
 					'label_for' => 'wallets_email_withdraw_message',
@@ -189,40 +242,40 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_message'
 			);
 
 			// withdrawal failed
 			add_settings_section(
 				'wallets_email_withdraw_failed_section',
-				__( 'E-mail notification settings for FAILED withdrawals', 'wallets' ),
-				array( &$this, 'wallets_email_section_cb' ),
-				'wallets-menu-email'
+				__( 'Notification settings for FAILED withdrawals', 'wallets' ),
+				array( &$this, 'wallets_notification_section_cb' ),
+				'wallets-menu-notifications'
 				);
 
 			add_settings_field(
 				'wallets_email_withdraw_failed_enabled',
 				__( 'Notify users about FAILED withdrawals', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_section',
 				array(
 					'label_for' => 'wallets_email_withdraw_failed_enabled',
-					'description' => __( 'Check to enable this type of e-mails.', 'wallets' ),
+					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_enabled'
 			);
 
 			add_settings_field(
 				'wallets_email_withdraw_failed_subject',
-				__( 'Template for e-mail subject line:', 'wallets' ),
+				__( 'Template for subject line:', 'wallets' ),
 				array( &$this, 'text_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_section',
 				array(
 					'label_for' => 'wallets_email_withdraw_failed_subject',
@@ -231,15 +284,15 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_subject'
 			);
 
 			add_settings_field(
 				'wallets_email_withdraw_failed_message',
-				__( 'Template for e-mail message body:', 'wallets' ),
+				__( 'Template for message body:', 'wallets' ),
 				array( &$this, 'textarea_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_section',
 				array(
 					'label_for' => 'wallets_email_withdraw_failed_message',
@@ -248,40 +301,40 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_message'
 			);
 
 			// deposit
 			add_settings_section(
 				'wallets_email_deposit_section',
-				__( 'E-mail notification settings for deposits', 'wallets' ),
-				array( &$this, 'wallets_email_section_cb' ),
-				'wallets-menu-email'
+				__( 'Notification settings for deposits', 'wallets' ),
+				array( &$this, 'wallets_notification_section_cb' ),
+				'wallets-menu-notifications'
 			);
 
 			add_settings_field(
 				'wallets_email_deposit_enabled',
 				__( 'Notify users about depositals', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_deposit_section',
 				array(
 					'label_for' => 'wallets_email_deposit_enabled',
-					'description' => __( 'Check to enable this type of e-mails.', 'wallets' ),
+					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_deposit_enabled'
 			);
 
 			add_settings_field(
 				'wallets_email_deposit_subject',
-				__( 'Template for e-mail subject line:', 'wallets' ),
+				__( 'Template for subject line:', 'wallets' ),
 				array( &$this, 'text_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_deposit_section',
 				array(
 					'label_for' => 'wallets_email_deposit_subject',
@@ -290,15 +343,15 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_deposit_subject'
 			);
 
 			add_settings_field(
 				'wallets_email_deposit_message',
-				__( 'Template for e-mail message body:', 'wallets' ),
+				__( 'Template for message body:', 'wallets' ),
 				array( &$this, 'textarea_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_deposit_section',
 				array(
 					'label_for' => 'wallets_email_deposit_message',
@@ -307,40 +360,40 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_deposit_message'
 			);
 
 			// move_send
 			add_settings_section(
 				'wallets_email_move_send_section',
-				__( 'E-mail notification settings for SUCCESSFUL outgoing fund transfers', 'wallets' ),
-				array( &$this, 'wallets_email_section_cb' ),
-				'wallets-menu-email'
+				__( 'Notification settings for SUCCESSFUL outgoing fund transfers', 'wallets' ),
+				array( &$this, 'wallets_notification_section_cb' ),
+				'wallets-menu-notifications'
 			);
 
 			add_settings_field(
 				'wallets_email_move_send_enabled',
 				__( 'Notify users about SUCCESSFUL outgoing fund transfers', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_section',
 				array(
 					'label_for' => 'wallets_email_move_send_enabled',
-					'description' => __( 'Check to enable this type of e-mails.', 'wallets' ),
+					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_enabled'
 			);
 
 			add_settings_field(
 				'wallets_email_move_send_subject',
-				__( 'Template for e-mail subject line:', 'wallets' ),
+				__( 'Template for subject line:', 'wallets' ),
 				array( &$this, 'text_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_section',
 				array(
 					'label_for' => 'wallets_email_move_send_subject',
@@ -349,15 +402,15 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_subject'
 			);
 
 			add_settings_field(
 				'wallets_email_move_send_message',
-				__( 'Template for e-mail message body:', 'wallets' ),
+				__( 'Template for message body:', 'wallets' ),
 				array( &$this, 'textarea_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_section',
 				array(
 					'label_for' => 'wallets_email_move_send_message',
@@ -366,40 +419,40 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_message'
 			);
 
 			// move_send failed
 			add_settings_section(
 				'wallets_email_move_send_failed_section',
-				__( 'E-mail notification settings for FAILED outgoing fund transfers', 'wallets' ),
-				array( &$this, 'wallets_email_section_cb' ),
-				'wallets-menu-email'
+				__( 'Notification settings for FAILED outgoing fund transfers', 'wallets' ),
+				array( &$this, 'wallets_notification_section_cb' ),
+				'wallets-menu-notifications'
 			);
 
 			add_settings_field(
 				'wallets_email_move_send_failed_enabled',
 				__( 'Notify users about outgoing FAILED fund transfers', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_section',
 				array(
 					'label_for' => 'wallets_email_move_send_failed_enabled',
-					'description' => __( 'Check to enable this type of e-mails.', 'wallets' ),
+					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_enabled'
 			);
 
 			add_settings_field(
 				'wallets_email_move_send_failed_subject',
-				__( 'Template for e-mail subject line:', 'wallets' ),
+				__( 'Template for subject line:', 'wallets' ),
 				array( &$this, 'text_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_section',
 				array(
 					'label_for' => 'wallets_email_move_send_failed_subject',
@@ -408,15 +461,15 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_subject'
 			);
 
 			add_settings_field(
 				'wallets_email_move_send_failed_message',
-				__( 'Template for e-mail message body:', 'wallets' ),
+				__( 'Template for message body:', 'wallets' ),
 				array( &$this, 'textarea_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_section',
 				array(
 					'label_for' => 'wallets_email_move_send_failed_message',
@@ -425,40 +478,40 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_message'
 			);
 
 			// move_receive
 			add_settings_section(
 				'wallets_email_move_receive_section',
-				__( 'E-mail notification settings for incoming fund transfers', 'wallets' ),
-				array( &$this, 'wallets_email_section_cb' ),
-				'wallets-menu-email'
+				__( 'Notification settings for incoming fund transfers', 'wallets' ),
+				array( &$this, 'wallets_notification_section_cb' ),
+				'wallets-menu-notifications'
 			);
 
 			add_settings_field(
 				'wallets_email_move_receive_enabled',
 				__( 'Notify users about incoming fund transfers', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_receive_section',
 				array(
 					'label_for' => 'wallets_email_move_receive_enabled',
-					'description' => __( 'Check to enable this type of e-mails.', 'wallets' ),
+					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_receive_enabled'
 			);
 
 			add_settings_field(
 				'wallets_email_move_receive_subject',
-				__( 'Template for e-mail subject line:', 'wallets' ),
+				__( 'Template for subject line:', 'wallets' ),
 				array( &$this, 'text_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_receive_section',
 				array(
 					'label_for' => 'wallets_email_move_receive_subject',
@@ -467,15 +520,15 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_receive_subject'
 			);
 
 			add_settings_field(
 				'wallets_email_move_receive_message',
-				__( 'Template for e-mail message body:', 'wallets' ),
+				__( 'Template for message body:', 'wallets' ),
 				array( &$this, 'textarea_cb' ),
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_receive_section',
 				array(
 					'label_for' => 'wallets_email_move_receive_message',
@@ -484,7 +537,7 @@ EMAIL
 			);
 
 			register_setting(
-				'wallets-menu-email',
+				'wallets-menu-notifications',
 				'wallets_email_move_receive_message'
 			);
 		}
@@ -493,25 +546,25 @@ EMAIL
 			if ( current_user_can( 'manage_wallets' ) ) {
 				add_submenu_page(
 					'wallets-menu-wallets',
-					'Bitcoin and Altcoin Wallets E-mail notifications',
-					'E-mails',
+					'Bitcoin and Altcoin Wallets Notifications',
+					'Notifications',
 					'manage_wallets',
-					'wallets-menu-email',
-					array( &$this, "wallets_email_page_cb" )
+					'wallets-menu-notifications',
+					array( &$this, 'wallets_notifications_page_cb' )
 				);
 			}
 		}
 
 
-		public function wallets_email_page_cb() {
+		public function wallets_notifications_page_cb() {
 			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets E-mail notification settings', 'wallets' ); ?></h1>
+			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Notification settings', 'wallets' ); ?></h1>
 
-				<p><?php esc_html_e( 'Users are notified by e-mail when they perform deposits or withdrawals and when they send or receive funds. ' .
-					'Here you can set template messages for these emails.', 'wallets' ); ?></p>
+				<p><?php esc_html_e( 'Users can receive notifications when they perform deposits, withdrawals, ' .
+					'or internal transfers. ', 'wallets' ); ?></p>
 
 				<form method="post" action="<?php
 
@@ -519,7 +572,7 @@ EMAIL
 							echo esc_url(
 								add_query_arg(
 									'action',
-									'wallets-menu-email',
+									'wallets-menu-notifications',
 									network_admin_url( 'edit.php' )
 								)
 							);
@@ -528,18 +581,22 @@ EMAIL
 						}
 
 					?>"><?php
-					settings_fields( 'wallets-menu-email' );
-					do_settings_sections( 'wallets-menu-email' );
+					settings_fields( 'wallets-menu-notifications' );
+					do_settings_sections( 'wallets-menu-notifications' );
 					submit_button();
 				?></form>
 
 				<div class="card">
-					<h2><?php esc_html_e( 'The following variables are substituted in e-mail templates:', 'wallets' ); ?></h2>
+					<h2><?php esc_html_e( 'The following variables are substituted in notification templates:', 'wallets' ); ?></h2>
 					<dl>
 						<dt><code>###ACCOUNT###</code></dt>
 						<dd><?php esc_html_e( 'Account username', 'wallets' ); ?></dd>
+						<dt><code>###ACCOUNT_ID###</code></dt>
+						<dd><?php esc_html_e( 'Account user ID', 'wallets' ); ?></dd>
 						<dt><code>###OTHER_ACCOUNT###</code></dt>
 						<dd><?php esc_html_e( 'Username of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_ACCOUNT_ID###</code></dt>
+						<dd><?php esc_html_e( 'User ID of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><code>###TXID###</code></dt>
 						<dd><?php esc_html_e( 'Transaction ID. ( This is normally the same as the txid on the blockchain. Internal transactions are also assigned a unique ID. )', 'wallets' ); ?></dd>
 						<dt><code>###AMOUNT###</code></dt>
@@ -565,7 +622,7 @@ EMAIL
 		}
 
 		public function update_network_options() {
-			check_admin_referer( 'wallets-menu-email-options' );
+			check_admin_referer( 'wallets-menu-notifications-options' );
 
 			foreach ( array(
 				'wallets_email_withdraw_enabled',
@@ -596,7 +653,7 @@ EMAIL
 				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING ) );
 			}
 
-			wp_redirect( add_query_arg( 'page', 'wallets-menu-email', network_admin_url( 'admin.php' ) ) );
+			wp_redirect( add_query_arg( 'page', 'wallets-menu-notifications', network_admin_url( 'admin.php' ) ) );
 			exit;
 		}
 
@@ -624,136 +681,230 @@ EMAIL
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
 
-		public function wallets_email_section_cb() {
-			?><p><?php esc_html_e( 'Here you can choose whether users receive e-mail notifications on this event. ' .
-				'You can also edit the template used to produce the email subject line and text body. ' .
-				'You can use the available variable substitutions in both the subject line and the message body.', 'wallets'); ?></p><?php
+		public function wallets_notification_all_section_cb() {
+			?><p><?php esc_html_e( 'Users can be notified by e-mail or BuddyPress private messages. ' .
+				'Consult the documentation on how to activate BuddyPress private messages.', 'wallets' ); ?></p><?php
 		}
 
-		public function action_withdraw( $row ) {
+		public function wallets_notification_section_cb() {
+			?><p><?php esc_html_e( 'Here you can choose whether users receive notifications on this event. ' .
+				'You can also edit the templates for the subject line and message body. ' .
+				'You can use the available variable substitutions in both the subject line and the message body.', 'wallets' ); ?></p><?php
+		}
+
+		public function action_withdraw( $msg_data ) {
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_enabled' ) ) {
-				$user = get_userdata( $row->account );
-				$row->account = $user->user_login;
+				$user = get_userdata( $msg_data->account );
+				$msg_data->account_id = $msg_data->account;
+				$msg_data->account = $user->user_login;
 
-				$this->notify_user_by_email(
-					$user->user_email,
-					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ),
-					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ),
-					$row
-				);
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $msg_data );
+				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $msg_data );
+
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					messages_new_message ( array(
+						'sender_id' => $msg_data->account_id,
+						'recipients' => array( $msg_data->account_id ),
+						'subject' => $subject,
+						'content' => $message,
+					) );
+				}
+
+				if ( $this->emails_enabled ) {
+					$this->notify_user_by_email(
+						$user->user_email,
+						$subject,
+						$message
+					);
+				}
 			}
 		}
 
-		public function action_withdraw_failed( $row ) {
+		public function action_withdraw_failed( $msg_data ) {
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_enabled' ) ) {
-				$user = get_userdata( $row->account );
-				$row->account = $user->user_login;
+				$user = get_userdata( $msg_data->account );
+				$msg_data->account_id = $msg_data->account;
+				$msg_data->account = $user->user_login;
 
-				$this->notify_user_by_email(
-					$user->user_email,
-					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ),
-					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ),
-					$row
-				);
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ), $msg_data );
+				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ), $msg_data );
+
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					messages_new_message ( array(
+						'sender_id' => $msg_data->account_id,
+						'recipients' => array( $msg_data->account_id ),
+						'subject' => $subject,
+						'content' => $message,
+					) );
+				}
+
+				if ( $this->emails_enabled ) {
+					$this->notify_user_by_email(
+						$user->user_email,
+						$subject,
+						$message
+					);
+				}
 			}
 		}
 
-		public function action_move_send( $row ) {
+		public function action_move_send( $msg_data ) {
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_enabled' ) ) {
-				$sender = get_userdata( $row->account );
-				$recipient = get_userdata( $row->other_account );
+				$sender = get_userdata( $msg_data->account );
+				$recipient = get_userdata( $msg_data->other_account );
 
-				$row->account = $sender->user_login;
-				$row->other_account = $recipient->user_login;
+				$msg_data->account_id = $msg_data->account;
+				$msg_data->account = $sender->user_login;
+				$msg_data->other_account = $recipient->user_login;
 
-				$this->notify_user_by_email(
-					$sender->user_email,
-					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ),
-					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ),
-					$row
-				);
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ), $msg_data );
+				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ), $msg_data );
+
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					messages_new_message ( array(
+						'sender_id' => $msg_data->account_id,
+						'recipients' => array( $msg_data->account_id ),
+						'subject' => $subject,
+						'content' => $message,
+					) );
+				}
+
+				if ( $this->emails_enabled ) {
+					$this->notify_user_by_email(
+						$sender->user_email,
+						$subject,
+						$message
+					);
+				}
 			}
 		}
 
-		public function action_move_send_failed( $row ) {
+		public function action_move_send_failed( $msg_data ) {
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_enabled' ) ) {
-				$sender = get_userdata( $row->account );
-				$recipient = get_userdata( $row->other_account );
+				$sender = get_userdata( $msg_data->account );
+				$recipient = get_userdata( $msg_data->other_account );
 
-				$row->account = $sender->user_login;
-				$row->other_account = $recipient->user_login;
+				$msg_data->account_id = $msg_data->account;
+				$msg_data->account = $sender->user_login;
+				$msg_data->other_account_id = $msg_data->other_account;
+				$msg_data->other_account = $recipient->user_login;
 
-				$this->notify_user_by_email(
-					$sender->user_email,
-					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ),
-					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ),
-					$row
-				);
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ), $msg_data );
+				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ), $msg_data );
+
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					messages_new_message ( array(
+						'sender_id' => $msg_data->account_id,
+						'recipients' => array( $msg_data->account_id ),
+						'subject' => $subject,
+						'content' => $message,
+					) );
+				}
+
+				if ( $this->emails_enabled ) {
+					$this->notify_user_by_email(
+						$sender->user_email,
+						$subject,
+						$message
+					);
+				}
 			}
 		}
 
-		public function action_move_receive( $row ) {
+		public function action_move_receive( $msg_data ) {
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_enabled' ) ) {
-				$recipient = get_userdata( $row->account );
-				$sender = get_userdata( $row->other_account );
+				$recipient = get_userdata( $msg_data->account );
+				$sender = get_userdata( $msg_data->other_account );
 
-				$row->account = $recipient->user_login;
-				$row->other_account = $sender->user_login;
-				unset( $row->fee );
+				$msg_data->account_id = $msg_data->account;
+				$msg_data->account = $recipient->user_login;
+				$msg_data->other_account_id = $msg_data->other_account;
+				$msg_data->other_account = $sender->user_login;
+				unset( $msg_data->fee );
 
-				$this->notify_user_by_email(
-					$recipient->user_email,
-					Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ),
-					Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ),
-					$row
-				);
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $msg_data );
+				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ), $msg_data );
+
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					messages_new_message ( array(
+						'sender_id' => $sender->ID,
+						'recipients' => array( $recipient->ID ),
+						'subject' => $subject,
+						'content' => $message,
+					) );
+				}
+
+				if ( $this->emails_enabled ) {
+					$this->notify_user_by_email(
+						$recipient->user_email,
+						$subject,
+						$message
+					);
+				}
 			}
 		}
 
-		public function action_deposit( $row ) {
+		public function action_deposit( $msg_data ) {
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_enabled' ) ) {
-				$user = get_userdata( $row->account );
-				$row->account = $user->user_login;
+				$user = get_userdata( $msg_data->account );
+				$msg_data->account_id = $msg_data->account;
+				$msg_data->account = $user->user_login;
 
-				$this->notify_user_by_email(
-					$user->user_email,
-					Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ),
-					Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ),
-					$row
-				);
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ), $msg_data );
+				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ), $msg_data );
+
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					messages_new_message ( array(
+						'sender_id' => $msg_data->account_id,
+						'recipients' => array( $msg_data->account_id ),
+						'subject' => $subject,
+						'content' => $message,
+					) );
+				}
+
+				if ( $this->emails_enabled ) {
+					$this->notify_user_by_email(
+						$user->user_email,
+						$subject,
+						$message
+					);
+				}
 			}
 		}
 
-		private function notify_user_by_email( $email, $subject, $message, &$row ) {
-			unset( $row->category );
-			unset( $row->updated_time );
-			if ( ! isset( $row->extra ) ) {
-				$row->extra = 'n/a';
+		private function apply_substitutions( $string, $msg_data ) {
+			unset( $msg_data->category );
+			unset( $msg_data->updated_time );
+			if ( ! isset( $msg_data->extra ) ) {
+				$msg_data->extra = 'n/a';
 			}
 
 			// use pattern for displaying amounts
-			if ( isset( $row->symbol ) ) {
+			if ( isset( $msg_data->symbol ) ) {
 				try {
-					$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $row->symbol, false );
+					$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $msg_data->symbol, false );
 					$sprintf = $adapter->get_sprintf();
 				} catch ( Exception $e ) {
 					$sprintf = '%01.8F';
 				}
 
-				if ( isset( $row->amount ) ) {
-					$row->amount = sprintf( $sprintf, $row->amount );
+				if ( isset( $msg_data->amount ) && is_numeric( $msg_data->amount ) ) {
+					$msg_data->amount = sprintf( $sprintf, $msg_data->amount );
 				}
-				if ( isset( $row->fee ) ) {
-					$row->fee = sprintf( $sprintf, $row->fee );
+				if ( isset( $msg_data->fee ) && is_numeric( $msg_data->fee ) ) {
+					$msg_data->fee = sprintf( $sprintf, $msg_data->fee );
 				}
 			}
 
 
 			// variable substitution
-			foreach ( $row as $field => $val ) {
-				$subject = str_replace( '###' . strtoupper( $field ) . '###', $val, $subject );
-				$message = str_replace( '###' . strtoupper( $field ) . '###', $val, $message );
+			foreach ( $msg_data as $field => $val ) {
+				$string = str_replace( '###' . strtoupper( $field ) . '###', $val, $string );
 			}
+			return $string;
+		}
+
+		private function notify_user_by_email( $email, $subject, $message ) {
 
 			try {
 				wp_mail(
@@ -763,7 +914,7 @@ EMAIL
 				);
 			} catch ( Exception $e ) {
 				$this->_notices->error(
-					__( "The following errors occured while sending notification email to $email: ", 'wallets' ) .
+					__( "The following errors occured while sending a notification to $email: ", 'wallets' ) .
 					$e->getMessage()
 				);
 			}
@@ -771,5 +922,5 @@ EMAIL
 
 	}
 
-	new Dashed_Slug_Wallets_Email();
+	new Dashed_Slug_Wallets_Notifications();
 }

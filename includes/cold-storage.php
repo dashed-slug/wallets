@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.8.2',
+				'2.9.0',
 				true
 			);
 		}
@@ -166,8 +166,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 									}
 
 									// skip wallets with no coins owned by users
-									if ( ! isset( $balance_sums[ $symbol ] ) || ! $balance_sums[ $symbol ] )
-										continue;
+									if ( ! isset( $balance_sums[ $symbol ] )  )
+										$balance_sums[ $symbol ] = 0;
 
 						?><tr>
 
@@ -176,13 +176,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								<td><?php echo esc_html( sprintf( $adapter->get_sprintf(), $balance_sums[ $symbol ] ) ); ?></td>
 
 								<td><?php
+									$progress  = 100 * $wallet_balance / $balance_sums[ $symbol ];
+
 									echo esc_html( sprintf(
 										$adapter->get_sprintf() . ' (%01.2f%%)',
 										$wallet_balance,
-										number_format( 100 * $wallet_balance / $balance_sums[ $symbol ], 2, '.', '' )
+										number_format( $progress, 2, '.', '' )
 									) );
-									?><br />
-									<progress max="100" value="<?php echo min( 100, 100 * $wallet_balance / $balance_sums[ $symbol ] ); ?>" ></progress>
+
+									if ( ! is_nan( $progress ) ): ?>
+										<br />
+										<progress max="100" value="<?php echo  min( 100, $progress ); ?>" ></progress><?php
+									endif; ?>
 								</td>
 
 								<td>

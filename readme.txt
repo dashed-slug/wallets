@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.8.2
-Stable tag: 2.8.2
+Tested up to: 4.9
+Stable tag: 2.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.9.0 =
+- Add: Notifications can now be sent either as emails or as BuddyPress private messages (or both).
+- Fix: When upgrading database sche,a, suppress logging of some errors  that are to be expected.
+
 = 2.8.2 =
 - Fix: Bug introduced in 2.8.1 where deposits could be duplicated in some situations.
 
@@ -633,7 +637,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.8.2 fixes an important bug introduced in 2.8.1.
+Version 2.9.0 introduces BuddyPress integration.
 
 == Donating ==
 

@@ -172,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.8.2',
+					'2.9.0',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -185,7 +185,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.8.2',
+					'2.9.0',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -198,7 +198,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.8.2'
+					'2.9.0'
 				);
 			}
 		}
@@ -331,12 +331,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				dbDelta( $sql );
 
+				$suppress_errors = $wpdb->suppress_errors;
 
 				// make sure that constraints are correct.
+
+				$wpdb->suppress_errors();
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
+				$wpdb->suppress_errors( $suppress_errors );
+
 				// on 2.8.1 constraints allowed multiple txs with same txid. need to delete duplicates and fix this.
 				// it's a good idea to keep this check here for the future.
-
-				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
 				$wpdb->query( "UPDATE {$table_name_txs} SET extra='' WHERE extra IS NULL;" );
 				$wpdb->query( "
 					DELETE FROM
@@ -351,7 +355,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR'" );
 				$wpdb->query( "CREATE UNIQUE INDEX uq_tx_idx ON {$table_name_txs} (txid,symbol);" );
 
+				$wpdb->suppress_errors();
 				$wpdb->query( "ALTER TABLE {$table_name_adds} DROP INDEX uq_ad_idx;" );
+				$wpdb->suppress_errors( $suppress_errors );
+
 				$wpdb->query( "UPDATE {$table_name_adds} SET extra='' WHERE extra IS NULL;" );
 				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR';" );
 				$wpdb->query( "CREATE UNIQUE INDEX `uq_ad_idx` on {$table_name_adds} (address,symbol,extra);" );
@@ -380,12 +387,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '4.8.2' ) < 0 ) {
+			if ( version_compare( $wp_version, '4.9' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %s. This plugin has been tested with %s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'4.8.2' ),
+						'4.9' ),
 					'old-wp-ver' );
 			}
 		}
@@ -459,8 +466,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.8.2';
-			$data[ __( 'Git SHA', 'wallets' ) ] = 'ee665ed';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.9.0';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '718da25';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
