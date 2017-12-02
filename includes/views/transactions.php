@@ -29,7 +29,7 @@
 					<?php endif; ?>
 				</tr>
 			</thead>
-			<tbody data-bind="foreach: wallets[selectedCoin()].transactions">
+			<tbody data-bind="foreach: transactions()">
 				<tr data-bind="if: ( category == 'withdraw' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>

@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.6\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -83,7 +83,7 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/adapters-list.php:96 src/includes/caps.php:90
-#: src/includes/json-api.php:231 src/includes/json-api.php:259
+#: src/includes/json-api.php:232 src/includes/json-api.php:260
 #: src/includes/transactions.php:731 src/includes/transactions.php:910
 #: src/includes/transactions.php:931 src/includes/transactions.php:952
 #: src/includes/transactions.php:972 src/includes/transactions.php:992
@@ -105,8 +105,8 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:29 src/includes/wallets-core.php:185
-#: src/includes/wallets-core.php:195
+#: src/includes/admin-menu.php:29 src/includes/wallets-core.php:212
+#: src/includes/wallets-core.php:222
 msgid "Wallets"
 msgstr ""
 
@@ -991,11 +991,11 @@ msgid "Must be logged in"
 msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
-#: src/includes/json-api.php:198 src/includes/json-api.php:225
-#: src/includes/json-api.php:253 src/includes/transactions.php:689
-#: src/includes/wallets-core.php:417 src/includes/wallets-core.php:510
-#: src/includes/wallets-core.php:578 src/includes/wallets-core.php:649
-#: src/includes/wallets-core.php:791 src/includes/wallets-core.php:936
+#: src/includes/json-api.php:199 src/includes/json-api.php:226
+#: src/includes/json-api.php:254 src/includes/transactions.php:689
+#: src/includes/wallets-core.php:444 src/includes/wallets-core.php:538
+#: src/includes/wallets-core.php:607 src/includes/wallets-core.php:678
+#: src/includes/wallets-core.php:820 src/includes/wallets-core.php:965
 msgid "Not allowed"
 msgstr ""
 
@@ -1003,24 +1003,48 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: src/includes/json-api.php:216
+#: src/includes/json-api.php:217
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: src/includes/json-api.php:243
+#: src/includes/json-api.php:244
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: src/includes/json-api.php:271
+#: src/includes/json-api.php:272
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: src/includes/json-api.php:275
+#: src/includes/json-api.php:276
 #, php-format
 msgid "Unknown action %s specified"
+msgstr ""
+
+#: src/includes/menu-item.php:39
+msgid "Bitcoin and Altcoin Wallets balances"
+msgstr ""
+
+#: src/includes/menu-item.php:67 src/includes/menu-item.php:74
+msgid "Wallet balances"
+msgstr ""
+
+#: src/includes/menu-item.php:85 src/includes/menu-item.php:87
+msgid "Balances box"
+msgstr ""
+
+#: src/includes/menu-item.php:107
+msgid "Crypto Wallet Balances"
+msgstr ""
+
+#: src/includes/menu-item.php:109 src/includes/views/balance.php:5
+msgid "Balance"
+msgstr ""
+
+#: src/includes/menu-item.php:120
+msgid "Add to menu"
 msgstr ""
 
 #: src/includes/qrcode.php:29
@@ -1223,10 +1247,6 @@ msgstr ""
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: src/includes/views/balance.php:5
-msgid "Balance"
-msgstr ""
-
 #: src/includes/views/deposit.php:5
 msgid "Deposit address"
 msgstr ""
@@ -1298,15 +1318,15 @@ msgstr ""
 msgid "Address label"
 msgstr ""
 
-#: src/includes/wallets-core.php:186 src/includes/wallets-core.php:196
+#: src/includes/wallets-core.php:213 src/includes/wallets-core.php:223
 msgid "Visit plugin site"
 msgstr ""
 
-#: src/includes/wallets-core.php:187 src/includes/wallets-core.php:197
+#: src/includes/wallets-core.php:214 src/includes/wallets-core.php:224
 msgid "Support"
 msgstr ""
 
-#: src/includes/wallets-core.php:222
+#: src/includes/wallets-core.php:249
 #, php-format
 msgid ""
 "The \"%1$s\" coin adapter can conflict with another adapter \"%2$s\" that is "
@@ -1314,40 +1334,40 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: src/includes/wallets-core.php:245
+#: src/includes/wallets-core.php:272
 #, php-format
 msgid ""
 "/* @echo name */ could NOT create a transactions table \"%s\" in the "
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:424
+#: src/includes/wallets-core.php:451
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:428
+#: src/includes/wallets-core.php:455
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:685
+#: src/includes/wallets-core.php:714
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:709
+#: src/includes/wallets-core.php:738
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:715 src/includes/wallets-core.php:830
+#: src/includes/wallets-core.php:744 src/includes/wallets-core.php:859
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:795
+#: src/includes/wallets-core.php:824
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:824
+#: src/includes/wallets-core.php:853
 msgid "Cannot move negative amount"
 msgstr ""

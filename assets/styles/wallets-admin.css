@@ -17,3 +17,7 @@ body.toplevel_page_wallets-menu-wallets #wpbody-content .card {
 	 width: 30%;
 	 min-width: 520px;
 }
+
+#balanceboxitemdiv .tabs-panel-active .menu-item-object-id{
+	visibility:hidden;
+}

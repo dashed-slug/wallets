@@ -43,3 +43,11 @@
 .dashed-slug-wallets.deposit .qrcode {
 	text-align: center;
 }
+
+.dashed-slug-wallets .validationMessage {
+	display: inline-block;
+	color: red;
+	border: 1px solid red;
+	padding: 4px;
+	margin: 0 auto;
+}

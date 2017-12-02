@@ -164,6 +164,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->name = $adapter->get_name();
 								$coin_info->symbol = $adapter->get_symbol();
 								$coin_info->icon_url = $adapter->get_icon_url();
+								$coin_info->sprintf = $adapter->get_sprintf();
 
 								$coin_info->balance = $core->get_balance( $symbol );
 								$coin_info->balance_string = sprintf( $format, $coin_info->balance );

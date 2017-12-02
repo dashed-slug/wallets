@@ -86,7 +86,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 		// helpers
 
 		/**
-		 * Do an HTTP POST and get back the JSON response.
+		 * Do an HTTP GET and get back the JSON response.
 		 *
 		 * @param string $url The API URL
 		 * @param array $data The request GET vars to pass in assoc array form

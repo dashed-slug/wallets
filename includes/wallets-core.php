@@ -132,10 +132,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
 				wp_enqueue_script(
+					'knockout-validation',
+					'http://cdnjs.cloudflare.com/ajax/libs/knockout-validation/2.0.3/knockout.validation.min.js',
+					array( 'knockout' ),
+					'2.0.3',
+					true
+				);
+
+				wp_enqueue_script(
 					'knockout',
-					'https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js',
-					array(),
-					'3.4.0',
+					'https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js',
+					array( ),
+					'3.4.2',
 					true );
 
 				wp_enqueue_script(
@@ -145,17 +153,36 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'2.17.1',
 					true );
 
+				wp_enqueue_script(
+					'sprintf.js',
+					plugins_url( 'sprintf.min.js', "wallets/assets/scripts/sprintf.min.js" ),
+					array( ),
+					false,
+					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko.min.js' ) ) {
-					$ko_script = 'wallets-ko.min.js';
+					$script = 'wallets-ko.min.js';
 				} else {
-					$ko_script = 'wallets-ko.js';
+					$script = 'wallets-ko.js';
 				}
 
 				wp_enqueue_script(
 					'wallets_ko',
-					plugins_url( $ko_script, "wallets/assets/scripts/$ko_script" ),
-					array( 'knockout', 'momentjs' ),
+					plugins_url( $script, "wallets/assets/scripts/$script" ),
+					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs' ),
+					false,
+					true );
+
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator.min.js';
+				} else {
+					$script = 'wallets-bitcoin-validator.js';
+				}
+
+				wp_enqueue_script(
+					'wallets_bitcoin',
+					plugins_url( $script, "wallets/assets/scripts/$script" ),
+					array( 'wallets_ko', 'bs58check' ),
 					false,
 					true );
 
@@ -169,7 +196,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.4.6'
+					'2.5.0'
 				);
 			}
 		}
@@ -499,6 +526,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param null $minconf Ignored.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @param int $account The user_id of the account to check, or null to retrieve logged in account's balance. Default: null.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return float The balance.
 		 */
@@ -513,10 +541,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			if ( is_null( $account ) ) {
 				$account = get_current_user_id();
 			}
+			$account = intval( $account );
 
-			static $user_balances = null;
+			static $user_balances = array();
 
-			if ( is_null( $user_balances ) ) {
+			if ( ! isset( $user_balances[ $account ] ) ) {
 
 				global $wpdb;
 				$table_name_txs = self::$table_name_txs;
@@ -540,10 +569,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					$account
 				);
 
-				$user_balances = $wpdb->get_results( $user_balances_query );
+				$user_balances[ $account ] = $wpdb->get_results( $user_balances_query );
 			}
 
-			foreach ( $user_balances as &$user_balance ) {
+			foreach ( $user_balances[ $account ] as &$user_balance ) {
 				if ( $user_balance->symbol == $symbol ) {
 					return $user_balance->balance;
 				}

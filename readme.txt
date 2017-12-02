@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.4.6
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -208,6 +208,15 @@ Just use the provided widgets in your theme, or insert the following shortcodes 
 These shortcodes render [knockout.js](http://knockoutjs.com/)-enabled forms.
 The forms only show to users who have the necessary capabilities assigned.
 
+= Can I show the user's balances in the menu? =
+
+Yes. Simply go to *Appearance* &rarr; *Menus*.
+Click on *Screen Options* at the top right of the screen.
+Enable *Bitcoin and Altcoin Wallets balances*.
+Now a new menu item is available for you to add to your menus.
+This will display all the user balances in menu form.
+Simply add it on your menus at the desired position and change the menu label string.
+
 = I don't like the built-in forms. Can I provide my own? =
 
 First of all, the forms can be styled with CSS. They have convenient HTML classes that you can use.
@@ -268,6 +277,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.5.0 =
+- Add: Balance information can now be inserted into WordPress menus. See *Appearance* &rarr; *Menus*.
+- Add: Pluggable validation mechanism for withdrawal addresses. Bitcoin addresses validated against `bs58check`.
+- Add: Fees to be paid are now updated dynamically as soon as a user types in an amount.
+- Improve: Massive refactoring in the knockout.js code.
+- Fix: get_balance memoization now works correctly for multiple invocations of different users.
 
 = 2.4.6 =
 - Fix: Bug in balance checks.
@@ -471,7 +487,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.4.6 is a security patch. Please upgrade as soon as possible.
+Version 2.5.0 introduces a number of new features.
 
 == Donating ==
 

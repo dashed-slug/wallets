@@ -134,6 +134,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				</ol>
 
 				<p><?php esc_html_e( 'Your support is greatly appreciated.', 'wallets' ); ?></p>
+			</div>
 
 			<div style="clear: left;"></div>
 			<?php
