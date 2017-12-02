@@ -46,7 +46,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 			wp_enqueue_script(
 				'wallets-notify',
 				plugins_url( 'assets/scripts/wallets-notify.min.js', DSWALLETS_PATH . '/wallets.php' ),
-				array( 'jquery' )
+				array( 'jquery' ),
+				'2.5.3'
 			);
 
 		}

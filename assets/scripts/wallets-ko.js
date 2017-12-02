@@ -262,7 +262,7 @@
 
 			// [wallets_transactions] shortcode
 
-			self.currentPage = ko.observable().extend({ throttle: 500 });
+			self.currentPage = ko.observable().extend({ throttle: 500, notify: 'always' });
 			self.rowsPerPage = ko.observable(10).extend({ throttle: 500 });
 
 			self.transactions = ko.computed( function() {
@@ -303,6 +303,15 @@
 			});
 		}
 
+		// init the viewmodel and set sane defaults
+
+		var walletsViewModel = new WalletsViewModel();
+		ko.applyBindings( walletsViewModel );
+		if ( walletsViewModel.coins().length ) {
+			walletsViewModel.selectedCoin( walletsViewModel.coins()[ 0 ].symbol );
+		}
+		walletsViewModel.currentPage(1);
+
 		// handle the bubbling events on move or withdraw response from server
 
 		$('html').on( 'wallets_do_move wallets_do_withdraw', function( event, response ) {
@@ -312,32 +321,24 @@
 				event.preventDefault();
 			} else {
 				// on success reload transactions and clear form
-				self.getTransactions();
+				walletsViewModel.currentPage( walletsViewModel.currentPage() );
 			}
 		});
 
 		$('html').on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
 			if ( response.result == 'success' ) {
-				self.resetMove();
+				walletsViewModel.resetMove();
 				alert( 'Successfully submitted a transaction request of ' + amount + ' ' + symbol );
 			}
 		});
 
 		$('html').on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
 			if ( response.result == 'success' ) {
-				self.resetWithdraw();
+				walletsViewModel.resetWithdraw();
 				alert( 'Successfully submitted a withdrawal request of ' + amount + ' ' + symbol + ' to ' + address );
 			}
 		});
 
-		// init the viewmodel and set sane defaults
-
-		var walletsViewModel = new WalletsViewModel();
-		ko.applyBindings( walletsViewModel );
-		if ( walletsViewModel.coins().length ) {
-			walletsViewModel.selectedCoin( walletsViewModel.coins()[ 0 ].symbol );
-		}
-		walletsViewModel.currentPage(1);
 
 	} );
 })( jQuery );

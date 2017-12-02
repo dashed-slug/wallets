@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 					'bs58check',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( ),
-					false,
+					'2.0.2',
 					true
 				);
 			}
