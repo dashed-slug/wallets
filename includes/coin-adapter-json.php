@@ -178,10 +178,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
 				$result = curl_exec( $ch );
+				$msg = curl_error( $ch );
 				curl_close( $ch );
 
 				if ( false === $result ) {
-					throw new Exception( 'PHP curl returned error: ' . curl_error( $ch ) );
+					throw new Exception( "PHP curl returned error: $msg"  );
 				}
 
 			} else {

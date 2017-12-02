@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 2.10.1
+Stable tag: 2.10.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.10.2 =
+- Add: Exchange rates are now available over tor. Only enable this if running WordPress on an Onion hidden service.
+- Add: Exchange rates can be turned off if not needed to improve performance.
+- Add: User is warned if the DB table indices are corrupted.
+- Improve: Adding/updating transaction rows does not depend on the DB constraints.
+- Improve: Exchange rates are decompressed using PHP curl, not via the compress.zlib filter.
+- Fix: Misleading textual description of the IP setting in RPC adapters.
+- Fix: Small bug with error reporting in JSON adapters.
+
 = 2.10.1 =
 - Fix: More DB columns changed to ASCII. Saves space, plus fixes "Specified key was too long" on some databases and server locales.
 - Improve: Frontend observables `withdraw_fee` and `move_fee` changed to camelCase to match other observables.
@@ -650,7 +659,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.10.1 is a bugfix release on 2.10.0.
+Version 2.10.2 introduces some extra safety checks and bugfixes.
 
 == Donating ==
 

@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the Bitcoin_and_Altcoin_Wallets package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: build/includes/rates.php:193
+#: build/includes/rates.php:251
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.10.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.10.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:26+0200\n"
+"POT-Creation-Date: 2017-12-02 19:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,20 +77,20 @@ msgstr ""
 #: build/includes/coin-adapter.php:301 build/includes/cold-storage.php:135
 #: build/includes/confirmations.php:298 build/includes/cron.php:282
 #: build/includes/notifications.php:561 build/includes/qrcode.php:65
-#: build/includes/rates.php:188 build/includes/transactions.php:92
-#: build/includes/transactions.php:765 build/includes/transactions.php:946
-#: build/includes/transactions.php:966 build/includes/transactions.php:986
-#: build/includes/transactions.php:1005 build/includes/transactions.php:1025
-#: build/includes/transactions.php:1047
+#: build/includes/rates.php:246 build/includes/transactions.php:92
+#: build/includes/transactions.php:794 build/includes/transactions.php:975
+#: build/includes/transactions.php:995 build/includes/transactions.php:1015
+#: build/includes/transactions.php:1034 build/includes/transactions.php:1054
+#: build/includes/transactions.php:1076
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: build/includes/adapters-list.php:96 build/includes/caps.php:90
 #: build/includes/cold-storage.php:114 build/includes/json-api.php:252
-#: build/includes/json-api.php:280 build/includes/transactions.php:771
-#: build/includes/transactions.php:950 build/includes/transactions.php:970
-#: build/includes/transactions.php:990 build/includes/transactions.php:1009
-#: build/includes/transactions.php:1029 build/includes/transactions.php:1051
+#: build/includes/json-api.php:280 build/includes/transactions.php:800
+#: build/includes/transactions.php:979 build/includes/transactions.php:999
+#: build/includes/transactions.php:1019 build/includes/transactions.php:1038
+#: build/includes/transactions.php:1058 build/includes/transactions.php:1080
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -140,7 +140,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: build/includes/admin-menu.php:79 build/includes/cold-storage.php:310
-#: build/includes/cold-storage.php:323 build/includes/rates.php:261
+#: build/includes/cold-storage.php:323 build/includes/rates.php:334
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -431,8 +431,8 @@ msgstr ""
 
 #: build/includes/coin-adapter-rpc.php:114
 msgid ""
-"This is the IP of your WordPress installation. Set to 127.0.0.1 if you are "
-"running the daemon on the same machine as WordPress."
+"This is the IP of the machine running your wallet daemon. Set to 127.0.0.1 "
+"if you are running the daemon on the same machine as WordPress."
 msgstr ""
 
 #: build/includes/coin-adapter-rpc.php:125
@@ -1036,10 +1036,10 @@ msgstr ""
 #: build/includes/json-api.php:125 build/includes/json-api.php:148
 #: build/includes/json-api.php:201 build/includes/json-api.php:227
 #: build/includes/json-api.php:246 build/includes/json-api.php:274
-#: build/includes/transactions.php:725 build/includes/wallets-core.php:565
-#: build/includes/wallets-core.php:659 build/includes/wallets-core.php:713
-#: build/includes/wallets-core.php:769 build/includes/wallets-core.php:842
-#: build/includes/wallets-core.php:987 build/includes/wallets-core.php:1133
+#: build/includes/transactions.php:754 build/includes/wallets-core.php:625
+#: build/includes/wallets-core.php:719 build/includes/wallets-core.php:773
+#: build/includes/wallets-core.php:829 build/includes/wallets-core.php:902
+#: build/includes/wallets-core.php:1047 build/includes/wallets-core.php:1193
 msgid "Not allowed"
 msgstr ""
 
@@ -1272,65 +1272,100 @@ msgstr ""
 msgid "Here you can control whether addresses are displayed as QR Codes."
 msgstr ""
 
-#: build/includes/rates.php:69
+#: build/includes/rates.php:71
 msgid "Exchange rates settings"
 msgstr ""
 
-#: build/includes/rates.php:76
+#: build/includes/rates.php:78
 msgid "Rates provider"
 msgstr ""
 
-#: build/includes/rates.php:82
+#: build/includes/rates.php:84
 msgid "Pick the API that you wish to use as a source of exchange rates. "
 msgstr ""
 
-#: build/includes/rates.php:93
+#: build/includes/rates.php:95
 msgid "Rates cache expiry (minutes)"
 msgstr ""
 
-#: build/includes/rates.php:99
+#: build/includes/rates.php:101
 msgid ""
 "The exchange rates will be cached for this many minutes before being "
 "updated. Currency symbols are always cached for one hour."
 msgstr ""
 
-#: build/includes/rates.php:114
-msgid "Exchange rates debug views"
+#: build/includes/rates.php:116
+msgid "Use tor to pull exchange rates"
 msgstr ""
 
-#: build/includes/rates.php:121
-msgid "Known fiat currencies"
+#: build/includes/rates.php:122
+msgid ""
+"Enable this to pull exchange rates via tor. Does not work with Poloniex. You "
+"need to set up a tor proxy first. Only useful if setting up a hidden "
+"service. (Default: disabled)"
 msgstr ""
 
-#: build/includes/rates.php:127
-msgid "View a list of fiat currencies reported by fixer.io (for debugging). "
+#: build/includes/rates.php:133
+msgid "Tor proxy IP"
 msgstr ""
 
 #: build/includes/rates.php:139
+msgid "This is the IP of your tor proxy. (Default: 127.0.0.1)"
+msgstr ""
+
+#: build/includes/rates.php:150
+msgid "Tor proxy TCP port"
+msgstr ""
+
+#: build/includes/rates.php:159
+msgid ""
+"This is the TCP port of your tor proxy. (Default: 9050, some newer tor "
+"bundles use 9150)"
+msgstr ""
+
+#: build/includes/rates.php:172
+msgid "Exchange rates debug views"
+msgstr ""
+
+#: build/includes/rates.php:179
+msgid "Known fiat currencies"
+msgstr ""
+
+#: build/includes/rates.php:185
+msgid "View a list of fiat currencies reported by fixer.io (for debugging). "
+msgstr ""
+
+#: build/includes/rates.php:197
 msgid "Known cryptocurrencies"
 msgstr ""
 
-#: build/includes/rates.php:145
+#: build/includes/rates.php:203
 msgid ""
 "View a list of cryptocurrencies reported by the selected provider (for "
 "debugging). "
 msgstr ""
 
-#: build/includes/rates.php:156
+#: build/includes/rates.php:214
 msgid "Exchange rates"
 msgstr ""
 
-#: build/includes/rates.php:162
+#: build/includes/rates.php:220
 msgid ""
 "View a list of exhange rates reported by this provider (for debugging). For "
 "YoBit, exchange rates are only shown for coins that you have enabled."
 msgstr ""
 
-#: build/includes/rates.php:191
+#: build/includes/rates.php:249
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: build/includes/rates.php:315
+#: build/includes/rates.php:297
+msgid ""
+"Disabled. (New exchange rate data will not be downloaded. Some plugin "
+"extensions may not work as expected.)"
+msgstr ""
+
+#: build/includes/rates.php:418
 #, php-format
 msgid ""
 "App extensions, such as the <a href=\"%s\">WooCommerce</a> and <a href=\"%s"
@@ -1339,7 +1374,7 @@ msgid ""
 "various cryptocurrencies."
 msgstr ""
 
-#: build/includes/rates.php:324
+#: build/includes/rates.php:427
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
@@ -1522,19 +1557,19 @@ msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: build/includes/transactions.php:754
+#: build/includes/transactions.php:783
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: build/includes/transactions.php:791
+#: build/includes/transactions.php:820
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: build/includes/transactions.php:799
+#: build/includes/transactions.php:828
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
@@ -1618,21 +1653,38 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: build/includes/wallets-core.php:402
+#: build/includes/wallets-core.php:404
 #, php-format
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: build/includes/wallets-core.php:408
+#: build/includes/wallets-core.php:410
 #, php-format
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table \"%s"
-"\" in the database. The plugin may not function properly."
+"\" in the database. The plugin may not function properly. If this error "
+"message persists, please contact support."
 msgstr ""
 
-#: build/includes/wallets-core.php:418
+#: build/includes/wallets-core.php:433
+#, php-format
+msgid ""
+"The plugin may not function properly because the following transaction "
+"indexes are not set: %s. If this error message persists, please contact "
+"support."
+msgstr ""
+
+#: build/includes/wallets-core.php:458
+#, php-format
+msgid ""
+"The plugin may not function properly because the following deposit address "
+"indexes are not set: %s. If this error message persists, please contact "
+"support."
+msgstr ""
+
+#: build/includes/wallets-core.php:478
 #, php-format
 msgid ""
 "The PHP version you are using, %s has reached end-of-life! Please talk to "
@@ -1640,86 +1692,86 @@ msgid ""
 "php.net/supported-versions.php\" target=\"_blank\">supported version</a>."
 msgstr ""
 
-#: build/includes/wallets-core.php:429
+#: build/includes/wallets-core.php:489
 #, php-format
 msgid ""
 "You are using WordPress %s. This plugin has been tested with %s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: build/includes/wallets-core.php:506
+#: build/includes/wallets-core.php:566
 msgid "Plugin version"
 msgstr ""
 
-#: build/includes/wallets-core.php:507
+#: build/includes/wallets-core.php:567
 msgid "Git SHA"
 msgstr ""
 
-#: build/includes/wallets-core.php:508
+#: build/includes/wallets-core.php:568
 msgid "PHP version"
 msgstr ""
 
-#: build/includes/wallets-core.php:509
+#: build/includes/wallets-core.php:569
 msgid "WordPress version"
 msgstr ""
 
-#: build/includes/wallets-core.php:510
+#: build/includes/wallets-core.php:570
 msgid "MySQL version"
 msgstr ""
 
-#: build/includes/wallets-core.php:511
+#: build/includes/wallets-core.php:571
 msgid "DB prefix"
 msgstr ""
 
-#: build/includes/wallets-core.php:512
+#: build/includes/wallets-core.php:572
 msgid "Supports cURL"
 msgstr ""
 
-#: build/includes/wallets-core.php:513
+#: build/includes/wallets-core.php:573
 msgid "Is multisite"
 msgstr ""
 
-#: build/includes/wallets-core.php:514
+#: build/includes/wallets-core.php:574
 msgid "Is network activated"
 msgstr ""
 
-#: build/includes/wallets-core.php:515
+#: build/includes/wallets-core.php:575
 msgid "PHP max execution time"
 msgstr ""
 
-#: build/includes/wallets-core.php:527
+#: build/includes/wallets-core.php:587
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: build/includes/wallets-core.php:572
+#: build/includes/wallets-core.php:632
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: build/includes/wallets-core.php:576
+#: build/includes/wallets-core.php:636
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: build/includes/wallets-core.php:880
+#: build/includes/wallets-core.php:940
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: build/includes/wallets-core.php:904
+#: build/includes/wallets-core.php:964
 msgid "Must withdraw positive amount"
 msgstr ""
 
-#: build/includes/wallets-core.php:910 build/includes/wallets-core.php:1026
+#: build/includes/wallets-core.php:970 build/includes/wallets-core.php:1086
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: build/includes/wallets-core.php:991
+#: build/includes/wallets-core.php:1051
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: build/includes/wallets-core.php:1020
+#: build/includes/wallets-core.php:1080
 msgid "Must move positive amount"
 msgstr ""

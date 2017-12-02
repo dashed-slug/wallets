@@ -64,6 +64,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public function register_settings() {
 
+			// settings section
+
 			add_settings_section(
 				'wallets_rates_section',
 				__( 'Exchange rates settings', 'wallets' ),
@@ -108,6 +110,62 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_cache_expiry'
 			);
+
+			add_settings_field(
+				'wallets_rates_tor_enabled',
+				__( 'Use tor to pull exchange rates', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'label_for' => 'wallets_rates_tor_enabled',
+					'description' => __( 'Enable this to pull exchange rates via tor. Does not work with Poloniex. You need to set up a tor proxy first. Only useful if setting up a hidden service. (Default: disabled)', 'wallets' )
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_rates_tor_enabled'
+			);
+
+			add_settings_field(
+				'wallets_rates_tor_ip',
+				__( 'Tor proxy IP', 'wallets' ),
+				array( &$this, 'text_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'label_for' => 'wallets_rates_tor_ip',
+					'description' => __( 'This is the IP of your tor proxy. (Default: 127.0.0.1)', 'wallets' )
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_rates_tor_ip'
+			);
+
+			add_settings_field(
+				'wallets_rates_tor_port',
+				__( 'Tor proxy TCP port', 'wallets' ),
+				array( &$this, 'integer_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'min' => 1,
+					'max' => 65535,
+					'step' => 1,
+					'label_for' => 'wallets_rates_tor_port',
+					'description' => __( 'This is the TCP port of your tor proxy. (Default: 9050, some newer tor bundles use 9150)', 'wallets' )
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_rates_tor_port'
+			);
+
+			// DEBUG section
 
 			add_settings_section(
 				'wallets_rates_debug_section',
@@ -225,6 +283,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public function provider_radios_cb( $arg ) {
+			?>
+
+			<input
+				type="radio"
+				id="<?php echo esc_attr( $arg['label_for'] . "_none_radio" ); ?>"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="none"
+				<?php checked( 'none', Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?> />
+
+				<label
+					for="<?php echo esc_attr( $arg['label_for'] . "_none_radio" ); ?>">
+						<?php echo esc_html_e( 'Disabled. (New exchange rate data will not be downloaded. Some plugin extensions may not work as expected.)', 'wallets' ); ?>
+				</label><br />
+
+			<?php
 
 			foreach ( self::$providers as $provider ): ?>
 
@@ -310,6 +383,36 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			<?php
 		}
 
+		public function checkbox_cb( $arg ) {
+			?>
+			<input
+				type="checkbox"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
+
+			<p
+				class="description"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
+				<?php echo $arg['description']; ?></p>
+			<?php
+		}
+
+		public function text_cb( $arg ) {
+			?>
+			<input
+				type="text"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
+
+			<p
+				class="description"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
+				<?php echo $arg['description']; ?></p>
+			<?php
+		}
+
 		public function wallets_rates_section_cb() {
 			?><p><?php echo sprintf(
 					__( 'App extensions, such as the <a href="%s">WooCommerce</a> and <a href="%s">Events Manager</a> payment gateways, use exchange rates for price calculation. ' .
@@ -341,9 +444,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function action_activate( $network_active ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_provider', 'bittrex' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry', 5 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip', '127.0.0.1' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_port', 9050 );
 		}
 
 		public static function action_shutdown() {
+			$provider = Dashed_Slug_Wallets::get_option( 'wallets_rates_provider', 'none' );
+
+			if ( 'none' == $provider ) {
+				return;
+			}
 
 			// determine fiat currencies
 			if ( false === get_transient( 'wallets_rates_fiats' ) ) {
@@ -356,7 +467,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				return;
 			}
 
-			$provider = Dashed_Slug_Wallets::get_option( 'wallets_rates_provider', 'bittrex' );
 
 			if ( false !== array_search( $provider, self::$providers ) ) {
 				// determine cryptocurrencies
@@ -396,13 +506,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			if ( false === $result ) {
 
-				$result = file_get_contents(
-					"compress.zlib://$url",
-					false,
-					stream_context_create( array(
-						'http' => array(
-							'header' => "Accept-Encoding: gzip\r\n"
-						) ) ) );
+				if ( function_exists( 'curl_init' ) ) {
+					$ch = curl_init();
+					curl_setopt( $ch, CURLOPT_URL, $url );
+					curl_setopt( $ch, CURLOPT_HTTPGET, false );
+					curl_setopt( $ch, CURLOPT_ENCODING, '' );
+					curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_enabled', false ) ) {
+						$tor_host = Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_ip', '127.0.0.1' );
+						$tor_port = intval( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_port', 9050 ) );
+
+						curl_setopt( $ch, CURLOPT_PROXY, $tor_host );
+						curl_setopt( $ch, CURLOPT_PROXYPORT, $tor_port );
+						curl_setopt( $ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME );
+
+					}
+
+					$result = curl_exec( $ch );
+					$msg = curl_error( $ch );
+					curl_close( $ch );
+
+					if ( false === $result ) {
+						error_log( "PHP curl returned error while pulling rates: $msg" );
+					}
+
+				} else {
+
+					$result = file_get_contents(
+						"compress.zlib://$url",
+						false,
+						stream_context_create( array(
+							'http' => array(
+								'header' => "Accept-Encoding: gzip\r\n"
+							) ) ) );
+				}
 
 				if ( is_string( $result ) ) {
 					$expiry = Dashed_Slug_Wallets::get_option( 'wallets_rates_cache_expiry', 5 ) * MINUTE_IN_SECONDS;

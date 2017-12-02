@@ -528,59 +528,73 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							return;
 						}
 
-						$where = array(
-							'txid' => $tx->txid,
-						);
+						$where = array( 'txid' => $tx->txid );
+						$where_format = array( '%s' );
+
 
 						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 							$where['blog_id'] = get_current_blog_id();
+							$where_format[] = '%d';
 						}
 
 						$affected = $wpdb->update(
-							Dashed_Slug_Wallets::$table_name_txs,
+							$table_name_txs,
 							array(
 								'updated_time' => $current_time_gmt,
 								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
 								'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
 							),
 							$where,
-							array(
-								'%s', '%d', '%s'
-							)
+							$where_format
 						);
 
 						if ( ! $affected ) {
-							$new_tx_data = array(
-								'blog_id' => get_current_blog_id(),
-								'category' => 'deposit',
-								'account' => $tx->account,
-								'address' => $tx->address,
-								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
-								'txid' => $tx->txid,
-								'symbol' => $tx->symbol,
-								'amount' => number_format( $tx->amount, 10, '.', '' ),
-								'created_time' => $tx->created_time,
-								'updated_time' => $current_time_gmt,
-								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
-								'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
-								'retries' => 255
-							);
 
-							if ( isset( $tx->fee ) ) {
-								$new_tx_data['fee'] = $tx->fee;
-							}
+							$row_exists = $wpdb->get_var( $wpdb->prepare( "
+								SELECT
+									count(1)
+								FROM
+									{$table_name_txs}
+								WHERE
+									txid = %s
+								",  $tx->txid
+							) );
 
-							$affected = $wpdb->insert(
-								Dashed_Slug_Wallets::$table_name_txs,
-								$new_tx_data,
-								array(
-									'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d'
-								)
-							);
+							if ( ! $row_exists ) {
+								$new_tx_data = array(
+									'blog_id' => get_current_blog_id(),
+									'category' => 'deposit',
+									'account' => $tx->account,
+									'address' => $tx->address,
+									'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
+									'txid' => $tx->txid,
+									'symbol' => $tx->symbol,
+									'amount' => number_format( $tx->amount, 10, '.', '' ),
+									'created_time' => $tx->created_time,
+									'updated_time' => $current_time_gmt,
+									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
+									'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
+									'retries' => 255
+								);
 
-							if ( 1 === $affected ) {
-								// row was inserted, not updated
-								do_action( 'wallets_deposit', $tx );
+								if ( isset( $tx->fee ) ) {
+									$new_tx_data['fee'] = $tx->fee;
+								}
+
+								$affected = $wpdb->insert(
+									$table_name_txs,
+									$new_tx_data,
+									array(
+										'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d'
+									)
+								);
+
+								if ( ! $affected ) {
+									error_log( __FUNCTION__ . " Transaction $x->txid could not be inserted! " . print_r( $new_tx_data, true ) );
+								} else {
+									// row was inserted, not updated
+									do_action( 'wallets_deposit', $tx );
+								}
 							}
 						}
 
@@ -590,12 +604,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							'txid' => $tx->txid,
 						);
 
+						$where_format = array( '%s', '%s' );
+
 						if ( isset( $tx->extra ) && $tx->extra ) {
 							$where['extra'] = $tx->extra;
+							$where_format[] = '%s';
 						}
 
 						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 							$where['blog_id'] = get_current_blog_id();
+							$where_format[] = '%d';
 						}
 
 						$new_tx_data = array(
@@ -612,41 +630,52 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$new_tx_data,
 							$where,
 							array( '%s', '%d', '%s' ),
-							array( '%s', '%s', '%s', '%s' )
+							$where_format
 						);
-
 
 						if ( ! $affected && isset( $tx->account ) )  {
 							// Old transactions that are rediscovered via cron do not normally have an account id and cannot be inserted.
 							// Will now try to record as new withdrawal since this is not an existing transaction.
 
-							$new_tx_data = array(
-								'blog_id' => get_current_blog_id(),
-								'category' => 'withdraw',
-								'account' => $tx->account,
-								'address' => $tx->address,
-								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
-								'txid' => $tx->txid,
-								'symbol' => $tx->symbol,
-								'amount' => number_format( $tx->amount, 10, '.', '' ),
-								'fee' => number_format( $tx->fee, 10, '.', '' ),
-								'comment' => $tx->comment,
-								'created_time' => $tx->created_time,
-								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
-								'status' => 'unconfirmed',
-								'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 )
-							);
+							$row_exists = $wpdb->get_var( $wpdb->prepare( "
+								SELECT
+									count(1)
+								FROM
+									{$table_name_txs}
+								WHERE
+									txid = %s
+								",  $tx->txid
+							) );
 
-							$affected = $wpdb->insert(
-								Dashed_Slug_Wallets::$table_name_txs,
-								$new_tx_data,
-								array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d' )
-							);
+							if ( ! $row_exists ) {
+								$new_tx_data = array(
+									'blog_id' => get_current_blog_id(),
+									'category' => 'withdraw',
+									'account' => $tx->account,
+									'address' => $tx->address,
+									'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
+									'txid' => $tx->txid,
+									'symbol' => $tx->symbol,
+									'amount' => number_format( $tx->amount, 10, '.', '' ),
+									'fee' => number_format( $tx->fee, 10, '.', '' ),
+									'comment' => $tx->comment,
+									'created_time' => $tx->created_time,
+									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
+									'status' => 'unconfirmed',
+									'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 )
+								);
 
-							if ( ! $affected ) {
-								error_log( __FUNCTION__ . " Transaction $txid was not inserted! " . print_r( $new_tx_data, true ) );
+								$affected = $wpdb->insert(
+									Dashed_Slug_Wallets::$table_name_txs,
+									$new_tx_data,
+									array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d' )
+								);
+
+								if ( ! $affected ) {
+									error_log( __FUNCTION__ . " Transaction $tx->txid was not inserted! " . print_r( $tx, true ) );
+								}
 							}
-						}
+						} // end if ! affected && isset tx->account
 					} // end if category == withdraw
 				} // end if isset category
 			} // end if false !== $adapter

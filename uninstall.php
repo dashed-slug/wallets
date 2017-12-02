@@ -77,9 +77,14 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_confirm_move_email_subject' );
 	wallets_delete_option( 'wallets_confirm_move_email_message' );
 
-	//remove exchange rate providers settings
+	// remove exchange rate providers settings
 	wallets_delete_option( 'wallets_rates_provider' );
 	wallets_delete_option( 'wallets_rates_cache_expiry' );
+	wallets_delete_option( 'wallets_rates_tor_enabled' );
+	wallets_delete_option( 'wallets_rates_tor_ip' );
+	wallets_delete_option( 'wallets_rates_tor_port' );
+
+	// remove exchange rate data
 	wallets_delete_option( 'wallets_rates' );
 	wallets_delete_option( 'wallets_rates_cryptos' );
 	wallets_delete_option( 'wallets_rates_fiats' );

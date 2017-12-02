@@ -698,7 +698,7 @@ NOTIFICATION
 				$msg_data->account_id = $msg_data->account;
 				$msg_data->account = $user->user_login;
 
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $msg_data );
+				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ), $msg_data );
 				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $msg_data );
 
 				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
