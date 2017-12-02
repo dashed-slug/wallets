@@ -151,7 +151,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		// and dismiss the admin screen error messages.
 		// Adapters that cannot contact their wallets are not shown in the frontend.
 		if ( 'BTC' == $item['symbol'] ) {
-			unset( $actions['deactivate'] );
+			unset( $actions['deactivate-adapter'] );
 		}
 
 		return sprintf('%1$s %2$s', $item['symbol'], $this->row_actions( $actions ) );

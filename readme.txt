@@ -4,13 +4,15 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
 
 == Description ==
+
+https://www.youtube.com/watch?v=_dbkKHhEzRQ
 
 = At a glance =
 
@@ -223,6 +225,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 1.0.5 =
+* Deactivate button not shown for built in Bitcoin adapter
+* Added video tutorial to readme
+
 = 1.0.4 =
 * Recommends the configurations needed in your `bitcoin.conf`
 * Does not recommend command line arguments to `bitcoind` any more
@@ -248,9 +254,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-1.0.4 is a patch release. It changes the way that the plugin recommends that you run bitcoind.
-The plugin now suggests lines that you can drop into your `~/.bitcoin/bitcoin.conf`.
-You can then run bitcoind without command-line parameters.
+1.0.5 is a patch release. It fixes a minor bug and introduces the tutorial video in the readme.
 
 == Donating ==
 
