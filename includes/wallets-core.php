@@ -165,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.3'
+					'2.3.4'
 				);
 			}
 		}
@@ -248,7 +248,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision = 8;
+			$current_db_revision = 9;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 
@@ -281,6 +281,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed',
 				admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction',
 				user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email',
+				nonce char(32) DEFAULT NULL COMMENT 'nonce for user to confirm via emailed link',
 				PRIMARY KEY  (id),
 				INDEX account_idx (account),
 				INDEX blogid_idx (blog_id)
@@ -620,12 +621,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'comment' => $comment,
 					'status' => 'unconfirmed',
 					'retries' => get_option( 'wallets_retries_withdraw', 1 ),
+					'nonce' => md5( uniqid( NONCE_KEY, true ) ),
 				);
 
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow,
-					array( '%d', '%s', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d' )
+					array( '%d', '%s', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -731,6 +733,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'comment' => $comment,
 					'status' => 'unconfirmed',
 					'retries' => get_option( 'wallets_retries_move', 1 ),
+					'nonce' => md5( uniqid( NONCE_KEY, true ) ),
 				);
 
 				$txrow2 = array(
@@ -753,7 +756,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow1,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -772,7 +775,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					throw new Exception( 'DB insert failed ' . print_r( $txrow2, true ) );
 				}
 
-				$txrow1['id'] = $wpdb->insert_id;
+				$txrow2['id'] = $wpdb->insert_id;
 
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );

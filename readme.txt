@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -261,6 +261,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.3.4 =
+- Improve: Confirmation links can be clicked even if user not logged in.
+- Add: When a transaction is user unaccepted via admin, a new confirmation email is sent.
+- Fix: Unused code cleanup
+
 = 2.3.3 =
 - Fix: Deposit notifications restored after being disabled in 2.3.2
 - Fix: Only send confirmation emails if DB insert succeeds
@@ -408,7 +413,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.3.3 fixes bugs introduced in 2.3.x.
+Version 2.3.4 improves email verification links to work even if a user is not logged in.
 
 == Donating ==
 

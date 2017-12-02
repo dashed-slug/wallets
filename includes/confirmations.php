@@ -72,7 +72,6 @@ EMAIL
 
 		public function filter_query_vars( $vars ) {
 			$vars[] = '__wallets_confirm';
-			$vars[] = '_wpnonce';
 			return $vars;
 		}
 
@@ -85,14 +84,11 @@ EMAIL
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 
 			if ( isset( $wp->query_vars['__wallets_confirm'] ) ) {
-				$id = intval( $wp->query_vars['__wallets_confirm'] );
-				$nonce = $wp->query_vars['_wpnonce'];
+				$nonce = sanitize_text_field( $wp->query_vars['__wallets_confirm'] );
 
-				if ( ! wp_verify_nonce( $nonce, "wallets-user-confirm-$id" ) ) {
-					wp_die( __( 'Possible request forgery detected. Please try again.', 'wallets' ) );
+				if ( ! ctype_xdigit( $nonce ) || 32 != strlen( $nonce ) ) {
+					wp_die( __( 'The confirmation nonce is not in the correct format. Check your link and try again', 'wallets' ) );
 				}
-
-				$ids = array( $id => null );
 
 				$tx_data = $wpdb->get_row( $wpdb->prepare(
 					"
@@ -102,9 +98,17 @@ EMAIL
 						$table_name_txs
 					WHERE
 						blog_id = %d AND
-						id = %d
-					", get_current_blog_id(), $id
+						nonce = %s
+					",
+					get_current_blog_id(),
+					$nonce
 				) );
+
+				if ( ! $tx_data ) {
+					wp_die( __( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ) );
+				}
+
+				$ids = array( $tx_data->id => null );
 
 				// determine what the next status should be so as to not wait for cron
 				if ( 'withdraw' == $tx_data->category ) {
@@ -150,7 +154,8 @@ EMAIL
 						$table_name_txs
 					SET
 						user_confirm = 1,
-						status = %s
+						status = %s,
+						nonce = NULL
 					WHERE
 						blog_id = %d AND
 						id IN ( $set_of_ids )
@@ -160,9 +165,15 @@ EMAIL
 
 				if ( $affected_rows > 0 ) {
 					if ( 'pending' == $new_status ) {
-						wp_die( __( 'You have successfully confirmed your transaction and it will be processed soon.', 'wallets' ) );
+						wp_die(
+							__( 'You have successfully confirmed your transaction and it will be processed soon.', 'wallets' ),
+							__( 'Success', 'wallets' )
+						);
 					} else {
-						wp_die( __( 'You have successfully confirmed your transaction. It will be processed once an administrator confirms it too.', 'wallets' ) );
+						wp_die(
+							__( 'You have successfully confirmed your transaction. It will be processed once an administrator confirms it too.', 'wallets' ),
+							__( 'Success', 'wallets' )
+						);
 					}
 				}
 
@@ -177,6 +188,10 @@ EMAIL
 		}
 
 		public function send_user_confirm_email( $row ) {
+			if ( is_object( $row ) ) {
+				$row = (array) $row;
+			}
+
 			if ( 'move' == $row['category'] ) {
 				if ( ! get_option( 'wallets_confirm_move_user_enabled' ) ) {
 					return;
@@ -227,8 +242,7 @@ EMAIL
 				// create link with nonce
 				$row['link'] = add_query_arg(
 					array(
-						'_wpnonce' => wp_create_nonce( 'wallets-user-confirm-' . $row['id'] ),
-						'__wallets_confirm' => $row['id']
+						'__wallets_confirm' => $row['nonce']
 					),
 					network_site_url( '/' ) );
 

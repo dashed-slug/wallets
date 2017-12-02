@@ -444,51 +444,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								// row was inserted, not updated
 								do_action( 'wallets_deposit', $tx );
 							}
-
-						}
-
-						$affected = $wpdb->query( $wpdb->prepare(
-							"
-							INSERT INTO $table_name_txs(
-								blog_id,
-								category,
-								account,
-								address,
-								txid,
-								symbol,
-								amount,
-								created_time,
-								updated_time,
-								confirmations,
-								status,
-								retries)
-							VALUES(%d,%s,%d,%s,%s,%s,%20.10f,%s,%s,%d,%s,%d)
-							ON DUPLICATE KEY UPDATE updated_time = %s , confirmations = %d , status = %s
-							",
-							get_current_blog_id(),
-							$tx->category,
-							$tx->account,
-							$tx->address,
-							$tx->txid,
-							$tx->symbol,
-							$tx->amount,
-							$tx->created_time,
-							$current_time_gmt,
-							$tx->confirmations,
-							$adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
-							255,
-							$current_time_gmt,
-							$tx->confirmations,
-							$adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done'
-						) );
-
-						if ( false === $affected ) {
-							error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $tx, true ) );
-						}
-
-						if ( 1 === $affected ) {
-							// row was inserted, not updated
-							do_action( 'wallets_deposit', $tx );
 						}
 
 					} elseif ( 'withdraw' == $tx->category ) {
@@ -759,9 +714,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 		public function actions_handler() {
 
-			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
-			$id = filter_input( INPUT_GET, 'tx_id', FILTER_SANITIZE_NUMBER_INT );
-			$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); // slug of action in transactions admin panel
+			$id = filter_input( INPUT_GET, 'tx_id', FILTER_SANITIZE_NUMBER_INT ); // primary key to the clicked transaction row
+			$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING ); // the _wpnonce coming from the action link
+			$custom_nonce = md5( uniqid( NONCE_KEY, true ) ); // new nonce, in case of unconfirming
 
 			global $wpdb;
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
@@ -789,7 +745,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$tx_group = $wpdb->get_results( $wpdb->prepare(
 							"
 							SELECT
-								id
+								*
 							FROM
 								$table_name_txs
 							WHERE
@@ -800,8 +756,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						if ( $tx_group ) {
 							foreach ( $tx_group as $tx ) {
 								$ids[ intval( $tx->id ) ] = null;
+
+								// send new confirmation email
+								if ( 'user_unconfirm' == $action && get_option( 'wallets_confirm_move_user_enabled' ) && preg_match( '/send$/', $tx->txid ) ) {
+										$tx->nonce = $custom_nonce;
+										do_action( 'wallets_send_user_confirm_email', $tx );
+								}
 							}
 						}
+					}
+				} elseif ( 'withdraw' == $tx_data->category ) {
+					// send new confirmation email
+					if ( 'user_unconfirm' == $action && get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
+						$tx_data->nonce = $custom_nonce;
+						do_action( 'wallets_send_user_confirm_email', $tx_data );
 					}
 				}
 
@@ -824,7 +792,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							UPDATE
 								$table_name_txs
 							SET
-								user_confirm = 0
+								user_confirm = 0,
+								nonce = '$custom_nonce'
 							WHERE
 								id IN ( $set_of_ids )
 							");
@@ -844,7 +813,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							UPDATE
 								$table_name_txs
 							SET
-								user_confirm = 1
+								user_confirm = 1,
+								nonce = NULL
 							WHERE
 								id IN ( $set_of_ids )
 							");

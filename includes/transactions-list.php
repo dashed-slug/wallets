@@ -278,7 +278,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 							),
 							admin_url( 'admin.php' )
 						),
-						__( 'Mark this transaction as NOT CONFIRMED by user. Will NOT be retried if user confirmation is required.', 'wallets' ),
+						__( 'Mark this transaction as NOT CONFIRMED by user. A new confirmation email will be sent to the user.', 'wallets' ),
 						__( 'User unaccept', 'wallets' )
 					);
 				} else {
