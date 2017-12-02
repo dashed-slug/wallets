@@ -9,7 +9,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Email' ) ) {
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
-			add_action( 'admin_menu', array( &$this, 'action_admin_menu' ) );
+			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
 			add_action( 'wallets_withdraw',		array( &$this, 'action_withdraw' ) );
@@ -47,6 +47,7 @@ Fees paid: ###FEE###
 Transaction ID: ###TXID###
 Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
+Tags: ###TAGS###
 
 EMAIL
 				, 'wallets' ) );
@@ -62,6 +63,7 @@ You have received ###AMOUNT### ###SYMBOL### from ###OTHER_ACCOUNT###.
 Transaction ID: ###TXID###
 Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
+Tags: ###TAGS###
 
 EMAIL
 				, 'wallets' ) );
@@ -332,6 +334,8 @@ EMAIL
 						<dd><?php esc_html_e( 'For internal fund transfers, the comment attached to the transaction.', 'wallets' ); ?></dd>
 						<dt><code>###ADDRESS###</code></dt>
 						<dd><?php esc_html_e( 'For deposits and withdrawals, the external address.', 'wallets' ); ?></dd>
+						<dt><code>###TAGS###</code></dt>
+						<dd><?php esc_html_e( 'A space separated list of tags, slugs, etc that further describe the type of transaction.', 'wallets' ); ?></dd>
 					</dl>
 				</div>
 

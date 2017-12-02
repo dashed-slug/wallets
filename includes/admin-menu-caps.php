@@ -19,16 +19,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 		private $caps;
 
 		public  function __construct() {
-			$this->caps = array(
-				self::MANAGE_WALLETS,
-				self::HAS_WALLETS,
-				self::LIST_WALLET_TRANSACTIONS,
-				self::SEND_FUNDS_TO_USER,
+
+			$this->caps = apply_filters( 'wallets_capabilities',  array(
+				self::MANAGE_WALLETS
+					=> __( 'Can configure all settings related to wallets. This is for administrators only.', 'wallets' ),
+				self::HAS_WALLETS
+					=> __( 'Can have balances and use the wallets API.', 'wallets' ),
+				self::LIST_WALLET_TRANSACTIONS
+					=> __( 'Can view a list of past transactions.', 'wallets' ),
+				self::SEND_FUNDS_TO_USER
+					=> __( 'Can send cryptocurrencies to other users on this site.', 'wallets' ),
 				self::WITHDRAW_FUNDS_FROM_WALLET
-			);
+					=> __( 'Can withdraw cryptocurrencies from the site to an external address.', 'wallets' )
+			) );
 
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
-			add_action( 'admin_menu', array( &$this, 'action_admin_menu' ) );
+			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
 		}
@@ -44,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'2.1.0'
+				'2.1.1'
 			);
 		}
 
@@ -90,7 +96,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 				}
 
 				foreach ( get_editable_roles() as $role_name => $role_info ) {
-					foreach ( $this->caps as $capability ) {
+					foreach ( $this->caps as $capability => $description ) {
 						$this->update_cap( $role_name, $capability );
 					}
 				}
@@ -156,15 +162,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 		}
 
 		public function wallets_caps_section_cb() {
-			?>
-			<p><?php esc_html_e( 'Use the matrix below to assign capabilities to roles.', 'wallets'); ?></p>
+			?><p><?php esc_html_e( 'Use the matrix below to assign capabilities to roles.', 'wallets'); ?></p>
 
 			<table class="wallets capabilities matrix">
 				<thead>
 					<tr>
 						<th />
-						<?php foreach ( $this->caps as $capability ): ?>
-							<th><?php echo esc_html( str_replace( '_', ' ', $capability ) ); ?></th>
+						<?php foreach ( $this->caps as $capability => $description ): ?>
+							<th title="<?php echo esc_attr( $description ); ?>"><?php echo esc_html( str_replace( '_', ' ', $capability ) ); ?></th>
 						<?php endforeach; ?>
 					</tr>
 				</thead>
@@ -172,9 +177,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 				<?php foreach ( get_editable_roles() as $role_name => $role_info ): ?>
 					<tr>
 						<th><?php echo $role_name; ?></th>
-						<?php foreach ( $this->caps as $capability ):
+						<?php foreach ( $this->caps as $capability => $description ):
 							$checked = isset( $role_info['capabilities'][ $capability ] ) && $role_info['capabilities'][ $capability ]; ?>
-							<td>
+							<td title="<?php echo esc_attr( $description ); ?>">
 								<input type="checkbox" name="caps[<?php echo $role_name; ?>][<?php echo $capability; ?>]" <?php checked( $checked ); ?> />
 							</td>
 						<?php endforeach; ?>
@@ -184,20 +189,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 			</table>
 			<hr />
 			<dl>
-				<dt><code><?php echo esc_html( self::MANAGE_WALLETS ) ?></code></dt>
-				<dd><?php esc_html_e( 'Can configure all settings related to wallets. This is for administrators only.', 'wallets' ) ?></dd>
-
-				<dt><code><?php echo esc_html( self::HAS_WALLETS ) ?></code></dt>
-				<dd><?php esc_html_e( 'Can have balances and use the wallets API.', 'wallets' ) ?></dd>
-
-				<dt><code><?php echo esc_html( self::LIST_WALLET_TRANSACTIONS ) ?></code></dt>
-				<dd><?php esc_html_e( 'Can view a list of past transactions.', 'wallets' ) ?></dd>
-
-				<dt><code><?php echo esc_html( self::SEND_FUNDS_TO_USER ) ?></code></dt>
-				<dd><?php esc_html_e( 'Can send cryptocurrencies to other users on this site.', 'wallets' ) ?></dd>
-
-				<dt><code><?php echo esc_html( self::WITHDRAW_FUNDS_FROM_WALLET ) ?></code></dt>
-				<dd><?php esc_html_e( 'Can withdraw cryptocurrencies from the site to an external address.', 'wallets' ) ?></dd>
+				<?php foreach ( $this->caps as $capability => $description ): ?>
+					<dt><code><?php echo esc_html( $capability ) ?></code></dt>
+					<dd><?php echo esc_html( $description ); ?></dd>
+				<?php endforeach; ?>
 			</dl>
 
 			<?php

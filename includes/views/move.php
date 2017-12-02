@@ -7,6 +7,8 @@
 	<label class="comment"><?php esc_html_e( 'Transfer comment', 'wallets' ); ?>: <input type="text" data-bind="value: moveComment" /></label>
 	<label class="fee"><?php esc_html_e( 'Fee', 'wallets' ); ?>: <input type="text" data-bind="value: wallets[selectedCoin()].move_fee_string, enable: false" /></label>
 	<hr />
+	<input type="hidden" name="moveTags" value="move" />
+
 	<input type="submit" value="<?php esc_attr_e( 'Send', 'wallets' ); ?>" />
 	<input type="reset" value="<?php esc_attr_e( 'Reset form', 'wallets' ); ?>" />
 	<?php wp_nonce_field( 'wallets-move' ); ?>

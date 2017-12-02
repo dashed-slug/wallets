@@ -9,7 +9,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Cron' ) ) {
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 			register_deactivation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_deactivate' ) );
-			add_action( 'admin_menu', array( &$this, 'action_admin_menu' ) );
+			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
 			// wp_cron mechanism for double-checking for deposits

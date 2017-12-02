@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.3
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -257,6 +257,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.1.1 =
+- Add: The capabilities matrix is now hookable by extensions
+- Add: Internal transfers can now have unlimited descriptive tags assigned
+- Fix: The `get_users_info` JSON API now retrieves only users who have capability `has_wallets`
+
 = 2.1.0 =
 - Add: Capabilities feature lets you assign capabilities to user roles
 - Add: E-mail notifications are now admin-configurable
@@ -337,7 +342,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.0.2 is a minor patch release that fixes multiple issues in 2.0.1.
+Version 2.1.1 is a minor patch release. If you have already installed 2.1.0 you can upgrade but there is no rush.
 
 == Donating ==
 

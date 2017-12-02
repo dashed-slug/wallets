@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.1.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -71,14 +71,36 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:84 src/includes/admin-menu.php:51
-#: src/includes/admin-menu.php:71 src/includes/json-api.php:228
-#: src/includes/json-api.php:256
+#: src/includes/admin-menu-caps.php:25
+msgid ""
+"Can configure all settings related to wallets. This is for administrators "
+"only."
+msgstr ""
+
+#: src/includes/admin-menu-caps.php:27
+msgid "Can have balances and use the wallets API."
+msgstr ""
+
+#: src/includes/admin-menu-caps.php:29
+msgid "Can view a list of past transactions."
+msgstr ""
+
+#: src/includes/admin-menu-caps.php:31
+msgid "Can send cryptocurrencies to other users on this site."
+msgstr ""
+
+#: src/includes/admin-menu-caps.php:33
+msgid "Can withdraw cryptocurrencies from the site to an external address."
+msgstr ""
+
+#: src/includes/admin-menu-caps.php:90 src/includes/admin-menu.php:51
+#: src/includes/admin-menu.php:71 src/includes/json-api.php:229
+#: src/includes/json-api.php:257
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:89 src/includes/admin-menu-caps.php:137
-#: src/includes/admin-menu-cron.php:172 src/includes/admin-menu-email.php:306
+#: src/includes/admin-menu-caps.php:95 src/includes/admin-menu-caps.php:143
+#: src/includes/admin-menu-cron.php:172 src/includes/admin-menu-email.php:308
 #: src/includes/admin-menu.php:33 src/includes/admin-menu.php:45
 #: src/includes/admin-menu.php:65 src/includes/admin-menu.php:137
 #: src/includes/bitcoin-adapter.php:356 src/includes/bitcoin-adapter.php:366
@@ -87,53 +109,31 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:102
+#: src/includes/admin-menu-caps.php:108
 msgid "Capabilities matrix"
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:126 src/includes/admin-menu-caps.php:127
+#: src/includes/admin-menu-caps.php:132 src/includes/admin-menu-caps.php:133
 msgid "Capabilities"
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:140
+#: src/includes/admin-menu-caps.php:146
 msgid "/* @echo name */ Capabilities"
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:142
+#: src/includes/admin-menu-caps.php:148
 msgid ""
 "Users in WordPress are assigned to roles, and these roles have capabilities. "
 "Here you can set which wallets-related capabilities you want each user role "
 "to have."
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:146
+#: src/includes/admin-menu-caps.php:152
 msgid "Read about Roles and Capabilities in the Codex."
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:160
+#: src/includes/admin-menu-caps.php:165
 msgid "Use the matrix below to assign capabilities to roles."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:188
-msgid ""
-"Can configure all settings related to wallets. This is for administrators "
-"only."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:191
-msgid "Can have balances and use the wallets API."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:194
-msgid "Can view a list of past transactions."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:197
-msgid "Can send cryptocurrencies to other users on this site."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:200
-msgid "Can withdraw cryptocurrencies from the site to an external address."
 msgstr ""
 
 #: src/includes/admin-menu-cron.php:48
@@ -196,112 +196,118 @@ msgstr ""
 msgid "You have sent funds to another user. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:55
+#: src/includes/admin-menu-email.php:56
 msgid "You have received funds from another user. - ###COMMENT### "
 msgstr ""
 
-#: src/includes/admin-menu-email.php:70
+#: src/includes/admin-menu-email.php:72
 msgid "You have performed a ###SYMBOL### deposit."
 msgstr ""
 
-#: src/includes/admin-menu-email.php:90
+#: src/includes/admin-menu-email.php:92
 msgid "E-mail notification settings for withdrawals"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:97
+#: src/includes/admin-menu-email.php:99
 msgid "Notify users about withdrawals"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:111 src/includes/admin-menu-email.php:162
-#: src/includes/admin-menu-email.php:212 src/includes/admin-menu-email.php:263
+#: src/includes/admin-menu-email.php:113 src/includes/admin-menu-email.php:164
+#: src/includes/admin-menu-email.php:214 src/includes/admin-menu-email.php:265
 msgid "Template for e-mail subject line:"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:125 src/includes/admin-menu-email.php:176
-#: src/includes/admin-menu-email.php:226 src/includes/admin-menu-email.php:277
+#: src/includes/admin-menu-email.php:127 src/includes/admin-menu-email.php:178
+#: src/includes/admin-menu-email.php:228 src/includes/admin-menu-email.php:279
 msgid "Template for e-mail message body:"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:141
+#: src/includes/admin-menu-email.php:143
 msgid "E-mail notification settings for deposits"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:148
+#: src/includes/admin-menu-email.php:150
 msgid "Notify users about depositals"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:191
+#: src/includes/admin-menu-email.php:193
 msgid "E-mail notification settings for outgoing fund transfers"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:198
+#: src/includes/admin-menu-email.php:200
 msgid "Notify users about outgoing fund transfers"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:242
+#: src/includes/admin-menu-email.php:244
 msgid "E-mail notification settings for incoming fund transfers"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:249
+#: src/includes/admin-menu-email.php:251
 msgid "Notify users about incoming fund transfers"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:309
+#: src/includes/admin-menu-email.php:311
 msgid "/* @echo name */ E-mail notification settings"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:311
+#: src/includes/admin-menu-email.php:313
 msgid ""
 "Users are notified by e-mail when they perform deposits or withdrawals and "
 "when they send or receive funds. Here you can set template messages for "
 "these emails."
 msgstr ""
 
-#: src/includes/admin-menu-email.php:315
+#: src/includes/admin-menu-email.php:317
 msgid "The following variables are substituted:"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:318
+#: src/includes/admin-menu-email.php:320
 msgid "Account username"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:320
+#: src/includes/admin-menu-email.php:322
 msgid "Username of other account (for fund transfers between users)"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:322
+#: src/includes/admin-menu-email.php:324
 msgid ""
 "Transaction ID. ( This is normally the same as the txid on the blockchain. "
 "Internal transactions are also assigned a unique ID. )"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:324
+#: src/includes/admin-menu-email.php:326
 msgid "The amount transacted."
 msgstr ""
 
-#: src/includes/admin-menu-email.php:326
+#: src/includes/admin-menu-email.php:328
 msgid "For withdrawals and transfers, the fees paid to the site."
 msgstr ""
 
-#: src/includes/admin-menu-email.php:328
+#: src/includes/admin-menu-email.php:330
 msgid "The coin symbol for this transaction (e.g. \"BTC\" for Bitcoin)"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:330
+#: src/includes/admin-menu-email.php:332
 msgid ""
 "The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:"
 "ssZZZZ"
 msgstr ""
 
-#: src/includes/admin-menu-email.php:332
+#: src/includes/admin-menu-email.php:334
 msgid "For internal fund transfers, the comment attached to the transaction."
 msgstr ""
 
-#: src/includes/admin-menu-email.php:334
+#: src/includes/admin-menu-email.php:336
 msgid "For deposits and withdrawals, the external address."
 msgstr ""
 
-#: src/includes/admin-menu-email.php:364
+#: src/includes/admin-menu-email.php:338
+msgid ""
+"A space separated list of tags, slugs, etc that further describe the type of "
+"transaction."
+msgstr ""
+
+#: src/includes/admin-menu-email.php:368
 msgid ""
 "Here you can choose whether users receive e-mail notifications on this "
 "event. You can also edit the template used to produce the email subject line "
@@ -316,7 +322,7 @@ msgstr ""
 
 #: src/includes/admin-menu.php:100
 #, php-format
-msgid "Failed to import file %s : %s"
+msgid "Failed to import file : %s"
 msgstr ""
 
 #: src/includes/admin-menu.php:115 src/includes/admin-menu.php:125
@@ -543,43 +549,43 @@ msgid ""
 "plugin may not function properly."
 msgstr ""
 
-#: src/includes/core.php:291 src/includes/core.php:331
-#: src/includes/core.php:380 src/includes/core.php:433
-#: src/includes/core.php:495 src/includes/core.php:576
-#: src/includes/core.php:682 src/includes/json-api.php:125
-#: src/includes/json-api.php:148 src/includes/json-api.php:195
-#: src/includes/json-api.php:222 src/includes/json-api.php:250
+#: src/includes/core.php:292 src/includes/core.php:333
+#: src/includes/core.php:383 src/includes/core.php:437
+#: src/includes/core.php:501 src/includes/core.php:585
+#: src/includes/core.php:701 src/includes/json-api.php:126
+#: src/includes/json-api.php:149 src/includes/json-api.php:196
+#: src/includes/json-api.php:223 src/includes/json-api.php:251
 msgid "Not allowed"
 msgstr ""
 
-#: src/includes/core.php:302
+#: src/includes/core.php:303
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/core.php:306
+#: src/includes/core.php:307
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/core.php:353
+#: src/includes/core.php:355
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/core.php:514
+#: src/includes/core.php:520
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/core.php:520 src/includes/core.php:601
+#: src/includes/core.php:526 src/includes/core.php:610
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/core.php:530
+#: src/includes/core.php:536
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/core.php:595
+#: src/includes/core.php:604
 msgid "Cannot move negative amount"
 msgstr ""
 
@@ -590,34 +596,34 @@ msgid ""
 "You must enable SSL or TLS if this is a live site."
 msgstr ""
 
-#: src/includes/json-api.php:113
+#: src/includes/json-api.php:114
 msgid "Could not process notification."
 msgstr ""
 
-#: src/includes/json-api.php:117
+#: src/includes/json-api.php:118
 msgid "Must be logged in"
 msgstr ""
 
-#: src/includes/json-api.php:142
+#: src/includes/json-api.php:143
 msgid "Could not get info about users: "
 msgstr ""
 
-#: src/includes/json-api.php:213
+#: src/includes/json-api.php:214
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: src/includes/json-api.php:240
+#: src/includes/json-api.php:241
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: src/includes/json-api.php:267
+#: src/includes/json-api.php:269
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: src/includes/json-api.php:271
+#: src/includes/json-api.php:273
 #, php-format
 msgid "Unknown action %s specified"
 msgstr ""
@@ -676,16 +682,16 @@ msgstr ""
 msgid "Transfer comment"
 msgstr ""
 
-#: src/includes/views/move.php:8 src/includes/views/transactions.php:14
+#: src/includes/views/move.php:8 src/includes/views/transactions.php:15
 #: src/includes/views/withdraw.php:7
 msgid "Fee"
 msgstr ""
 
-#: src/includes/views/move.php:10 src/includes/views/withdraw.php:11
+#: src/includes/views/move.php:12 src/includes/views/withdraw.php:11
 msgid "Send"
 msgstr ""
 
-#: src/includes/views/move.php:11 src/includes/views/withdraw.php:12
+#: src/includes/views/move.php:13 src/includes/views/withdraw.php:12
 msgid "Reset form"
 msgstr ""
 
@@ -702,33 +708,37 @@ msgid "Type"
 msgstr ""
 
 #: src/includes/views/transactions.php:12
-msgid "Time"
+msgid "Tags"
 msgstr ""
 
 #: src/includes/views/transactions.php:13
+msgid "Time"
+msgstr ""
+
+#: src/includes/views/transactions.php:14
 msgid "Amount (+fee)"
 msgstr ""
 
-#: src/includes/views/transactions.php:15
+#: src/includes/views/transactions.php:16
 msgid "From"
 msgstr ""
 
-#: src/includes/views/transactions.php:16
+#: src/includes/views/transactions.php:17
 msgid "To"
 msgstr ""
 
-#: src/includes/views/transactions.php:17
+#: src/includes/views/transactions.php:18
 msgid "Comment"
 msgstr ""
 
-#: src/includes/views/transactions.php:18
+#: src/includes/views/transactions.php:19
 msgid "Confirmations"
 msgstr ""
 
-#: src/includes/views/transactions.php:27
-#: src/includes/views/transactions.php:39
-#: src/includes/views/transactions.php:49
-#: src/includes/views/transactions.php:50
+#: src/includes/views/transactions.php:29
+#: src/includes/views/transactions.php:42
+#: src/includes/views/transactions.php:53
+#: src/includes/views/transactions.php:54
 msgid "me"
 msgstr ""
 

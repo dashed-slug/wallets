@@ -175,6 +175,7 @@
 					amount = self.moveAmount(),
 					comment = self.moveComment(),
 					symbol = self.selectedCoin(),
+					tags = $( 'input[name=moveTags]', form ).val(),
 					nonce = $( 'input[name=_wpnonce]', form ).val();
 
 				$.ajax({
@@ -184,6 +185,7 @@
 						'__wallets_move_toaccount' : user,
 						'__wallets_move_amount' : amount,
 						'__wallets_move_comment' : comment,
+						'__wallets_move_tags' : tags,
 						'__wallets_symbol' : symbol,
 						'_wpnonce' : nonce
 					},

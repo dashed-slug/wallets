@@ -162,7 +162,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'2.1.0'
+				'2.1.1'
 			);
 		}
 
@@ -204,7 +204,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 2;
+			$current_db_revision = 3;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 
@@ -213,6 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$sql = "CREATE TABLE {$table_name_txs} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
+				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}_users.ID',
 				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}_users.ID when category==move',
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
@@ -281,7 +282,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @since 1.0.0 Introduced
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
-		 * @throws Exception If the symbol passed does not correspond to a coin adapter
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return stdClass|array The adapter or array of adapters requested.
 		 */
 		public function get_coin_adapters( $symbol = null, $check_capabilities = false ) {
@@ -319,6 +320,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $address The address
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @throws Exception If the address is not associated with an account.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return integer The WordPress user ID for the account found.
 		 */
 		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false ) {
@@ -370,6 +372,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param integer $minconf (optional) Minimum number of confirmations. If left out, the default adapter setting is used.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return float The balance.
 		 */
 		public function get_balance( $symbol, $minconf = null, $check_capabilities = false ) {
@@ -422,6 +425,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param integer $from Start retrieving transactions from this offset.
 		 * @param integer $minconf (optional) Minimum number of confirmations for deposits and withdrawals. If left out, the default adapter setting is used.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return array The transactions.
 		 */
 		 public function get_transactions( $symbol, $count = 10, $from = 0, $minconf = null, $check_capabilities = false ) {
@@ -485,6 +489,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $comment Optional comment to attach to the transaction.
 		 * @param string $comment_to Optional comment to attach to the destination address.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 * @return void
 		 */
 		 public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '', $check_capabilities = false ) {
 			if (
@@ -566,8 +572,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param float $amount Amount to withdraw to.
 		 * @param string $comment Optional comment to attach to the transaction.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @param string $tags A space separated list of tags, slugs, etc that further describe the type of transaction.
+		 * @return void
+		 * @throws Exception If move fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 */
-		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false ) {
+		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '' ) {
 			if (
 				$check_capabilities &&
 				! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
@@ -607,9 +616,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$current_time_gmt = current_time( 'mysql', true );
 				$txid = uniqid( 'move-', true );
+				$unique_tags = array();
+				foreach ( explode( ' ', $tags ) as $tag ) {
+					$unique_tags[ $tag ] = true;
+				}
+				$tags = array_keys( $unique_tags );
+				sort( $tags );
+				$tags = implode( ' ', $tags );
 
 				$row1 = array(
 					'category' => 'move',
+					'tags' => trim( "send $tags" ),
 					'account' => self::get_current_account_id(),
 					'other_account' => intval( $toaccount ),
 					'txid' => "$txid-send",
@@ -624,7 +641,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$row1,
-					array( '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
+					array( '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -633,6 +650,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$row2 = array(
 					'category' => 'move',
+					'tags' => trim( "receive $tags" ),
 					'account' => intval( $toaccount ),
 					'other_account' => self::get_current_account_id(),
 					'txid' => "$txid-receive",
@@ -647,7 +665,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$wpdb->insert(
 					self::$table_name_txs,
 					$row2,
-					array( '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
+					array( '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -673,6 +691,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return string A deposit address associated with the current logged in user.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 */
 		 public function get_new_address( $symbol, $check_capabilities = false ) {
 			if (

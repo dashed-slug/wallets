@@ -77,6 +77,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			$vars[] = '__wallets_move_toaccount';
 			$vars[] = '__wallets_move_address';
 			$vars[] = '__wallets_move_comment';
+			$vars[] = '__wallets_move_tags';
 
 			$vars[] = '__wallets_notify_type';
 			$vars[] = '__wallets_notify_message';
@@ -131,7 +132,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$response['users'] = array();
 							foreach ( $users as $user ) {
-								if ( $user->ID != $current_user_id ) {
+								if ( user_can( $user, Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) && $user->ID != $current_user_id ) {
 									$response['users'][] = array(
 										'id' => $user->ID,
 										'name' => $user->user_login
@@ -261,8 +262,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$toaccount = intval( $wp->query_vars['__wallets_move_toaccount'] );
 							$amount = floatval(  $wp->query_vars['__wallets_move_amount'] );
 							$comment = sanitize_text_field( $wp->query_vars['__wallets_move_comment'] );
+							$tags = sanitize_text_field( $wp->query_vars['__wallets_move_tags'] );
 
-							$core->do_move( $symbol, $toaccount, $amount, $comment );
+							$core->do_move( $symbol, $toaccount, $amount, $comment, false, $tags );
 						} catch ( Exception $e ) {
 							throw new Exception( sprintf( __( 'Could not move %s', 'wallets' ), $symbol ), Dashed_Slug_Wallets::ERR_DO_MOVE, $e );
 						}
