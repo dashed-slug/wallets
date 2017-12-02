@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.4.5
+Stable tag: 2.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -269,6 +269,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.4.6 =
+- Fix: Bug in balance checks.
+
 = 2.4.5 =
 - Improve: Paid fees are now deducted from the amount that users enter in the withdrawal and internal transfer UIs.
 - Add: Fees now have a fixed component and a component that is proportional to the transacted amount.
@@ -468,8 +471,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.4.5 contains improvements necessary for the latest version of the CoinPayments adapter.
-You must upgrade if you need to install the latest CoinPayments adapter.
+Version 2.4.6 is a security patch. Please upgrade as soon as possible.
 
 == Donating ==
 

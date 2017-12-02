@@ -215,10 +215,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							WHERE
 								( blog_id = %d || %d ) AND
 								status = 'done' AND
+								symbol = %s AND
 								account = %d
 							",
 							get_current_blog_id(),
 							is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+							$move_tx_send->symbol,
 							$move_tx_send->account
 						);
 
@@ -226,7 +228,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						if ( ! is_null( $balance ) ) {
 
-							if ( ( floatval( $balance ) - floatval( $move_tx_send->amount ) ) > 0 ) {
+							if ( ( floatval( $balance ) + floatval( $move_tx_send->amount ) ) >= 0 ) {
 
 								$success_update_query = $wpdb->prepare(
 									"
@@ -270,8 +272,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 										status = 'pending' AND
 										txid IN ( %s, %s )
 									",
-									$current_time_gmt,
 									$move_tx_send->retries > 1 ? 'pending' : 'failed',
+									$current_time_gmt,
 									get_current_blog_id(),
 									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 									$move_tx_send->txid,
@@ -390,7 +392,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						throw new Exception( 'Could not get balance' );
 					}
 
-					if ( ( floatval( $balance ) - floatval( $wd_tx->amount ) ) < 0 ) {
+					if ( ( floatval( $balance ) + floatval( $wd_tx->amount ) ) < 0 ) {
 						throw new Exception( 'Insufficient balance' );
 					}
 

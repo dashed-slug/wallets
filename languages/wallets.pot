@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.5\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -75,18 +75,18 @@ msgstr ""
 #: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
 #: src/includes/confirmations.php:297 src/includes/cron.php:279
 #: src/includes/email.php:505 src/includes/qrcode.php:65
-#: src/includes/transactions.php:82 src/includes/transactions.php:723
-#: src/includes/transactions.php:904 src/includes/transactions.php:925
-#: src/includes/transactions.php:946 src/includes/transactions.php:966
-#: src/includes/transactions.php:986
+#: src/includes/transactions.php:82 src/includes/transactions.php:725
+#: src/includes/transactions.php:906 src/includes/transactions.php:927
+#: src/includes/transactions.php:948 src/includes/transactions.php:968
+#: src/includes/transactions.php:988
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/adapters-list.php:96 src/includes/caps.php:90
 #: src/includes/json-api.php:231 src/includes/json-api.php:259
-#: src/includes/transactions.php:729 src/includes/transactions.php:908
-#: src/includes/transactions.php:929 src/includes/transactions.php:950
-#: src/includes/transactions.php:970 src/includes/transactions.php:990
+#: src/includes/transactions.php:731 src/includes/transactions.php:910
+#: src/includes/transactions.php:931 src/includes/transactions.php:952
+#: src/includes/transactions.php:972 src/includes/transactions.php:992
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -992,7 +992,7 @@ msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:198 src/includes/json-api.php:225
-#: src/includes/json-api.php:253 src/includes/transactions.php:687
+#: src/includes/json-api.php:253 src/includes/transactions.php:689
 #: src/includes/wallets-core.php:417 src/includes/wallets-core.php:510
 #: src/includes/wallets-core.php:578 src/includes/wallets-core.php:649
 #: src/includes/wallets-core.php:791 src/includes/wallets-core.php:936
@@ -1200,25 +1200,25 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: src/includes/transactions.php:364
+#: src/includes/transactions.php:366
 #, php-format
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: src/includes/transactions.php:712
+#: src/includes/transactions.php:714
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:749
+#: src/includes/transactions.php:751
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:757
+#: src/includes/transactions.php:759
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
