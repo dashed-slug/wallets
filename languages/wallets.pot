@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.3\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:17+0200\n"
+"POT-Creation-Date: 2017-12-02 19:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr ""
 #: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
 #: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
 #: src/includes/cold-storage.php:135 src/includes/confirmations.php:297
-#: src/includes/cron.php:279 src/includes/email.php:505
+#: src/includes/cron.php:281 src/includes/email.php:505
 #: src/includes/qrcode.php:65 src/includes/rates.php:94
 #: src/includes/transactions.php:92 src/includes/transactions.php:741
 #: src/includes/transactions.php:922 src/includes/transactions.php:943
@@ -108,8 +108,8 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:37 src/includes/wallets-core.php:213
-#: src/includes/wallets-core.php:223
+#: src/includes/admin-menu.php:37 src/includes/wallets-core.php:214
+#: src/includes/wallets-core.php:224
 msgid "Wallets"
 msgstr ""
 
@@ -922,73 +922,73 @@ msgstr ""
 
 #: src/includes/cron.php:45
 msgid ""
-"The wp_cron job has not run in a while and might be disabled. Until you fix "
-"this, transactions will not be executed. Check the accompanying PDF manual "
-"for ways to debug and solve the issue."
+"The <code>wp_cron</code> job has not run in a while and might be disabled. "
+"Until you fix this, transactions can be delayed. Triggering a cron run now. "
+"Check the accompanying PDF manual for ways to debug and solve the issue."
 msgstr ""
 
-#: src/includes/cron.php:90
+#: src/includes/cron.php:92
 msgid "minute"
 msgstr ""
 
-#: src/includes/cron.php:95
+#: src/includes/cron.php:97
 msgid "three minutes"
 msgstr ""
 
-#: src/includes/cron.php:100
+#: src/includes/cron.php:102
 msgid "five minutes"
 msgstr ""
 
-#: src/includes/cron.php:105
+#: src/includes/cron.php:107
 msgid "ten minutes"
 msgstr ""
 
-#: src/includes/cron.php:110
+#: src/includes/cron.php:112
 msgid "twenty minutes"
 msgstr ""
 
-#: src/includes/cron.php:115
+#: src/includes/cron.php:117
 msgid "half an hour"
 msgstr ""
 
-#: src/includes/cron.php:190
+#: src/includes/cron.php:192
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/cron.php:197
+#: src/includes/cron.php:199
 msgid "Run every"
 msgstr ""
 
-#: src/includes/cron.php:211
+#: src/includes/cron.php:213
 msgid "Max batch size"
 msgstr ""
 
-#: src/includes/cron.php:217
+#: src/includes/cron.php:219
 msgid "Up to this many transactions will be attempted per run of the cron job."
 msgstr ""
 
-#: src/includes/cron.php:228
+#: src/includes/cron.php:230
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: src/includes/cron.php:234
+#: src/includes/cron.php:236
 msgid "Failed withdrawals will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:245
+#: src/includes/cron.php:247
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: src/includes/cron.php:251
+#: src/includes/cron.php:253
 msgid ""
 "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:282
+#: src/includes/cron.php:284
 msgid "/* @echo name */ cron settings"
 msgstr ""
 
-#: src/includes/cron.php:283
+#: src/includes/cron.php:285
 msgid ""
 "You can set here the periodicity of all recurring tasks for this plugin. "
 "Every time cron runs, a batch of transactions is attempted. You can choose "
@@ -999,7 +999,7 @@ msgid ""
 "enabled adapters."
 msgstr ""
 
-#: src/includes/cron.php:312
+#: src/includes/cron.php:314
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron job."
 msgstr ""
@@ -1127,10 +1127,10 @@ msgstr ""
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:199 src/includes/json-api.php:226
 #: src/includes/json-api.php:254 src/includes/transactions.php:705
-#: src/includes/wallets-core.php:448 src/includes/wallets-core.php:542
-#: src/includes/wallets-core.php:596 src/includes/wallets-core.php:652
-#: src/includes/wallets-core.php:723 src/includes/wallets-core.php:865
-#: src/includes/wallets-core.php:1010
+#: src/includes/wallets-core.php:521 src/includes/wallets-core.php:615
+#: src/includes/wallets-core.php:669 src/includes/wallets-core.php:725
+#: src/includes/wallets-core.php:796 src/includes/wallets-core.php:938
+#: src/includes/wallets-core.php:1083
 msgid "Not allowed"
 msgstr ""
 
@@ -1484,15 +1484,15 @@ msgstr ""
 msgid "Address label"
 msgstr ""
 
-#: src/includes/wallets-core.php:214 src/includes/wallets-core.php:224
+#: src/includes/wallets-core.php:215 src/includes/wallets-core.php:225
 msgid "Visit plugin site"
 msgstr ""
 
-#: src/includes/wallets-core.php:215 src/includes/wallets-core.php:225
+#: src/includes/wallets-core.php:216 src/includes/wallets-core.php:226
 msgid "Support"
 msgstr ""
 
-#: src/includes/wallets-core.php:250
+#: src/includes/wallets-core.php:251
 #, php-format
 msgid ""
 "The \"%1$s\" coin adapter can conflict with another adapter \"%2$s\" that is "
@@ -1500,40 +1500,93 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: src/includes/wallets-core.php:273
+#: src/includes/wallets-core.php:275
 #, php-format
 msgid ""
 "/* @echo name */ could NOT create a transactions table \"%s\" in the "
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:455
+#: src/includes/wallets-core.php:284
+#, php-format
+msgid ""
+"The PHP version you are using, %s has reached end-of-life! Please talk to "
+"your hosting provider or administrator about upgrading to a <a href=\"http://"
+"php.net/supported-versions.php\" target=\"_blank\">supported version</a>."
+msgstr ""
+
+#: src/includes/wallets-core.php:295
+#, php-format
+msgid ""
+"You are using WordPress %s. This plugin has been tested with %s. Please "
+"upgrade to the latest WordPress."
+msgstr ""
+
+#: src/includes/wallets-core.php:464
+msgid "PHP version"
+msgstr ""
+
+#: src/includes/wallets-core.php:465
+msgid "WordPress version"
+msgstr ""
+
+#: src/includes/wallets-core.php:466
+msgid "MySQL version"
+msgstr ""
+
+#: src/includes/wallets-core.php:467
+msgid "DB prefix"
+msgstr ""
+
+#: src/includes/wallets-core.php:468
+msgid "Supports cURL"
+msgstr ""
+
+#: src/includes/wallets-core.php:469
+msgid "Is multisite"
+msgstr ""
+
+#: src/includes/wallets-core.php:470
+msgid "Is network activated"
+msgstr ""
+
+#: src/includes/wallets-core.php:471
+msgid "PHP max execution time"
+msgstr ""
+
+#: src/includes/wallets-core.php:483
+msgid ""
+"When requesting support, please send the following info along with your "
+"request."
+msgstr ""
+
+#: src/includes/wallets-core.php:528
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:459
+#: src/includes/wallets-core.php:532
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:759
+#: src/includes/wallets-core.php:832
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:783
+#: src/includes/wallets-core.php:856
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:789 src/includes/wallets-core.php:904
+#: src/includes/wallets-core.php:862 src/includes/wallets-core.php:977
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:869
+#: src/includes/wallets-core.php:942
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:898
+#: src/includes/wallets-core.php:971
 msgid "Cannot move negative amount"
 msgstr ""

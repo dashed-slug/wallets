@@ -80,6 +80,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			} else {
 				add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'filter_plugin_action_links' ) );
 			}
+			add_action( 'wp_dashboard_setup', array( &$this, 'action_wp_dashboard_setup' ) );
 
 			// bind the built-in rpc coin adapter
 			add_action( 'wallets_declare_adapters', array( &$this, 'action_wallets_declare_adapters' ) );
@@ -171,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.7.3',
+					'2.7.4',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -184,7 +185,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.7.3',
+					'2.7.4',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -197,7 +198,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.7.3'
+					'2.7.4'
 				);
 			}
 		}
@@ -267,12 +268,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public function action_admin_init() {
 			global $wpdb;
 
+			// check for tx table
 			$table_name_txs = self::$table_name_txs;
 			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" ) != $table_name_txs ) {
 				$this->_notices->error( sprintf(
 						__( 'Bitcoin and Altcoin Wallets could NOT create a transactions table "%s" in the database. The plugin may not function properly.', 'wallets'),
 						$table_name_txs
 				) );
+			}
+
+			// Check for PHP version
+			if ( version_compare( PHP_VERSION, '5.5' ) <= 0 ) {
+				$this->_notices->info(
+					sprintf(
+						__( 'The PHP version you are using, %s has reached end-of-life! Please talk to your hosting provider or administrator ' .
+							'about upgrading to a <a href="http://php.net/supported-versions.php" target="_blank">supported version</a>.', 'wallets' ),
+						PHP_VERSION ),
+					'old-php-ver' );
+			}
+
+			// Check for WP version
+			$wp_version = get_bloginfo( 'version' );
+			if ( version_compare( $wp_version, '4.8.2' ) < 0 ) {
+				$this->_notices->info(
+					sprintf(
+						__( 'You are using WordPress %s. This plugin has been tested with %s. Please upgrade to the latest WordPress.', 'wallets' ),
+						$wp_version,
+						'4.8.2' ),
+					'old-wp-ver' );
 			}
 		}
 
@@ -425,6 +448,56 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					array( '%d')
 				);
 			}
+		}
+
+		public function action_wp_dashboard_setup() {
+			wp_add_dashboard_widget(
+				'wallets-dashboard-widget',
+				'Bitcoin and Altcoin Wallets',
+				array( &$this, 'dashboard_widget_cb' ) );
+		}
+
+		public function dashboard_widget_cb() {
+			global $wpdb;
+
+			$data = array();
+			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
+			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
+			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
+			$data[ __( 'DB prefix', 'wallets' ) ] = $wpdb->prefix;
+			$data[ __( 'Supports cURL', 'wallets' ) ] = function_exists( 'curl_init' );
+			$data[ __( 'Is multisite', 'wallets' ) ] = is_multisite();
+			$data[ __( 'Is network activated', 'wallets' ) ] = is_plugin_active_for_network( 'wallets/wallets.php' );
+			$data[ __( 'PHP max execution time', 'wallets' ) ] = ini_get( 'max_execution_time' );
+
+			foreach ( array(
+				'WP_DEBUG',
+				'WP_DEBUG_LOG',
+				'WP_DEBUG_DISPLAY',
+				'DISABLE_WP_CRON',
+				'DSWALLETS_FILE'
+			) as $const ) {
+				$data[ $const ] = defined( $const ) ? constant( $const ) : 'n/a';
+			}
+
+			?><p><?php esc_html_e( 'When requesting support, please send the following info along with your request.', 'wallets' ); ?></p>
+
+			<table>
+				<thead><th /><th /></thead>
+				<tbody>
+					<?php foreach ( $data as $metric => $value ): ?>
+					<tr>
+						<td><?php echo $metric ?></td>
+						<td><code><?php
+							if ( is_bool( $value ) ) {
+								echo $value ? 'true' : 'false';
+							} else {
+								echo esc_html( $value );
+							} ?></code></td>
+					</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table><?php
 		}
 
 		/**

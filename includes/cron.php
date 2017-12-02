@@ -42,10 +42,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 					if ( $last_cron_run < ( time() - $interval * 1.5 ) ) {
 						Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
-							__( 'The wp_cron job has not run in a while and might be disabled. Until you fix this, transactions will not be executed. ' .
-								'Check the accompanying PDF manual for ways to debug and solve the issue.',
+							__( 'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
+								'Triggering a cron run now. Check the accompanying PDF manual for ways to debug and solve the issue.',
 								'wallets' ),
 							'wallets-cron-not-running' );
+
+						do_action( 'wallets_periodic_checks' );
 					}
 				}
 			}
