@@ -183,16 +183,13 @@
 				return users;
 			} );
 
-
-
 			self.doMove = function( form ) {
 				var user = self.moveUser().id,
 					amount = self.moveAmount(),
 					comment = self.moveComment(),
 					symbol = self.selectedCoin(),
-					tags = $( 'input[name=moveTags]', form ).val(),
+					tags = $( 'input[name=__wallets_move_tags]', form ).val(),
 					nonce = self.nonces().do_move;
-
 
 				$.ajax({
 					dataType: 'json',
@@ -317,8 +314,9 @@
 				var symbol = self.selectedCoin();
 				var transactions = [];
 
-				if ( 'string' !== typeof self.selectedCoin() )
+				if ( 'string' !== typeof self.selectedCoin() ) {
 					return;
+				}
 
 				$.ajax({
 					dataType: 'json',
@@ -348,10 +346,22 @@
 			});
 		}
 
-		// init the viewmodel and set sane defaults
-
+		// init the viewmodel
 		var walletsViewModel = new WalletsViewModel();
-		ko.applyBindings( walletsViewModel );
+
+		// let's pollute the global wp object a bit!!1
+		wp.wallets = {
+			viewModels: {
+				wallets: walletsViewModel
+			}
+		};
+
+		// bind the viewmodel
+		$('.dashed-slug-wallets').filter( '.deposit,.withdraw,.move,.balance,.transactions' ).each( function( i, el ) {
+			ko.applyBindings( walletsViewModel, el );
+		} );
+
+		// set sane defaults
 		if ( walletsViewModel.coins().length ) {
 			walletsViewModel.selectedCoin( walletsViewModel.coins()[ 0 ].symbol );
 		}

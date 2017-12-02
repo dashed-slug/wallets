@@ -7,7 +7,7 @@
 	<label class="comment"><?php esc_html_e( 'Transfer comment', 'wallets' ); ?>: <input type="text" data-bind="value: moveComment" /></label>
 	<label class="fee"><?php esc_html_e( 'Fee (deducted from amount)', 'wallets' ); ?>: <input type="text" data-bind="value: move_fee, enable: false" /></label>
 	<hr />
-	<input type="hidden" name="moveTags" value="move" />
+	<input type="hidden" name="__wallets_move_tags" value="move" />
 
 	<input type="submit" value="<?php esc_attr_e( 'Send', 'wallets' ); ?>" />
 	<input type="button" data-bind="click: $root.resetMove" value="<?php esc_attr_e( 'Reset form', 'wallets' ); ?>" />

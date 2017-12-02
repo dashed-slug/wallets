@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 2.9.0
+Stable tag: 2.10.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -346,6 +346,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.10.0 =
+- Improve: Better knockout bindings in frontend. Bindings applied to UI elements only, not entire page. Allows for playing nice with other knockout code.
+- Add: The wallets viewmodel is now available for inheritance under the global wp object. Allows for extensions that modify the UI.
+- Add: Tradesatoshi added to list of available exchange rate providers.
+- Fix: Issue where database tables were not created on new installs.
+- Fix: Race condition between uninstall script and cron job that caused unaccepted transactions to transition into pending state.
+- Improve: Bumped the included knockout distribution to latest version, 3.5.0-pre.
 
 = 2.9.0 =
 - Add: Notifications can now be sent either as emails or as BuddyPress private messages (or both).

@@ -610,6 +610,11 @@ EMAIL
 		public function confirm_transactions() {
 			global $wpdb;
 
+			// if this option does not exist, uninstall script might be already running.
+			if ( ! Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size' ) ) {
+				return;
+			}
+
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 
 			// withdrawals

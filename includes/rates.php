@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( '-1' );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia' );
+		private static $providers = array( 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi' );
 		private static $rates = array();
 		private static $cryptos = array();
 		private static $fiats = array();
@@ -538,6 +538,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $cryptos;
 		}
 
+		public static function filter_rates_cryptos_tradesatoshi( $cryptos, $provider ) {
+
+			if ( 'tradesatoshi' == $provider ) {
+				$json = self::file_get_cached_contents( 'https://tradesatoshi.com/api/public/getcurrencies' );
+				if ( false !== $json ) {
+					$obj = json_decode( $json );
+					if ( isset( $obj->success ) && $obj->success && isset( $obj->result) ) {
+						foreach ( $obj->result as $market ) {
+							$s = $market->currency;
+							if ( 'USD' != $s && 'USDT' != $s ) {
+								$cryptos[] = $s;
+							}
+						}
+					}
+				}
+			}
+			return $cryptos;
+		}
+
 		// filter that pulls fiat currency symbols
 
 		public static function filter_rates_fixer( $rates, $provider ) {
@@ -660,6 +679,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 							if ( preg_match( '/^(.+)\/(.+)$/', $market->Label, $matches ) ) {
 								$m = strtoupper( $matches[2] . '_' . $matches[1] );
 								$rates[ $m ] = $market->LastPrice;
+							}
+						}
+					}
+				}
+			}
+			return $rates;
+		}
+
+		public static function filter_rates_tradesatoshi( $rates, $provider ) {
+			if ( 'tradesatoshi' == $provider ) {
+				$url = 'https://tradesatoshi.com/api/public/getmarketsummaries';
+				$json = self::file_get_cached_contents( $url );
+				if ( false !== $json ) {
+					$obj = json_decode( $json );
+					if ( isset( $obj->success ) && $obj->success && isset( $obj->result ) && ! is_null( $obj->result ) ) {
+						foreach ( $obj->result as $market ) {
+							if ( preg_match( '/^(.+)_(.+)$/', $market->market, $matches ) ) {
+								if ( self::is_crypto( $matches[2] ) ) {
+									$m = strtoupper( $matches[2] . '_' . $matches[1] );
+									$rates[ $m ] = $market->last;
+								}
 							}
 						}
 					}

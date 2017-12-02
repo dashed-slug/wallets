@@ -145,22 +145,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'knockout',
 					plugins_url( 'knockout-latest.min.js', 'wallets/assets/scripts/knockout-latest.min.js' ),
 					array( ),
-					'3.4.2',
-					true );
+					'3.5.0-pre',
+					true
+				);
 
 				wp_enqueue_script(
 					'momentjs',
 					plugins_url( 'moment.min.js', "wallets/assets/scripts/moment.min.js" ),
 					array(),
 					'2.17.1',
-					true );
+					true
+				);
 
 				wp_enqueue_script(
 					'sprintf.js',
 					plugins_url( 'sprintf.min.js', "wallets/assets/scripts/sprintf.min.js" ),
 					array( ),
 					false,
-					true );
+					true
+				);
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko.min.js' ) ) {
 					$script = 'wallets-ko.min.js';
@@ -172,8 +175,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.9.0',
-					true );
+					'2.10.0',
+					true
+				);
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
 					$script = 'wallets-bitcoin-validator.min.js';
@@ -185,8 +189,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.9.0',
-					true );
+					'2.10.0',
+					true
+				);
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
 					$front_styles = 'wallets.min.css';
@@ -198,7 +203,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.9.0'
+					'2.10.0'
 				);
 			}
 		}
@@ -265,7 +270,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		/** @internal */
-		public function action_admin_init() {
+		private static function db_schema() {
 			// create or update db tables
 			global $wpdb;
 
@@ -277,11 +282,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$current_db_revision = 11;
 
 			if ( $installed_db_revision < $current_db_revision ) {
+				error_log( sprintf( 'Upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
 
 				// remove old unique constraints before recreating them
+				$suppress_errors = $wpdb->suppress_errors;
+				$wpdb->suppress_errors();
 				$wpdb->query( "ALTER TABLE $table_name_adds DROP INDEX `uq_ad_idx`" );
 				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
 				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid`" );
+				$wpdb->suppress_errors( $suppress_errors );
 
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
@@ -331,8 +340,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				dbDelta( $sql );
 
-				$suppress_errors = $wpdb->suppress_errors;
-
 				// make sure that constraints are correct.
 
 				$wpdb->suppress_errors();
@@ -362,17 +369,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$wpdb->query( "UPDATE {$table_name_adds} SET extra='' WHERE extra IS NULL;" );
 				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR';" );
 				$wpdb->query( "CREATE UNIQUE INDEX `uq_ad_idx` on {$table_name_adds} (address,symbol,extra);" );
-			}
 
-			// check for tx table
+				Dashed_Slug_Wallets::update_option( 'wallets_db_revision', $current_db_revision );
+
+				error_log( sprintf( 'Finished upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
+			}
+		}
+
+		/** @internal */
+		public function action_admin_init() {
+			self::db_schema();
+
+			global $wpdb;
 			$table_name_txs = self::$table_name_txs;
+			$table_name_adds = self::$table_name_adds;
+
+			// check for both tables
 			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" ) != $table_name_txs ) {
 				$this->_notices->error( sprintf(
 						__( 'Bitcoin and Altcoin Wallets could NOT create a transactions table "%s" in the database. The plugin may not function properly.', 'wallets'),
 						$table_name_txs
 				) );
-			} else {
-				Dashed_Slug_Wallets::update_option( 'wallets_db_revision', $current_db_revision );
+				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
+			} elseif ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_adds}'" ) != $table_name_adds ) {
+				$this->_notices->error( sprintf(
+					__( 'Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "%s" in the database. The plugin may not function properly.', 'wallets'),
+					$table_name_adds
+				) );
+				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			}
 
 			// Check for PHP version
@@ -400,6 +424,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public static function action_activate( $network_active ) {
+			self::db_schema();
 
 			// built-in bitcoin adapter settings
 
@@ -466,8 +491,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.9.0';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '718da25';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.0';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '344cb26';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
