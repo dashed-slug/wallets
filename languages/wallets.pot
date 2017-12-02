@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.8.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.8.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:21+0200\n"
+"POT-Creation-Date: 2017-12-02 19:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1147,10 +1147,10 @@ msgstr ""
 #: build/includes/json-api.php:125 build/includes/json-api.php:148
 #: build/includes/json-api.php:201 build/includes/json-api.php:227
 #: build/includes/json-api.php:246 build/includes/json-api.php:274
-#: build/includes/transactions.php:721 build/includes/wallets-core.php:498
-#: build/includes/wallets-core.php:592 build/includes/wallets-core.php:646
-#: build/includes/wallets-core.php:702 build/includes/wallets-core.php:775
-#: build/includes/wallets-core.php:920 build/includes/wallets-core.php:1066
+#: build/includes/transactions.php:721 build/includes/wallets-core.php:521
+#: build/includes/wallets-core.php:615 build/includes/wallets-core.php:669
+#: build/includes/wallets-core.php:725 build/includes/wallets-core.php:798
+#: build/includes/wallets-core.php:943 build/includes/wallets-core.php:1089
 msgid "Not allowed"
 msgstr ""
 
@@ -1572,14 +1572,14 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: build/includes/wallets-core.php:341
+#: build/includes/wallets-core.php:364
 #, php-format
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: build/includes/wallets-core.php:352
+#: build/includes/wallets-core.php:375
 #, php-format
 msgid ""
 "The PHP version you are using, %s has reached end-of-life! Please talk to "
@@ -1587,86 +1587,86 @@ msgid ""
 "php.net/supported-versions.php\" target=\"_blank\">supported version</a>."
 msgstr ""
 
-#: build/includes/wallets-core.php:363
+#: build/includes/wallets-core.php:386
 #, php-format
 msgid ""
 "You are using WordPress %s. This plugin has been tested with %s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: build/includes/wallets-core.php:439
+#: build/includes/wallets-core.php:462
 msgid "Plugin version"
 msgstr ""
 
-#: build/includes/wallets-core.php:440
+#: build/includes/wallets-core.php:463
 msgid "Git SHA"
 msgstr ""
 
-#: build/includes/wallets-core.php:441
+#: build/includes/wallets-core.php:464
 msgid "PHP version"
 msgstr ""
 
-#: build/includes/wallets-core.php:442
+#: build/includes/wallets-core.php:465
 msgid "WordPress version"
 msgstr ""
 
-#: build/includes/wallets-core.php:443
+#: build/includes/wallets-core.php:466
 msgid "MySQL version"
 msgstr ""
 
-#: build/includes/wallets-core.php:444
+#: build/includes/wallets-core.php:467
 msgid "DB prefix"
 msgstr ""
 
-#: build/includes/wallets-core.php:445
+#: build/includes/wallets-core.php:468
 msgid "Supports cURL"
 msgstr ""
 
-#: build/includes/wallets-core.php:446
+#: build/includes/wallets-core.php:469
 msgid "Is multisite"
 msgstr ""
 
-#: build/includes/wallets-core.php:447
+#: build/includes/wallets-core.php:470
 msgid "Is network activated"
 msgstr ""
 
-#: build/includes/wallets-core.php:448
+#: build/includes/wallets-core.php:471
 msgid "PHP max execution time"
 msgstr ""
 
-#: build/includes/wallets-core.php:460
+#: build/includes/wallets-core.php:483
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: build/includes/wallets-core.php:505
+#: build/includes/wallets-core.php:528
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: build/includes/wallets-core.php:509
+#: build/includes/wallets-core.php:532
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: build/includes/wallets-core.php:813
+#: build/includes/wallets-core.php:836
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: build/includes/wallets-core.php:837
+#: build/includes/wallets-core.php:860
 msgid "Must withdraw positive amount"
 msgstr ""
 
-#: build/includes/wallets-core.php:843 build/includes/wallets-core.php:959
+#: build/includes/wallets-core.php:866 build/includes/wallets-core.php:982
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: build/includes/wallets-core.php:924
+#: build/includes/wallets-core.php:947
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: build/includes/wallets-core.php:953
+#: build/includes/wallets-core.php:976
 msgid "Must move positive amount"
 msgstr ""

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.8.2 =
+- Fix: Bug introduced in 2.8.1 where deposits could be duplicated in some situations.
+
 = 2.8.1 =
 - Add: Changes throughout the plugin for currencies that use additional information in transactions besides a destination address (e.g. Monero, Ripple, etc).
 - Fix: Some issues with language domains in translated strings.
@@ -630,7 +633,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.8.1 introduces support for currencies that require additional information in transactions besides a destination address (e.g. Monero, Ripple, etc).
+Version 2.8.2 fixes an important bug introduced in 2.8.1.
 
 == Donating ==
 

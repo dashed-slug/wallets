@@ -172,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.8.1',
+					'2.8.2',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -185,7 +185,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.8.1',
+					'2.8.2',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -198,7 +198,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.8.1'
+					'2.8.2'
 				);
 			}
 		}
@@ -274,13 +274,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision = 10;
+			$current_db_revision = 11;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 
 				// remove old unique constraints before recreating them
 				$wpdb->query( "ALTER TABLE $table_name_adds DROP INDEX `uq_ad_idx`" );
-				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_txid`" );
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
 				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid`" );
 
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -293,7 +293,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
 				address varchar(255) NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
-				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'extra info required by some coins such as XMR',
+				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
 				txid varchar(255) DEFAULT NULL COMMENT 'blockchain transaction id',
 				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
@@ -310,11 +310,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				PRIMARY KEY  (id),
 				INDEX account_idx (account),
 				INDEX blogid_idx (blog_id),
-				UNIQUE KEY `uq_tx_idx` (`address`, `symbol`, `extra`)
+				UNIQUE KEY `uq_tx_idx` (`txid`, `symbol`)
 				) $charset_collate;";
 
 				dbDelta( $sql );
-
 
 				$sql = "CREATE TABLE {$table_name_adds} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -322,7 +321,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'extra info required by some coins such as XMR',
+				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
 				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
 				PRIMARY KEY  (id),
 				INDEX retrieve_idx (account,symbol),
@@ -332,6 +331,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				dbDelta( $sql );
 
+
+				// make sure that constraints are correct.
+				// on 2.8.1 constraints allowed multiple txs with same txid. need to delete duplicates and fix this.
+				// it's a good idea to keep this check here for the future.
+
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
+				$wpdb->query( "UPDATE {$table_name_txs} SET extra='' WHERE extra IS NULL;" );
+				$wpdb->query( "
+					DELETE FROM
+						$table_name_txs
+					USING
+						$table_name_txs,
+						$table_name_txs t2
+					WHERE
+						{$table_name_txs}.id > t2.id AND
+						{$table_name_txs}.txid = t2.txid AND
+						{$table_name_txs}.symbol = t2.symbol;" );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR'" );
+				$wpdb->query( "CREATE UNIQUE INDEX uq_tx_idx ON {$table_name_txs} (txid,symbol);" );
+
+				$wpdb->query( "ALTER TABLE {$table_name_adds} DROP INDEX uq_ad_idx;" );
+				$wpdb->query( "UPDATE {$table_name_adds} SET extra='' WHERE extra IS NULL;" );
+				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR';" );
+				$wpdb->query( "CREATE UNIQUE INDEX `uq_ad_idx` on {$table_name_adds} (address,symbol,extra);" );
 			}
 
 			// check for tx table
@@ -436,8 +459,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.8.1';
-			$data[ __( 'Git SHA', 'wallets' ) ] = 'be3f245';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.8.2';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'ee665ed';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
@@ -766,7 +789,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return void
 		 */
-		public function do_withdraw( $symbol, $address, $amount, $comment = '', $extra = null, $check_capabilities = false, $skip_confirm = false ) {
+		public function do_withdraw( $symbol, $address, $amount, $comment = '', $extra = '', $check_capabilities = false, $skip_confirm = false ) {
 			if (
 				$check_capabilities &&
 				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&

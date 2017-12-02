@@ -551,7 +551,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'category' => 'deposit',
 								'account' => $tx->account,
 								'address' => $tx->address,
-								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : null,
+								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
 								'txid' => $tx->txid,
 								'symbol' => $tx->symbol,
 								'amount' => number_format( $tx->amount, 10, '.', '' ),
@@ -621,7 +621,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'category' => 'withdraw',
 								'account' => $tx->account,
 								'address' => $tx->address,
-								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : null,
+								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
 								'txid' => $tx->txid,
 								'symbol' => $tx->symbol,
 								'amount' => number_format( $tx->amount, 10, '.', '' ),
@@ -685,7 +685,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				'address' => $address->address
 			);
 
-			$address_row['extra'] = isset( $address->extra ) && $address->extra ? $address->extra : null;
+			$address_row['extra'] = isset( $address->extra ) && $address->extra ? $address->extra : '';
 
 			$wpdb->insert(
 				$table_name_adds,
@@ -711,7 +711,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return integer The WordPress user ID for the account found.
 		 */
-		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false, $extra = null ) {
+		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false, $extra = '' ) {
 			global $wpdb;
 
 			if (
@@ -743,7 +743,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					$symbol,
 					$address,
 					$extra,
-					is_null( $extra )
+					$extra ? 0 : 1
 				) );
 
 				if ( is_null( $account ) ) {
