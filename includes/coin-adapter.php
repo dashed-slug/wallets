@@ -467,7 +467,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return string The pattern to use for formatting currency amounts.
 		 */
 		public function get_sprintf() {
-			return $this->get_symbol() . ' %01.8F';
+			return $this->get_symbol() . ' %01.8f';
 		}
 
 		/**

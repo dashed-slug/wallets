@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -278,6 +278,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.5.1 =
+- Fix: Minor JavaScript issue that prevented the frontend from working correctly with some coin adapters.
+
 = 2.5.0 =
 - Add: Balance information can now be inserted into WordPress menus. See *Appearance* &rarr; *Menus*.
 - Add: Pluggable validation mechanism for withdrawal addresses. Bitcoin addresses validated against `bs58check`.
@@ -487,7 +490,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.5.0 introduces a number of new features.
+Version 2.5.1 fixes a front-end bug introduced in 2.5.0.
 
 == Donating ==
 
