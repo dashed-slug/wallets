@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.10.2\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.10.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:27+0200\n"
+"POT-Creation-Date: 2017-12-02 19:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,8 +86,8 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: build/includes/adapters-list.php:96 build/includes/caps.php:90
-#: build/includes/cold-storage.php:114 build/includes/json-api.php:252
-#: build/includes/json-api.php:280 build/includes/transactions.php:800
+#: build/includes/cold-storage.php:114 build/includes/json-api.php:286
+#: build/includes/json-api.php:320 build/includes/transactions.php:800
 #: build/includes/transactions.php:979 build/includes/transactions.php:999
 #: build/includes/transactions.php:1019 build/includes/transactions.php:1038
 #: build/includes/transactions.php:1058 build/includes/transactions.php:1080
@@ -192,16 +192,34 @@ msgid "The dashed-slug can also be found on SteemIt:"
 msgstr ""
 
 #: build/includes/admin-menu.php:112
-msgid "Have your say!"
+msgid "Get the free PDF manual!"
+msgstr ""
+
+#: build/includes/admin-menu.php:114
+msgid ""
+"Visit the dashed-slug <a href=\"https://dashed-slug.net/downloads\">download "
+"area</a>."
 msgstr ""
 
 #: build/includes/admin-menu.php:115
+msgid "Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>."
+msgstr ""
+
+#: build/includes/admin-menu.php:116
+msgid "You will find a PDF file in the ZIP file. RTFM! :-)"
+msgstr ""
+
+#: build/includes/admin-menu.php:121
+msgid "Have your say!"
+msgstr ""
+
+#: build/includes/admin-menu.php:124
 msgid ""
 "Did you find this plugin useful? Leave a review on <a href=\"https://"
 "wordpress.org/support/plugin/wallets/reviews/\">wordpress.org</a>."
 msgstr ""
 
-#: build/includes/admin-menu.php:116
+#: build/includes/admin-menu.php:125
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a href=\"https://wordpress."
 "org/support/plugin/wallets\">wordpress.org support forum</a> for the main "
@@ -209,60 +227,60 @@ msgid ""
 "net</a> support forums for the extensions."
 msgstr ""
 
-#: build/includes/admin-menu.php:117
+#: build/includes/admin-menu.php:126
 msgid ""
 "Something else on your mind? <a href=\"https://dashed-slug.net/contact"
 "\">Contact me</a>."
 msgstr ""
 
-#: build/includes/admin-menu.php:122
+#: build/includes/admin-menu.php:131
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: build/includes/admin-menu.php:124
+#: build/includes/admin-menu.php:133
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: build/includes/admin-menu.php:127
+#: build/includes/admin-menu.php:136
 msgid ""
 "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: build/includes/admin-menu.php:128
+#: build/includes/admin-menu.php:137
 msgid ""
 "Donate a few shatoshi to the dashed-slug Bitcoin address: <a href="
 "\"bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-"
 "slug&message=donation\">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>."
 msgstr ""
 
-#: build/includes/admin-menu.php:178
+#: build/includes/admin-menu.php:187
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: build/includes/admin-menu.php:182
+#: build/includes/admin-menu.php:191
 msgid "App extensions"
 msgstr ""
 
-#: build/includes/admin-menu.php:184
+#: build/includes/admin-menu.php:193
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: build/includes/admin-menu.php:191
+#: build/includes/admin-menu.php:200
 msgid "Coin adapters"
 msgstr ""
 
-#: build/includes/admin-menu.php:193
+#: build/includes/admin-menu.php:202
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for additional "
 "cryptocurrencies. "
 msgstr ""
 
-#: build/includes/admin-menu.php:217
+#: build/includes/admin-menu.php:226
 msgid "Installed"
 msgstr ""
 
@@ -1033,9 +1051,9 @@ msgstr ""
 msgid "Must be logged in"
 msgstr ""
 
-#: build/includes/json-api.php:125 build/includes/json-api.php:148
-#: build/includes/json-api.php:201 build/includes/json-api.php:227
-#: build/includes/json-api.php:246 build/includes/json-api.php:274
+#: build/includes/json-api.php:131 build/includes/json-api.php:161
+#: build/includes/json-api.php:221 build/includes/json-api.php:254
+#: build/includes/json-api.php:280 build/includes/json-api.php:314
 #: build/includes/transactions.php:754 build/includes/wallets-core.php:625
 #: build/includes/wallets-core.php:719 build/includes/wallets-core.php:773
 #: build/includes/wallets-core.php:829 build/includes/wallets-core.php:902
@@ -1043,26 +1061,26 @@ msgstr ""
 msgid "Not allowed"
 msgstr ""
 
-#: build/includes/json-api.php:142
+#: build/includes/json-api.php:148
 msgid "Could not get info about users: "
 msgstr ""
 
-#: build/includes/json-api.php:219
+#: build/includes/json-api.php:239
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: build/includes/json-api.php:264
+#: build/includes/json-api.php:298
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: build/includes/json-api.php:292
+#: build/includes/json-api.php:332
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: build/includes/json-api.php:296
+#: build/includes/json-api.php:336
 #, php-format
 msgid "Unknown action %s specified"
 msgstr ""

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 2.10.2
+Stable tag: 2.10.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -346,6 +346,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.10.3 =
+- Add: Admins with `manage_wallets` can now view deposit addresses and balances of users in the user profile screen.
+- Improve: Better cache control in the JSON API.
+- Fix: Bug with the `get_transactions` API where data was not returned when using the friendly URI form instead of GET parameters.
+- Fix: Warnings, errors and other notices that are relevant to wallet managers are now only shown to users with `manage_wallets`.
+- Fix: Invalid `get_transactions` JSON API request with NaN argument while the frontend UI initializes.
+- Add: Instructions for downloading the documentation added in the about section.
 
 = 2.10.2 =
 - Add: Exchange rates are now available over tor. Only enable this if running WordPress on an Onion hidden service.

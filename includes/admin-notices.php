@@ -46,12 +46,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( 'assets/scripts/wallets-notify.min.js', DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'2.10.2'
+				'2.10.3'
 			);
 
 		}
 
 		public function action_admin_notices() {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				return;
+			}
+
 			foreach ( explode( ',', self::TYPES ) as $type ) {
 				foreach ( $this->admin_notices->{$type} as $admin_notice ) {
 

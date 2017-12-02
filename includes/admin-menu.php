@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This is the main "Wallets" admin screen that features the coin adapters list. The list itself is implemented in admin-menu-adapter-list.php .
+ * This is the main "Wallets" admin screen that features the about section.
  */
 
 // don't load directly
@@ -106,6 +106,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 				<a href="https://steemit.com/@dashed-slug.net">https://steemit.com/@dashed-slug.net</a>
 
+			</div>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Get the free PDF manual!', 'wallets' ); ?></h2>
+				<ol>
+					<li><?php echo __( 'Visit the dashed-slug <a href="https://dashed-slug.net/downloads">download area</a>.', 'wallets' ); ?></li>
+					<li><?php echo __( 'Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>.', 'wallets' ); ?></li>
+					<li><?php echo __( 'You will find a PDF file in the ZIP file. RTFM! :-)', 'wallets' ); ?></li>
+				</ol>
 			</div>
 
 			<div class="card">

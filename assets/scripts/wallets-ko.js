@@ -41,6 +41,7 @@
 				$.ajax({
 					dataType: 'json',
 					async: false,
+					cache: true,
 					data: { '__wallets_action': 'get_coins_info' },
 					success: function( response ) {
 						if ( response.result != 'success' ) {
@@ -72,6 +73,7 @@
 				$.ajax({
 					dataType: 'json',
 					async: false,
+					cache: true,
 					data: { '__wallets_action': 'get_nonces' },
 					success: function( response ) {
 						if ( response.result != 'success' ) {
@@ -164,6 +166,7 @@
 				$.ajax({
 						dataType: 'json',
 						async: false,
+						cache: true,
 						data: { '__wallets_action': 'get_users_info' },
 						success: function( response ) {
 								if ( response.result != 'success' ) {
@@ -194,6 +197,7 @@
 
 				$.ajax({
 					dataType: 'json',
+					cache: false,
 					data: {
 						'__wallets_action' : 'do_move',
 						'__wallets_move_toaccount' : user,
@@ -274,6 +278,7 @@
 
 				$.ajax({
 					dataType: 'json',
+					cache: false,
 					data: {
 						'__wallets_action' : 'do_withdraw',
 						'__wallets_withdraw_address' : address,
@@ -316,13 +321,18 @@
 				var symbol = self.selectedCoin();
 				var transactions = [];
 
-				if ( 'string' !== typeof self.selectedCoin() ) {
+				if ( 'string' !== typeof symbol ) {
+					return;
+				}
+
+				if ( isNaN( from ) ) {
 					return;
 				}
 
 				$.ajax({
 					dataType: 'json',
 					async: false,
+					cache: true,
 					data: {
 						'__wallets_action' : 'get_transactions',
 						'__wallets_tx_count' : count,

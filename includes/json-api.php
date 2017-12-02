@@ -46,8 +46,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				'index.php?' .
 				'__wallets_action=get_transactions&' .
 				'__wallets_symbol=$matches[1]&' .
-				'__wallets_count=$matches[2]&' .
-				'__wallets_from=$matches[3]',
+				'__wallets_tx_count=$matches[2]&' .
+				'__wallets_tx_from=$matches[3]',
 				'top'
 			);
 
@@ -118,6 +118,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 					} elseif ( 'get_users_info' == $action ) {
 
+						$seconds_to_cache = 600;
+						$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
+						header( "Expires: $ts" );
+						header( "Pragma: cache" );
+						header( "Cache-Control: max-age=$seconds_to_cache" );
+
 						if (
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER )
@@ -144,6 +150,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'get_coins_info' == $action ) {
+
+						$seconds_to_cache = 30;
+						$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
+						header( "Expires: $ts" );
+						header( "Pragma: cache" );
+						header( "Cache-Control: max-age=$seconds_to_cache" );
+
 						if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )  ) {
 							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 						}
@@ -194,6 +207,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'get_transactions' == $action ) {
+
+						$seconds_to_cache = 30;
+						$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
+						header( "Expires: $ts" );
+						header( "Pragma: cache" );
+						header( "Cache-Control: max-age=$seconds_to_cache" );
+
 						if (
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS )
@@ -221,6 +241,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'get_nonces' == $action ) {
+
+						$seconds_to_cache = 30;
+						$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
+						header( "Expires: $ts" );
+						header( "Pragma: cache" );
+						header( "Cache-Control: max-age=$seconds_to_cache" );
+
 						if (
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 							) {
@@ -239,6 +266,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'do_withdraw' == $action ) {
+
+						$ts = gmdate( "D, d M Y H:i:s" ) . " GMT";
+						header( "Expires: $ts" );
+						header( "Last-Modified: $ts" );
+						header( "Pragma: no-cache" );
+						header( "Cache-Control: no-cache, must-revalidate" );
+
 						if (
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
@@ -266,6 +300,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'do_move' == $action ) {
+
+						$ts = gmdate( "D, d M Y H:i:s" ) . " GMT";
+						header( "Expires: $ts" );
+						header( "Last-Modified: $ts" );
+						header( "Pragma: no-cache" );
+						header( "Cache-Control: no-cache, must-revalidate" );
 
 						if (
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
