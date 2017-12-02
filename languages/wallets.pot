@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.4\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -74,7 +74,7 @@ msgstr ""
 
 #: src/includes/admin-menu.php:40 src/includes/admin-menu.php:60
 #: src/includes/admin-menu.php:130 src/includes/caps.php:95
-#: src/includes/caps.php:143 src/includes/coin-adapter-bitcoin.php:54
+#: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:54
 #: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
 #: src/includes/coin-adapter.php:156 src/includes/coin-adapter.php:165
 #: src/includes/coin-adapter.php:185 src/includes/coin-adapter.php:238
@@ -214,30 +214,30 @@ msgstr ""
 msgid "Can withdraw cryptocurrencies from the site to an external address."
 msgstr ""
 
-#: src/includes/caps.php:108
+#: src/includes/caps.php:110
 msgid "Capabilities matrix"
 msgstr ""
 
-#: src/includes/caps.php:132 src/includes/caps.php:133
+#: src/includes/caps.php:134 src/includes/caps.php:135
 msgid "Capabilities"
 msgstr ""
 
-#: src/includes/caps.php:146
+#: src/includes/caps.php:148
 msgid "/* @echo name */ Capabilities"
 msgstr ""
 
-#: src/includes/caps.php:148
+#: src/includes/caps.php:150
 msgid ""
 "Users in WordPress are assigned to roles, and these roles have capabilities. "
 "Here you can set which wallets-related capabilities you want each user role "
 "to have."
 msgstr ""
 
-#: src/includes/caps.php:152
+#: src/includes/caps.php:154
 msgid "Read about Roles and Capabilities in the Codex."
 msgstr ""
 
-#: src/includes/caps.php:165
+#: src/includes/caps.php:167
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 

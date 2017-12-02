@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.4
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -258,8 +258,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.2.5 =
+- Fix: Administrator capabilities were erroneously being erased in 2.2.4 when editing other role capabilities
+
 = 2.2.4 =
-- Add: User is warned if WP_CRON_DISABLED is set.
+- Add: User is warned if DISABLE_WP_CRON is set.
 - Fix: Administrator is now unable to remove capabilities from self for safety.
 - Fix: Fees fields were being cleared when the clear button was pressed or after a successful transaction.
 - Fix: Suppress duplicate warnings in logs when inserting existing user address
@@ -375,7 +378,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.2.4 fixes a collection of minor issues.
+Version 2.2.5 fixes a defect introduced in 2.2.4 regarding administrator capabilities.
 
 == Donating ==
 
