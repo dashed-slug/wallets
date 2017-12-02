@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.6\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:00+0200\n"
+"POT-Creation-Date: 2017-12-02 19:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,51 +35,43 @@ msgid "Total Balance"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:19
-msgid "Total in Accounts"
-msgstr ""
-
-#: src/includes/admin-menu-adapter-list.php:20
-msgid "Withdrawable Balance"
-msgstr ""
-
-#: src/includes/admin-menu-adapter-list.php:21
 msgid "Adapter Status"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:66
-#: src/includes/admin-menu-adapter-list.php:70
-msgid "n/a"
-msgstr ""
-
-#: src/includes/admin-menu-adapter-list.php:68
+#: src/includes/admin-menu-adapter-list.php:57
 msgid "Responding"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:71
-msgid "Not Responding"
+#: src/includes/admin-menu-adapter-list.php:59
+msgid "n/a"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:121
+#: src/includes/admin-menu-adapter-list.php:60
+#, php-format
+msgid "Not Responding: %s"
+msgstr ""
+
+#: src/includes/admin-menu-adapter-list.php:106
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:122
+#: src/includes/admin-menu-adapter-list.php:107
 msgid "Settings"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:130
+#: src/includes/admin-menu-adapter-list.php:115
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:131
+#: src/includes/admin-menu-adapter-list.php:116
 msgid "Export"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:140
+#: src/includes/admin-menu-adapter-list.php:125
 msgid "Deactivate the plugin that provides this adapter"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:141
+#: src/includes/admin-menu-adapter-list.php:126
 msgid "Deactivate"
 msgstr ""
 
@@ -270,94 +262,94 @@ msgid ""
 msgstr ""
 
 #: src/includes/bitcoin-adapter.php:526 src/includes/bitcoin-adapter.php:546
-#: src/includes/bitcoin-adapter.php:574 src/includes/bitcoin-adapter.php:597
-#: src/includes/bitcoin-adapter.php:620
+#: src/includes/bitcoin-adapter.php:566 src/includes/bitcoin-adapter.php:594
+#: src/includes/bitcoin-adapter.php:617 src/includes/bitcoin-adapter.php:640
 #, php-format
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:678
+#: src/includes/bitcoin-adapter.php:698
 #, php-format
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/core.php:165
+#: src/includes/core.php:168
 #, php-format
 msgid ""
 "%s could NOT create a transactions table (\"%s\") in the database. The "
 "plugin may not function properly."
 msgstr ""
 
-#: src/includes/core.php:282
+#: src/includes/core.php:285
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/core.php:286
+#: src/includes/core.php:289
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/core.php:324
+#: src/includes/core.php:327
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/core.php:451
+#: src/includes/core.php:482
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/core.php:454 src/includes/core.php:522
+#: src/includes/core.php:485 src/includes/core.php:556
 #, php-format
 msgid "Insufficient funds: %f + %f fees < %f"
 msgstr ""
 
-#: src/includes/core.php:460
+#: src/includes/core.php:491
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/core.php:519
+#: src/includes/core.php:553
 msgid "Cannot move negative amount"
 msgstr ""
 
-#: src/includes/core.php:767
+#: src/includes/core.php:801
 msgid "Adapter"
 msgstr ""
 
-#: src/includes/core.php:768
+#: src/includes/core.php:802
 msgid "Transaction"
 msgstr ""
 
-#: src/includes/core.php:769
+#: src/includes/core.php:803
 msgid "Error"
 msgstr ""
 
-#: src/includes/core.php:774
+#: src/includes/core.php:808
 msgid "The following errors occured while updating transactions: "
 msgstr ""
 
-#: src/includes/core.php:776
+#: src/includes/core.php:810
 msgid ""
 "Please check the settings of your coin adapters and make sure that the "
 "adapters can connect to your wallet daemons."
 msgstr ""
 
-#: src/includes/core.php:789
+#: src/includes/core.php:823
 msgid "You have performed a withdrawal."
 msgstr ""
 
-#: src/includes/core.php:804
+#: src/includes/core.php:838
 msgid "You have sent funds to another user."
 msgstr ""
 
-#: src/includes/core.php:820
+#: src/includes/core.php:854
 msgid "You have received funds from another user."
 msgstr ""
 
-#: src/includes/core.php:832
+#: src/includes/core.php:866
 msgid "You have performed a deposit."
 msgstr ""
 
-#: src/includes/core.php:842
+#: src/includes/core.php:876
 msgid "Transaction details follow"
 msgstr ""
 

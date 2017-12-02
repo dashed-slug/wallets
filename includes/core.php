@@ -29,19 +29,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		const TX_UPDATE_COUNT = 32;
 
 		/** error code for exception thrown while getting user info */
-		const ERR_GET_USERS_INFO		= -101;
+		const ERR_GET_USERS_INFO = -101;
 
 		/** error code for exception thrown while getting coins info */
-		const ERR_GET_COINS_INFO		= -102;
+		const ERR_GET_COINS_INFO = -102;
 
 		/** error code for exception thrown while getting transactions */
-		const ERR_GET_TRANSACTIONS		= -103;
+		const ERR_GET_TRANSACTIONS = -103;
 
 		/** error code for exception thrown while performing withdrawals */
-		const ERR_DO_WITHDRAW			= -104;
+		const ERR_DO_WITHDRAW = -104;
 
 		/** error code for exception thrown while transferring funds between users */
-		const ERR_DO_MOVE				= -105;
+		const ERR_DO_MOVE = -105;
+
+		/** error code for exception thrown due to user not being logged in */
+		const ERR_NOT_LOGGED_IN = -106;
 
 		/** @internal */
 		private static $_instance;
@@ -151,7 +154,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'1.0.6'
+				'1.1.0'
 			);
 		}
 
@@ -331,26 +334,53 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/**
 		 * Get user's wallet balance.
 		 *
-		 * Get the current logged in user's total wallet balance for a specific coin. If a minimum number of confirmations
-		 * is specified, only deposits with than number of confirmations or higher are counted. All withdrawals and
-		 * moves are counted at all times.
+		 * Get the current logged in user's total wallet balance for the specified coin.
+		 *
+		 * Internally the balance is calculated by summing all `getreceivedbyaddress` for all the user's deposit addresses,
+		 * minus all moves and withdrawals associated with the user. Calls to `getreceivedbyaddress` are cached for 1 minute.
 		 *
 		 * @api
 		 * @since 1.0.0
-		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
-		 * @param integer $minconf (optional) Minimum number of confirmations. If left out, the default adapter setting is used.
-		 * @return float The balance.
+		 * @return float The user's balance.
 		 */
-		public function get_balance( $symbol, $minconf = null ) {
+		public function get_balance( $symbol ) {
 			$adapter = $this->get_coin_adapters( $symbol );
-
-			if ( ! is_int( $minconf ) ) {
-				$minconf = $adapter->get_minconf();
-			}
 
 			global $wpdb;
 			$table_name_txs = self::$table_name_txs;
-			$balance = $wpdb->get_var( $wpdb->prepare(
+			$table_name_adds = self::$table_name_adds;
+
+			$balance = 0;
+
+			$deposit_addresses = $wpdb->get_results( $wpdb->prepare(
+				"
+					SELECT
+						address
+					FROM
+						$table_name_adds
+					WHERE
+						symbol = %s AND
+						account = %d
+				",
+				$symbol,
+				$this->account
+			) );
+
+			// plus all deposits
+			foreach ( $deposit_addresses as &$deposit_address_row ) {
+				$deposit_address = $deposit_address_row->address;
+
+				$transient_key = md5( "wallets-received-$deposit_address");
+				$address_deposit_amount = get_transient( $transient_key );
+				if ( false === $address_deposit_amount ) {
+					$address_deposit_amount = $adapter->get_received_by_address( $deposit_address );
+					set_transient( $transient_key, $address_deposit_amount, MINUTE_IN_SECONDS );
+				}
+				$balance += $address_deposit_amount;
+			}
+
+			// minus all payments and withdrawals
+			$balance += floatval( $wpdb->get_var( $wpdb->prepare(
 				"
 					SELECT
 						sum(amount)
@@ -358,15 +388,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						$table_name_txs
 					WHERE
 						symbol = %s AND
-						account = %s AND (
-								confirmations >= %d OR
-								category != 'deposit'
-							)
+						account = %s AND
+						category != 'deposit'
 				",
 				$adapter->get_symbol(),
-				intval( $this->account ),
-				intval( $minconf )
-			) );
+				intval( $this->account )
+			) ) );
+
 			return floatval( $balance );
 		}
 
@@ -440,8 +468,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$adapter = $this->get_coin_adapters( $symbol );
 
 			$table_name_txs = self::$table_name_txs;
+			$table_name_adds = self::$table_name_adds;
+
 			global $wpdb;
-			$wpdb->query( "LOCK TABLES $table_name_txs WRITE" );
+			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_adds READ" );
+
 			try {
 				$balance = $this->get_balance( $symbol );
 				$fee = $adapter->get_withdraw_fee();
@@ -508,8 +539,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$adapter = $this->get_coin_adapters( $symbol );
 
 			$table_name_txs = self::$table_name_txs;
+			$table_name_adds = self::$table_name_adds;
+
 			global $wpdb;
-			$wpdb->query( "LOCK TABLES $table_name_txs WRITE" );
+			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_adds READ" );
+
 			try {
 				$balance = $this->get_balance( $symbol );
 				$fee = $adapter->get_move_fee();

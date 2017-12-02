@@ -27,7 +27,11 @@
 			self.withdrawCommentTo = ko.observable();
 
 			var xhrErrorHandler = function( jqXHR, textStatus, errorThrown ) {
-				alert( "Could not contact server.\nStatus: " + textStatus + "\nError: " + errorThrown );
+				if ( 401 == jqXHR.status ) {
+					$( '.dashed-slug-wallets' ).replaceWith( '<div class="dashed-slug-wallets">' + jqXHR.responseJSON.message + '</div>' );
+				} else {
+					alert( "Could not contact server.\nStatus: " + textStatus + "\nError: " + errorThrown );
+				}
 			};
 
 			var serverErrorHandler = function( response ) {

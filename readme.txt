@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.2
-Stable tag: 1.0.6
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -108,7 +108,8 @@ What follows is step-by-step instructions:
 
    *Take note of the
    [memory, disk, and bandwidth requirements](https://bitcoin.org/en/full-node#minimum-requirements)
-   and check against the resources available on your server.*
+   and check against the resources available on your server.* If you find that running a full node is too heavy on
+   your server's resources, please see the FAQ section below.
 
 
 4. **Configure the bitcoin adapter on your WordPress installation.**
@@ -167,6 +168,29 @@ At a minimum you should do the following:
 
 1. Install a security plugin such as [Wordfence](https://infinitewp.com/addons/wordfence/?ref=260).
 2. Read the Codex resources on [Hardening WordPress](https://codex.wordpress.org/Hardening_WordPress).
+
+= Do I really need to run a full node? bitcoind is too resource-hungry for my server. =
+
+Running a full node requires the full blockchain to be downloaded.
+
+From version 1.1.0 onward, this plugin is compatible with the [bittiraha-walletd](https://github.com/prasos/bittiraha-walletd) wallet.
+From the project's description on GitHub:
+
+> Lightweight Bitcoin RPC compatible HD wallet
+> This project is meant as a drop-in replacement for bitcoind for use in lightweight servers.
+
+This is a wallet based on `bitcoinj` and does not store the blockchain locally.
+
+A downside is that the `walletnotify` mechanism and the `listtransactions` command are not implemented.
+**This means that there is no easy way for the plugin to be notified of deposits.**
+Deposits will not be recorded in the transactions table.
+Users will not be emailed when they perform deposits and they will not be able to see their deposits
+in the `[wallets_transactions]` UI. Deposits will correctly affect users' balances.
+You have been warned.
+
+Soon there will be a coin adapter based on the online `blockchain.info` service.
+This will be another option for running a Bitcoin wallet without the overhead of a local copy of the blockchain.
+Stay tuned.
 
 = How can I integrate it with my site? =
 
@@ -228,6 +252,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 1.1.0 =
+* Add: Compatibility with the `prasos/bittiraha-walletd` lightweight wallet (see FAQ).
+* Fix: Users who are not logged in are not nagged with an alert box. Shortcode UIs now display "Must be logged in" message instead.
+* Simplified the adapters list. There will be an entire admin panel about the removed information in a future version.
+* Add: Adapters list now gives meaningful errors for unresponsive coin adapters.
+
 = 1.0.6 =
 * Made compatible with PHP versions earlier than 5.5
 * Added warning in readme about running on PHP versions that have reached end-of-life
@@ -261,7 +291,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-1.0.6 is a patch release. It introduces support for PHP installations earlier than 5.5. The plugin is tested on 5.3.
+1.1.0 introduces compatibility with the `prasos/bittiraha-walletd` lightweight wallet (see FAQ).
+This is in response to users requesting a way to run the plugin without a full Bitcoin node.
+
+This release breaks compatibility with existing altcoin adapters.
+If you have purchased access to altcoin adapters, please update them to their latest versions:
+
+* wallets-feathercoin 1.0.1
+* wallets-litecoin 1.0.3
+
 
 == Donating ==
 

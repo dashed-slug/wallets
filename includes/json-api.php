@@ -101,7 +101,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						}
 
 					} elseif ( ! is_user_logged_in() ) {
-						throw new Exception( __( 'Must be logged in' ) );
+						throw new Exception( __( 'Must be logged in' ), Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN );
 
 					} elseif ( 'get_users_info' == $action ) {
 						try {
@@ -232,7 +232,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['message'] .= ': ' . $e->getMessage();
 					}
 				}
-				wp_send_json( $response );
+				wp_send_json(
+					$response,
+					Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ? 401 : 200
+				);
 			}
 		}
 	}

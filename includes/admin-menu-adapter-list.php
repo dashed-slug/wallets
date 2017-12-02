@@ -16,8 +16,6 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 			'symbol'		=> esc_html__('Coin Symbol', 'wallets' ),
 			'name'			=> esc_html__('Coin Name', 'wallets' ),
 			'balance'		=> esc_html__('Total Balance', 'wallets' ),
-			'inaccounts'	=> esc_html__('Total in Accounts', 'wallets' ),
-			'withdrawable'	=> esc_html__('Withdrawable Balance', 'wallets' ),
 			'status'		=> esc_html__('Adapter Status', 'wallets' ),
 		);
 	}
@@ -31,8 +29,6 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 			'symbol'		=> array( 'symbol', false ),
 			'name'			=> array( 'name', true ),
 			'balance'		=> array( 'balance', false),
-			'inaccounts'		=> array( 'inaccounts', false),
-			'withdrawable'	=> array( 'withdrawable', false),
         );
     }
 
@@ -53,22 +49,15 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 		$adapters = apply_filters( 'wallets_coin_adapters', array() );
 		$this->items = array();
-		$user_balance_sums = $this->get_user_balance_sums();
 
 		foreach ( $adapters as $symbol => &$adapter ) {
 
 			try {
 				$balance = $adapter->get_balance();
-				if ( isset( $user_balance_sums[ $symbol ] ) ) {
-					$inaccounts = $user_balance_sums[ $symbol ];
-					$withdrawable = $balance - $inaccounts;
-				} else {
-					$inaccounts = $withdrawable = __( 'n/a', 'wallets' );
-				}
 				$status = esc_html__( 'Responding', 'wallets' );
 			} catch ( Exception $e ) {
 				$inaccounts = $withdrawable = $balance = esc_html__( 'n/a', 'wallets' );
-				$status = esc_html__( 'Not Responding', 'wallets' );
+				$status = sprintf( esc_html__( 'Not Responding: %s', 'wallets' ), $e->getMessage() );
 			}
 
 			$format = $adapter->get_sprintf();
@@ -78,8 +67,6 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 				'symbol' => $adapter->get_symbol(),
 				'name' => $adapter->get_name(),
 				'balance' => sprintf( $format, $balance ),
-				'inaccounts' => sprintf( $format, $inaccounts ),
-				'withdrawable' => sprintf( $format, $withdrawable ),
 				'status' => $status
 			);
 		};
@@ -92,8 +79,6 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 			case 'symbol':
 			case 'name':
 			case 'balance':
-			case 'inaccounts':
-			case 'withdrawable':
 			case 'status':
 				return esc_html( $item[ $column_name ] );
  			case 'icon':
@@ -155,31 +140,5 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		}
 
 		return sprintf('%1$s %2$s', $item['symbol'], $this->row_actions( $actions ) );
-	}
-
-	private function get_user_balance_sums() {
-		global $wpdb;
-
-		$table_name_txs = "{$wpdb->prefix}wallets_txs";
-
-		$results = $wpdb->get_results( "
-			SELECT
-				symbol,
-				SUM(amount) AS total
-			FROM
-				$table_name_txs
-			GROUP BY
-				symbol
-		" );
-
-		$user_balance_sums = array();
-
-		if ( false !== $results ) {
-			foreach ( $results as $result ) {
-				$user_balance_sums[ $result->symbol ] = floatval( $result->total );
-			}
-		}
-
-		return $user_balance_sums;
 	}
 }

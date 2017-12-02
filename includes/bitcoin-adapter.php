@@ -525,7 +525,27 @@ CFG;
 			if ( false === $result ) {
 				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
-			return $result;
+			return floatval( $result );
+		}
+
+		/**
+		 * Total amount of coins ever deposited to an address.
+		 *
+		 * This corresponds directly to `getreceivedbyaddress` in Bitcoin core and friends.
+		 *
+		 * @api
+		 * @uses Dashed_Slug_Wallets_Bitcoin->get_minconf()
+		 * @return number Total amount of coins ever deposited to specified address.
+		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 */
+
+		public function get_received_by_address( $address ) {
+			$result = $this->rpc->getreceivedbyaddress( $address, $this->get_minconf() );
+
+			if ( false === $result ) {
+				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+			}
+			return floatval( $result );
 		}
 
 		/**
