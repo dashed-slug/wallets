@@ -100,12 +100,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 					if ( 'notify' == $action ) {
 						try {
-							$notification = new stdClass();
-							$notification->symbol = strtoupper( sanitize_text_field( $wp->query_vars['__wallets_symbol'] ) );
-							$notification->type = strtolower( sanitize_text_field( $wp->query_vars['__wallets_notify_type'] ) );
-							$notification->message = sanitize_text_field( $wp->query_vars['__wallets_notify_message'] );
+							$symbol = strtoupper( sanitize_text_field( $wp->query_vars['__wallets_symbol'] ) );
+							$type = strtolower( sanitize_text_field( $wp->query_vars['__wallets_notify_type'] ) );
+							$message = sanitize_text_field( $wp->query_vars['__wallets_notify_message'] );
 
-							$core->notify( $notification );
+							do_action( "wallets_notify_{$type}_{$symbol}", $message );
 
 							$response['result'] = 'success';
 

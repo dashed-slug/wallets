@@ -28,18 +28,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			switch ( $action ) {
 
-				case 'settings':
-					if ( ! current_user_can( 'manage_wallets' ) )  {
-						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-					}
-
-					if ( is_object( $adapter ) ) {
-						$url = admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $adapter->get_adapter_name(), null, 'save' ) );
-						Header( "Location: $url" );
-						exit;
-					}
-					break;
-
 				case 'export':
 					if ( ! current_user_can( 'manage_wallets' ) )  {
 						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
@@ -141,27 +129,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			?><h1><?php echo 'Bitcoin and Altcoin Wallets' ?></h1>
 
-			<div class="notice notice-warning"><h2 style="color: red"><?php
+			<div class="notice notice-warning"><h2><?php
 			esc_html_e( 'IMPORTANT SECURITY DISCLAIMER:', 'wallets' ); ?></h2>
 
-			<p><?php esc_html_e( 'By using this free plugin you assume all responsibility for handling ' .
+			<p><?php esc_html_e( 'By using this free plugin you accept all responsibility for handling ' .
 			'the account balances for all your users. Under no circumstances is dashed-slug.net ' .
 			'or any of its affiliates responsible for any damages incurred by the use of this plugin. ' .
 			'Every effort has been made to harden the security of this plugin, ' .
 			'but its safe operation is your responsibility and depends on your site being secure overall. ' .
 			'You, the administrator, must take all necessary precautions to secure your WordPress installation ' .
 			'before you connect it to any live wallets. ' .
-			'You are strongly recommended to take the following actions (at a minimum):', 'wallets'); ?></p>
+			'You are strongly advised to take the following actions (at a minimum):', 'wallets'); ?></p>
 			<ol><li><a href="https://codex.wordpress.org/Hardening_WordPress" target="_blank"><?php
 			esc_html_e( 'educate yourself about hardening WordPress security', 'wallets' ); ?></a></li>
-			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank"
-			title="This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking."><?php
-			esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li></ol><p><?php
+			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank" title="<?php esc_attr_e(
+				'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets' );
+			?>"><?php esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li>
+			<li><?php esc_html_e( 'Enable SSL on your site, if you have not already done.', 'wallets' );
+			?></li></ol><p><?php
 			esc_html_e( 'By continuing to use the Bitcoin and Altcoin Wallets plugin, ' .
-			'you agree that you have read and understood this disclaimer.', 'wallets' );
+			'you indicate that you have understood and agreed to this disclaimer.', 'wallets' );
 			?></p></div>
 
-			<h2><?php esc_html_e( 'Coin Adapters', 'wallets' ); ?></h2>
+			<h2><?php esc_html_e( 'Coin adapters currently enabled:', 'wallets' ); ?></h2>
 			<div class="wrap"><?php
 				$admin_adapter_list->prepare_items();
 				$admin_adapter_list->display();
@@ -285,6 +275,3 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 	new Dashed_Slug_Wallets_Admin_Menu();
 }
 
-include_once( 'admin-menu-caps.php' );
-include_once( 'admin-menu-cron.php' );
-include_once( 'admin-menu-email.php' );

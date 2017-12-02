@@ -26,16 +26,16 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option( 'wallets_email_deposit_message' );
 
 	// remove bitcoin builtin adapter settings
-	$option_slug = 'wallets_bitcoin-core-node_settings';
-	delete_option( "{$option_slug}_general_enabled" );
-	delete_option( "{$option_slug}_rpc_ip" );
-	delete_option( "{$option_slug}_rpc_port" );
-	delete_option( "{$option_slug}_rpc_user" );
-	delete_option( "{$option_slug}_rpc_password" );
-	delete_option( "{$option_slug}_rpc_path" );
-	delete_option( "{$option_slug}_fees_move" );
-	delete_option( "{$option_slug}_fees_withdraw" );
-	delete_option( "{$option_slug}_other_minconf" );
+	$option_slug = 'wallets-bitcoin-core-node-settings';
+	delete_option( "{$option_slug}-general-enabled" );
+	delete_option( "{$option_slug}-rpc-ip" );
+	delete_option( "{$option_slug}-rpc-port" );
+	delete_option( "{$option_slug}-rpc-user" );
+	delete_option( "{$option_slug}-rpc-password" );
+	delete_option( "{$option_slug}-rpc-path" );
+	delete_option( "{$option_slug}-fees-move" );
+	delete_option( "{$option_slug}-fees-withdraw" );
+	delete_option( "{$option_slug}-other-minconf" );
 
 	// remove user roles
 	$user_roles = array_keys( get_editable_roles() );

@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
-Tested up to: 4.7.3
-Stable tag: 2.1.2
+Tested up to: 4.7.4
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitco
 
 == Description ==
 
-https://www.youtube.com/watch?v=_dbkKHhEzRQ
+[youtube https://www.youtube.com/watch?v=_dbkKHhEzRQ ]
 
 = At a glance =
 
@@ -135,19 +135,19 @@ To Install the plugin and connect it to a Bitcoin full node using the built-in B
 
 = Disclaimer =
 
-**By using this free plugin you assume all responsibility for handling the account balances for all your users.**
+**By using this free plugin you accept all responsibility for handling the account balances for all your users.**
 Under no circumstances is **dashed-slug.net** or any of its affiliates responsible for any damages incurred by the use of this plugin.
 
 Every effort has been made to harden the security of this plugin, but its safe operation depends on your site being secure overall.
 You, the site administrator, must take all necessary precautions to secure your WordPress installation before you connect it to any live wallets.
 
-You are strongly recommended to take the following actions (at a minimum):
+You are strongly advised to take the following actions (at a minimum):
 
 - [educate yourself about hardening WordPress security](https://codex.wordpress.org/Hardening_WordPress)
 - [install a security plugin such as Wordfence](https://infinitewp.com/addons/wordfence/?ref=260 "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
-- **Enable SSL on your site** if you have not already done so. You should be already doing this for a number of reasons that will not be listed here.
+- **Enable SSL on your site** if you have not already done so.
 
-By continuing to use the Bitcoin and Altcoin Wallets plugin, you denote that you have read and agreed to the above disclaimer.
+By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that you have understood and agreed to this disclaimer.
 
 = Further reading =
 
@@ -257,6 +257,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.2.0 =
+- Change: Improved coin adapters API. All current adapters need update to the 2.2.0 API.
+- Add: Accompanying PDF documentation now provides instructions for creating a coin adapter (for developers).
+- Fix: Improved front-end error reporting in some cases.
+- Fix: Plugin would not activate on MySQL DBs with collation utf8mb4*
+- Improve: If the PHP cURL module is not installed, any RPC adapters are automatically disabled and the user is warned.
+
 = 2.1.2 =
 - Fix: Errors were not being reported on frontend. (JSON API now always returns status 200 OK even if carrying an error message.)
 
@@ -345,7 +352,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.1.1 is a minor patch release. If you have already installed 2.1.0 you can upgrade but there is no rush.
+This version features multiple improvements under the hood.
+
+If you install this version 2.2.0 you must upgrade all coin adapters that you have installed to their latest versions, 2.0.0.
 
 == Donating ==
 
@@ -363,7 +372,8 @@ These are all the ways you can show your support, if you so choose:
     - [Visual Composer](http://www.codecanyon.net/item/visual-composer-page-builder-for-wordpress/242431?ref=dashed-slug "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
     - [Wordfence](https://infinitewp.com/addons/wordfence/?ref=260 "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
     - [block.io](http://www.block.io/#_l_193__dashed-slug "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
+    - [CoinPayments.net](https://www.coinpayments.net/index.php?ref=288913d08a3402c24ed9481f72ba594d "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
 3. **Spread the word** to your friends.
 4. If you wish, you may **donate** any amount [via flattr](https://flattr.com/profile/dashed-slug)
-    or [via Bitcoin](bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?dashed-slug?message=donation)
+    or via Bitcoin at `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`.
 

@@ -11,12 +11,6 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-include_once( 'admin-notices.php' );
-include_once( 'admin-menu.php' );
-include_once( 'shortcodes.php' );
-include_once( 'json-api.php' );
-include_once( 'sidebar-widgets.php' );
-
 
 if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
@@ -52,10 +46,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		private static $_instance;
 
 		/** @internal */
-		private $account = "0";
+		private $_notices;
 
 		/** @internal */
-		private $_notices;
+		private $_adapters = array();
 
 		/** @internal */
 		private static $table_name_txs = '';
@@ -77,11 +71,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			}
 
 			// wp actions
+			add_action( 'plugins_loaded', array( &$this, 'action_plugins_loaded' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
 			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'action_plugin_action_links' ) );
 
+			// bind the built-in rpc coin adapter
+			add_action( 'wallets_declare_adapters', array( &$this, 'action_wallets_declare_adapters' ) );
 
 			// these actions record a transaction or address to the DB
 			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
@@ -111,10 +108,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/**
 		 * Notifications entrypoint. Bound to wallets_notify action, triggered from JSON API.
 		 * Routes `-blocknotify` and `-walletnotify` notifications from the daemon.
+		 * $type can be 'wallet' or 'block'.
+		 * $arg is a txid for wallet notifications or a blockhash for block notifications
 		 *
 		 * @internal
-		 * @param string $type Can be 'wallet' or 'block'
-		 * @param string $arg A txid for wallet type or a blockhash for block type
 		 */
 		public function notify( $notification ) {
 			do_action(
@@ -162,8 +159,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'2.1.2'
+				'2.2.0'
 			);
+		}
+
+		/** @internal */
+		public function action_wallets_declare_adapters() {
+			include_once 'coin-adapter-bitcoin.php';
 		}
 
 		/** @internal */
@@ -174,6 +176,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			return $links;
 		}
 
+		/**
+		 * Discovers all concrete subclasses of coin adapter and instantiates.
+		 * Any subclass constructors must not expect arguments.
+		 *
+		 * @internal */
+		public function action_plugins_loaded() {
+			do_action( 'wallets_declare_adapters' );
+
+			$this->_adapters = array();
+			foreach ( get_declared_classes() as $adapter_class_name ) {
+				if ( is_subclass_of( $adapter_class_name, 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
+					$adapter_class_reflection = new ReflectionClass( $adapter_class_name );
+					if ( ! $adapter_class_reflection->isAbstract() ) {
+						$adapter_instance = new $adapter_class_name;
+						if ( $adapter_instance->is_enabled() ) {
+							$adapter_symbol = $adapter_instance->get_symbol();
+							if ( isset( $this->_adapters[ $adapter_symbol ] ) ) {
+								$conflicting_adapter_instance = $this->_adapters[ $adapter_symbol ];
+								$this->_notices->error( sprintf(
+									__( 'The "%1$s" coin adapter can conflict with another adapter "%2$s" that is already registered for the coin %3$s (%4$s). ' .
+										'You must make sure that only one adapter is enabled at any time.', 'wallets'),
+									$adapter_instance->get_adapter_name(),
+									$conflicting_adapter_instance->get_adapter_name(),
+									$conflicting_adapter_instance->get_name(),
+									$conflicting_adapter_instance->get_symbol()
+								), "adapter_conflict_$adapter_symbol" );
+							} else {
+								$this->_adapters[ $adapter_symbol ] = $adapter_instance;
+							}
+						}
+					}
+				}
+			}
+		}
+
 		/** @internal */
 		public function action_admin_init() {
 			global $wpdb;
@@ -181,8 +218,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_txs = self::$table_name_txs;
 			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" ) != $table_name_txs ) {
 				$this->_notices->error( sprintf(
-						__( "%s could NOT create a transactions table (\"%s\") in the database. The plugin may not function properly.", 'wallets'),
-						'Bitcoin and Altcoin Wallets',
+						__( 'Bitcoin and Altcoin Wallets could NOT create a transactions table "%s" in the database. The plugin may not function properly.', 'wallets'),
 						$table_name_txs
 				) );
 			}
@@ -204,9 +240,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 3;
+			$current_db_revision = 4;
 
-			if ( $installed_db_revision < $current_db_revision ) {
+			if ( $installed_db_revision <= $current_db_revision ) {
 
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
@@ -214,8 +250,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
-				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}_users.ID',
-				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}_users.ID when category==move',
+				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
+				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
 				txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain transaction id',
 				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
@@ -235,17 +271,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$sql = "CREATE TABLE {$table_name_adds} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}_users.ID',
-				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
-				address varchar(255) NOT NULL,
+				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
+				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
 				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
 				PRIMARY KEY  (id),
 				INDEX retrieve_idx (account,symbol),
 				INDEX lookup_idx (address),
 				UNIQUE KEY `uq_ad_idx` (`address`, `symbol`)
-				) $charset_collate;";
+				) CHARACTER SET latin1 COLLATE latin1_bin;";
 
 				dbDelta( $sql );
+
+				// changing collation from db_revision 3 to 4 does not work with dbDelta so changing explicitly
+				$wpdb->query( "ALTER TABLE {$table_name_adds} CONVERT TO CHARACTER SET latin1 COLLATE latin1_bin;" );
 
 				if (	( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" )	== $table_name_txs ) &&
 						( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_adds}'" )	== $table_name_adds ) ) {
@@ -253,6 +292,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					update_option( 'wallets_db_revision', $current_db_revision );
 				}
 			}
+
+			// built-in bitcoin adapter settings
+
+			add_option( 'wallets-bitcoin-core-node-settings-general-enabled', 'on' );
+			add_option( 'wallets-bitcoin-core-node-settings-rpc-ip', '127.0.0.1' );
+			add_option( 'wallets-bitcoin-core-node-settings-rpc-port', '8332' );
+			add_option( 'wallets-bitcoin-core-node-settings-rpc-user', '' );
+			add_option( 'wallets-bitcoin-core-node-settings-rpc-password', '' );
+			add_option( 'wallets-bitcoin-core-node-settings-rpc-path', '' );
+
+			add_option( 'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
+			add_option( 'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00005000' );
+
+			add_option( 'wallets-bitcoin-core-node-settings-other-minconf', '6' );
 
 			// flush json api rules
 			self::flush_rules();
@@ -278,12 +331,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *
 		 * The adapters provide the low-level API for talking to the various wallets.
 		 *
+		 * @since 2.2.0 Only returns enabled adapters
 		 * @since 2.1.0 Added $check_capabilities argument
 		 * @since 1.0.0 Introduced
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
-		 * @return stdClass|array The adapter or array of adapters requested.
+		 * @return Dashed_Slug_Wallets_Coin_Adapter|array The instance of the adapter or array of adapters requested.
 		 */
 		public function get_coin_adapters( $symbol = null, $check_capabilities = false ) {
 			if ( $check_capabilities &&
@@ -292,25 +346,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
 
-			static $adapters = null;
-			if ( is_null( $adapters ) ) {
-				$adapters = apply_filters( 'wallets_coin_adapters', array() );
-			}
 			if ( is_null( $symbol ) ) {
-				return $adapters;
+				return $this->_adapters;
 			}
 			if ( ! is_string( $symbol ) ) {
 				throw new Exception( __( 'The symbol for the requested coin adapter was not a string.', 'wallets' ), self::ERR_GET_COINS_INFO );
 			}
 			$symbol = strtoupper( $symbol );
-			if ( ! isset ( $adapters[ $symbol ] ) || ! is_object( $adapters[ $symbol ] ) ) {
+			if ( ! isset ( $this->_adapters[ $symbol  ] ) ) {
 				throw new Exception( sprintf( __( 'The coin adapter for the symbol %s is not available.', 'wallets' ), $symbol ), self::ERR_GET_COINS_INFO );
 			}
-			return $adapters[ $symbol ];
+			return $this->_adapters[ $symbol ];
 		}
 
 		/**
-		 * Account ID corresponding to an address.
+		 *_adapters Account ID corresponding to an address.
 		 *
 		 * Returns the WordPress user ID for the account that has the specified address in the specified coin's wallet.
 		 *
@@ -753,10 +803,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param stdClass $tx The transaction details.
 		 */
 		public function action_wallets_transaction( $tx ) {
+
 			$adapter = $this->get_coin_adapters( $tx->symbol );
 
-			if ( false !== $adapter ) {
-				$created_time = date( DATE_ISO8601, $tx->created_time );
+			if ( $adapter ) {
+				$created_time = isset( $tx->created_time ) ? date( DATE_ISO8601, $tx->created_time ) : current_time( 'mysql', true );
 				$current_time_gmt = current_time( 'mysql', true );
 				$table_name_txs = self::$table_name_txs;
 
@@ -841,7 +892,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 									'fee' => $tx->fee,
 									'comment' => $tx->comment,
 									'created_time' =>	$created_time,
-									'confirmations'	=> 0
+									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0
 								),
 								array( '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%d' )
 							);

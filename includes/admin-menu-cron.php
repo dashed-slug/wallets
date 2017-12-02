@@ -111,18 +111,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Cron' ) ) {
 		 */
 		public function action_wallets_periodic_checks( ) {
 			foreach ( Dashed_Slug_Wallets::get_instance()->get_coin_adapters() as $adapter ) {
-				if ( method_exists( $adapter, 'cron' ) ) {
-					try {
-						$adapter->cron();
-					} catch ( Exception $e ) {
-						error_log(
-							sprintf( 'Function %s failed to run cron() on adapter %s and coin %s due to: %s',
-								__FUNCTION__,
-								$adapter->get_adapter_name(),
-								$adapter->get_name(),
-								$e->getMessage()
-						) );
-					}
+				try {
+					$adapter->cron();
+				} catch ( Exception $e ) {
+					error_log(
+						sprintf( 'Function %s failed to run cron() on adapter %s and coin %s due to: %s',
+							__FUNCTION__,
+							$adapter->get_adapter_name(),
+							$adapter->get_name(),
+							$e->getMessage()
+					) );
 				}
 			}
 		}

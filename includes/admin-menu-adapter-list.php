@@ -53,7 +53,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 			$this->get_sortable_columns(),
 		);
 
-		$adapters = apply_filters( 'wallets_coin_adapters', array() );
+		$adapters = Dashed_Slug_Wallets::get_instance()->get_coin_adapters();
 		$this->items = array();
 
 		foreach ( $adapters as $symbol => &$adapter ) {
@@ -74,7 +74,8 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 				'name' => $adapter->get_name(),
 				'adapter_name' => $adapter->get_adapter_name(),
 				'balance' => sprintf( $format, $balance ),
-				'status' => $status
+				'status' => $status,
+				'settings_url' => $adapter->get_settings_url(),
 			);
 		};
 
@@ -107,18 +108,17 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		return sprintf( '<input type="checkbox" name="adaper[]" value="%s" />', $item['symbol'] );
 	}
 
-	public function column_symbol( $item ) {
-		$actions = array(
-			'settings' => sprintf(
-				'<a href="?page=%s&action=%s&symbol=%s" title="' .
+	public function column_adapter_name( $item ) {
+
+		$actions = array();
+
+		if ( $item['settings_url'] ) {
+			$actions['settings'] = '<a href="' . esc_attr( $item['settings_url'] ) . '" title="' .
 				esc_attr__( 'Settings specific to this adapter', 'wallets') . '">' .
-				__( 'Settings', 'wallets' ) . '</a>',
+				__( 'Settings', 'wallets' ) . '</a>';
+		}
 
-				esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
-				'settings',
-				esc_attr( $item['symbol'] ) ),
-
-			'export' => sprintf(
+		$actions['export'] = sprintf(
 				'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
 				esc_attr__( 'Export transactions to .csv', 'wallets') . '">' .
 				__( 'Export', 'wallets' ) . '</a>',
@@ -126,9 +126,8 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 				esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
 				'export',
 				esc_attr( $item['symbol'] ),
-				wp_create_nonce( 'wallets-export-tx-' . $item['symbol'] ) ),
-		);
+				wp_create_nonce( 'wallets-export-tx-' . $item['symbol'] ) );
 
-		return sprintf('%1$s %2$s', $item['symbol'], $this->row_actions( $actions ) );
+		return sprintf('%1$s %2$s', $item['adapter_name'], $this->row_actions( $actions ) );
 	}
 }

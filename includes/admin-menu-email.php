@@ -76,7 +76,6 @@ EMAIL
 
 You have deposited ###AMOUNT### ###SYMBOL### from address ###ADDRESS###.
 
-Fees paid: ###FEE###
 Transaction ID: ###TXID###
 Transacton seen at: ###CREATED_TIME###
 
