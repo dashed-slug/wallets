@@ -4,7 +4,7 @@
 defined( 'ABSPATH' ) || die( '-1' );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
-	class Dashed_Slug_Wallets_Confirmations{
+	class Dashed_Slug_Wallets_Confirmations {
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
@@ -12,8 +12,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				add_action( 'network_admin_edit_wallets-menu-confirmations', array( &$this, 'update_network_options' ) );
+			}
+
 			// these are attached to the cron job and process transactions
-			add_action( 'wallets_periodic_checks', array( &$this, 'confirm_transactions' ) );
+			add_action( 'wallets_periodic_checks', array( &$this, 'cron' ) );
 
 			// these have to do with the email confirmation API
 			add_filter( 'query_vars', array( &$this, 'filter_query_vars' ), 0 );
@@ -21,12 +25,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 			add_action( 'wallets_send_user_confirm_email', array( &$this, 'send_user_confirm_email' ), 10, 1 );
 		}
 
-		public static function action_activate() {
-			add_option( 'wallets_confirm_withdraw_admin_enabled', 'on' );
-			add_option( 'wallets_confirm_withdraw_user_enabled', 'on' );
+		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_admin_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_user_enabled', 'on' );
 
-			add_option( 'wallets_confirm_withdraw_email_subject', __( 'Your withdrawal request requires confirmation. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_confirm_withdraw_email_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_email_subject', __( 'Your withdrawal request requires confirmation. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_email_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -45,11 +49,11 @@ EMAIL
 				, 'wallets' ) );
 
 
-			add_option( 'wallets_confirm_move_admin_enabled', '' );
-			add_option( 'wallets_confirm_move_user_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_admin_enabled', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_user_enabled', 'on' );
 
-			add_option( 'wallets_confirm_move_email_subject', __( 'Your internal funds transfer request requires confirmation. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_confirm_move_email_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_email_subject', __( 'Your internal funds transfer request requires confirmation. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_email_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -97,10 +101,11 @@ EMAIL
 					FROM
 						$table_name_txs
 					WHERE
-						blog_id = %d AND
+						( blog_id = %d || %d ) AND
 						nonce = %s
 					",
 					get_current_blog_id(),
+					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 					$nonce
 				) );
 
@@ -112,9 +117,9 @@ EMAIL
 
 				// determine what the next status should be so as to not wait for cron
 				if ( 'withdraw' == $tx_data->category ) {
-					$new_status = $tx_data->admin_confirm || ! get_option( 'wallets_confirm_withdraw_admin_enabled' ) ? 'pending' : 'unconfirmed';
+					$new_status = $tx_data->admin_confirm || ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ? 'pending' : 'unconfirmed';
 				} elseif ( 'move' == $tx_data->category ) {
-					$new_status = $tx_data->admin_confirm || ! get_option( 'wallets_confirm_move_admin_enabled' ) ? 'pending' : 'unconfirmed';
+					$new_status = $tx_data->admin_confirm || ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ? 'pending' : 'unconfirmed';
 				} else {
 					wp_die( __( 'Can only confirm transfers or withdrawals!', 'wallets' ) );
 				}
@@ -131,10 +136,11 @@ EMAIL
 							FROM
 								$table_name_txs
 							WHERE
-								blog_id = %d AND
+								( blog_id = %d || %d ) AND
 								txid LIKE %s
 							",
 							get_current_blog_id(),
+							is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 							"$txid_prefix%" ) );
 
 						if ( $tx_group ) {
@@ -157,11 +163,13 @@ EMAIL
 						status = %s,
 						nonce = NULL
 					WHERE
-						blog_id = %d AND
+						( blog_id = %d || %d ) AND
 						id IN ( $set_of_ids )
 					",
 					$new_status,
-					get_current_blog_id() ) );
+					get_current_blog_id(),
+					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+				) );
 
 				if ( $affected_rows > 0 ) {
 					if ( 'pending' == $new_status ) {
@@ -193,17 +201,17 @@ EMAIL
 			}
 
 			if ( 'move' == $row['category'] ) {
-				if ( ! get_option( 'wallets_confirm_move_user_enabled' ) ) {
+				if ( ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
 					return;
 				}
-				$subject = get_option( 'wallets_confirm_move_email_subject' );
-				$message = get_option( 'wallets_confirm_move_email_message' );
+				$subject = Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_email_subject' );
+				$message = Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_email_message' );
 			} elseif ( 'withdraw' == $row['category'] ) {
-				if ( ! get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
+				if ( ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
 					return;
 				}
-				$subject = get_option( 'wallets_confirm_withdraw_email_subject' );
-				$message = get_option( 'wallets_confirm_withdraw_email_message' );
+				$subject = Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_email_subject' );
+				$message = Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_email_message' );
 			} else {
 				return;
 			}
@@ -248,7 +256,7 @@ EMAIL
 					array(
 						'__wallets_confirm' => $row['nonce']
 					),
-					network_site_url( '/' ) );
+					site_url( '/' ) );
 
 				// variable substitution
 				foreach ( $row as $field => $val ) {
@@ -300,14 +308,28 @@ EMAIL
 
 					<li><?php printf( __( 'Admin confirmations are done by users with the <code>manage_wallets</code> capability, ' .
 						'via the <a href="%s">transactions</a> admin panel.', 'wallets' ),
-						admin_url( 'admin.php?page=wallets-menu-transactions' ) ); ?></li>
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-transactions' ) ); ?></li>
 				</ul>
 
 				<p><?php printf( __( 'Once a transaction is confirmed, the <a href="%s">cron job</a> will attemt to execute it. ' .
 					'On this page you can also set here the amount of times a failed transaction is retried. ', 'wallets' ),
-					admin_url( 'admin.php?page=wallets-menu-cron' ) ); ?></p>
+					call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-cron' ) ); ?></p>
 
-				<form method="post" action="options.php"><?php
+				<form method="post" action="<?php
+
+						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+							echo esc_url(
+								add_query_arg(
+									'action',
+									'wallets-menu-confirmations',
+									network_admin_url( 'edit.php' )
+								)
+							);
+						} else {
+							echo 'options.php';
+						}
+
+					?>"><?php
 					settings_fields( 'wallets-menu-confirmations' );
 					do_settings_sections( 'wallets-menu-confirmations' );
 					submit_button();
@@ -344,7 +366,7 @@ EMAIL
 
 		public function checkbox_cb( $arg ) {
 			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
-			<?php checked( get_option( $arg['label_for'] ), 'on' ); ?> />
+			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
@@ -352,7 +374,7 @@ EMAIL
 		public function text_cb( $arg ) {
 			?><input style="width:100%;" type="text"
 			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
-			echo esc_attr( get_option( $arg['label_for'] ) ); ?>" />
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
@@ -361,7 +383,7 @@ EMAIL
 			?><textarea style="width:100%;" rows="8"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php
-					echo esc_html( get_option( $arg['label_for'] ) ); ?></textarea>
+					echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
@@ -539,6 +561,45 @@ EMAIL
 			);
 		}
 
+		public function update_network_options() {
+			check_admin_referer( 'wallets-menu-confirmations-options' );
+
+			foreach ( array(
+				'wallets_confirm_withdraw_admin_enabled',
+				'wallets_confirm_withdraw_user_enabled',
+				'wallets_confirm_move_admin_enabled',
+				'wallets_confirm_move_user_enabled'
+			) as $checkbox_option_slug ) {
+					Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			}
+
+			foreach ( array(
+				'wallets_confirm_withdraw_email_subject',
+				'wallets_confirm_withdraw_email_message',
+				'wallets_confirm_move_email_subject',
+				'wallets_confirm_move_email_message'
+			) as $text_option_slug ) {
+				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING ) );
+			}
+
+			wp_redirect( add_query_arg( 'page', 'wallets-menu-confirmations', network_admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		public function cron() {
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+
+				global $wpdb;
+				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
+					switch_to_blog( $blog_id );
+					$this->confirm_transactions();
+					restore_current_blog();
+				}
+			} else {
+				$this->confirm_transactions();
+			}
+		}
+
 		/**
 		 * Change status of transactions from unconfirmed to pending, depending on whether
 		 * admin or user confirmation is required and has been given. Attached to cron.
@@ -551,19 +612,26 @@ EMAIL
 			// withdrawals
 
 			$where = array(
-				'blog_id' => get_current_blog_id(),
 				'status' => 'unconfirmed',
 				'category' => 'withdraw',
 			);
 
-			if ( get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) {
+			if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				$where['blog_id'] = get_current_blog_id();
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) {
 				$where['admin_confirm'] = 1;
 			}
-			if ( get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
 				$where['user_confirm'] = 1;
 			}
 
-			$result = $wpdb->update( $table_name_txs, array( 'status' => 'pending' ), $where );
+			$result = $wpdb->update(
+				$table_name_txs,
+				array( 'status' => 'pending' ),
+				$where
+			);
 
 			if ( false === $result ) {
 				error_log( sprintf( '%s failed to update unconfirmed withdrawals.', __FUNCTION__ ) );
@@ -572,19 +640,26 @@ EMAIL
 			// moves
 
 			$where = array(
-				'blog_id' => get_current_blog_id(),
 				'status' => 'unconfirmed',
 				'category' => 'move',
 			);
 
-			if ( get_option( 'wallets_confirm_move_admin_enabled' ) ) {
+			if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				$where['blog_id'] = get_current_blog_id();
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ) {
 				$where['admin_confirm'] = 1;
 			}
-			if ( get_option( 'wallets_confirm_move_user_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
 				$where['user_confirm'] = 1;
 			}
 
-			$result = $wpdb->update( $table_name_txs, array( 'status' => 'pending' ), $where );
+			$result = $wpdb->update(
+				$table_name_txs,
+				array( 'status' => 'pending' ),
+				$where
+			);
 
 			if ( false === $result ) {
 				error_log( sprintf( '%s failed to update unconfirmed moves between users.', __FUNCTION__ ) );

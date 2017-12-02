@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'2.3.6'
+				'2.4.0'
 			);
 		}
 
@@ -64,7 +64,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 
 				if ( ! is_null( $role ) ) {
 
-					if ( $role->has_cap( 'manage_options' ) ) {
+					if ( $role->has_cap( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'manage_network' : 'manage_options' ) ) {
 						$role->add_cap( self::MANAGE_WALLETS );
 					}
 
@@ -177,7 +177,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				</thead>
 				<tbody>
 				<?php foreach ( get_editable_roles() as $role_name => $role_info ): ?>
-					<?php if ( 'administrator' != $role_name ): ?>
+					<?php if ( 'administrator' != $role_name || is_plugin_active_for_network( 'wallets/wallets.php' ) ): ?>
 					<tr>
 						<th><?php echo $role_name; ?></th>
 						<?php foreach ( $this->caps as $capability => $description ):

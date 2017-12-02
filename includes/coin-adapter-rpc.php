@@ -29,11 +29,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				add_action( 'admin_init', array( &$this, 'action_admin_init_notices' ) );
 
 				$this->rpc = new Bitcoin(
-					get_option( "{$this->option_slug}-rpc-user" ),
-					get_option( "{$this->option_slug}-rpc-password" ),
-					get_option( "{$this->option_slug}-rpc-ip" ),
-					intval( get_option( "{$this->option_slug}-rpc-port" ) ),
-					get_option( "{$this->option_slug}-rpc-path" )
+					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" ),
+					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-password" ),
+					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-ip" ),
+					intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) ),
+					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-path" )
 				);
 			}
 		}
@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 					'no-php-curl'
 					);
 
-				update_option( "{$this->option_slug}-general-enabled", false );
+				Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-enabled", false );
 
 			} else {
 
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 
 				} catch ( Exception $e ) {
 
-					$settings_url = admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
+					$settings_url = call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 
 					$config = $this->get_recommended_config();
 
@@ -181,8 +181,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			$block_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/block/%s' );
 			$alert_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/alert/%s' );
 			$wp_ip = self::server_ip();
-			$user = get_option( "{$this->option_slug}-rpc-user" );
-			$port = intval( get_option( "{$this->option_slug}-rpc-port" ) );
+			$user = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
+			$port = intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) );
 
 			return <<<CFG
 server=1
@@ -220,6 +220,19 @@ CFG;
 		}
 
 		// input field callbacks
+
+		public function update_network_options() {
+			check_admin_referer( "{$this->menu_slug}-options" );
+
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ip", filter_input( INPUT_POST, "{$this->option_slug}-rpc-ip", FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-port", filter_input( INPUT_POST, "{$this->option_slug}-rpc-port", FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-user", filter_input( INPUT_POST, "{$this->option_slug}-rpc-user", FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-password", filter_input( INPUT_POST, "{$this->option_slug}-rpc-password", FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-path", filter_input( INPUT_POST, "{$this->option_slug}-rpc-path", FILTER_SANITIZE_STRING ) );
+
+			parent::update_network_options();
+		}
+
 
 		// API implementation
 

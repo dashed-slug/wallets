@@ -22,7 +22,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				$this->admin_notices->{$type} = array();
 			}
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
-			add_action( 'admin_notices', array( &$this, 'action_admin_notices' ) );
+			add_action( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_notices' : 'admin_notices', array( &$this, 'action_admin_notices' ) );
 			add_action( 'admin_enqueue_scripts', array( &$this, 'action_admin_enqueue_scripts' ) );
 		}
 
@@ -36,7 +36,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 		public function action_admin_init() {
 			$dismiss_option = filter_input( INPUT_GET, 'wallets_dismiss', FILTER_SANITIZE_STRING );
 			if ( is_string( $dismiss_option ) ) {
-				update_option( "wallets_dismissed_$dismiss_option", true );
+				Dashed_Slug_Wallets::update_option( "wallets_dismissed_$dismiss_option", true );
 				wp_die();
 			}
 		}
@@ -57,9 +57,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 					$dismiss_url = add_query_arg( array(
 						'wallets_dismiss' => $admin_notice->dismiss_option
-					), admin_url() );
+					), call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url' ) );
 
-					if ( ! get_option( "wallets_dismissed_$admin_notice->dismiss_option" ) ) {
+					if ( ! Dashed_Slug_Wallets::get_option( "wallets_dismissed_$admin_notice->dismiss_option" ) ) {
 						?><div
 							class="notice wallets-notice notice-<?php echo $type;
 

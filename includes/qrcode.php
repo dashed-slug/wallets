@@ -11,11 +11,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_QRCode' ) ) {
 
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
+
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				add_action( 'network_admin_edit_wallets-menu-qrcode', array( &$this, 'update_network_options' ) );
+			}
+
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 		}
 
-		public static function action_activate() {
-			add_option( 'wallets_qrcode_enabled', 'on' );
+		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_qrcode_enabled', 'on' );
 		}
 
 		public function action_admin_init() {
@@ -67,16 +72,40 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_QRCode' ) ) {
 				<p style="font-size: smaller;"><?php esc_html_e( 'The word "QR Code" is registered trademark of ' .
 					'DENSO WAVE INCORPORATED', 'wallets' ); ?></p>
 
-				<form method="post" action="options.php"><?php
+				<form method="post" action="<?php
+
+						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+							echo esc_url(
+								add_query_arg(
+									'action',
+									'wallets-menu-qrcode',
+									network_admin_url( 'edit.php' )
+								)
+							);
+						} else {
+							echo 'options.php';
+						}
+
+					?>"><?php
 					settings_fields( 'wallets-menu-qrcode' );
 					do_settings_sections( 'wallets-menu-qrcode' );
 					submit_button();
 				?></form><?php
 		}
 
+
+		public function update_network_options() {
+			check_admin_referer( 'wallets-menu-qrcode-options' );
+
+			Dashed_Slug_Wallets::update_option( 'wallets_qrcode_enabled', filter_input( INPUT_POST, 'wallets_qrcode_enabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
+
+			wp_redirect( add_query_arg( 'page', 'wallets-menu-qrcode', network_admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
 		public function checkbox_cb( $arg ) {
 			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
-			<?php checked( get_option( $arg['label_for'] ), 'on' ); ?> /><?php
+			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> /><?php
 		}
 
 		public function wallets_qrcode_section_cb() {
@@ -84,7 +113,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_QRCode' ) ) {
 		}
 
 		public function action_wp_enqueue_scripts() {
-			if ( get_option( 'wallets_qrcode_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_qrcode_enabled' ) ) {
 				wp_enqueue_script(
 					'jquery-qrcode',
 					plugins_url( 'jquery.qrcode.min.js', 'wallets/assets/scripts/jquery.qrcode.min.js' ),

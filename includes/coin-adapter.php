@@ -40,6 +40,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			// admin UI bindings
 			add_action( 'wallets_admin_menu', array( &$this, 'action_wallets_admin_menu' ) );
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				add_action( "network_admin_edit_{$this->menu_slug}", array( &$this, 'update_network_options' ) );
+			}
 
 			if ( $this->is_enabled() ) {
 
@@ -193,38 +196,38 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		/** @internal */
 		public function settings_checkbox_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"checkbox\"";
-			checked( get_option( $arg['label_for'] ), 'on' );
+			checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' );
 			echo ' />';
 		}
 
 		/** @internal */
 		public function settings_text_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"text\" value=\"";
-			echo esc_attr( get_option( $arg['label_for'] ) ) . '"/>';
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '"/>';
 		}
 
 		/** @internal */
 		public function settings_int8_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"256\" step=\"1\" value=\"";
-			echo esc_attr( intval( get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
 		}
 
 		/** @internal */
 		public function settings_int16_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"65535\" step=\"1\" value=\"";
-			echo esc_attr( intval( get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
 		}
 
 		/** @internal */
 		public function settings_currency_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" step=\"0.00000001\" value=\"";
-			echo esc_attr( sprintf( "%01.8f", get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( sprintf( "%01.8f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
 		}
 
 		/** @internal */
 		public function settings_pw_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" value=\"";
-			echo esc_attr( get_option( $arg['label_for'] ) ) . '"/>';
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '"/>';
 		}
 
 		/**
@@ -244,17 +247,47 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 				echo esc_html( sprintf( __( 'These are the settings for this %s adapter', 'wallets' ), $this->get_name() ) ); ?>
 			</p></div>
 
-			<form method="post" action="options.php"><?php
+			<form method="post" action="<?php
+
+				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					echo esc_url(
+						add_query_arg(
+							'action',
+							$this->menu_slug,
+							network_admin_url( 'edit.php' )
+						)
+					);
+				} else {
+					echo 'options.php';
+				}
+
+				?>"><?php
 				settings_fields( $this->menu_slug, null, 'save' );
 				do_settings_sections( $this->menu_slug);
 				submit_button();
 			?></form><?php
 		}
 
+		/**
+		 * Updates settings when adapter is network activated.
+		 * Extend this in subclasses if you want your coin adapter to be available network-wide.
+		 */
+		public function update_network_options() {
+			check_admin_referer( "{$this->menu_slug}-options" );
+
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-enabled", filter_input( INPUT_POST, "{$this->option_slug}-general-enabled", FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move", filter_input( INPUT_POST, "{$this->option_slug}-fees-move", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-minconf", filter_input( INPUT_POST, "{$this->option_slug}-fees-minconf", FILTER_SANITIZE_NUMBER_INT ) );
+
+			wp_redirect( add_query_arg( 'page', $this->menu_slug, network_admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
 		// helpers
 
-		protected final function get_adapter_option( $setting_name, $default = false ) {
-			return get_option( "{$this->option_slug}-{$setting_name}", $default );
+		protected function get_adapter_option( $setting_name, $default = false ) {
+			return Dashed_Slug_Wallets::get_option( "{$this->option_slug}-{$setting_name}", $default );
 		}
 
 		/**
@@ -358,7 +391,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return string|null A URL in the admin screens that lets the user control settings for this adapter.
 		 */
 		public function get_settings_url() {
-			return admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 		}
 
 		/**

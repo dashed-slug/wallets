@@ -12,12 +12,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
-			// wp_cron mechanism for double-checking for deposits
-			add_filter( 'pre_update_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				add_filter( 'pre_update_site_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
+				add_action( 'network_admin_edit_wallets-menu-cron', array( &$this, 'update_network_options' ) );
+			} else {
+				add_filter( 'pre_update_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
+			}
 			add_filter( 'cron_schedules', array( &$this, 'filter_cron_schedules' ) );
-			add_action( 'wallets_periodic_checks', array( &$this, 'action_wallets_periodic_checks') );
+			add_action( 'wallets_periodic_checks', array( &$this, 'cron') );
 			if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
-				$cron_interval = get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+				$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
 				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
 			}
 
@@ -28,11 +32,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			}
 		}
 
-		public static function action_activate() {
-			add_option( 'wallets_cron_interval', 'wallets_three_minutes' );
-			add_option( 'wallets_retries_withdraw', 3 );
-			add_option( 'wallets_retries_move', 1 );
-			add_option( 'wallets_cron_batch_size', 8 );
+		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_interval', 'wallets_three_minutes' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw', 3 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move', 1 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
 		}
 
 		public static function action_deactivate() {
@@ -43,6 +47,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			}
 		}
 
+		public function update_network_options() {
+			check_admin_referer( 'wallets-menu-cron-options' );
+
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_interval', filter_input( INPUT_POST, 'wallets_cron_interval', FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_retries_withdraw', filter_input( INPUT_POST, 'wallets_retries_withdraw', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_retries_move', filter_input( INPUT_POST, 'wallets_retries_move', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size', filter_input( INPUT_POST, 'wallets_cron_batch_size', FILTER_SANITIZE_NUMBER_INT ) );
+
+			wp_redirect( add_query_arg( 'page', 'wallets-menu-cron', network_admin_url( 'admin.php' ) ) );
+			exit;
+		}
 
 		/**
 		 * Register some wp_cron intervals on which we can bind
@@ -105,19 +120,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		/**
 		 * Trigger the cron function of each adapter.
 		 *
-		 * Deposit addresses and deposits can be overlooked if the RPC callback notification
-		 * mechanism is not correctly setup, or if something else goes wrong.
-		 * Adapters can offer a cron() function that does periodic checks for these things.
-		 * Adapters can discover overlooked addresses and transactions and trigger the actions
-		 * wallets_transaction and wallets_address
-		 *
-		 * For some adapters this will be a failsafe-check and for others it will be the main mechanism
-		 * of polling for deposits. Adapters can also opt to not offer a cron() method.
 		 * @internal
 		 * @since 2.0.0
 		 *
 		 */
-		public function action_wallets_periodic_checks( ) {
+		public function cron( ) {
+
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+
+				global $wpdb;
+				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
+
+					switch_to_blog( $blog_id );
+					$this->call_cron_on_all_adapters();
+					restore_current_blog();
+				}
+
+			} else {
+
+				$this->call_cron_on_all_adapters();
+
+			}
+		}
+
+		private function call_cron_on_all_adapters() {
 			foreach ( Dashed_Slug_Wallets::get_instance()->get_coin_adapters() as $adapter ) {
 				try {
 					$adapter->cron();
@@ -128,7 +154,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 							$adapter->get_adapter_name(),
 							$adapter->get_name(),
 							$e->getMessage()
-					) );
+						)
+					);
 				}
 			}
 		}
@@ -238,7 +265,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					'Also, coin adapters can have a cron() function that can discover missing/overlooked deposits, ' .
 					'or do other tasks that are specific to the adapter. The cron job calls the cron() function on all enabled adapters.', 'wallets' ); ?></p>
 
-					<form method="post" action="options.php"><?php
+					<form method="post" action="<?php
+
+						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+							echo esc_url(
+								add_query_arg(
+									'action',
+									'wallets-menu-cron',
+									network_admin_url( 'edit.php' )
+								)
+							);
+						} else {
+							echo 'options.php';
+						}
+
+					?>"><?php
 					settings_fields( 'wallets-menu-cron' );
 					do_settings_sections( 'wallets-menu-cron' );
 					submit_button();
@@ -252,14 +293,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 		public function settings_int8_cb( $arg ) {
 			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>"
-			type="number" min="1" max="256" step="1" value="<?php echo esc_attr( intval( get_option( $arg['label_for'] ) ) ); ?>" />
+			type="number" min="1" max="256" step="1" value="<?php echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ); ?>" />
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
 
 		public function settings_interval_cb( $arg ) {
 			$cron_intervals = apply_filters( 'cron_schedules', array() );
-			$selected_value = get_option( $arg['label_for'] );
+			$selected_value = Dashed_Slug_Wallets::get_option( $arg['label_for'] );
 
 			?><select name="<?php echo esc_attr( $arg['label_for'] ) ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" ><?php
 

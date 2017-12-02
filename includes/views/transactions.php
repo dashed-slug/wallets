@@ -21,10 +21,10 @@
 					<th class="status"><?php esc_html_e( 'Status', 'wallets' ); ?></th>
 					<th class="retries"><?php esc_html_e( 'Retries&nbsp;left', 'wallets' ); ?></th>
 					<?php
-					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
 					<th class="admin_confirm"><?php esc_html_e( 'Admin&nbsp;confirm', 'wallets' ); ?></th>
 					<?php endif;
-					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
 					<th class="admin_confirm"><?php esc_html_e( 'User&nbsp;confirm', 'wallets' ); ?></th>
 					<?php endif; ?>
 				</tr>
@@ -44,10 +44,10 @@
 					<td class="status" data-bind="text: status"></td>
 					<td class="retries" data-bind="text: ( 'unconfirmed' == status || 'pending' == status ) ? retries : ''"></td>
 					<?php
-					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
 					<td class="admin_confirm" data-bind="text: parseInt( admin_confirm ) ? '\u2611' : '\u2610' "></td>
 					<?php endif;
-					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
 					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
 					<?php endif; ?>
 				</tr>
@@ -66,10 +66,10 @@
 					<td class="status" data-bind="text: status"></td>
 					<td class="retries"></td>
 					<?php
-					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
 					<td class="admin_confirm"></td>
 					<?php endif;
-					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
 					<td class="user_confirm"></td>
 					<?php endif; ?>
 				</tr>
@@ -88,10 +88,10 @@
 					<td class="status" data-bind="text: status"></td>
 					<td class="retries"></td>
 					<?php
-					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
 					<td class="admin_confirm" data-bind="text: admin_confirm ? '\u2611' : '\u2610' "></td>
 					<?php endif;
-					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
 					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
 					<?php endif; ?>
 				</tr>

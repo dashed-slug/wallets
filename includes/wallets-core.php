@@ -75,7 +75,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
 			add_action( 'delete_blog', array( &$this, 'action_delete_blog' ), 10, 2 );
-			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'filter_plugin_action_links' ) );
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				add_filter( 'network_admin_plugin_action_links', array( &$this, 'filter_network_admin_plugin_action_links' ), 10, 2);
+			} else {
+				add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'filter_plugin_action_links' ) );
+			}
 
 			// bind the built-in rpc coin adapter
 			add_action( 'wallets_declare_adapters', array( &$this, 'action_wallets_declare_adapters' ) );
@@ -165,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.6'
+					'2.4.0'
 				);
 			}
 		}
@@ -177,11 +181,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function filter_plugin_action_links( $links ) {
-			$links[] = '<a href="' . admin_url( 'admin.php?page=wallets-menu-settings' ) . '">'
-				. __( 'Settings', 'wallets' ) . '</a>';
+			$links[] = '<a href="' . admin_url( 'admin.php?page=wallets-menu-wallets' ) . '">'
+				. __( 'Wallets', 'wallets' ) . '</a>';
 			$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin" style="color: #dd9933;">dashed-slug.net</a>';
 			return $links;
 		}
+
+		/** @internal */
+		public function filter_network_admin_plugin_action_links( $links, $plugin_file ) {
+			if ( 'wallets/wallets.php' == $plugin_file ) {
+				$links[] = '<a href="' . network_admin_url( 'admin.php?page=wallets-menu-wallets' ) . '">'
+					. __( 'Wallets', 'wallets' ) . '</a>';
+				$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin" style="color: #dd9933;">dashed-slug.net</a>';
+			}
+			return $links;
+		}
+
 
 		/**
 		 * Discovers all concrete subclasses of coin adapter and instantiates.
@@ -232,7 +247,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		/** @internal */
-		public static function action_activate() {
+		public static function action_activate( $network_active ) {
 
 			// create or update db tables
 			global $wpdb;
@@ -241,7 +256,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
 
-			$installed_db_revision = intval( get_option( 'wallets_db_revision', 0 ) );
+			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
 			$current_db_revision = 9;
 
 			if ( $installed_db_revision < $current_db_revision ) {
@@ -257,7 +272,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$sql = "CREATE TABLE {$table_name_txs} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
+				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'useful in multisite installs only if plugin is not network activated',
 				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
@@ -284,7 +299,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				dbDelta( $sql );
 
 				// changing latin1 collations explicitly to conserve index space
-				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'," );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'" );
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id'" );
 
 				// changing empty txids to null and applying unique constraint
@@ -324,23 +339,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				if (	( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" )	== $table_name_txs ) &&
 						( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_adds}'" )	== $table_name_adds ) ) {
 
-					update_option( 'wallets_db_revision', $current_db_revision );
+					Dashed_Slug_Wallets::update_option( 'wallets_db_revision', $current_db_revision );
 				}
 			}
 
 			// built-in bitcoin adapter settings
 
-			add_option( 'wallets-bitcoin-core-node-settings-general-enabled', 'on' );
-			add_option( 'wallets-bitcoin-core-node-settings-rpc-ip', '127.0.0.1' );
-			add_option( 'wallets-bitcoin-core-node-settings-rpc-port', '8332' );
-			add_option( 'wallets-bitcoin-core-node-settings-rpc-user', '' );
-			add_option( 'wallets-bitcoin-core-node-settings-rpc-password', '' );
-			add_option( 'wallets-bitcoin-core-node-settings-rpc-path', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-general-enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-ip', '127.0.0.1' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-port', '8332' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-user', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-password', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-path', '' );
 
-			add_option( 'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
-			add_option( 'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00005000' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00005000' );
 
-			add_option( 'wallets-bitcoin-core-node-settings-other-minconf', '6' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-other-minconf', '6' );
 
 			// flush json api rules
 			self::flush_rules();
@@ -411,8 +426,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			return $this->_adapters[ $symbol ];
 		}
 
+		public static function add_option( $option, $value ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'add_site_option' : 'add_option', $option, $value );
+		}
 
+		public static function update_option( $option, $value ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'update_site_option' : 'update_option', $option, $value );
+		}
 
+		public static function get_option( $option, $default = false ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_option' : 'get_option', $option, $default );
+		}
+
+		public static function delete_option( $option ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'delete_site_option' : 'delete_option', $option );
+		}
 
 		/**
 		 * Get user's wallet balance.
@@ -453,13 +481,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					FROM
 						$table_name_txs
 					WHERE
-						blog_id = %d AND
+						( blog_id = %d || %d ) AND
 						account = %s AND
 						status = 'done'
 					GROUP BY
 						symbol
 					",
 					get_current_blog_id(),
+					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 					get_current_user_id()
 				);
 
@@ -520,7 +549,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						{$wpdb->users} u
 					ON ( u.ID = txs.other_account )
 					WHERE
-						blog_id = %d AND
+						( blog_id = %d || %d ) AND
 						txs.account = %d AND
 						txs.symbol = %s AND
 						( txs.confirmations >= %d OR txs.category = 'move' )
@@ -530,6 +559,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						$from, $count
 				",
 				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 				get_current_user_id(),
 				$symbol,
 				intval( $minconf )
@@ -548,6 +578,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Withdraw from current logged in user's account.
 		 *
 		 * @api
+		 * @since 2.4.0 Added $skip_confirm argument.
 		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
 		 * @since 2.1.0 Added $check_capabilities argument
 		 * @since 1.0.0 Introduced
@@ -557,10 +588,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $comment Optional comment to attach to the transaction.
 		 * @param string $comment_to Optional comment to attach to the destination address.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return void
 		 */
-		 public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '', $check_capabilities = false ) {
+		public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '', $check_capabilities = false, $skip_confirm = false ) {
 			if (
 				$check_capabilities &&
 				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
@@ -575,23 +607,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
+			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
 			// first check if address belongs to another user on this system, and if so do a move transaction instead
 			$deposit_address = $wpdb->get_row( $wpdb->prepare(
 				"
 				SELECT
-					a.account
+					account
 				FROM
-					{$table_name_adds} a
+					{$table_name_adds}
 				WHERE
-					a.blog_id = %d AND
-					a.symbol = %s AND
-					a.address = %s
+					( blog_id = %d || %d ) AND
+					symbol = %s AND
+					address = %s
 				ORDER BY
 					created_time DESC
 				LIMIT 1
 				",
 				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 				$symbol,
 				$address
 			) );
@@ -611,10 +645,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			// start db transaction and lock tables
 			$wpdb->query( 'SET autocommit=0' );
 			$wpdb->query( "
-				LOCK TABLES $table_name_txs WRITE,
-				{$wpdb->options} WRITE,
-				$table_name_adds a READ,
-				{$wpdb->users} u READ" );
+				LOCK TABLES
+					$table_name_txs WRITE,
+					$table_name_options WRITE,
+					$table_name_adds a READ,
+					$wpdb->users u READ
+			" );
 
 			try {
 
@@ -649,8 +685,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'created_time' => $time,
 					'updated_time' => $time,
 					'comment' => $comment,
-					'status' => 'unconfirmed',
-					'retries' => get_option( 'wallets_retries_withdraw', 1 ),
+					'status' => $skip_confirm ? 'pending' : 'unconfirmed',
+					'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 1 ),
 					'nonce' => md5( uniqid( NONCE_KEY, true ) ),
 				);
 
@@ -673,7 +709,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			if ( isset( $txrow['id'] ) && get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
+			if ( ! $skip_confirm && isset( $txrow['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
 				do_action( 'wallets_send_user_confirm_email', $txrow );
 			}
 		}
@@ -682,6 +718,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Move funds from the current logged in user's balance to the specified user.
 		 *
 		 * @api
+		 * @since 2.4.0 Added $skip_confirm argument.
 		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
 		 * @since 2.1.0 Added $check_capabilities argument
 		 * @since 1.0.0 Introduced
@@ -691,10 +728,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $comment Optional comment to attach to the transaction.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @param string $tags A space separated list of tags, slugs, etc that further describe the type of transaction.
+		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
 		 * @return void
 		 * @throws Exception If move fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 */
-		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '' ) {
+		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '', $skip_confirm = false ) {
 			if (
 				$check_capabilities &&
 				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
@@ -713,11 +751,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
-			$table_name_options = $wpdb->options;
+			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
 			// start db transaction and lock tables
 			$wpdb->query( 'SET autocommit=0' );
-			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_options WRITE, $table_name_adds READ" );
+			$wpdb->query( "
+				LOCK TABLES
+					$table_name_txs WRITE,
+					$table_name_options WRITE,
+					$table_name_adds READ
+			" );
 
 			try {
 				$balance = $this->get_balance( $symbol );
@@ -761,8 +804,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
 					'comment' => $comment,
-					'status' => 'unconfirmed',
-					'retries' => get_option( 'wallets_retries_move', 1 ),
+					'status' => $skip_confirm ? 'done' : 'unconfirmed',
+					'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ),
 					'nonce' => md5( uniqid( NONCE_KEY, true ) ),
 				);
 
@@ -779,8 +822,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
 					'comment' => $comment,
-					'status' => 'unconfirmed',
-					'retries' => get_option( 'wallets_retries_move', 1 ),
+					'status' => $skip_confirm ? 'done' : 'unconfirmed',
+					'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ),
 				);
 
 				$affected = $wpdb->insert(
@@ -815,7 +858,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			if ( isset( $txrow1['id'] ) && get_option( 'wallets_confirm_move_user_enabled' ) ) {
+			if ( ! $skip_confirm && isset( $txrow1['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
 				do_action( 'wallets_send_user_confirm_email', $txrow1 );
 			}
 
@@ -851,7 +894,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					FROM
 						$table_name_adds a
 					WHERE
-						blog_id = %d AND
+						( blog_id = %d || %d ) AND
 						account = %d AND
 						symbol = %s
 					ORDER BY
@@ -859,6 +902,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					LIMIT 1
 				",
 				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 				get_current_user_id(),
 				$symbol
 			) );
@@ -881,6 +925,3 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 	}
 }
-
-// Instantiate
-Dashed_Slug_Wallets::get_instance();

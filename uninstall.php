@@ -1,67 +1,90 @@
 <?php
 if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
+	function wallets_delete_option( $option ) {
+		static $blog_ids = null;
+
+		if ( is_multisite() ) {
+
+			delete_site_option( $option );
+
+			if ( is_null( $blog_ids ) ) {
+				global $wpdb;
+				$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			}
+
+			foreach ( $blog_ids as $blog_id ) {
+				switch_to_blog( $blog_id );
+				delete_option( $option );
+				restore_current_blog();
+			}
+
+		} else {
+			delete_option( $option );
+		}
+	}
+
 	// remove cron job
-	delete_option( 'wallets_cron_interval' );
+	wallets_delete_option( 'wallets_cron_interval' );
 	$timestamp = wp_next_scheduled( 'wallets_periodic_checks' );
 	if ( false !== $timestamp ) {
 		wp_unschedule_event( $timestamp, 'wallets_periodic_checks' );
 	}
 
 	// remove cron settings
-	delete_option( 'wallets_retries_withdraw' );
-	delete_option( 'wallets_retries_move' );
-	delete_option( 'wallets_cron_batch_size' );
+	wallets_delete_option( 'wallets_retries_withdraw' );
+	wallets_delete_option( 'wallets_retries_move' );
+	wallets_delete_option( 'wallets_cron_batch_size' );
 
 	// remove email settings
-	delete_option( 'wallets_email_withdraw_enabled' );
-	delete_option( 'wallets_email_withdraw_subject' );
-	delete_option( 'wallets_email_withdraw_message' );
+	wallets_delete_option( 'wallets_email_withdraw_enabled' );
+	wallets_delete_option( 'wallets_email_withdraw_subject' );
+	wallets_delete_option( 'wallets_email_withdraw_message' );
 
-	delete_option( 'wallets_email_withdraw_failed_enabled' );
-	delete_option( 'wallets_email_withdraw_failed_subject' );
-	delete_option( 'wallets_email_withdraw_failed_message' );
+	wallets_delete_option( 'wallets_email_withdraw_failed_enabled' );
+	wallets_delete_option( 'wallets_email_withdraw_failed_subject' );
+	wallets_delete_option( 'wallets_email_withdraw_failed_message' );
 
-	delete_option( 'wallets_email_move_send_enabled' );
-	delete_option( 'wallets_email_move_send_subject' );
-	delete_option( 'wallets_email_move_send_message' );
+	wallets_delete_option( 'wallets_email_move_send_enabled' );
+	wallets_delete_option( 'wallets_email_move_send_subject' );
+	wallets_delete_option( 'wallets_email_move_send_message' );
 
-	delete_option( 'wallets_email_move_send_failed_enabled' );
-	delete_option( 'wallets_email_move_send_failed_subject' );
-	delete_option( 'wallets_email_move_send_failed_message' );
+	wallets_delete_option( 'wallets_email_move_send_failed_enabled' );
+	wallets_delete_option( 'wallets_email_move_send_failed_subject' );
+	wallets_delete_option( 'wallets_email_move_send_failed_message' );
 
-	delete_option( 'wallets_email_move_receive_enabled' );
-	delete_option( 'wallets_email_move_receive_subject' );
-	delete_option( 'wallets_email_move_receive_message' );
+	wallets_delete_option( 'wallets_email_move_receive_enabled' );
+	wallets_delete_option( 'wallets_email_move_receive_subject' );
+	wallets_delete_option( 'wallets_email_move_receive_message' );
 
-	delete_option( 'wallets_email_deposit_enabled' );
-	delete_option( 'wallets_email_deposit_subject' );
-	delete_option( 'wallets_email_deposit_message' );
+	wallets_delete_option( 'wallets_email_deposit_enabled' );
+	wallets_delete_option( 'wallets_email_deposit_subject' );
+	wallets_delete_option( 'wallets_email_deposit_message' );
 
 	// remove confirmation settings
-	delete_option( 'wallets_confirm_withdraw_admin_enabled' );
-	delete_option( 'wallets_confirm_withdraw_user_enabled' );
-	delete_option( 'wallets_confirm_withdraw_email_subject' );
-	delete_option( 'wallets_confirm_withdraw_email_message' );
-	delete_option( 'wallets_confirm_move_admin_enabled' );
-	delete_option( 'wallets_confirm_move_user_enabled' );
-	delete_option( 'wallets_confirm_move_email_subject' );
-	delete_option( 'wallets_confirm_move_email_message' );
+	wallets_delete_option( 'wallets_confirm_withdraw_admin_enabled' );
+	wallets_delete_option( 'wallets_confirm_withdraw_user_enabled' );
+	wallets_delete_option( 'wallets_confirm_withdraw_email_subject' );
+	wallets_delete_option( 'wallets_confirm_withdraw_email_message' );
+	wallets_delete_option( 'wallets_confirm_move_admin_enabled' );
+	wallets_delete_option( 'wallets_confirm_move_user_enabled' );
+	wallets_delete_option( 'wallets_confirm_move_email_subject' );
+	wallets_delete_option( 'wallets_confirm_move_email_message' );
 
 	// remove bitcoin builtin adapter settings
 	$option_slug = 'wallets-bitcoin-core-node-settings';
-	delete_option( "{$option_slug}-general-enabled" );
-	delete_option( "{$option_slug}-rpc-ip" );
-	delete_option( "{$option_slug}-rpc-port" );
-	delete_option( "{$option_slug}-rpc-user" );
-	delete_option( "{$option_slug}-rpc-password" );
-	delete_option( "{$option_slug}-rpc-path" );
-	delete_option( "{$option_slug}-fees-move" );
-	delete_option( "{$option_slug}-fees-withdraw" );
-	delete_option( "{$option_slug}-other-minconf" );
+	wallets_delete_option( "{$option_slug}-general-enabled" );
+	wallets_delete_option( "{$option_slug}-rpc-ip" );
+	wallets_delete_option( "{$option_slug}-rpc-port" );
+	wallets_delete_option( "{$option_slug}-rpc-user" );
+	wallets_delete_option( "{$option_slug}-rpc-password" );
+	wallets_delete_option( "{$option_slug}-rpc-path" );
+	wallets_delete_option( "{$option_slug}-fees-move" );
+	wallets_delete_option( "{$option_slug}-fees-withdraw" );
+	wallets_delete_option( "{$option_slug}-other-minconf" );
 
 	// remove qr code settings
-	delete_option( 'wallets_qrcode_enabled' );
+	wallets_delete_option( 'wallets_qrcode_enabled' );
 
 	// remove user roles
 	$user_roles = array_keys( get_editable_roles() );
@@ -81,5 +104,9 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 	// remove dismissed notice options
 	global $wpdb;
-	$wpdb->query( 'DELETE FROM wp_options WHERE option_name LIKE "wallets_dismissed_%";' );
+	if ( $wpdb->options ) {
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'wallets_dismissed_%';" );
+	} else {
+		$wpdb->query( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE 'wallets_dismissed_%';" );
+	}
 }

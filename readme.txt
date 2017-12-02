@@ -2,9 +2,9 @@
 Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
-Requires at least: 3.8
+Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.3.6
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,7 +106,7 @@ To Install the plugin and connect it to a Bitcoin full node using the built-in B
 
 1. Make sure that you have **the latest WordPress version** installed,
    and that you are running on **at least PHP 5.6.**
-   Even though the plugin has been tested on WordPress 3.8 and PHP 5.3,
+   Even though the plugin has been tested on WordPress 4.0 and PHP 5.3,
    for security reasons you are **strongly** recommended to use the latest version of WordPress and a supported version of PHP.
    [Check to see here](http://php.net/supported-versions.php) if your PHP version is currently supported for security issues.
    As of 2017, anything below 5.6 has reached its end-of-life and is no longer supported.
@@ -260,6 +260,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 2.4.0 =
+- Add: On multisite installs, the plugin can be *network-activated*.
+- Add: Feature extensions (WooCommerce, EventsManager, Tip the Author, etc) can now place withdrawals or transfers that do not require confirmations.
+- Fix: Broken "Settings" link in plugins list replaced with a working "Wallets" link.
 
 = 2.3.6 =
 - Add: When a user requests to withdraw to a known deposit address of another user, an internal move transaction is performed instead.
@@ -427,7 +432,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.3.6 patches minor bugs from 2.3.5. Upgrade at your convenience.
+Version 2.4.0 introduces network-activation on multisite installs. Upgrade from 2.3.6 if you need this feature.
+
+You will also need to upgrade any extensions that you may have installed to their latest versions.
 
 == Donating ==
 

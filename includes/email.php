@@ -12,6 +12,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Email' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				add_action( 'network_admin_edit_wallets-menu-email', array( &$this, 'update_network_options' ) );
+			}
+
 			add_action( 'wallets_withdraw', array( &$this, 'action_withdraw' ) );
 			add_action( 'wallets_move_send', array( &$this, 'action_move_send' ) );
 			add_action( 'wallets_move_receive', array( &$this, 'action_move_receive' ) );
@@ -21,10 +25,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Email' ) ) {
 			add_action( 'wallets_move_send_failed', array( &$this, 'action_move_send_failed' ) );
 		}
 
-		public static function action_activate() {
-			add_option( 'wallets_email_withdraw_enabled', 'on' );
-			add_option( 'wallets_email_withdraw_subject', __( 'You have performed a withdrawal. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_email_withdraw_message', __( <<<EMAIL
+		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_subject', __( 'You have performed a withdrawal. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -38,9 +42,9 @@ Comment: ###COMMENT###
 EMAIL
 				, 'wallets' ) );
 
-			add_option( 'wallets_email_withdraw_failed_enabled', 'on' );
-			add_option( 'wallets_email_withdraw_failed_subject', __( 'Your withdrawal request has FAILED permanently. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_email_withdraw_failed_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_subject', __( 'Your withdrawal request has FAILED permanently. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -56,9 +60,9 @@ EMAIL
 				, 'wallets' ) );
 
 
-			add_option( 'wallets_email_move_send_enabled', 'on' );
-			add_option( 'wallets_email_move_send_subject', __( 'You have sent funds to another user. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_email_move_send_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_subject', __( 'You have sent funds to another user. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -73,9 +77,9 @@ Tags: ###TAGS###
 EMAIL
 				, 'wallets' ) );
 
-			add_option( 'wallets_email_move_send_failed_enabled', 'on' );
-			add_option( 'wallets_email_move_send_failed_subject', __( 'You request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_email_move_send_failed_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_subject', __( 'You request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -92,9 +96,9 @@ EMAIL
 				, 'wallets' ) );
 
 
-			add_option( 'wallets_email_move_receive_enabled', 'on' );
-			add_option( 'wallets_email_move_receive_subject', __( 'You have received funds from another user. - ###COMMENT###', 'wallets' ) );
-			add_option( 'wallets_email_move_receive_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_subject', __( 'You have received funds from another user. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -108,9 +112,9 @@ Tags: ###TAGS###
 EMAIL
 				, 'wallets' ) );
 
-			add_option( 'wallets_email_deposit_enabled', 'on' );
-			add_option( 'wallets_email_deposit_subject', __( 'You have performed a ###SYMBOL### deposit.', 'wallets' ) );
-			add_option( 'wallets_email_deposit_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_subject', __( 'You have performed a ###SYMBOL### deposit.', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_message', __( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -506,7 +510,21 @@ EMAIL
 				<p><?php esc_html_e( 'Users are notified by e-mail when they perform deposits or withdrawals and when they send or receive funds. ' .
 					'Here you can set template messages for these emails.', 'wallets' ); ?></p>
 
-				<form method="post" action="options.php"><?php
+				<form method="post" action="<?php
+
+						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+							echo esc_url(
+								add_query_arg(
+									'action',
+									'wallets-menu-email',
+									network_admin_url( 'edit.php' )
+								)
+							);
+						} else {
+							echo 'options.php';
+						}
+
+					?>"><?php
 					settings_fields( 'wallets-menu-email' );
 					do_settings_sections( 'wallets-menu-email' );
 					submit_button();
@@ -541,9 +559,45 @@ EMAIL
 				</div><?php
 		}
 
+		public function update_network_options() {
+			check_admin_referer( 'wallets-menu-email-options' );
+
+			foreach ( array(
+				'wallets_email_withdraw_enabled',
+				'wallets_email_withdraw_failed_enabled',
+				'wallets_email_move_send_enabled',
+				'wallets_email_move_send_failed_enabled',
+				'wallets_email_move_receive_enabled',
+				'wallets_email_deposit_enabled'
+			) as $checkbox_option_slug ) {
+				Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			}
+
+			foreach ( array(
+				'wallets_email_withdraw_subject',
+				'wallets_email_withdraw_message',
+				'wallets_email_withdraw_failed_subject',
+				'wallets_email_withdraw_failed_message',
+				'wallets_email_move_send_subject',
+				'wallets_email_move_send_message',
+				'wallets_email_move_send_failed_subject',
+				'wallets_email_move_send_failed_message',
+				'wallets_email_move_receive_subject',
+				'wallets_email_move_receive_message',
+				'wallets_email_deposit_subject',
+				'wallets_email_deposit_message',
+
+			) as $text_option_slug ) {
+				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING ) );
+			}
+
+			wp_redirect( add_query_arg( 'page', 'wallets-menu-email', network_admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
 		public function checkbox_cb( $arg ) {
 			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
-			<?php checked( get_option( $arg['label_for'] ), 'on' ); ?> />
+			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
@@ -551,7 +605,7 @@ EMAIL
 		public function text_cb( $arg ) {
 			?><input style="width:100%;" type="text"
 			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
-			echo esc_attr( get_option( $arg['label_for'] ) ); ?>" />
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
@@ -560,7 +614,7 @@ EMAIL
 			?><textarea style="width:100%;" rows="8"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php
-					echo esc_html( get_option( $arg['label_for'] ) ); ?></textarea>
+					echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
@@ -572,35 +626,35 @@ EMAIL
 		}
 
 		public function action_withdraw( $row ) {
-			if ( get_option( 'wallets_email_withdraw_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_enabled' ) ) {
 				$user = get_userdata( $row->account );
 				$row->account = $user->user_login;
 
 				$this->notify_user_by_email(
 					$user->user_email,
-					get_option( 'wallets_email_withdraw_subject' ),
-					get_option( 'wallets_email_withdraw_message' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ),
 					$row
 				);
 			}
 		}
 
 		public function action_withdraw_failed( $row ) {
-			if ( get_option( 'wallets_email_withdraw_failed_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_enabled' ) ) {
 				$user = get_userdata( $row->account );
 				$row->account = $user->user_login;
 
 				$this->notify_user_by_email(
 					$user->user_email,
-					get_option( 'wallets_email_withdraw_failed_subject' ),
-					get_option( 'wallets_email_withdraw_failed_message' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ),
 					$row
 				);
 			}
 		}
 
 		public function action_move_send( $row ) {
-			if ( get_option( 'wallets_email_move_send_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_enabled' ) ) {
 				$sender = get_userdata( $row->account );
 				$recipient = get_userdata( $row->other_account );
 
@@ -609,15 +663,15 @@ EMAIL
 
 				$this->notify_user_by_email(
 					$sender->user_email,
-					get_option( 'wallets_email_move_send_subject' ),
-					get_option( 'wallets_email_move_send_message' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ),
 					$row
 				);
 			}
 		}
 
 		public function action_move_send_failed( $row ) {
-			if ( get_option( 'wallets_email_move_send_failed_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_enabled' ) ) {
 				$sender = get_userdata( $row->account );
 				$recipient = get_userdata( $row->other_account );
 
@@ -626,15 +680,15 @@ EMAIL
 
 				$this->notify_user_by_email(
 					$sender->user_email,
-					get_option( 'wallets_email_move_send_failed_subject' ),
-					get_option( 'wallets_email_move_send_failed_message' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ),
 					$row
 				);
 			}
 		}
 
 		public function action_move_receive( $row ) {
-			if ( get_option( 'wallets_email_move_receive_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_enabled' ) ) {
 				$recipient = get_userdata( $row->account );
 				$sender = get_userdata( $row->other_account );
 
@@ -644,22 +698,22 @@ EMAIL
 
 				$this->notify_user_by_email(
 					$recipient->user_email,
-					get_option( 'wallets_email_move_receive_subject' ),
-					get_option( 'wallets_email_move_receive_message' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ),
 					$row
 				);
 			}
 		}
 
 		public function action_deposit( $row ) {
-			if ( get_option( 'wallets_email_deposit_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_enabled' ) ) {
 				$user = get_userdata( $row->account );
 				$row->account = $user->user_login;
 
 				$this->notify_user_by_email(
 					$user->user_email,
-					get_option( 'wallets_email_deposit_subject' ),
-					get_option( 'wallets_email_deposit_message' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ),
+					Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ),
 					$row
 				);
 			}

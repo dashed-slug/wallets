@@ -29,8 +29,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_Bitcoin' ) ) {
 			$wallet_url = site_url( 'wallets/notify/' . $this->get_symbol() . '/wallet/%s' );
 			$block_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/block/%s' );
 			$wp_ip = self::server_ip();
-			$user = get_option( "{$this->option_slug}-rpc-user" );
-			$port = intval( get_option( "{$this->option_slug}-rpc-port" ) );
+			$user = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
+			$port = intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) );
 
 			return <<<CFG
 server=1

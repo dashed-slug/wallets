@@ -16,7 +16,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 
 		public function __construct() {
-			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+			add_action( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_menu' : 'admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'admin_init' ) );
 
 			add_filter( 'upload_mimes', array( &$this, 'custom_upload_mimes' ) );
@@ -56,7 +56,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 		}
 
-		public function admin_menu() {
+		public function action_admin_menu() {
 
 			if ( current_user_can( 'manage_wallets' ) ) {
 				add_menu_page(
@@ -146,20 +146,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				$symbols_set[] = "'$symbol'";
 			}
 			$symbols_set = implode(',', $symbols_set );
-			$blog_id = get_current_blog_id();
 
 			$tx_columns = Dashed_Slug_Wallets_TXs::$tx_columns;
 
 			$rows = $wpdb->get_results(
-				"
+				$wpdb->prepare(
+					"
 					SELECT
 						$tx_columns
 					FROM
-						$table_name_txs
+						{$table_name_txs}
 					WHERE
 						symbol IN ( $symbols_set ) AND
-						blog_id = $blog_id
-				", ARRAY_N
+						( blog_id = %d || %d )
+					",
+					get_current_blog_id(),
+					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+				),
+				ARRAY_N
 			);
 
 			echo Dashed_Slug_Wallets_TXs::$tx_columns . "\n";

@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.3.6\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -60,7 +60,6 @@ msgid "Settings specific to this adapter"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:118
-#: src/includes/wallets-core.php:181
 msgid "Settings"
 msgstr ""
 
@@ -76,26 +75,27 @@ msgstr ""
 #: src/includes/caps.php:95 src/includes/caps.php:145
 #: src/includes/coin-adapter-bitcoin.php:54
 #: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
-#: src/includes/coin-adapter.php:156 src/includes/coin-adapter.php:165
-#: src/includes/coin-adapter.php:185 src/includes/coin-adapter.php:238
-#: src/includes/confirmations.php:289 src/includes/cron.php:230
-#: src/includes/email.php:501 src/includes/qrcode.php:60
-#: src/includes/transactions.php:66 src/includes/transactions.php:664
-#: src/includes/transactions.php:845 src/includes/transactions.php:866
-#: src/includes/transactions.php:887 src/includes/transactions.php:907
-#: src/includes/transactions.php:927
+#: src/includes/coin-adapter.php:159 src/includes/coin-adapter.php:168
+#: src/includes/coin-adapter.php:188 src/includes/coin-adapter.php:241
+#: src/includes/confirmations.php:297 src/includes/cron.php:257
+#: src/includes/email.php:505 src/includes/qrcode.php:65
+#: src/includes/transactions.php:82 src/includes/transactions.php:714
+#: src/includes/transactions.php:895 src/includes/transactions.php:916
+#: src/includes/transactions.php:937 src/includes/transactions.php:957
+#: src/includes/transactions.php:977
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/admin-menu.php:47 src/includes/caps.php:90
 #: src/includes/json-api.php:230 src/includes/json-api.php:258
-#: src/includes/transactions.php:670 src/includes/transactions.php:849
-#: src/includes/transactions.php:870 src/includes/transactions.php:891
-#: src/includes/transactions.php:911 src/includes/transactions.php:931
+#: src/includes/transactions.php:720 src/includes/transactions.php:899
+#: src/includes/transactions.php:920 src/includes/transactions.php:941
+#: src/includes/transactions.php:961 src/includes/transactions.php:981
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
 #: src/includes/admin-menu.php:64 src/includes/admin-menu.php:74
+#: src/includes/wallets-core.php:185 src/includes/wallets-core.php:194
 msgid "Wallets"
 msgstr ""
 
@@ -221,23 +221,23 @@ msgstr ""
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:57 src/includes/coin-adapter.php:168
+#: src/includes/coin-adapter-bitcoin.php:57 src/includes/coin-adapter.php:171
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:60 src/includes/coin-adapter.php:171
+#: src/includes/coin-adapter-bitcoin.php:60 src/includes/coin-adapter.php:174
 msgid "Transaction fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:172
+#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:175
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:63 src/includes/coin-adapter.php:174
+#: src/includes/coin-adapter-bitcoin.php:63 src/includes/coin-adapter.php:177
 msgid "Withdrawal fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:175
+#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:178
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
@@ -334,48 +334,48 @@ msgid ""
 "of the %2$s daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:234 src/includes/coin-adapter-rpc.php:247
-#: src/includes/coin-adapter-rpc.php:266 src/includes/coin-adapter-rpc.php:291
-#: src/includes/coin-adapter-rpc.php:386 src/includes/coin-adapter-rpc.php:399
-#: src/includes/coin-adapter-rpc.php:416
+#: src/includes/coin-adapter-rpc.php:247 src/includes/coin-adapter-rpc.php:260
+#: src/includes/coin-adapter-rpc.php:279 src/includes/coin-adapter-rpc.php:304
+#: src/includes/coin-adapter-rpc.php:399 src/includes/coin-adapter-rpc.php:412
+#: src/includes/coin-adapter-rpc.php:429
 #, php-format
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:340
+#: src/includes/coin-adapter-rpc.php:353
 #, php-format
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/coin-adapter.php:70
+#: src/includes/coin-adapter.php:73
 msgid "General adapter settings"
 msgstr ""
 
-#: src/includes/coin-adapter.php:77
+#: src/includes/coin-adapter.php:80
 msgid "Enabled"
 msgstr ""
 
-#: src/includes/coin-adapter.php:93
+#: src/includes/coin-adapter.php:96
 msgid "Adapter fees"
 msgstr ""
 
-#: src/includes/coin-adapter.php:100
+#: src/includes/coin-adapter.php:103
 msgid "Transaction fee between users"
 msgstr ""
 
-#: src/includes/coin-adapter.php:114
+#: src/includes/coin-adapter.php:117
 msgid "Withdrawal fee"
 msgstr ""
 
-#: src/includes/coin-adapter.php:130
+#: src/includes/coin-adapter.php:133
 msgid "Other adapter settings"
 msgstr ""
 
-#: src/includes/coin-adapter.php:137
+#: src/includes/coin-adapter.php:140
 msgid "Minumum confirmations"
 msgstr ""
 
-#: src/includes/coin-adapter.php:176
+#: src/includes/coin-adapter.php:179
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -383,90 +383,90 @@ msgid ""
 "network fees set the appropriate settings in your wallet's .conf file."
 msgstr ""
 
-#: src/includes/coin-adapter.php:177
+#: src/includes/coin-adapter.php:180
 msgid "Refer to the wallet documentation for details."
 msgstr ""
 
-#: src/includes/coin-adapter.php:242
+#: src/includes/coin-adapter.php:245
 #, php-format
 msgid "Coin adapter settings for %s"
 msgstr ""
 
-#: src/includes/coin-adapter.php:244
+#: src/includes/coin-adapter.php:247
 #, php-format
 msgid "These are the settings for this %s adapter"
 msgstr ""
 
-#: src/includes/confirmations.php:28
+#: src/includes/confirmations.php:32
 msgid "Your withdrawal request requires confirmation. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/confirmations.php:51
+#: src/includes/confirmations.php:55
 msgid ""
 "Your internal funds transfer request requires confirmation. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/confirmations.php:90
+#: src/includes/confirmations.php:94
 msgid ""
 "The confirmation nonce is not in the correct format. Check your link and try "
 "again"
 msgstr ""
 
-#: src/includes/confirmations.php:108 src/includes/confirmations.php:181
+#: src/includes/confirmations.php:113 src/includes/confirmations.php:189
 msgid ""
 "The transaction to be confirmed was not found or it has already been "
 "confirmed."
 msgstr ""
 
-#: src/includes/confirmations.php:119
+#: src/includes/confirmations.php:124
 msgid "Can only confirm transfers or withdrawals!"
 msgstr ""
 
-#: src/includes/confirmations.php:169
+#: src/includes/confirmations.php:177
 msgid ""
 "You have successfully confirmed your transaction and it will be processed "
 "soon."
 msgstr ""
 
-#: src/includes/confirmations.php:170 src/includes/confirmations.php:175
+#: src/includes/confirmations.php:178 src/includes/confirmations.php:183
 msgid "Success"
 msgstr ""
 
-#: src/includes/confirmations.php:174
+#: src/includes/confirmations.php:182
 msgid ""
 "You have successfully confirmed your transaction. It will be processed once "
 "an administrator confirms it too."
 msgstr ""
 
-#: src/includes/confirmations.php:185
+#: src/includes/confirmations.php:193
 msgid "Failed to update transaction due to an internal error."
 msgstr ""
 
-#: src/includes/confirmations.php:292
+#: src/includes/confirmations.php:300
 msgid "/* @echo name */ Transaction confirmation settings"
 msgstr ""
 
-#: src/includes/confirmations.php:294
+#: src/includes/confirmations.php:302
 msgid ""
 "Users enter transaction requests via the front-end interface. For "
 "transactions between users as well as for withdrawals, you can choose which "
 "types of confirmations are required before transactions are attempted."
 msgstr ""
 
-#: src/includes/confirmations.php:299
+#: src/includes/confirmations.php:307
 msgid ""
 "User confirmations are done by sending emails that contain a link with a "
 "nonce. "
 msgstr ""
 
-#: src/includes/confirmations.php:301
+#: src/includes/confirmations.php:309
 #, php-format
 msgid ""
 "Admin confirmations are done by users with the <code>manage_wallets</code> "
 "capability, via the <a href=\"%s\">transactions</a> admin panel."
 msgstr ""
 
-#: src/includes/confirmations.php:306
+#: src/includes/confirmations.php:314
 #, php-format
 msgid ""
 "Once a transaction is confirmed, the <a href=\"%s\">cron job</a> will attemt "
@@ -474,209 +474,209 @@ msgid ""
 "failed transaction is retried. "
 msgstr ""
 
-#: src/includes/confirmations.php:317 src/includes/email.php:516
+#: src/includes/confirmations.php:339 src/includes/email.php:534
 msgid "The following variables are substituted in e-mail templates:"
 msgstr ""
 
-#: src/includes/confirmations.php:320
+#: src/includes/confirmations.php:342
 msgid ""
 "Confirmation link. Clicking this will mark the transaction as confirmed by "
 "user."
 msgstr ""
 
-#: src/includes/confirmations.php:322 src/includes/email.php:519
+#: src/includes/confirmations.php:344 src/includes/email.php:537
 msgid "Account username"
 msgstr ""
 
-#: src/includes/confirmations.php:324 src/includes/email.php:521
+#: src/includes/confirmations.php:346 src/includes/email.php:539
 msgid "Username of other account (for internal transactions between users)"
 msgstr ""
 
-#: src/includes/confirmations.php:326 src/includes/email.php:523
+#: src/includes/confirmations.php:348 src/includes/email.php:541
 msgid ""
 "Transaction ID. ( This is normally the same as the txid on the blockchain. "
 "Internal transactions are also assigned a unique ID. )"
 msgstr ""
 
-#: src/includes/confirmations.php:328 src/includes/email.php:525
+#: src/includes/confirmations.php:350 src/includes/email.php:543
 msgid "The amount transacted."
 msgstr ""
 
-#: src/includes/confirmations.php:330 src/includes/email.php:527
+#: src/includes/confirmations.php:352 src/includes/email.php:545
 msgid "For withdrawals and transfers, the fees paid to the site."
 msgstr ""
 
-#: src/includes/confirmations.php:332 src/includes/email.php:529
+#: src/includes/confirmations.php:354 src/includes/email.php:547
 msgid "The coin symbol for this transaction (e.g. \"BTC\" for Bitcoin)"
 msgstr ""
 
-#: src/includes/confirmations.php:334 src/includes/email.php:531
+#: src/includes/confirmations.php:356 src/includes/email.php:549
 msgid ""
 "The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:"
 "ssZZZZ"
 msgstr ""
 
-#: src/includes/confirmations.php:336 src/includes/email.php:533
+#: src/includes/confirmations.php:358 src/includes/email.php:551
 msgid "The comment attached to the transaction."
 msgstr ""
 
-#: src/includes/confirmations.php:338 src/includes/email.php:535
+#: src/includes/confirmations.php:360 src/includes/email.php:553
 msgid "For deposits and withdrawals, the external address."
 msgstr ""
 
-#: src/includes/confirmations.php:340 src/includes/email.php:537
+#: src/includes/confirmations.php:362 src/includes/email.php:555
 msgid ""
 "A space separated list of tags, slugs, etc that further describe the type of "
 "transaction."
 msgstr ""
 
-#: src/includes/confirmations.php:370
+#: src/includes/confirmations.php:392
 msgid ""
 "Choose which confirmations are required before performing an internal "
 "transaction between users."
 msgstr ""
 
-#: src/includes/confirmations.php:374
+#: src/includes/confirmations.php:396
 msgid ""
 "Choose which confirmations are required before performing a withdraw "
 "transaction."
 msgstr ""
 
-#: src/includes/confirmations.php:383
+#: src/includes/confirmations.php:405
 msgid "Internal transaction confirmations"
 msgstr ""
 
-#: src/includes/confirmations.php:390 src/includes/confirmations.php:471
+#: src/includes/confirmations.php:412 src/includes/confirmations.php:493
 msgid "Admin confirmation required"
 msgstr ""
 
-#: src/includes/confirmations.php:396
+#: src/includes/confirmations.php:418
 msgid ""
 "Check this if you wish internal transfers between users to require a "
 "confirmation via the admin panel. Any user with the manage_wallets "
 "capability can perform the confirmation."
 msgstr ""
 
-#: src/includes/confirmations.php:408
+#: src/includes/confirmations.php:430
 msgid "User confirmation required (e-mail)"
 msgstr ""
 
-#: src/includes/confirmations.php:414
+#: src/includes/confirmations.php:436
 msgid ""
 "Check this if you wish internal transfers between users to require a user "
 "confirmation. The user that initiated the transaction will receive an email "
 "with a link that they will need to click to confirm the transaction"
 msgstr ""
 
-#: src/includes/confirmations.php:428 src/includes/confirmations.php:509
-#: src/includes/email.php:157 src/includes/email.php:216
-#: src/includes/email.php:275 src/includes/email.php:334
-#: src/includes/email.php:393 src/includes/email.php:452
+#: src/includes/confirmations.php:450 src/includes/confirmations.php:531
+#: src/includes/email.php:161 src/includes/email.php:220
+#: src/includes/email.php:279 src/includes/email.php:338
+#: src/includes/email.php:397 src/includes/email.php:456
 msgid "Template for e-mail subject line:"
 msgstr ""
 
-#: src/includes/confirmations.php:434 src/includes/confirmations.php:451
-#: src/includes/confirmations.php:515 src/includes/confirmations.php:532
-#: src/includes/email.php:163 src/includes/email.php:180
-#: src/includes/email.php:222 src/includes/email.php:239
-#: src/includes/email.php:281 src/includes/email.php:298
-#: src/includes/email.php:340 src/includes/email.php:357
-#: src/includes/email.php:399 src/includes/email.php:416
-#: src/includes/email.php:458 src/includes/email.php:475
+#: src/includes/confirmations.php:456 src/includes/confirmations.php:473
+#: src/includes/confirmations.php:537 src/includes/confirmations.php:554
+#: src/includes/email.php:167 src/includes/email.php:184
+#: src/includes/email.php:226 src/includes/email.php:243
+#: src/includes/email.php:285 src/includes/email.php:302
+#: src/includes/email.php:344 src/includes/email.php:361
+#: src/includes/email.php:403 src/includes/email.php:420
+#: src/includes/email.php:462 src/includes/email.php:479
 msgid "See the bottom of this page for variable substitutions."
 msgstr ""
 
-#: src/includes/confirmations.php:445 src/includes/confirmations.php:526
-#: src/includes/email.php:174 src/includes/email.php:233
-#: src/includes/email.php:292 src/includes/email.php:351
-#: src/includes/email.php:410 src/includes/email.php:469
+#: src/includes/confirmations.php:467 src/includes/confirmations.php:548
+#: src/includes/email.php:178 src/includes/email.php:237
+#: src/includes/email.php:296 src/includes/email.php:355
+#: src/includes/email.php:414 src/includes/email.php:473
 msgid "Template for e-mail message body:"
 msgstr ""
 
-#: src/includes/confirmations.php:464
+#: src/includes/confirmations.php:486
 msgid "Withdraw transaction confirmations"
 msgstr ""
 
-#: src/includes/confirmations.php:477
+#: src/includes/confirmations.php:499
 msgid ""
 "Check this if you wish withdrawals to require a confirmation via the admin "
 "panel. Any user with the manage_wallets capability can perform the "
 "confirmation."
 msgstr ""
 
-#: src/includes/confirmations.php:489
+#: src/includes/confirmations.php:511
 msgid "User confirmation required"
 msgstr ""
 
-#: src/includes/confirmations.php:495
+#: src/includes/confirmations.php:517
 msgid ""
 "Check this if you wish withdrawals to require a user confirmation. The user "
 "that initiated the transacion will receive an email with a link that they "
 "will need to click to confirm the withdrawal."
 msgstr ""
 
-#: src/includes/cron.php:56
+#: src/includes/cron.php:71
 msgid "minute"
 msgstr ""
 
-#: src/includes/cron.php:61
+#: src/includes/cron.php:76
 msgid "three minutes"
 msgstr ""
 
-#: src/includes/cron.php:66
+#: src/includes/cron.php:81
 msgid "five minutes"
 msgstr ""
 
-#: src/includes/cron.php:71
+#: src/includes/cron.php:86
 msgid "ten minutes"
 msgstr ""
 
-#: src/includes/cron.php:76
+#: src/includes/cron.php:91
 msgid "twenty minutes"
 msgstr ""
 
-#: src/includes/cron.php:81
+#: src/includes/cron.php:96
 msgid "half an hour"
 msgstr ""
 
-#: src/includes/cron.php:141
+#: src/includes/cron.php:168
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/cron.php:148
+#: src/includes/cron.php:175
 msgid "Run every"
 msgstr ""
 
-#: src/includes/cron.php:162
+#: src/includes/cron.php:189
 msgid "Max batch size"
 msgstr ""
 
-#: src/includes/cron.php:168
+#: src/includes/cron.php:195
 msgid "Up to this many transactions will be attempted per run of the cron job."
 msgstr ""
 
-#: src/includes/cron.php:179
+#: src/includes/cron.php:206
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: src/includes/cron.php:185
+#: src/includes/cron.php:212
 msgid "Failed withdrawals will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:196
+#: src/includes/cron.php:223
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: src/includes/cron.php:202
+#: src/includes/cron.php:229
 msgid ""
 "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:233
+#: src/includes/cron.php:260
 msgid "/* @echo name */ cron settings"
 msgstr ""
 
-#: src/includes/cron.php:234
+#: src/includes/cron.php:261
 msgid ""
 "You can set here the periodicity of all recurring tasks for this plugin. "
 "Every time cron runs, a batch of transactions is attempted. You can choose "
@@ -687,109 +687,109 @@ msgid ""
 "enabled adapters."
 msgstr ""
 
-#: src/includes/cron.php:249
+#: src/includes/cron.php:290
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron job."
 msgstr ""
 
-#: src/includes/email.php:26
+#: src/includes/email.php:30
 msgid "You have performed a withdrawal. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:42
+#: src/includes/email.php:46
 msgid "Your withdrawal request has FAILED permanently. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:60
+#: src/includes/email.php:64
 msgid "You have sent funds to another user. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:77
+#: src/includes/email.php:81
 msgid ""
 "You request to send funds to another user has FAILED permanently. - "
 "###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:96
+#: src/includes/email.php:100
 msgid "You have received funds from another user. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:112
+#: src/includes/email.php:116
 msgid "You have performed a ###SYMBOL### deposit."
 msgstr ""
 
-#: src/includes/email.php:133
+#: src/includes/email.php:137
 msgid "E-mail notification settings for SUCCESSFUL withdrawals"
 msgstr ""
 
-#: src/includes/email.php:140
+#: src/includes/email.php:144
 msgid "Notify users about SUCCESSFUL withdrawals"
 msgstr ""
 
-#: src/includes/email.php:146 src/includes/email.php:205
-#: src/includes/email.php:264 src/includes/email.php:323
-#: src/includes/email.php:382 src/includes/email.php:441
+#: src/includes/email.php:150 src/includes/email.php:209
+#: src/includes/email.php:268 src/includes/email.php:327
+#: src/includes/email.php:386 src/includes/email.php:445
 msgid "Check to enable this type of e-mails."
 msgstr ""
 
-#: src/includes/email.php:192
+#: src/includes/email.php:196
 msgid "E-mail notification settings for FAILED withdrawals"
 msgstr ""
 
-#: src/includes/email.php:199
+#: src/includes/email.php:203
 msgid "Notify users about FAILED withdrawals"
 msgstr ""
 
-#: src/includes/email.php:251
+#: src/includes/email.php:255
 msgid "E-mail notification settings for deposits"
 msgstr ""
 
-#: src/includes/email.php:258
+#: src/includes/email.php:262
 msgid "Notify users about depositals"
 msgstr ""
 
-#: src/includes/email.php:310
+#: src/includes/email.php:314
 msgid "E-mail notification settings for SUCCESSFUL outgoing fund transfers"
 msgstr ""
 
-#: src/includes/email.php:317
+#: src/includes/email.php:321
 msgid "Notify users about SUCCESSFUL outgoing fund transfers"
 msgstr ""
 
-#: src/includes/email.php:369
+#: src/includes/email.php:373
 msgid "E-mail notification settings for FAILED outgoing fund transfers"
 msgstr ""
 
-#: src/includes/email.php:376
+#: src/includes/email.php:380
 msgid "Notify users about outgoing FAILED fund transfers"
 msgstr ""
 
-#: src/includes/email.php:428
+#: src/includes/email.php:432
 msgid "E-mail notification settings for incoming fund transfers"
 msgstr ""
 
-#: src/includes/email.php:435
+#: src/includes/email.php:439
 msgid "Notify users about incoming fund transfers"
 msgstr ""
 
-#: src/includes/email.php:504
+#: src/includes/email.php:508
 msgid "/* @echo name */ E-mail notification settings"
 msgstr ""
 
-#: src/includes/email.php:506
+#: src/includes/email.php:510
 msgid ""
 "Users are notified by e-mail when they perform deposits or withdrawals and "
 "when they send or receive funds. Here you can set template messages for "
 "these emails."
 msgstr ""
 
-#: src/includes/email.php:539
+#: src/includes/email.php:557
 msgid ""
 "Only for failed withdrawals, shows the last error occurred in a failed "
 "transaction."
 msgstr ""
 
-#: src/includes/email.php:569
+#: src/includes/email.php:623
 msgid ""
 "Here you can choose whether users receive e-mail notifications on this "
 "event. You can also edit the template used to produce the email subject line "
@@ -814,10 +814,10 @@ msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:197 src/includes/json-api.php:224
-#: src/includes/json-api.php:252 src/includes/transactions.php:629
-#: src/includes/wallets-core.php:398 src/includes/wallets-core.php:438
-#: src/includes/wallets-core.php:501 src/includes/wallets-core.php:569
-#: src/includes/wallets-core.php:703 src/includes/wallets-core.php:840
+#: src/includes/json-api.php:252 src/includes/transactions.php:678
+#: src/includes/wallets-core.php:413 src/includes/wallets-core.php:466
+#: src/includes/wallets-core.php:530 src/includes/wallets-core.php:601
+#: src/includes/wallets-core.php:741 src/includes/wallets-core.php:883
 msgid "Not allowed"
 msgstr ""
 
@@ -845,27 +845,27 @@ msgstr ""
 msgid "Unknown action %s specified"
 msgstr ""
 
-#: src/includes/qrcode.php:24
+#: src/includes/qrcode.php:29
 msgid "QR Code display settings"
 msgstr ""
 
-#: src/includes/qrcode.php:31
+#: src/includes/qrcode.php:36
 msgid "Enable QR Codes"
 msgstr ""
 
-#: src/includes/qrcode.php:63
+#: src/includes/qrcode.php:68
 msgid "/* @echo name */ QR Code settings"
 msgstr ""
 
-#: src/includes/qrcode.php:65
+#: src/includes/qrcode.php:70
 msgid "The [wallets_deposit] shortcode displays deposit addresses."
 msgstr ""
 
-#: src/includes/qrcode.php:67
+#: src/includes/qrcode.php:72
 msgid "The word \"QR Code\" is registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
-#: src/includes/qrcode.php:83
+#: src/includes/qrcode.php:112
 msgid "Here you can control whether addresses are displayed as QR Codes."
 msgstr ""
 
@@ -961,59 +961,59 @@ msgstr ""
 msgid "Verified by user"
 msgstr ""
 
-#: src/includes/transactions-list.php:228
+#: src/includes/transactions-list.php:231
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: src/includes/transactions-list.php:229
+#: src/includes/transactions-list.php:232
 msgid "Admin unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:245
+#: src/includes/transactions-list.php:248
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: src/includes/transactions-list.php:246
+#: src/includes/transactions-list.php:249
 msgid "Admin accept"
 msgstr ""
 
-#: src/includes/transactions-list.php:281
+#: src/includes/transactions-list.php:284
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: src/includes/transactions-list.php:282
+#: src/includes/transactions-list.php:285
 msgid "User unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:298
+#: src/includes/transactions-list.php:301
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: src/includes/transactions-list.php:299
+#: src/includes/transactions-list.php:302
 msgid "User accept"
 msgstr ""
 
-#: src/includes/transactions-list.php:328
+#: src/includes/transactions-list.php:331
 msgid "Reset the number of retries for this transaction"
 msgstr ""
 
-#: src/includes/transactions-list.php:329
+#: src/includes/transactions-list.php:332
 msgid "Reset retries"
 msgstr ""
 
-#: src/includes/transactions.php:71
+#: src/includes/transactions.php:87
 msgid "/* @echo name */ Transactions"
 msgstr ""
 
-#: src/includes/transactions.php:78
+#: src/includes/transactions.php:94
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/transactions.php:80
+#: src/includes/transactions.php:96
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Pending transactions will be skipped if they have not been "
@@ -1021,42 +1021,42 @@ msgid ""
 "imported, unless if they already exist in your DB."
 msgstr ""
 
-#: src/includes/transactions.php:85
+#: src/includes/transactions.php:101
 msgid "Import"
 msgstr ""
 
-#: src/includes/transactions.php:321
+#: src/includes/transactions.php:359
 #, php-format
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: src/includes/transactions.php:653
+#: src/includes/transactions.php:703
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:690
+#: src/includes/transactions.php:740
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:698
+#: src/includes/transactions.php:748
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: src/includes/transactions.php:955
+#: src/includes/transactions.php:1005
 msgid "Successfully updated transaction"
 msgstr ""
 
-#: src/includes/transactions.php:959
+#: src/includes/transactions.php:1009
 msgid "The transaction to be updated was not found"
 msgstr ""
 
-#: src/includes/transactions.php:963
+#: src/includes/transactions.php:1013
 msgid "Failed to update transaction"
 msgstr ""
 
@@ -1131,7 +1131,7 @@ msgstr ""
 msgid "Address label"
 msgstr ""
 
-#: src/includes/wallets-core.php:205
+#: src/includes/wallets-core.php:220
 #, php-format
 msgid ""
 "The \"%1$s\" coin adapter can conflict with another adapter \"%2$s\" that is "
@@ -1139,40 +1139,40 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: src/includes/wallets-core.php:228
+#: src/includes/wallets-core.php:243
 #, php-format
 msgid ""
 "/* @echo name */ could NOT create a transactions table \"%s\" in the "
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:405
+#: src/includes/wallets-core.php:420
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:409
+#: src/includes/wallets-core.php:424
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:603
+#: src/includes/wallets-core.php:637
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:626
+#: src/includes/wallets-core.php:662
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:632 src/includes/wallets-core.php:734
+#: src/includes/wallets-core.php:668 src/includes/wallets-core.php:777
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:707
+#: src/includes/wallets-core.php:745
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:728
+#: src/includes/wallets-core.php:771
 msgid "Cannot move negative amount"
 msgstr ""

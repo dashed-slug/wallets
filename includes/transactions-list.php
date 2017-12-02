@@ -80,9 +80,11 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			FROM
 				$table_name_txs
 			WHERE
-				blog_id = %d
+				( blog_id = %d || %d )
 			",
-			get_current_blog_id() ) );
+			get_current_blog_id(),
+			is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+		) );
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
@@ -115,13 +117,14 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			LEFT JOIN {$wpdb->users} u1 ON u1.ID = txs.account
 			LEFT JOIN {$wpdb->users} u2 ON u2.ID = txs.other_account
 			WHERE
-				blog_id = %d
+				( blog_id = %d || %d )
 			ORDER BY
 				$this->orderby $this->order
 			LIMIT
 				%d, %d
 			",
 			get_current_blog_id(),
+			is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 			self::PER_PAGE * ( $current_page - 1 ),
 			self::PER_PAGE
 		);
@@ -208,8 +211,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		if ( 'unconfirmed' == $item['status'] || 'pending' == $item['status'] ) {
 
-			if ( ( 'withdraw' == $item['category'] && get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) ||
-				( 'move' == $item['category'] && get_option( 'wallets_confirm_move_admin_enabled' ) ) ) {
+			if ( ( 'withdraw' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) ||
+				( 'move' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ) ) {
 
 				if ( $item['admin_confirm'] ) {
 					$actions['admin_unconfirm'] = sprintf( '<a href="%s" title="%s">%s</a>',
@@ -223,7 +226,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-admin-unconfirm-' . $item['id'] )
 							),
-							admin_url( 'admin.php' )
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if admin confirmation is required.', 'wallets' ),
 						__( 'Admin unaccept', 'wallets' )
@@ -240,7 +243,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-admin-confirm-' . $item['id'] )
 							),
-							admin_url( 'admin.php' )
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Transaction will be marked as CONFIRMED by admin.', 'wallets' ),
 						__( 'Admin accept', 'wallets' )
@@ -261,8 +264,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		if ( 'unconfirmed' == $item['status'] || 'pending' == $item['status'] ) {
 
-			if ( ( 'withdraw' == $item['category'] && get_option( 'wallets_confirm_withdraw_user_enabled' ) ) ||
-				( 'move' == $item['category'] && get_option( 'wallets_confirm_move_user_enabled' ) ) ) {
+			if ( ( 'withdraw' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) ||
+				( 'move' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) ) {
 
 				if ( $item['user_confirm'] ) {
 					$actions['user_unconfirm'] = sprintf( '<a href="%s" title="%s">%s</a>',
@@ -276,7 +279,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-user-unconfirm-' . $item['id'] )
 							),
-							admin_url( 'admin.php' )
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Mark this transaction as NOT CONFIRMED by user. A new confirmation email will be sent to the user.', 'wallets' ),
 						__( 'User unaccept', 'wallets' )
@@ -293,7 +296,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-user-confirm-' . $item['id'] )
 							),
-							admin_url( 'admin.php' )
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Transaction will be marked as CONFIRMED by user.', 'wallets' ),
 						__( 'User accept', 'wallets' )
@@ -323,8 +326,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 						'orderby' => $this->orderby,
 						'_wpnonce' => wp_create_nonce( 'wallets-reset-retries-' . $item['id'] )
 					),
-					admin_url( 'admin.php' )
-					),
+					call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+				),
 				__( 'Reset the number of retries for this transaction', 'wallets' ),
 				__( 'Reset retries', 'wallets' )
 			);
