@@ -11,5 +11,4 @@
 
 	<input type="submit" value="<?php esc_attr_e( 'Send', 'wallets' ); ?>" />
 	<input type="button" data-bind="click: $root.resetMove" value="<?php esc_attr_e( 'Reset form', 'wallets' ); ?>" />
-	<?php wp_nonce_field( 'wallets-move' ); ?>
 </form>

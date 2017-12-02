@@ -6,9 +6,8 @@
 	<label class="amount"><?php esc_html_e( 'Amount', 'wallets' ); ?>: <input type="text"  data-bind="value: withdrawAmount, valueUpdate: ['afterkeydown', 'input']" /></label>
 	<label class="fee"><?php esc_html_e( 'Fee (deducted from amount)', 'wallets' ); ?>: <input type="text" data-bind="value: withdraw_fee, enable: false" /></label>
 	<label class="comment"><?php esc_html_e( 'Transaction comment', 'wallets' ); ?>: <input type="text"  data-bind="value: withdrawComment" /></label>
-	<label class="commentto"><?php esc_html_e( 'Address label', 'wallets' ); ?>: <input type="text" data-bind="value: withdrawCommentTo" /></label>
+	<label class="extra"><span data-bind="html: withdrawExtraDesc"></span>: <input type="text" data-bind="value: withdrawExtra" /></label>
 	<hr />
 	<input type="submit" value="<?php esc_attr_e( 'Send', 'wallets' ); ?>" />
 	<input type="button" data-bind="click: $root.resetWithdraw" value="<?php esc_attr_e( 'Reset form', 'wallets' ); ?>" />
-	<?php wp_nonce_field( 'wallets-withdraw' ); ?>
 </form>

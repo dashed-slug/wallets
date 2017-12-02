@@ -438,12 +438,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 *
 		 * e.g. for Bitcoin, this would be "bitcoin". Override this as needed.
 		 *
+		 * @deprecated Use address_to_qrcode_uri.
+		 * @since 2.8.1 Superseeded by address_to_qrcode_uri
 		 * @see https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki
 		 * @return string The string to be used as a RFC-3986-like scheme in a BIP0020 URI.
 		 */
 		public function get_uri_scheme() {
 			return strtolower( $this->get_name() );
 		}
+
+		/**
+		 * Generates a BIP0020-like URI, where the scheme is the name of the coin in lowercase.
+		 * Provides an easy way to quickly get a URI that can be used as a QR code.
+		 * Coin adapters that require additional info to be placed in the QR code can override this. (e.g. Ripple, Monero).
+		 *
+		 * @param strinng|array $address An  address for this coin. Can be the result of get_new_address().
+		 * @since 2.8.1 Introduced
+		 * @see https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki
+		 * @return string The string to be used in a deposit QR code.
+		 */
+		public function address_to_qrcode_uri( $address ) {
+			if ( is_array( $address ) ) {
+				$address = $address[0];
+			}
+			return strtolower( $this->get_name() ) . ':' . $address;
+		}
+
 
 		/** Settings URL in admin menu.
 		 *
@@ -468,6 +488,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 */
 		public function get_sprintf() {
 			return $this->get_symbol() . ' %01.8f';
+		}
+
+
+		/* Returns text describing what the extra field next to deposit and withdraw addresses is used for.
+		 * Useful for coins with special arguments, such as:
+		 *
+		 * Steem Dollars (SBD) takes optional "Memo" argument
+		 * STEEM (STEEM) takes optional "Memo" argument
+		 * NEM (XEM) takes optional "Message" argument
+		 * Monero (XMR) takes optional "Payment ID" argument
+		 * Ripple (XRP) takes optional "Destination Tag" integer argument
+		 *
+		 * In RPC wallets the extra argument is used as an internal label for the destination address.
+		 * (`comment_to` field in Bitcoin.)
+		 */
+		public function get_extra_field_description() {
+			return __( 'Destination address label (optional)', 'wallets' );
 		}
 
 		/**
@@ -583,7 +620,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * the deposited funds with any particular user.
 		 *
 		 * @api
-		 * @return string A deposit address.
+		 * @return string|array A deposit address or an array of the deposit address plus some other extra string describing the deposit.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public abstract function get_new_address( );
@@ -594,14 +631,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * Withdraws funds to the address specified.
 		 *
 		 * @api
+		 * @since 2.8.1 Changed argument $comment_to to $extra.
 		 * @param string $address The address to withdraw to.
 		 * @param float $amount The amount to withdraw.
 		 * @param string $comment A comment attached to this withdrawal (optional).
-		 * @param string $comment_to A comment about this destination address (optional).
+		 * @param string $extra A comment, memo, payment ID or other piece of extra information about the withdrawal or its destination.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 * @return string A transaction ID that uniquely identifies the withdrawal to this adapter.
 		 */
-		public abstract function do_withdraw( $address, $amount, $comment = '', $comment_to = '' );
+		public abstract function do_withdraw( $address, $amount, $comment = '', $extra = null );
 
 		/**
 		 * Handles a notification about a transaction ID.

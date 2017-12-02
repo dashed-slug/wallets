@@ -190,7 +190,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			add_settings_section(
 				'wallets_cron_settings_section',
-				__( 'Perioric checks', '/* @echo slug' ),
+				__( 'Perioric checks', 'wallets' ),
 				array( &$this, 'wallets_cron_section_cb' ),
 				'wallets-menu-cron'
 			);

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.8.1 =
+- Add: Changes throughout the plugin for currencies that use additional information in transactions besides a destination address (e.g. Monero, Ripple, etc).
+- Fix: Some issues with language domains in translated strings.
+- Fix: QR code only shown for currencies where deposit makes sense.
+- Add: NovaExchange will be shown as unavailable as an exchange rate provider after 2018-02-28.
+
 = 2.8.0 =
 - Add: Admins can cancel internal transactions.
 - Add: Admins can retry cancelled internal transactions.
@@ -624,7 +630,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.8.0 introduces improvements mostly in the exchange rates system.
+Version 2.8.1 introduces support for currencies that require additional information in transactions besides a destination address (e.g. Monero, Ripple, etc).
 
 == Donating ==
 

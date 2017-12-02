@@ -411,7 +411,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					$txid = $adapter->do_withdraw(
 						$wd_tx->address,
 						- $wd_tx->amount - $wd_tx->fee,
-						$wd_tx->comment
+						$wd_tx->comment,
+						$wd_tx->extra
 					);
 
 					if ( ! is_string( $txid ) ) {
@@ -490,7 +491,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			try {
 				$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $tx->symbol, false );
 			} catch ( Exception $e ) {
-				error_log( __FUNCTION__ . ": Adapter for transaction $tx->txid is not online" );
+				error_log( __FUNCTION__ . ": Adapter for {$tx->symbol} transaction {$tx->txid} is not online" );
 				return;
 			}
 
@@ -513,7 +514,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 					if ( 'deposit' == $tx->category ) {
 						try {
-							$tx->account = $this->get_account_id_for_address( $tx->symbol, $tx->address );
+							if ( isset( $tx->extra ) && $tx->extra ) {
+								$tx->account = $this->get_account_id_for_address( $tx->symbol, $tx->address, false, $tx->extra );
+							} else {
+								$tx->account = $this->get_account_id_for_address( $tx->symbol, $tx->address );
+							}
 						} catch ( Exception $e ) {
 							// we don't know about this address - ignore it
 							return;
@@ -546,6 +551,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'category' => 'deposit',
 								'account' => $tx->account,
 								'address' => $tx->address,
+								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : null,
 								'txid' => $tx->txid,
 								'symbol' => $tx->symbol,
 								'amount' => number_format( $tx->amount, 10, '.', '' ),
@@ -564,7 +570,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								Dashed_Slug_Wallets::$table_name_txs,
 								$new_tx_data,
 								array(
-									'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d'
+									'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d'
 								)
 							);
 
@@ -579,6 +585,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							'address' => $tx->address,
 							'txid' => $tx->txid,
 						);
+
+						if ( isset( $tx->extra ) && $tx->extra ) {
+							$where['extra'] = $tx->extra;
+						}
 
 						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 							$where['blog_id'] = get_current_blog_id();
@@ -598,7 +608,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$new_tx_data,
 							$where,
 							array( '%s', '%d', '%s' ),
-							array( '%s', '%s', '%d' )
+							array( '%s', '%s', '%s', '%s' )
 						);
 
 
@@ -611,6 +621,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'category' => 'withdraw',
 								'account' => $tx->account,
 								'address' => $tx->address,
+								'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : null,
 								'txid' => $tx->txid,
 								'symbol' => $tx->symbol,
 								'amount' => number_format( $tx->amount, 10, '.', '' ),
@@ -625,7 +636,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$affected = $wpdb->insert(
 								Dashed_Slug_Wallets::$table_name_txs,
 								$new_tx_data,
-								array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d' )
+								array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d' )
 							);
 
 							if ( ! $affected ) {
@@ -666,16 +677,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$suppress_errors = $wpdb->suppress_errors;
 			$wpdb->suppress_errors();
 
+			$address_row = array(
+				'blog_id' => get_current_blog_id(),
+				'account' => $address->account,
+				'symbol' => $address->symbol,
+				'created_time' => $address->created_time,
+				'address' => $address->address
+			);
+
+			$address_row['extra'] = isset( $address->extra ) && $address->extra ? $address->extra : null;
+
 			$wpdb->insert(
 				$table_name_adds,
-				array(
-					'blog_id' => get_current_blog_id(),
-					'account' => $address->account,
-					'symbol' => $address->symbol,
-					'address' => $address->address,
-					'created_time' => $address->created_time
-				),
-				array( '%d', '%d', '%s', '%s', '%s' )
+				$address_row,
+				array( '%d', '%d', '%s', '%s', '%s', '%s' )
 			);
 
 			$wpdb->suppress_errors( $suppress_errors );
@@ -691,11 +706,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param string $address The address
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @param string|null $extra Optional comment or other info attached to the destination address.
 		 * @throws Exception If the address is not associated with an account.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return integer The WordPress user ID for the account found.
 		 */
-		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false ) {
+		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false, $extra = null ) {
 			global $wpdb;
 
 			if (
@@ -706,6 +722,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				}
 
 				$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
+
 				$account = $wpdb->get_var( $wpdb->prepare(
 					"
 					SELECT
@@ -715,7 +732,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					WHERE
 						( blog_id = %d || %d ) AND
 						symbol = %s AND
-						address = %s
+						address = %s AND
+						( extra = %s || %d )
 					ORDER BY
 						created_time DESC
 					LIMIT 1
@@ -723,7 +741,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					get_current_blog_id(),
 					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 					$symbol,
-					$address
+					$address,
+					$extra,
+					is_null( $extra )
 				) );
 
 				if ( is_null( $account ) ) {

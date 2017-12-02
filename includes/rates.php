@@ -66,7 +66,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			add_settings_section(
 				'wallets_rates_section',
-				__( 'Exchange rates settings', '/* @echo slug' ),
+				__( 'Exchange rates settings', 'wallets' ),
 				array( &$this, 'wallets_rates_section_cb' ),
 				'wallets-menu-rates'
 			);
@@ -111,7 +111,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			add_settings_section(
 				'wallets_rates_debug_section',
-				__( 'Exchange rates debug views', '/* @echo slug' ),
+				__( 'Exchange rates debug views', 'wallets' ),
 				array( &$this, 'wallets_rates_debug_section_cb' ),
 				'wallets-menu-rates'
 			);
@@ -233,6 +233,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					id="<?php echo esc_attr( $arg['label_for'] . "_{$provider}_radio" ); ?>"
 					name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 					value="<?php echo esc_attr( $provider ); ?>"
+
+					<?php if ( 'novaexchange' == $provider && time() > strtotime( '2018-02-28' ) ): ?>
+						disabled="disabled"
+						style="cursor: not-allowed;"
+						title="The Novaexchange API has been decomissioned. Please switch to another API."
+					<?php endif; ?>
+
 						<?php checked( $provider, Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?> />
 
 				<?php

@@ -172,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.8.0',
+					'2.8.1',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -185,7 +185,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.8.0',
+					'2.8.1',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -198,7 +198,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.8.0'
+					'2.8.1'
 				);
 			}
 		}
@@ -266,7 +266,73 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_admin_init() {
+			// create or update db tables
 			global $wpdb;
+
+			$charset_collate = $wpdb->get_charset_collate();
+			$table_name_txs = self::$table_name_txs;
+			$table_name_adds = self::$table_name_adds;
+
+			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
+			$current_db_revision = 10;
+
+			if ( $installed_db_revision < $current_db_revision ) {
+
+				// remove old unique constraints before recreating them
+				$wpdb->query( "ALTER TABLE $table_name_adds DROP INDEX `uq_ad_idx`" );
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_txid`" );
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid`" );
+
+				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+				$sql = "CREATE TABLE {$table_name_txs} (
+				id int(10) unsigned NOT NULL AUTO_INCREMENT,
+				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'useful in multisite installs only if plugin is not network activated',
+				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
+				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
+				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
+				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
+				address varchar(255) NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
+				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'extra info required by some coins such as XMR',
+				txid varchar(255) DEFAULT NULL COMMENT 'blockchain transaction id',
+				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
+				fee decimal(20,10) signed NOT NULL DEFAULT 0 COMMENT 'fees deducted from account',
+				comment TEXT DEFAULT NULL COMMENT 'transaction comment',
+				created_time datetime NOT NULL COMMENT 'when transaction was entered into the system in GMT',
+				updated_time datetime NOT NULL COMMENT 'when transaction was last updated in GMT (e.g. for update to confirmations count)',
+				confirmations mediumint unsigned DEFAULT 0 COMMENT 'amount of confirmations received from blockchain, or null for category==move',
+				status enum('unconfirmed','pending','done','failed','cancelled') NOT NULL DEFAULT 'unconfirmed' COMMENT 'state of transaction',
+				retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed',
+				admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction',
+				user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email',
+				nonce char(32) DEFAULT NULL COMMENT 'nonce for user to confirm via emailed link',
+				PRIMARY KEY  (id),
+				INDEX account_idx (account),
+				INDEX blogid_idx (blog_id),
+				UNIQUE KEY `uq_tx_idx` (`address`, `symbol`, `extra`)
+				) $charset_collate;";
+
+				dbDelta( $sql );
+
+
+				$sql = "CREATE TABLE {$table_name_adds} (
+				id int(10) unsigned NOT NULL AUTO_INCREMENT,
+				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
+				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
+				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'extra info required by some coins such as XMR',
+				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
+				PRIMARY KEY  (id),
+				INDEX retrieve_idx (account,symbol),
+				INDEX lookup_idx (address),
+				UNIQUE KEY `uq_ad_idx` (`address`, `symbol`, `extra`)
+				) CHARACTER SET latin1 COLLATE latin1_bin;";
+
+				dbDelta( $sql );
+
+			}
 
 			// check for tx table
 			$table_name_txs = self::$table_name_txs;
@@ -275,6 +341,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						__( 'Bitcoin and Altcoin Wallets could NOT create a transactions table "%s" in the database. The plugin may not function properly.', 'wallets'),
 						$table_name_txs
 				) );
+			} else {
+				Dashed_Slug_Wallets::update_option( 'wallets_db_revision', $current_db_revision );
 			}
 
 			// Check for PHP version
@@ -299,102 +367,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			}
 		}
 
+
 		/** @internal */
 		public static function action_activate( $network_active ) {
-
-			// create or update db tables
-			global $wpdb;
-
-			$charset_collate = $wpdb->get_charset_collate();
-			$table_name_txs = self::$table_name_txs;
-			$table_name_adds = self::$table_name_adds;
-
-			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision = 9;
-
-			if ( $installed_db_revision < $current_db_revision ) {
-
-				$status_col_exists = intval( $wpdb->get_var( "SELECT count(*) FROM information_schema.COLUMNS WHERE COLUMN_NAME='status' and TABLE_NAME='{$table_name_txs}'") );
-
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-				// explicitly remove old constraints/indices
-				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
-				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid_idx`" );
-				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid`" );
-
-				$sql = "CREATE TABLE {$table_name_txs} (
-				id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'useful in multisite installs only if plugin is not network activated',
-				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
-				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
-				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
-				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
-				address varchar(255) NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
-				txid varchar(255) DEFAULT NULL COMMENT 'blockchain transaction id',
-				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
-				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
-				fee decimal(20,10) signed NOT NULL DEFAULT 0 COMMENT 'fees deducted from account',
-				comment TEXT DEFAULT NULL COMMENT 'transaction comment',
-				created_time datetime NOT NULL COMMENT 'when transaction was entered into the system in GMT',
-				updated_time datetime NOT NULL COMMENT 'when transaction was last updated in GMT (e.g. for update to confirmations count)',
-				confirmations mediumint unsigned DEFAULT 0 COMMENT 'amount of confirmations received from blockchain, or null for category==move',
-				status enum('unconfirmed','pending','done','failed','cancelled') NOT NULL DEFAULT 'unconfirmed' COMMENT 'state of transaction',
-				retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed',
-				admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction',
-				user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email',
-				nonce char(32) DEFAULT NULL COMMENT 'nonce for user to confirm via emailed link',
-				PRIMARY KEY  (id),
-				INDEX account_idx (account),
-				INDEX blogid_idx (blog_id)
-				) $charset_collate;";
-
-				dbDelta( $sql );
-
-				// changing latin1 collations explicitly to conserve index space
-				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'" );
-				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id'" );
-
-				// changing empty txids to null and applying unique constraint
-				$wpdb->query( "UPDATE {$table_name_txs} SET txid=NULL WHERE txid=''" );
-				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin UNIQUE DEFAULT NULL COMMENT 'blockchain transaction id'" );
-
-				// all existing transactions are assumed done
-				if ( ! $status_col_exists ) {
-					// added for safety because dbDelta failed on 2.3.0
-					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN status enum('unconfirmed','pending','done','failed','cancelled') NOT NULL DEFAULT 'unconfirmed' COMMENT 'state of transaction'" );
-					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed'" );
-					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction'" );
-					$wpdb->query( "ALTER TABLE $table_name_txs ADD COLUMN user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email'" );
-					$wpdb->query( "ALTER TABLE $table_name_txs ADD KEY `blogid_idx` (`blog_id`)" );
-
-					$wpdb->query( "UPDATE $table_name_txs SET status = 'done'" );
-				}
-
-				$sql = "CREATE TABLE {$table_name_adds} (
-				id int(10) unsigned NOT NULL AUTO_INCREMENT,
-				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
-				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
-				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
-				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
-				PRIMARY KEY  (id),
-				INDEX retrieve_idx (account,symbol),
-				INDEX lookup_idx (address),
-				UNIQUE KEY `uq_ad_idx` (`address`, `symbol`)
-				) CHARACTER SET latin1 COLLATE latin1_bin;";
-
-				dbDelta( $sql );
-
-				// changing collation from db_revision 3 to 4 does not work with dbDelta so changing explicitly
-				$wpdb->query( "ALTER TABLE {$table_name_adds} CONVERT TO CHARACTER SET latin1 COLLATE latin1_bin;" );
-
-				if (	( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" )	== $table_name_txs ) &&
-						( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_adds}'" )	== $table_name_adds ) ) {
-
-					Dashed_Slug_Wallets::update_option( 'wallets_db_revision', $current_db_revision );
-				}
-			}
 
 			// built-in bitcoin adapter settings
 
@@ -461,8 +436,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.8.0';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '538fbe7';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.8.1';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'be3f245';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
@@ -765,6 +740,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			foreach ( $txs as &$tx ) {
 				unset( $tx->id );
 				unset( $tx->blog_id );
+				unset( $tx->nonce );
 			}
 
 			return $txs;
@@ -783,13 +759,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $address Address to withdraw to.
 		 * @param float $amount Amount to withdraw to.
 		 * @param string $comment Optional comment to attach to the transaction.
-		 * @param string $comment_to Optional comment to attach to the destination address.
+		 * @param string $extra Optional comment or other info to attach to the destination address.
+		 *		See Dashed_Slug_Wallets_Coin_Adapter->get_extra_field_description() for details
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return void
 		 */
-		public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '', $check_capabilities = false, $skip_confirm = false ) {
+		public function do_withdraw( $symbol, $address, $amount, $comment = '', $extra = null, $check_capabilities = false, $skip_confirm = false ) {
 			if (
 				$check_capabilities &&
 				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
@@ -816,7 +793,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				WHERE
 					( blog_id = %d || %d ) AND
 					symbol = %s AND
-					address = %s
+					address = %s AND
+					( extra = %s || extra IS NULL )
 				ORDER BY
 					created_time DESC
 				LIMIT 1
@@ -824,7 +802,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				get_current_blog_id(),
 				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
 				$symbol,
-				$address
+				$address,
+				$extra ? $extra : ''
 			) );
 
 			if ( ! is_null( $deposit_address ) ) {
@@ -874,6 +853,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'category' => 'withdraw',
 					'account' => get_current_user_id(),
 					'address' => $address,
+					'extra' => $extra,
 					'symbol' => $symbol,
 					'amount' => -number_format( $amount, 10, '.', '' ),
 					'fee' => number_format( $fee, 10, '.', '' ),
@@ -888,7 +868,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow,
-					array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
+					array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -1074,7 +1054,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @since 2.4.2 Introduced to replace get_new_address
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
-		 * @return string A deposit address associated with the current logged in user.
+		 * @return string|array A deposit address associated with the current logged in user,
+		 *		or an array of an address plus extra transaction info, for coins that require it.
 		 * @throws Exception If the operation fails.
 		 */
 		 public function get_deposit_address( $symbol, $account = null, $check_capabilities = false ) {
@@ -1093,10 +1074,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			global $wpdb;
 			$table_name_adds = self::$table_name_adds;
-			$address = $wpdb->get_var( $wpdb->prepare(
+			$result = $wpdb->get_row( $wpdb->prepare(
 				"
 					SELECT
-						address
+						address,
+						extra
 					FROM
 						$table_name_adds a
 					WHERE
@@ -1113,16 +1095,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$symbol
 			) );
 
-			if ( ! is_string( $address ) ) {
+			if ( is_null( $result ) ) {
+
 				$address = $adapter->get_new_address();
 
 				$address_row = new stdClass();
 				$address_row->account = $account;
 				$address_row->symbol = $symbol;
-				$address_row->address = $address;
+
+				if ( is_array( $address ) ) {
+					$address_row->address = $address[0];
+					$address_row->extra = $address[1];
+				} else {
+					$address_row->address = $address;
+				}
 
 				// trigger action that inserts user-address mapping to db
 				do_action( 'wallets_address', $address_row );
+
+			} else {
+				if ( $result->extra ) {
+					$address = array( $result->address, $result->extra );
+				} else {
+					$address = $result->address;
+				}
 			}
 
 			return $address;

@@ -124,9 +124,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<p><?php esc_html_e( 'Want to help with development? Help me buy the coffee that makes this all possible!', 'wallets' ); ?></p>
 
 				<ol>
-					<li><?php echo __( 'Donate via <a href="https://flattr.com/profile/dashed-slug">flattr</a>', '/* @echo slug *' ); ?>.</li>
+					<li><?php echo __( 'Donate via <a href="https://flattr.com/profile/dashed-slug">flattr</a>', 'wallets' ); ?>.</li>
 					<li><?php echo __( 'Donate a few shatoshi to the dashed-slug Bitcoin address: ' .
-						'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', '/* @echo slug *' ); ?>
+						'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', 'wallets' ); ?>
 
 						<div
 							style="font-size:16px;margin:0 auto;width:300px"

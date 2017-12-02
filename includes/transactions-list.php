@@ -102,6 +102,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				txs.amount,
 				txs.fee,
 				txs.address,
+				txs.extra,
 				txs.comment,
 				txs.confirmations,
 				txs.tags,
@@ -167,7 +168,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 			case 'from':
 				if ( 'deposit' == $item['category'] ) {
-					return  esc_html( $item['address'] );
+					return  esc_html( $item['extra'] ? "{$item['address']} ({$item['extra']})"  : $item['address'] );
 				} elseif ( 'withdraw' == $item['category'] ) {
 					return $this->user_link( $item['account_name'] );
 				} elseif ( 'move' == $item['category'] ) {
@@ -179,7 +180,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				if ( 'deposit' == $item['category'] ) {
 					return  $this->user_link( $item['account_name'] );
 				} elseif ( 'withdraw' == $item['category'] ) {
-					return esc_html( $item['address'] );
+					return esc_html( $item['extra'] ? "{$item['address']} ({$item['extra']})"  : $item['address'] );
 				} elseif ( 'move' == $item['category'] ) {
 					return $this->user_link( $item['other_account_name'] );
 				}

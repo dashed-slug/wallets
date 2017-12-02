@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'2.8.0'
+				'2.8.1'
 			);
 		}
 
@@ -107,7 +107,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 			// bind settings subpage
 			add_settings_section(
 				'wallets_caps_section',
-				__( 'Capabilities matrix', '/* @echo slug' ),
+				__( 'Capabilities matrix', 'wallets' ),
 				array( &$this, 'wallets_caps_section_cb' ),
 				'wallets-menu-caps'
 			);

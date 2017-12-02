@@ -26,7 +26,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_QRCode' ) ) {
 		public function action_admin_init() {
 			add_settings_section(
 				'wallets_qrcode_section',
-				__( 'QR Code display settings', '/* @echo slug' ),
+				__( 'QR Code display settings', 'wallets' ),
 				array( &$this, 'wallets_qrcode_section_cb' ),
 				'wallets-menu-qrcode'
 			);

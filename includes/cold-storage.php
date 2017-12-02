@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.8.0',
+				'2.8.1',
 				true
 			);
 		}
@@ -50,12 +50,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 			$dsw = Dashed_Slug_Wallets::get_instance();
 
 			foreach ( $dsw->get_coin_adapters( null, false ) as $symbol => $adapter ) {
-				$deposit_address = Dashed_Slug_Wallets::get_option( "/* @echo slugus &/_cs_address_$symbol" );
+				$deposit_address = Dashed_Slug_Wallets::get_option( "wallets_cs_address_$symbol" );
 
 				if ( ! $deposit_address ) {
 					try {
 						$deposit_address = $adapter->get_new_address();
-						Dashed_Slug_Wallets::update_option( "/* @echo slugus &/_cs_address_$symbol", $deposit_address );
+						Dashed_Slug_Wallets::update_option( "wallets_cs_address_$symbol", $deposit_address );
 					} catch ( Exception $e ) {
 						error_log( "Could not get a cold storage deposit address for $symbol, due to: " . $e->getMessage() );
 					}
@@ -262,7 +262,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 					elseif ( 'deposit' == $cold_storage_tab ):
 
-					$deposit_address = Dashed_Slug_Wallets::get_option( "/* @echo slugus &/_cs_address_$cold_storage_symbol" ); ?>
+					$deposit_address = Dashed_Slug_Wallets::get_option( "wallets_cs_address_$cold_storage_symbol" ); ?>
 
 					<div class="card" style="text-align:center;margin:10px auto;">
 						<h2><?php echo sprintf( __( 'Deposit %s from cold storage:', 'wallets' ), $adapter->get_name() ); ?></h2>
@@ -276,7 +276,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					<div
 						class="qrcode"
 						style="text-align: center;"
-						data-address="<?php echo esc_attr( $adapter->get_uri_scheme() . ':' . $deposit_address ); ?>"></div>
+						data-address="<?php echo esc_attr( $adapter->address_to_qrcode_uri(  $deposit_address ) ); ?>"></div>
 
 					<input
 						type="text"

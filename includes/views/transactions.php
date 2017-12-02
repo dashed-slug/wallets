@@ -37,7 +37,7 @@
 					<td class="amount" data-bind="text: amount_string"></td>
 					<td class="fee" data-bind="text: fee_string"></td>
 					<td class="from user" data-bind="text: '<?php esc_attr_e( 'me', 'wallets' ); ?>'"></td>
-					<td class="to user" data-bind="text: address"></td>
+					<td class="to user" data-bind="text: extra ? address + ' (' + extra + ')' : address"></td>
 					<td class="txid" data-bind="text: txid"></td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
@@ -58,7 +58,7 @@
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount" data-bind="text: amount_string"></td>
 					<td class="fee" data-bind="text: fee_string"></td>
-					<td class="from user" data-bind="text: address"></td>
+					<td class="from user" data-bind="text: extra ? address + ' (' + extra + ')' : address"></td>
 					<td class="to user" data-bind="text: '<?php esc_attr_e( 'me', 'wallets' ); ?>'"></td>
 					<td class="txid" data-bind="text: txid"></td>
 					<td class="comment" data-bind="text: comment"></td>

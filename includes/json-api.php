@@ -71,7 +71,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			$vars[] = '__wallets_withdraw_amount';
 			$vars[] = '__wallets_withdraw_address';
 			$vars[] = '__wallets_withdraw_comment';
-			$vars[] = '__wallets_withdraw_comment_to';
+			$vars[] = '__wallets_withdraw_extra';
 
 			$vars[] = '__wallets_move_amount';
 			$vars[] = '__wallets_move_toaccount';
@@ -165,23 +165,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->symbol = $adapter->get_symbol();
 								$coin_info->icon_url = $adapter->get_icon_url();
 								$coin_info->sprintf = $adapter->get_sprintf();
+								$coin_info->extra_desc = $adapter->get_extra_field_description();
 
 								$coin_info->balance = $core->get_balance( $symbol );
-								$coin_info->balance_string = sprintf( $format, $coin_info->balance );
-
-								$coin_info->unconfirmed_balance = $core->get_balance( $adapter->get_symbol(), 0 );
-								$coin_info->unconfirmed_balance_string = sprintf( $format, $coin_info->unconfirmed_balance );
 
 								$coin_info->move_fee = $adapter->get_move_fee();
 								$coin_info->move_fee_proportional = $adapter->get_move_fee_proportional();
-								$coin_info->move_fee_string = sprintf( "$format + amount * %01.3F", 2 * $adapter->get_move_fee(), $adapter->get_move_fee_proportional() );
 
 								$coin_info->withdraw_fee = $adapter->get_withdraw_fee();
 								$coin_info->withdraw_fee_proportional = $adapter->get_withdraw_fee_proportional();
-								$coin_info->withdraw_fee_string = sprintf( "$format + amount * %01.3F", 2 * $adapter->get_withdraw_fee(), $adapter->get_withdraw_fee_proportional() );
 
-								$coin_info->deposit_address = $core->get_deposit_address( $symbol );
-								$coin_info->deposit_address_qrcode_uri = $adapter->get_uri_scheme() . ':' . $coin_info->deposit_address;
+								$address = $core->get_deposit_address( $symbol );
+								if ( is_string( $address ) ) {
+									$coin_info->deposit_address = $address;
+								} elseif ( is_array( $address ) ) {
+									$coin_info->deposit_address = $address[0];
+									$coin_info->deposit_extra = $address[1];
+								}
+
+								$coin_info->deposit_address_qrcode_uri = $adapter->address_to_qrcode_uri( $address );
 
 								$response['coins'][ $symbol ] = $coin_info;
 
@@ -218,6 +220,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						}
 						$response['result'] = 'success';
 
+					} elseif ( 'get_nonces' == $action ) {
+						if (
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
+							) {
+								throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+							}
+
+						$response['nonces'] = new stdClass();
+
+						if ( current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET ) ) {
+							$response['nonces']->do_withdraw = wp_create_nonce( 'wallets-do-withdraw' );
+						}
+
+						if ( current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER ) ) {
+							$response['nonces']->do_move = wp_create_nonce( 'wallets-do-move' );
+						}
+						$response['result'] = 'success';
+
 					} elseif ( 'do_withdraw' == $action ) {
 						if (
 							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
@@ -228,7 +248,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
-						if ( ! wp_verify_nonce( $nonce, "wallets-withdraw" ) ) {
+						if ( ! wp_verify_nonce( $nonce, "wallets-do-withdraw" ) ) {
 							throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets::ERR_DO_MOVE );
 						}
 
@@ -237,9 +257,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$address = sanitize_text_field( $wp->query_vars['__wallets_withdraw_address'] );
 							$amount = floatval( $wp->query_vars['__wallets_withdraw_amount'] );
 							$comment = sanitize_text_field( $wp->query_vars['__wallets_withdraw_comment'] );
-							$comment_to = sanitize_text_field( $wp->query_vars['__wallets_withdraw_comment_to'] );
+							$extra = sanitize_text_field( $wp->query_vars['__wallets_withdraw_extra'] );
 
-							$core->do_withdraw( $symbol, $address, $amount, $comment, $comment_to );
+							$core->do_withdraw( $symbol, $address, $amount, $comment, $extra );
 						} catch ( Exception $e ) {
 							throw new Exception( sprintf( __( 'Could not withdraw %s', 'wallets' ), $symbol ), Dashed_Slug_Wallets::ERR_DO_WITHDRAW, $e );
 						}
@@ -256,7 +276,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
-						if ( ! wp_verify_nonce( $nonce, "wallets-move" ) ) {
+						if ( ! wp_verify_nonce( $nonce, "wallets-do-move" ) ) {
 							throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets::ERR_DO_MOVE );
 						}
 

@@ -39,8 +39,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_Bitcoin' ) ) {
 
 			return <<<CFG
 server=1
-rpcallowip=127.0.0.1
-rpcallowip=$wp_ip
+rpcallowip=127.0.0.1/8
+rpcallowip={$wp_ip}/24
 rpcport=$port
 walletnotify=curl -s $wallet_url >/dev/null
 blocknotify=curl -s $block_url >/dev/null

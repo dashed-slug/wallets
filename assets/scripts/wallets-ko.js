@@ -67,6 +67,24 @@
 				return '-';
 			});
 
+			self.nonces = ko.computed( function() {
+				var nonces = [];
+				$.ajax({
+					dataType: 'json',
+					async: false,
+					data: { '__wallets_action': 'get_nonces' },
+					success: function( response ) {
+						if ( response.result != 'success' ) {
+							serverErrorHandler( response );
+							return;
+						}
+						nonces = response.nonces;
+					},
+					error: xhrErrorHandler
+				});
+				return nonces;
+			});
+
 			// [wallets_deposit] shortcode
 			if ( 'function' === typeof ( jQuery.fn.qrcode ) ) {
 				self.selectedCoin.subscribe( function() {
@@ -78,9 +96,11 @@
 						for ( var coin in coins ) {
 							if ( coins[coin].symbol == self.selectedCoin() ) {
 
-								$qrnode.qrcode( {
-									text: coins[coin].deposit_address_qrcode_uri
-								} );
+								if ( coins[coin].deposit_address_qrcode_uri ) {
+									$qrnode.qrcode( {
+										text: coins[coin].deposit_address_qrcode_uri
+									} );
+								}
 								return;
 							}
 						}
@@ -96,6 +116,30 @@
 					}
 				}
 				return '-';
+			});
+
+			self.currentCoinDepositExtra = ko.computed( function() {
+				var coins = self.coins();
+				for ( var coin in coins ) {
+					if ( coins[coin].symbol == self.selectedCoin() ) {
+						if ( typeof coins[coin].deposit_extra !== 'undefined' ) {
+							return coins[coin].deposit_extra;
+						} else {
+							return '';
+						}
+					}
+				}
+				return '';
+			});
+
+			self.withdrawExtraDesc = ko.computed( function() {
+				var coins = self.coins();
+				for ( var coin in coins ) {
+					if ( coins[coin].symbol == self.selectedCoin() ) {
+						return coins[coin].extra_desc;
+					}
+				}
+				return false; // use default
 			});
 
 			// [wallets_move] shortcode
@@ -147,7 +191,8 @@
 					comment = self.moveComment(),
 					symbol = self.selectedCoin(),
 					tags = $( 'input[name=moveTags]', form ).val(),
-					nonce = $( 'input[name=_wpnonce]', form ).val();
+					nonce = self.nonces().do_move;
+
 
 				$.ajax({
 					dataType: 'json',
@@ -206,7 +251,7 @@
 
 			self.withdrawAmount = ko.observable();
 			self.withdrawComment = ko.observable();
-			self.withdrawCommentTo = ko.observable();
+			self.withdrawExtra = ko.observable();
 
 			self.withdraw_fee = ko.computed( function() {
 				var coins = self.coins();
@@ -225,8 +270,8 @@
 					symbol = self.selectedCoin(),
 					amount = self.withdrawAmount(),
 					comment = self.withdrawComment(),
-					commentto = self.withdrawCommentTo(),
-					nonce = $( 'input[name=_wpnonce]', form ).val();
+					extra = self.withdrawExtra(),
+					nonce = self.nonces().do_withdraw;
 
 				$.ajax({
 					dataType: 'json',
@@ -236,7 +281,7 @@
 						'__wallets_symbol' : symbol,
 						'__wallets_withdraw_amount' : amount,
 						'__wallets_withdraw_comment' : comment,
-						'__wallets_withdraw_comment_to' : commentto,
+						'__wallets_withdraw_extra' : extra,
 						'_wpnonce' : nonce
 					},
 					success: function( response ) {
@@ -246,7 +291,7 @@
 							amount,
 							address,
 							comment,
-							commentto
+							extra
 						] );
 					},
 					error: xhrErrorHandler
@@ -257,7 +302,7 @@
 				self.withdrawAddress( '' );
 				self.withdrawAmount( '' );
 				self.withdrawComment( '' );
-				self.withdrawCommentTo( '' );
+				self.withdrawExtra( '' );
 			};
 
 			// [wallets_transactions] shortcode

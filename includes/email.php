@@ -38,6 +38,7 @@ Fees paid: ###FEE###
 Transaction ID: ###TXID###
 Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
+Extra transaction info (optional): ###EXTRA###
 
 EMAIL
 				, 'wallets' ) );
@@ -55,6 +56,7 @@ Your transaction failed after being attempted a predetermined number of times an
 Last error message: ###LAST_ERROR###
 Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
+Extra transaction info (optional): ###EXTRA###
 
 EMAIL
 				, 'wallets' ) );
@@ -124,6 +126,7 @@ Please note that the funds may not be yet available to you before the required a
 
 Transaction ID: ###TXID###
 Transacton seen at: ###CREATED_TIME###
+Extra transaction info (optional): ###EXTRA###
 
 EMAIL
 				, 'wallets' ) );
@@ -134,7 +137,7 @@ EMAIL
 			// withdrawal
 			add_settings_section(
 				'wallets_email_withdraw_section',
-				__( 'E-mail notification settings for SUCCESSFUL withdrawals', '/* @echo slug' ),
+				__( 'E-mail notification settings for SUCCESSFUL withdrawals', 'wallets' ),
 				array( &$this, 'wallets_email_section_cb' ),
 				'wallets-menu-email'
 			);
@@ -193,7 +196,7 @@ EMAIL
 			// withdrawal failed
 			add_settings_section(
 				'wallets_email_withdraw_failed_section',
-				__( 'E-mail notification settings for FAILED withdrawals', '/* @echo slug' ),
+				__( 'E-mail notification settings for FAILED withdrawals', 'wallets' ),
 				array( &$this, 'wallets_email_section_cb' ),
 				'wallets-menu-email'
 				);
@@ -252,7 +255,7 @@ EMAIL
 			// deposit
 			add_settings_section(
 				'wallets_email_deposit_section',
-				__( 'E-mail notification settings for deposits', '/* @echo slug' ),
+				__( 'E-mail notification settings for deposits', 'wallets' ),
 				array( &$this, 'wallets_email_section_cb' ),
 				'wallets-menu-email'
 			);
@@ -311,7 +314,7 @@ EMAIL
 			// move_send
 			add_settings_section(
 				'wallets_email_move_send_section',
-				__( 'E-mail notification settings for SUCCESSFUL outgoing fund transfers', '/* @echo slug' ),
+				__( 'E-mail notification settings for SUCCESSFUL outgoing fund transfers', 'wallets' ),
 				array( &$this, 'wallets_email_section_cb' ),
 				'wallets-menu-email'
 			);
@@ -370,7 +373,7 @@ EMAIL
 			// move_send failed
 			add_settings_section(
 				'wallets_email_move_send_failed_section',
-				__( 'E-mail notification settings for FAILED outgoing fund transfers', '/* @echo slug' ),
+				__( 'E-mail notification settings for FAILED outgoing fund transfers', 'wallets' ),
 				array( &$this, 'wallets_email_section_cb' ),
 				'wallets-menu-email'
 			);
@@ -429,7 +432,7 @@ EMAIL
 			// move_receive
 			add_settings_section(
 				'wallets_email_move_receive_section',
-				__( 'E-mail notification settings for incoming fund transfers', '/* @echo slug' ),
+				__( 'E-mail notification settings for incoming fund transfers', 'wallets' ),
 				array( &$this, 'wallets_email_section_cb' ),
 				'wallets-menu-email'
 			);
@@ -551,6 +554,8 @@ EMAIL
 						<dd><?php esc_html_e( 'The comment attached to the transaction.', 'wallets' ); ?></dd>
 						<dt><code>###ADDRESS###</code></dt>
 						<dd><?php esc_html_e( 'For deposits and withdrawals, the external address.', 'wallets' ); ?></dd>
+						<dt><code>###EXTRA###</code></dt>
+						<dd><?php esc_html_e( 'Optional. For some coins, there is extra information required for deposits/withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc..', 'wallets' ); ?></dd>
 						<dt><code>###TAGS###</code></dt>
 						<dd><?php esc_html_e( 'A space separated list of tags, slugs, etc that further describe the type of transaction.', 'wallets' ); ?></dd>
 						<dt><code>###LAST_ERROR###</code></dt>
@@ -722,6 +727,9 @@ EMAIL
 		private function notify_user_by_email( $email, $subject, $message, &$row ) {
 			unset( $row->category );
 			unset( $row->updated_time );
+			if ( ! isset( $row->extra ) ) {
+				$row->extra = 'n/a';
+			}
 
 			// use pattern for displaying amounts
 			if ( isset( $row->symbol ) ) {

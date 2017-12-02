@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the Bitcoin_and_Altcoin_Wallets package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: src/includes/rates.php:193
+#: build/includes/rates.php:193
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.8.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.8.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:18+0200\n"
+"POT-Creation-Date: 2017-12-02 19:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,109 +19,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. />', // TODO bulk actions
-#: src/includes/adapters-list-table.php:19
+#: build/includes/adapters-list-table.php:19
 msgid "Adapter name"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:20
-#: src/includes/transactions-list.php:34 src/includes/views/balance.php:4
-#: src/includes/views/deposit.php:4 src/includes/views/move.php:4
-#: src/includes/views/transactions.php:4 src/includes/views/withdraw.php:4
+#: build/includes/adapters-list-table.php:20
+#: build/includes/transactions-list.php:34 build/includes/views/balance.php:4
+#: build/includes/views/deposit.php:4 build/includes/views/move.php:4
+#: build/includes/views/transactions.php:4 build/includes/views/withdraw.php:4
 msgid "Coin"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:21
+#: build/includes/adapters-list-table.php:21
 msgid "Wallet Balance"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:22
+#: build/includes/adapters-list-table.php:22
 msgid "Sum of User Balances"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:23
+#: build/includes/adapters-list-table.php:23
 msgid "Adapter Status"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:66
+#: build/includes/adapters-list-table.php:66
 msgid "Responding"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:68
+#: build/includes/adapters-list-table.php:68
 msgid "n/a"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:69
+#: build/includes/adapters-list-table.php:69
 #, php-format
 msgid "Not Responding: %s"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:141
+#: build/includes/adapters-list-table.php:141
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:142
+#: build/includes/adapters-list-table.php:142
 msgid "Settings"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:147
-#: src/includes/adapters-list-table.php:148
+#: build/includes/adapters-list-table.php:147
+#: build/includes/adapters-list-table.php:148
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: src/includes/adapters-list.php:90 src/includes/adapters-list.php:124
-#: src/includes/admin-menu.php:59 src/includes/caps.php:95
-#: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:58
-#: src/includes/coin-adapter-json.php:75 src/includes/coin-adapter-rpc.php:224
-#: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
-#: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
-#: src/includes/cold-storage.php:135 src/includes/confirmations.php:297
-#: src/includes/cron.php:282 src/includes/email.php:505
-#: src/includes/qrcode.php:65 src/includes/rates.php:188
-#: src/includes/transactions.php:92 src/includes/transactions.php:741
-#: src/includes/transactions.php:922 src/includes/transactions.php:942
-#: src/includes/transactions.php:962 src/includes/transactions.php:981
-#: src/includes/transactions.php:1001 src/includes/transactions.php:1023
+#: build/includes/adapters-list.php:90 build/includes/adapters-list.php:124
+#: build/includes/admin-menu.php:59 build/includes/caps.php:95
+#: build/includes/caps.php:145 build/includes/coin-adapter-bitcoin.php:58
+#: build/includes/coin-adapter-json.php:75
+#: build/includes/coin-adapter-rpc.php:224 build/includes/coin-adapter.php:206
+#: build/includes/coin-adapter.php:215 build/includes/coin-adapter.php:236
+#: build/includes/coin-adapter.php:301 build/includes/cold-storage.php:135
+#: build/includes/confirmations.php:298 build/includes/cron.php:282
+#: build/includes/email.php:508 build/includes/qrcode.php:65
+#: build/includes/rates.php:188 build/includes/transactions.php:92
+#: build/includes/transactions.php:761 build/includes/transactions.php:942
+#: build/includes/transactions.php:962 build/includes/transactions.php:982
+#: build/includes/transactions.php:1001 build/includes/transactions.php:1021
+#: build/includes/transactions.php:1043
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/includes/adapters-list.php:96 src/includes/caps.php:90
-#: src/includes/cold-storage.php:114 src/includes/json-api.php:232
-#: src/includes/json-api.php:260 src/includes/transactions.php:747
-#: src/includes/transactions.php:926 src/includes/transactions.php:946
-#: src/includes/transactions.php:966 src/includes/transactions.php:985
-#: src/includes/transactions.php:1005 src/includes/transactions.php:1027
+#: build/includes/adapters-list.php:96 build/includes/caps.php:90
+#: build/includes/cold-storage.php:114 build/includes/json-api.php:252
+#: build/includes/json-api.php:280 build/includes/transactions.php:767
+#: build/includes/transactions.php:946 build/includes/transactions.php:966
+#: build/includes/transactions.php:986 build/includes/transactions.php:1005
+#: build/includes/transactions.php:1025 build/includes/transactions.php:1047
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: src/includes/adapters-list.php:129
-msgid "/* @echo name */ coin adapters list"
+#: build/includes/adapters-list.php:129
+msgid "Bitcoin and Altcoin Wallets coin adapters list"
 msgstr ""
 
-#: src/includes/adapters-list.php:130
+#: build/includes/adapters-list.php:130
 msgid ""
 "This plugin uses Coin Adapters to communicate with actual coin wallets. A "
 "Bitcoin core adapter is built-in, and you can download more coin adapters "
 "for free from the dashed-slug website."
 msgstr ""
 
-#: src/includes/adapters-list.php:132
+#: build/includes/adapters-list.php:132
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:37 src/includes/wallets-core.php:214
-#: src/includes/wallets-core.php:224
+#: build/includes/admin-menu.php:37 build/includes/wallets-core.php:214
+#: build/includes/wallets-core.php:224
 msgid "Wallets"
 msgstr ""
 
-#: src/includes/admin-menu.php:47
+#: build/includes/admin-menu.php:47
 msgid "About"
 msgstr ""
 
-#: src/includes/admin-menu.php:66
+#: build/includes/admin-menu.php:66
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: src/includes/admin-menu.php:68
+#: build/includes/admin-menu.php:68
 msgid ""
 "By using this free plugin you accept all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
@@ -134,73 +135,73 @@ msgid ""
 "a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:77
+#: build/includes/admin-menu.php:77
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:79 src/includes/cold-storage.php:305
-#: src/includes/cold-storage.php:318 src/includes/rates.php:254
+#: build/includes/admin-menu.php:79 build/includes/cold-storage.php:305
+#: build/includes/cold-storage.php:318 build/includes/rates.php:261
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
 msgstr ""
 
-#: src/includes/admin-menu.php:80
+#: build/includes/admin-menu.php:80
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:81
+#: build/includes/admin-menu.php:81
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: src/includes/admin-menu.php:82
+#: build/includes/admin-menu.php:82
 msgid ""
 "If you are connecting to an RPC API on a different machine than that of your "
 "WordPress server over an untrusted network, make sure to tunnel your "
 "connection via ssh or stunnel."
 msgstr ""
 
-#: src/includes/admin-menu.php:85
+#: build/includes/admin-menu.php:85
 msgid "See more here"
 msgstr ""
 
-#: src/includes/admin-menu.php:86
+#: build/includes/admin-menu.php:86
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate "
 "that you have understood and agreed to this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:91
+#: build/includes/admin-menu.php:91
 msgid "Follow the slime:"
 msgstr ""
 
-#: src/includes/admin-menu.php:93
+#: build/includes/admin-menu.php:93
 msgid "Subscribe to the YouTube channel:"
 msgstr ""
 
-#: src/includes/admin-menu.php:97
+#: build/includes/admin-menu.php:97
 msgid "+1 the Google+ page to learn the latest news:"
 msgstr ""
 
-#: src/includes/admin-menu.php:101
+#: build/includes/admin-menu.php:101
 msgid "Like the Facebook page to learn the latest news:"
 msgstr ""
 
-#: src/includes/admin-menu.php:105
+#: build/includes/admin-menu.php:105
 msgid "The dashed-slug can also be found on SteemIt:"
 msgstr ""
 
-#: src/includes/admin-menu.php:112
+#: build/includes/admin-menu.php:112
 msgid "Have your say!"
 msgstr ""
 
-#: src/includes/admin-menu.php:115
+#: build/includes/admin-menu.php:115
 msgid ""
 "Did you find this plugin useful? Leave a review on <a href=\"https://"
 "wordpress.org/support/plugin/wallets/reviews/\">wordpress.org</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:116
+#: build/includes/admin-menu.php:116
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a href=\"https://wordpress."
 "org/support/plugin/wallets\">wordpress.org support forum</a> for the main "
@@ -208,141 +209,147 @@ msgid ""
 "net</a> support forums for the extensions."
 msgstr ""
 
-#: src/includes/admin-menu.php:117
+#: build/includes/admin-menu.php:117
 msgid ""
 "Something else on your mind? <a href=\"https://dashed-slug.net/contact"
 "\">Contact me</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:122
+#: build/includes/admin-menu.php:122
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: src/includes/admin-menu.php:124
+#: build/includes/admin-menu.php:124
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: src/includes/admin-menu.php:127
+#: build/includes/admin-menu.php:127
 msgid ""
 "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: src/includes/admin-menu.php:128
+#: build/includes/admin-menu.php:128
 msgid ""
 "Donate a few shatoshi to the dashed-slug Bitcoin address: <a href="
 "\"bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-"
 "slug&message=donation\">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:178
+#: build/includes/admin-menu.php:178
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: src/includes/admin-menu.php:182
+#: build/includes/admin-menu.php:182
 msgid "App extensions"
 msgstr ""
 
-#: src/includes/admin-menu.php:184
+#: build/includes/admin-menu.php:184
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: src/includes/admin-menu.php:191
+#: build/includes/admin-menu.php:191
 msgid "Coin adapters"
 msgstr ""
 
-#: src/includes/admin-menu.php:193
+#: build/includes/admin-menu.php:193
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for additional "
 "cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:217
+#: build/includes/admin-menu.php:217
 msgid "Installed"
 msgstr ""
 
-#: src/includes/caps.php:25
+#: build/includes/caps.php:25
 msgid ""
 "Can configure all settings related to wallets. This is for administrators "
 "only."
 msgstr ""
 
-#: src/includes/caps.php:27
+#: build/includes/caps.php:27
 msgid "Can have balances and use the wallets API."
 msgstr ""
 
-#: src/includes/caps.php:29
+#: build/includes/caps.php:29
 msgid "Can view a list of past transactions."
 msgstr ""
 
-#: src/includes/caps.php:31
+#: build/includes/caps.php:31
 msgid "Can send cryptocurrencies to other users on this site."
 msgstr ""
 
-#: src/includes/caps.php:33
+#: build/includes/caps.php:33
 msgid "Can withdraw cryptocurrencies from the site to an external address."
 msgstr ""
 
-#: src/includes/caps.php:110
+#: build/includes/caps.php:110
 msgid "Capabilities matrix"
 msgstr ""
 
-#: src/includes/caps.php:134 src/includes/caps.php:135
+#: build/includes/caps.php:134 build/includes/caps.php:135
 msgid "Capabilities"
 msgstr ""
 
-#: src/includes/caps.php:148
-msgid "/* @echo name */ Capabilities"
+#: build/includes/caps.php:148
+msgid "Bitcoin and Altcoin Wallets Capabilities"
 msgstr ""
 
-#: src/includes/caps.php:150
+#: build/includes/caps.php:150
 msgid ""
 "Users in WordPress are assigned to roles, and these roles have capabilities. "
 "Here you can set which wallets-related capabilities you want each user role "
 "to have."
 msgstr ""
 
-#: src/includes/caps.php:154
+#: build/includes/caps.php:154
 msgid "Read about Roles and Capabilities in the Codex."
 msgstr ""
 
-#: src/includes/caps.php:167
+#: build/includes/caps.php:167
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:218
+#: build/includes/coin-adapter-bitcoin.php:61
+#: build/includes/coin-adapter.php:218
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:221
+#: build/includes/coin-adapter-bitcoin.php:64
+#: build/includes/coin-adapter.php:221
 msgid "Transaction fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:65 src/includes/coin-adapter.php:222
+#: build/includes/coin-adapter-bitcoin.php:65
+#: build/includes/coin-adapter.php:222
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:67 src/includes/coin-adapter.php:224
+#: build/includes/coin-adapter-bitcoin.php:67
+#: build/includes/coin-adapter.php:224
 msgid "Withdrawal fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:68 src/includes/coin-adapter.php:225
+#: build/includes/coin-adapter-bitcoin.php:68
+#: build/includes/coin-adapter.php:225
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:69 src/includes/coin-adapter.php:226
+#: build/includes/coin-adapter-bitcoin.php:69
+#: build/includes/coin-adapter.php:226
 msgid ""
 "Fees are calculated as: <i>total_fees = fixed_fees + amount * "
 "proportional_fees</i>."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:70
+#: build/includes/coin-adapter-bitcoin.php:70
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -351,35 +358,35 @@ msgid ""
 "maxtxfee, etc."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:71
+#: build/includes/coin-adapter-bitcoin.php:71
 msgid "Refer to the documentation for details."
 msgstr ""
 
-#: src/includes/coin-adapter-json.php:32
+#: build/includes/coin-adapter-json.php:32
 msgid "HTTP adapter settings"
 msgstr ""
 
-#: src/includes/coin-adapter-json.php:39
+#: build/includes/coin-adapter-json.php:39
 msgid "HTTP request timeout (seconds)"
 msgstr ""
 
-#: src/includes/coin-adapter-json.php:45
+#: build/includes/coin-adapter-json.php:45
 msgid ""
 "How long your server will wait for an answer from the remote API (in "
 "seconds)."
 msgstr ""
 
-#: src/includes/coin-adapter-json.php:56
+#: build/includes/coin-adapter-json.php:56
 msgid "HTTP cache expiry (seconds)"
 msgstr ""
 
-#: src/includes/coin-adapter-json.php:62
+#: build/includes/coin-adapter-json.php:62
 msgid ""
 "For how long cacheable requests are cached by your server rather than being "
 "fetched from the remote API (in seconds)."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:46
+#: build/includes/coin-adapter-rpc.php:46
 #, php-format
 msgid ""
 "The coin adapter for %s will not be able to work correctly on your system "
@@ -388,175 +395,178 @@ msgid ""
 "now been disabled."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:68
+#: build/includes/coin-adapter-rpc.php:68
 #, php-format
 msgid "The %s RPC API cannot be contacted."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:71
+#: build/includes/coin-adapter-rpc.php:71
 #, php-format
 msgid ""
 "You need to make sure that your <a href=\"%1$s\">%2$s RPC settings</a> are "
 "correctly configured. "
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:76
+#: build/includes/coin-adapter-rpc.php:76
 msgid "Then edit your <code>.conf</code> file and append the following:"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:82
+#: build/includes/coin-adapter-rpc.php:82
 msgid "Finally, start the daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:84
+#: build/includes/coin-adapter-rpc.php:84
 msgid ""
 "You are advised to not dismiss this error manually. It will stop showing "
 "once the daemon can be contacted."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:101
+#: build/includes/coin-adapter-rpc.php:101
 msgid "Daemon RPC API"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:108
+#: build/includes/coin-adapter-rpc.php:108
 msgid "IP"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:114
+#: build/includes/coin-adapter-rpc.php:114
 msgid ""
 "This is the IP of your WordPress installation. Set to 127.0.0.1 if you are "
 "running the daemon on the same machine as WordPress."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:125
+#: build/includes/coin-adapter-rpc.php:125
 msgid "Port"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:131
+#: build/includes/coin-adapter-rpc.php:131
 msgid ""
 "This is the TCP port where the daemon listens for JSON-RPC connections. It "
 "should match the <code>rpcport</code> setting in your daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:142
+#: build/includes/coin-adapter-rpc.php:142
 msgid "User"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:148
+#: build/includes/coin-adapter-rpc.php:148
 msgid ""
 "This is the username part of the credentials to connect to the JSON-RPC "
 "port. It should match the <code>rpcuser</code> setting in your daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:159
+#: build/includes/coin-adapter-rpc.php:159
 msgid "Password"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:165
+#: build/includes/coin-adapter-rpc.php:165
 msgid ""
 "This is the password part of the credentials to connect to the JSON-RPC "
 "port. It should match the <code>rpcpassword</code> setting in your daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:176
+#: build/includes/coin-adapter-rpc.php:176
 msgid "Path"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:182
+#: build/includes/coin-adapter-rpc.php:182
 msgid ""
 "This is the path location of the JSON-RPC API endpoint. Normally you will "
 "want to leave this empty."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:229
+#: build/includes/coin-adapter-rpc.php:229
 #, php-format
 msgid ""
 "The %1$s adapter needs to know the location and credentials to the RPC API "
 "of the %2$s daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:262 src/includes/coin-adapter-rpc.php:275
-#: src/includes/coin-adapter-rpc.php:294 src/includes/coin-adapter-rpc.php:319
-#: src/includes/coin-adapter-rpc.php:414 src/includes/coin-adapter-rpc.php:427
-#: src/includes/coin-adapter-rpc.php:444
+#: build/includes/coin-adapter-rpc.php:262
+#: build/includes/coin-adapter-rpc.php:275
+#: build/includes/coin-adapter-rpc.php:294
+#: build/includes/coin-adapter-rpc.php:319
+#: build/includes/coin-adapter-rpc.php:414
+#: build/includes/coin-adapter-rpc.php:427
+#: build/includes/coin-adapter-rpc.php:444
 #, php-format
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:368
+#: build/includes/coin-adapter-rpc.php:368
 #, php-format
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/coin-adapter.php:73
+#: build/includes/coin-adapter.php:73
 msgid "General adapter settings"
 msgstr ""
 
-#: src/includes/coin-adapter.php:80
+#: build/includes/coin-adapter.php:80
 msgid "Enabled"
 msgstr ""
 
-#: src/includes/coin-adapter.php:86
+#: build/includes/coin-adapter.php:86
 msgid "Check to enable this adapter."
 msgstr ""
 
-#: src/includes/coin-adapter.php:99
+#: build/includes/coin-adapter.php:99
 msgid "Adapter fees"
 msgstr ""
 
-#: src/includes/coin-adapter.php:106
+#: build/includes/coin-adapter.php:106
 msgid "Fixed part of transaction fee between users"
 msgstr ""
 
-#: src/includes/coin-adapter.php:112
+#: build/includes/coin-adapter.php:112
 msgid ""
 "Senders of internal transfers will pay the fixed fee to this site per "
 "transaction."
 msgstr ""
 
-#: src/includes/coin-adapter.php:123
+#: build/includes/coin-adapter.php:123
 msgid "Proportional part of transaction fee between users"
 msgstr ""
 
-#: src/includes/coin-adapter.php:129
+#: build/includes/coin-adapter.php:129
 msgid ""
 "Senders of internal transfers will pay transfer_amount * proportional_fee to "
 "this site."
 msgstr ""
 
-#: src/includes/coin-adapter.php:140
+#: build/includes/coin-adapter.php:140
 msgid "Fixed part of withdrawal fee"
 msgstr ""
 
-#: src/includes/coin-adapter.php:146
+#: build/includes/coin-adapter.php:146
 msgid "Users will pay this fixed fee to the site when performing withdrawals."
 msgstr ""
 
-#: src/includes/coin-adapter.php:157
+#: build/includes/coin-adapter.php:157
 msgid "Proportional part of withdrawal fee"
 msgstr ""
 
-#: src/includes/coin-adapter.php:163
+#: build/includes/coin-adapter.php:163
 msgid ""
 "Users will pay withdraw_amount * proportional_fee to the site when "
 "performing withdrawals."
 msgstr ""
 
-#: src/includes/coin-adapter.php:177
+#: build/includes/coin-adapter.php:177
 msgid "Other adapter settings"
 msgstr ""
 
-#: src/includes/coin-adapter.php:184
+#: build/includes/coin-adapter.php:184
 msgid "Minumum confirmations"
 msgstr ""
 
-#: src/includes/coin-adapter.php:190
+#: build/includes/coin-adapter.php:190
 msgid ""
 "Deposits will count towards user balances after this many blockchain "
 "confirmations."
 msgstr ""
 
-#: src/includes/coin-adapter.php:227
+#: build/includes/coin-adapter.php:227
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -564,207 +574,211 @@ msgid ""
 "network fees set the appropriate settings in your wallet's .conf file."
 msgstr ""
 
-#: src/includes/coin-adapter.php:228
+#: build/includes/coin-adapter.php:228
 msgid "Refer to the wallet documentation for details."
 msgstr ""
 
-#: src/includes/coin-adapter.php:305
+#: build/includes/coin-adapter.php:305
 #, php-format
 msgid "Coin adapter settings for %s"
 msgstr ""
 
-#: src/includes/coin-adapter.php:307
+#: build/includes/coin-adapter.php:307
 #, php-format
 msgid "These are the settings for this %s adapter"
 msgstr ""
 
-#: src/includes/cold-storage.php:88
+#: build/includes/coin-adapter.php:507
+msgid "Destination address label (optional)"
+msgstr ""
+
+#: build/includes/cold-storage.php:88
 #, php-format
 msgid "Cannot withdraw to cold storage: %s"
 msgstr ""
 
-#: src/includes/cold-storage.php:92
+#: build/includes/cold-storage.php:92
 #, php-format
 msgid "Sent %s to cold storage address %s"
 msgstr ""
 
-#: src/includes/cold-storage.php:108
+#: build/includes/cold-storage.php:108
 #, php-format
 msgid "Failed to withdraw to cold storage: %s"
 msgstr ""
 
-#: src/includes/cold-storage.php:142
-msgid "/* @echo name */: Transfer to and from cold storage"
+#: build/includes/cold-storage.php:142
+msgid "Bitcoin and Altcoin Wallets: Transfer to and from cold storage"
 msgstr ""
 
-#: src/includes/cold-storage.php:144
+#: build/includes/cold-storage.php:144
 msgid ""
 "<a href=\"https://en.bitcoin.it/wiki/Cold_storage\" target=\"_blank\">Cold "
 "storage</a> lets you remove part of your site's funds from the online wallet "
 "to mitigate risk in the event of a cyber-attack. "
 msgstr ""
 
-#: src/includes/cold-storage.php:145
+#: build/includes/cold-storage.php:145
 msgid ""
 "Any funds you withdraw or deposit here will affect your total wallet balance "
 "but not any user balances. "
 msgstr ""
 
-#: src/includes/cold-storage.php:148
+#: build/includes/cold-storage.php:148
 msgid "Cold storage state for your online wallets:"
 msgstr ""
 
-#: src/includes/cold-storage.php:151
+#: build/includes/cold-storage.php:151
 msgid "Adapter"
 msgstr ""
 
-#: src/includes/cold-storage.php:152
+#: build/includes/cold-storage.php:152
 msgid "Currency"
 msgstr ""
 
-#: src/includes/cold-storage.php:153
+#: build/includes/cold-storage.php:153
 msgid "User Balances"
 msgstr ""
 
-#: src/includes/cold-storage.php:154
+#: build/includes/cold-storage.php:154
 msgid "Online Balance"
 msgstr ""
 
-#: src/includes/cold-storage.php:155
+#: build/includes/cold-storage.php:155
 msgid "Actions"
 msgstr ""
 
-#: src/includes/cold-storage.php:192
+#: build/includes/cold-storage.php:192
 msgid "Deposit"
 msgstr ""
 
-#: src/includes/cold-storage.php:197
+#: build/includes/cold-storage.php:197
 msgid "Withdraw"
 msgstr ""
 
-#: src/includes/cold-storage.php:220
+#: build/includes/cold-storage.php:220
 #, php-format
 msgid "Withdraw %s to cold storage:"
 msgstr ""
 
-#: src/includes/cold-storage.php:243 src/includes/views/move.php:6
-#: src/includes/views/withdraw.php:6
+#: build/includes/cold-storage.php:243 build/includes/views/move.php:6
+#: build/includes/views/withdraw.php:6
 msgid "Amount"
 msgstr ""
 
-#: src/includes/cold-storage.php:251
+#: build/includes/cold-storage.php:251
 msgid "External address"
 msgstr ""
 
-#: src/includes/cold-storage.php:257
+#: build/includes/cold-storage.php:257
 msgid "Withdraw to storage"
 msgstr ""
 
-#: src/includes/cold-storage.php:268
+#: build/includes/cold-storage.php:268
 #, php-format
 msgid "Deposit %s from cold storage:"
 msgstr ""
 
-#: src/includes/cold-storage.php:300
+#: build/includes/cold-storage.php:300
 msgid "Need a hardware wallet?"
 msgstr ""
 
-#: src/includes/cold-storage.php:328
+#: build/includes/cold-storage.php:328
 msgid "You are responsible for the money people deposit on your site. "
 msgstr ""
 
-#: src/includes/cold-storage.php:329
+#: build/includes/cold-storage.php:329
 msgid "Get a hardware wallet and sleep easier!"
 msgstr ""
 
-#: src/includes/cold-storage.php:362
+#: build/includes/cold-storage.php:362
 #, php-format
 msgid "To have <code>%d%%</code> online (<code>%s</code>), %s %s."
 msgstr ""
 
-#: src/includes/cold-storage.php:365
+#: build/includes/cold-storage.php:365
 msgid "deposit"
 msgstr ""
 
-#: src/includes/cold-storage.php:365
+#: build/includes/cold-storage.php:365
 msgid "withdraw"
 msgstr ""
 
-#: src/includes/cold-storage.php:373
+#: build/includes/cold-storage.php:373
 #, php-format
 msgid "You currently have <code>%01.2f%%</code> online (<code>%s</code>)."
 msgstr ""
 
-#: src/includes/confirmations.php:32
+#: build/includes/confirmations.php:32
 msgid "Your withdrawal request requires confirmation. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/confirmations.php:55
+#: build/includes/confirmations.php:56
 msgid ""
 "Your internal funds transfer request requires confirmation. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/confirmations.php:94
+#: build/includes/confirmations.php:95
 msgid ""
 "The confirmation nonce is not in the correct format. Check your link and try "
 "again"
 msgstr ""
 
-#: src/includes/confirmations.php:113 src/includes/confirmations.php:189
+#: build/includes/confirmations.php:114 build/includes/confirmations.php:190
 msgid ""
 "The transaction to be confirmed was not found or it has already been "
 "confirmed."
 msgstr ""
 
-#: src/includes/confirmations.php:124
+#: build/includes/confirmations.php:125
 msgid "Can only confirm transfers or withdrawals!"
 msgstr ""
 
-#: src/includes/confirmations.php:177
+#: build/includes/confirmations.php:178
 msgid ""
 "You have successfully confirmed your transaction and it will be processed "
 "soon."
 msgstr ""
 
-#: src/includes/confirmations.php:178 src/includes/confirmations.php:183
+#: build/includes/confirmations.php:179 build/includes/confirmations.php:184
 msgid "Success"
 msgstr ""
 
-#: src/includes/confirmations.php:182
+#: build/includes/confirmations.php:183
 msgid ""
 "You have successfully confirmed your transaction. It will be processed once "
 "an administrator confirms it too."
 msgstr ""
 
-#: src/includes/confirmations.php:193
+#: build/includes/confirmations.php:194
 msgid "Failed to update transaction due to an internal error."
 msgstr ""
 
-#: src/includes/confirmations.php:300
-msgid "/* @echo name */ Transaction confirmation settings"
+#: build/includes/confirmations.php:301
+msgid "Bitcoin and Altcoin Wallets Transaction confirmation settings"
 msgstr ""
 
-#: src/includes/confirmations.php:302
+#: build/includes/confirmations.php:303
 msgid ""
 "Users enter transaction requests via the front-end interface. For "
 "transactions between users as well as for withdrawals, you can choose which "
 "types of confirmations are required before transactions are attempted."
 msgstr ""
 
-#: src/includes/confirmations.php:307
+#: build/includes/confirmations.php:308
 msgid ""
 "User confirmations are done by sending emails that contain a link with a "
 "nonce. "
 msgstr ""
 
-#: src/includes/confirmations.php:309
+#: build/includes/confirmations.php:310
 #, php-format
 msgid ""
 "Admin confirmations are done by users with the <code>manage_wallets</code> "
 "capability, via the <a href=\"%s\">transactions</a> admin panel."
 msgstr ""
 
-#: src/includes/confirmations.php:314
+#: build/includes/confirmations.php:315
 #, php-format
 msgid ""
 "Once a transaction is confirmed, the <a href=\"%s\">cron job</a> will attemt "
@@ -772,223 +786,229 @@ msgid ""
 "failed transaction is retried. "
 msgstr ""
 
-#: src/includes/confirmations.php:339 src/includes/email.php:534
+#: build/includes/confirmations.php:340 build/includes/email.php:537
 msgid "The following variables are substituted in e-mail templates:"
 msgstr ""
 
-#: src/includes/confirmations.php:342
+#: build/includes/confirmations.php:343
 msgid ""
 "Confirmation link. Clicking this will mark the transaction as confirmed by "
 "user."
 msgstr ""
 
-#: src/includes/confirmations.php:344 src/includes/email.php:537
+#: build/includes/confirmations.php:345 build/includes/email.php:540
 msgid "Account username"
 msgstr ""
 
-#: src/includes/confirmations.php:346 src/includes/email.php:539
+#: build/includes/confirmations.php:347 build/includes/email.php:542
 msgid "Username of other account (for internal transactions between users)"
 msgstr ""
 
-#: src/includes/confirmations.php:348 src/includes/email.php:541
+#: build/includes/confirmations.php:349 build/includes/email.php:544
 msgid ""
 "Transaction ID. ( This is normally the same as the txid on the blockchain. "
 "Internal transactions are also assigned a unique ID. )"
 msgstr ""
 
-#: src/includes/confirmations.php:350 src/includes/email.php:543
+#: build/includes/confirmations.php:351 build/includes/email.php:546
 msgid "The amount transacted."
 msgstr ""
 
-#: src/includes/confirmations.php:352 src/includes/email.php:545
+#: build/includes/confirmations.php:353 build/includes/email.php:548
 msgid "For withdrawals and transfers, the fees paid to the site."
 msgstr ""
 
-#: src/includes/confirmations.php:354 src/includes/email.php:547
+#: build/includes/confirmations.php:355 build/includes/email.php:550
 msgid "The coin symbol for this transaction (e.g. \"BTC\" for Bitcoin)"
 msgstr ""
 
-#: src/includes/confirmations.php:356 src/includes/email.php:549
+#: build/includes/confirmations.php:357 build/includes/email.php:552
 msgid ""
 "The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:"
 "ssZZZZ"
 msgstr ""
 
-#: src/includes/confirmations.php:358 src/includes/email.php:551
+#: build/includes/confirmations.php:359 build/includes/email.php:554
 msgid "The comment attached to the transaction."
 msgstr ""
 
-#: src/includes/confirmations.php:360 src/includes/email.php:553
+#: build/includes/confirmations.php:361 build/includes/email.php:556
 msgid "For deposits and withdrawals, the external address."
 msgstr ""
 
-#: src/includes/confirmations.php:362 src/includes/email.php:555
+#: build/includes/confirmations.php:363 build/includes/email.php:558
+msgid ""
+"Optional. For some coins, there is extra information required for deposits/"
+"withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc.."
+msgstr ""
+
+#: build/includes/confirmations.php:365 build/includes/email.php:560
 msgid ""
 "A space separated list of tags, slugs, etc that further describe the type of "
 "transaction."
 msgstr ""
 
-#: src/includes/confirmations.php:392
+#: build/includes/confirmations.php:395
 msgid ""
 "Choose which confirmations are required before performing an internal "
 "transaction between users."
 msgstr ""
 
-#: src/includes/confirmations.php:396
+#: build/includes/confirmations.php:399
 msgid ""
 "Choose which confirmations are required before performing a withdraw "
 "transaction."
 msgstr ""
 
-#: src/includes/confirmations.php:405
+#: build/includes/confirmations.php:408
 msgid "Internal transaction confirmations"
 msgstr ""
 
-#: src/includes/confirmations.php:412 src/includes/confirmations.php:493
+#: build/includes/confirmations.php:415 build/includes/confirmations.php:496
 msgid "Admin confirmation required"
 msgstr ""
 
-#: src/includes/confirmations.php:418
+#: build/includes/confirmations.php:421
 msgid ""
 "Check this if you wish internal transfers between users to require a "
 "confirmation via the admin panel. Any user with the manage_wallets "
 "capability can perform the confirmation."
 msgstr ""
 
-#: src/includes/confirmations.php:430
+#: build/includes/confirmations.php:433
 msgid "User confirmation required (e-mail)"
 msgstr ""
 
-#: src/includes/confirmations.php:436
+#: build/includes/confirmations.php:439
 msgid ""
 "Check this if you wish internal transfers between users to require a user "
 "confirmation. The user that initiated the transaction will receive an email "
 "with a link that they will need to click to confirm the transaction"
 msgstr ""
 
-#: src/includes/confirmations.php:450 src/includes/confirmations.php:531
-#: src/includes/email.php:161 src/includes/email.php:220
-#: src/includes/email.php:279 src/includes/email.php:338
-#: src/includes/email.php:397 src/includes/email.php:456
+#: build/includes/confirmations.php:453 build/includes/confirmations.php:534
+#: build/includes/email.php:164 build/includes/email.php:223
+#: build/includes/email.php:282 build/includes/email.php:341
+#: build/includes/email.php:400 build/includes/email.php:459
 msgid "Template for e-mail subject line:"
 msgstr ""
 
-#: src/includes/confirmations.php:456 src/includes/confirmations.php:473
-#: src/includes/confirmations.php:537 src/includes/confirmations.php:554
-#: src/includes/email.php:167 src/includes/email.php:184
-#: src/includes/email.php:226 src/includes/email.php:243
-#: src/includes/email.php:285 src/includes/email.php:302
-#: src/includes/email.php:344 src/includes/email.php:361
-#: src/includes/email.php:403 src/includes/email.php:420
-#: src/includes/email.php:462 src/includes/email.php:479
+#: build/includes/confirmations.php:459 build/includes/confirmations.php:476
+#: build/includes/confirmations.php:540 build/includes/confirmations.php:557
+#: build/includes/email.php:170 build/includes/email.php:187
+#: build/includes/email.php:229 build/includes/email.php:246
+#: build/includes/email.php:288 build/includes/email.php:305
+#: build/includes/email.php:347 build/includes/email.php:364
+#: build/includes/email.php:406 build/includes/email.php:423
+#: build/includes/email.php:465 build/includes/email.php:482
 msgid "See the bottom of this page for variable substitutions."
 msgstr ""
 
-#: src/includes/confirmations.php:467 src/includes/confirmations.php:548
-#: src/includes/email.php:178 src/includes/email.php:237
-#: src/includes/email.php:296 src/includes/email.php:355
-#: src/includes/email.php:414 src/includes/email.php:473
+#: build/includes/confirmations.php:470 build/includes/confirmations.php:551
+#: build/includes/email.php:181 build/includes/email.php:240
+#: build/includes/email.php:299 build/includes/email.php:358
+#: build/includes/email.php:417 build/includes/email.php:476
 msgid "Template for e-mail message body:"
 msgstr ""
 
-#: src/includes/confirmations.php:486
+#: build/includes/confirmations.php:489
 msgid "Withdraw transaction confirmations"
 msgstr ""
 
-#: src/includes/confirmations.php:499
+#: build/includes/confirmations.php:502
 msgid ""
 "Check this if you wish withdrawals to require a confirmation via the admin "
 "panel. Any user with the manage_wallets capability can perform the "
 "confirmation."
 msgstr ""
 
-#: src/includes/confirmations.php:511
+#: build/includes/confirmations.php:514
 msgid "User confirmation required"
 msgstr ""
 
-#: src/includes/confirmations.php:517
+#: build/includes/confirmations.php:520
 msgid ""
 "Check this if you wish withdrawals to require a user confirmation. The user "
 "that initiated the transacion will receive an email with a link that they "
 "will need to click to confirm the withdrawal."
 msgstr ""
 
-#: src/includes/cron.php:30
+#: build/includes/cron.php:30
 msgid ""
 "WordPress cron is disabled. Check wp-config.php for the constant "
 "DISABLE_WP_CRON. Until you fix this, transactions will not be executed. "
 "Check the accompanying PDF manual for ways to debug and solve the issue."
 msgstr ""
 
-#: src/includes/cron.php:43
+#: build/includes/cron.php:43
 msgid ""
 "The <code>wp_cron</code> job has not run in a while and might be disabled. "
 "Until you fix this, transactions can be delayed. Triggering a cron run now. "
 "Check the accompanying PDF manual for ways to debug and solve the issue."
 msgstr ""
 
-#: src/includes/cron.php:93
+#: build/includes/cron.php:93
 msgid "minute"
 msgstr ""
 
-#: src/includes/cron.php:98
+#: build/includes/cron.php:98
 msgid "three minutes"
 msgstr ""
 
-#: src/includes/cron.php:103
+#: build/includes/cron.php:103
 msgid "five minutes"
 msgstr ""
 
-#: src/includes/cron.php:108
+#: build/includes/cron.php:108
 msgid "ten minutes"
 msgstr ""
 
-#: src/includes/cron.php:113
+#: build/includes/cron.php:113
 msgid "twenty minutes"
 msgstr ""
 
-#: src/includes/cron.php:118
+#: build/includes/cron.php:118
 msgid "half an hour"
 msgstr ""
 
-#: src/includes/cron.php:193
+#: build/includes/cron.php:193
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/cron.php:200
+#: build/includes/cron.php:200
 msgid "Run every"
 msgstr ""
 
-#: src/includes/cron.php:214
+#: build/includes/cron.php:214
 msgid "Max batch size"
 msgstr ""
 
-#: src/includes/cron.php:220
+#: build/includes/cron.php:220
 msgid "Up to this many transactions will be attempted per run of the cron job."
 msgstr ""
 
-#: src/includes/cron.php:231
+#: build/includes/cron.php:231
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: src/includes/cron.php:237
+#: build/includes/cron.php:237
 msgid "Failed withdrawals will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:248
+#: build/includes/cron.php:248
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: src/includes/cron.php:254
+#: build/includes/cron.php:254
 msgid ""
 "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:285
-msgid "/* @echo name */ cron settings"
+#: build/includes/cron.php:285
+msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: src/includes/cron.php:286
+#: build/includes/cron.php:286
 msgid ""
 "You can set here the periodicity of all recurring tasks for this plugin. "
 "Every time cron runs, a batch of transactions is attempted. You can choose "
@@ -999,109 +1019,109 @@ msgid ""
 "enabled adapters."
 msgstr ""
 
-#: src/includes/cron.php:315
+#: build/includes/cron.php:315
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron job."
 msgstr ""
 
-#: src/includes/email.php:30
+#: build/includes/email.php:30
 msgid "You have performed a withdrawal. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:46
+#: build/includes/email.php:47
 msgid "Your withdrawal request has FAILED permanently. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:64
+#: build/includes/email.php:66
 msgid "You have sent funds to another user. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:81
+#: build/includes/email.php:83
 msgid ""
 "You request to send funds to another user has FAILED permanently. - "
 "###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:100
+#: build/includes/email.php:102
 msgid "You have received funds from another user. - ###COMMENT###"
 msgstr ""
 
-#: src/includes/email.php:116
+#: build/includes/email.php:118
 msgid "You have performed a ###SYMBOL### deposit."
 msgstr ""
 
-#: src/includes/email.php:137
+#: build/includes/email.php:140
 msgid "E-mail notification settings for SUCCESSFUL withdrawals"
 msgstr ""
 
-#: src/includes/email.php:144
+#: build/includes/email.php:147
 msgid "Notify users about SUCCESSFUL withdrawals"
 msgstr ""
 
-#: src/includes/email.php:150 src/includes/email.php:209
-#: src/includes/email.php:268 src/includes/email.php:327
-#: src/includes/email.php:386 src/includes/email.php:445
+#: build/includes/email.php:153 build/includes/email.php:212
+#: build/includes/email.php:271 build/includes/email.php:330
+#: build/includes/email.php:389 build/includes/email.php:448
 msgid "Check to enable this type of e-mails."
 msgstr ""
 
-#: src/includes/email.php:196
+#: build/includes/email.php:199
 msgid "E-mail notification settings for FAILED withdrawals"
 msgstr ""
 
-#: src/includes/email.php:203
+#: build/includes/email.php:206
 msgid "Notify users about FAILED withdrawals"
 msgstr ""
 
-#: src/includes/email.php:255
+#: build/includes/email.php:258
 msgid "E-mail notification settings for deposits"
 msgstr ""
 
-#: src/includes/email.php:262
+#: build/includes/email.php:265
 msgid "Notify users about depositals"
 msgstr ""
 
-#: src/includes/email.php:314
+#: build/includes/email.php:317
 msgid "E-mail notification settings for SUCCESSFUL outgoing fund transfers"
 msgstr ""
 
-#: src/includes/email.php:321
+#: build/includes/email.php:324
 msgid "Notify users about SUCCESSFUL outgoing fund transfers"
 msgstr ""
 
-#: src/includes/email.php:373
+#: build/includes/email.php:376
 msgid "E-mail notification settings for FAILED outgoing fund transfers"
 msgstr ""
 
-#: src/includes/email.php:380
+#: build/includes/email.php:383
 msgid "Notify users about outgoing FAILED fund transfers"
 msgstr ""
 
-#: src/includes/email.php:432
+#: build/includes/email.php:435
 msgid "E-mail notification settings for incoming fund transfers"
 msgstr ""
 
-#: src/includes/email.php:439
+#: build/includes/email.php:442
 msgid "Notify users about incoming fund transfers"
 msgstr ""
 
-#: src/includes/email.php:508
-msgid "/* @echo name */ E-mail notification settings"
+#: build/includes/email.php:511
+msgid "Bitcoin and Altcoin Wallets E-mail notification settings"
 msgstr ""
 
-#: src/includes/email.php:510
+#: build/includes/email.php:513
 msgid ""
 "Users are notified by e-mail when they perform deposits or withdrawals and "
 "when they send or receive funds. Here you can set template messages for "
 "these emails."
 msgstr ""
 
-#: src/includes/email.php:557
+#: build/includes/email.php:562
 msgid ""
 "Only for failed withdrawals, shows the last error occurred in a failed "
 "transaction."
 msgstr ""
 
-#: src/includes/email.php:623
+#: build/includes/email.php:628
 msgid ""
 "Here you can choose whether users receive e-mail notifications on this "
 "event. You can also edit the template used to produce the email subject line "
@@ -1109,162 +1129,162 @@ msgid ""
 "subject line and the message body."
 msgstr ""
 
-#: src/includes/json-api.php:15
+#: build/includes/json-api.php:15
 msgid ""
 "You do not seem to be using SSL/TLS on this site. Requests to this plugin's "
 "JSON API could be vunerable to a replay attack, resulting in loss of funds. "
 "You must enable SSL or TLS if this is a live site."
 msgstr ""
 
-#: src/includes/json-api.php:113
+#: build/includes/json-api.php:113
 msgid "Could not process notification."
 msgstr ""
 
-#: src/includes/json-api.php:117
+#: build/includes/json-api.php:117
 msgid "Must be logged in"
 msgstr ""
 
-#: src/includes/json-api.php:125 src/includes/json-api.php:148
-#: src/includes/json-api.php:199 src/includes/json-api.php:226
-#: src/includes/json-api.php:254 src/includes/transactions.php:705
-#: src/includes/wallets-core.php:523 src/includes/wallets-core.php:617
-#: src/includes/wallets-core.php:671 src/includes/wallets-core.php:727
-#: src/includes/wallets-core.php:798 src/includes/wallets-core.php:940
-#: src/includes/wallets-core.php:1085
+#: build/includes/json-api.php:125 build/includes/json-api.php:148
+#: build/includes/json-api.php:201 build/includes/json-api.php:227
+#: build/includes/json-api.php:246 build/includes/json-api.php:274
+#: build/includes/transactions.php:721 build/includes/wallets-core.php:498
+#: build/includes/wallets-core.php:592 build/includes/wallets-core.php:646
+#: build/includes/wallets-core.php:702 build/includes/wallets-core.php:775
+#: build/includes/wallets-core.php:920 build/includes/wallets-core.php:1066
 msgid "Not allowed"
 msgstr ""
 
-#: src/includes/json-api.php:142
+#: build/includes/json-api.php:142
 msgid "Could not get info about users: "
 msgstr ""
 
-#: src/includes/json-api.php:217
+#: build/includes/json-api.php:219
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: src/includes/json-api.php:244
+#: build/includes/json-api.php:264
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: src/includes/json-api.php:272
+#: build/includes/json-api.php:292
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: src/includes/json-api.php:276
+#: build/includes/json-api.php:296
 #, php-format
 msgid "Unknown action %s specified"
 msgstr ""
 
-#: src/includes/menu-item.php:39
+#: build/includes/menu-item.php:39
 msgid "Bitcoin and Altcoin Wallets balances"
 msgstr ""
 
-#: src/includes/menu-item.php:67 src/includes/menu-item.php:74
+#: build/includes/menu-item.php:67 build/includes/menu-item.php:74
 msgid "Wallet balances"
 msgstr ""
 
-#: src/includes/menu-item.php:85 src/includes/menu-item.php:87
+#: build/includes/menu-item.php:85 build/includes/menu-item.php:87
 msgid "Balances box"
 msgstr ""
 
-#: src/includes/menu-item.php:107
+#: build/includes/menu-item.php:107
 msgid "Crypto Wallet Balances"
 msgstr ""
 
-#: src/includes/menu-item.php:109 src/includes/views/balance.php:5
+#: build/includes/menu-item.php:109 build/includes/views/balance.php:5
 msgid "Balance"
 msgstr ""
 
-#: src/includes/menu-item.php:120
+#: build/includes/menu-item.php:120
 msgid "Add to menu"
 msgstr ""
 
-#: src/includes/qrcode.php:29
+#: build/includes/qrcode.php:29
 msgid "QR Code display settings"
 msgstr ""
 
-#: src/includes/qrcode.php:36
+#: build/includes/qrcode.php:36
 msgid "Enable QR Codes"
 msgstr ""
 
-#: src/includes/qrcode.php:68
-msgid "/* @echo name */ QR Code settings"
+#: build/includes/qrcode.php:68
+msgid "Bitcoin and Altcoin Wallets QR Code settings"
 msgstr ""
 
-#: src/includes/qrcode.php:70
+#: build/includes/qrcode.php:70
 msgid "The [wallets_deposit] shortcode displays deposit addresses."
 msgstr ""
 
-#: src/includes/qrcode.php:72
+#: build/includes/qrcode.php:72
 msgid "The word \"QR Code\" is registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
-#: src/includes/qrcode.php:112
+#: build/includes/qrcode.php:112
 msgid "Here you can control whether addresses are displayed as QR Codes."
 msgstr ""
 
-#: src/includes/rates.php:69
+#: build/includes/rates.php:69
 msgid "Exchange rates settings"
 msgstr ""
 
-#: src/includes/rates.php:76
+#: build/includes/rates.php:76
 msgid "Rates provider"
 msgstr ""
 
-#: src/includes/rates.php:82
+#: build/includes/rates.php:82
 msgid "Pick the API that you wish to use as a source of exchange rates. "
 msgstr ""
 
-#: src/includes/rates.php:93
+#: build/includes/rates.php:93
 msgid "Rates cache expiry (minutes)"
 msgstr ""
 
-#: src/includes/rates.php:99
+#: build/includes/rates.php:99
 msgid ""
 "The exchange rates will be cached for this many minutes before being "
 "updated. Currency symbols are always cached for one hour."
 msgstr ""
 
-#: src/includes/rates.php:114
+#: build/includes/rates.php:114
 msgid "Exchange rates debug views"
 msgstr ""
 
-#: src/includes/rates.php:121
+#: build/includes/rates.php:121
 msgid "Known fiat currencies"
 msgstr ""
 
-#: src/includes/rates.php:127
+#: build/includes/rates.php:127
 msgid "View a list of fiat currencies reported by fixer.io (for debugging). "
 msgstr ""
 
-#: src/includes/rates.php:139
+#: build/includes/rates.php:139
 msgid "Known cryptocurrencies"
 msgstr ""
 
-#: src/includes/rates.php:145
+#: build/includes/rates.php:145
 msgid ""
 "View a list of cryptocurrencies reported by the selected provider (for "
 "debugging). "
 msgstr ""
 
-#: src/includes/rates.php:156
+#: build/includes/rates.php:156
 msgid "Exchange rates"
 msgstr ""
 
-#: src/includes/rates.php:162
+#: build/includes/rates.php:162
 msgid ""
 "View a list of exhange rates reported by this provider (for debugging). For "
 "YoBit, exchange rates are only shown for coins that you have enabled."
 msgstr ""
 
-#: src/includes/rates.php:191
-msgid "/* @echo name */ Exchange Rates settings"
+#: build/includes/rates.php:191
+msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: src/includes/rates.php:308
+#: build/includes/rates.php:315
 #, php-format
 msgid ""
 "App extensions, such as the <a href=\"%s\">WooCommerce</a> and <a href=\"%s"
@@ -1273,162 +1293,172 @@ msgid ""
 "various cryptocurrencies."
 msgstr ""
 
-#: src/includes/rates.php:317
+#: build/includes/rates.php:324
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
 msgstr ""
 
-#: src/includes/sidebar-widgets.php:33
+#: build/includes/sidebar-widgets.php:33
 msgid "Wallets "
 msgstr ""
 
-#: src/includes/sidebar-widgets.php:84
+#: build/includes/sidebar-widgets.php:84
 msgid ""
 "A form that will let the user know which address they can send coins to if "
 "they wish to make a deposit."
 msgstr ""
 
-#: src/includes/sidebar-widgets.php:95
+#: build/includes/sidebar-widgets.php:95
 msgid "A form that will let the user withdraw funds."
 msgstr ""
 
-#: src/includes/sidebar-widgets.php:106
+#: build/includes/sidebar-widgets.php:106
 msgid "A form that lets the user transfer coins to other users on your site."
 msgstr ""
 
-#: src/includes/sidebar-widgets.php:117
+#: build/includes/sidebar-widgets.php:117
 msgid "The current user's balances in all enabled coins."
 msgstr ""
 
-#: src/includes/sidebar-widgets.php:128
+#: build/includes/sidebar-widgets.php:128
 msgid ""
 "An interactive table that shows past deposits, withdrawals and transfers for "
 "the user."
 msgstr ""
 
 #. />', // TODO bulk actions
-#: src/includes/transactions-list.php:32
+#: build/includes/transactions-list.php:32
 msgid "Transaction ID"
 msgstr ""
 
-#: src/includes/transactions-list.php:33 src/includes/views/transactions.php:11
+#: build/includes/transactions-list.php:33
+#: build/includes/views/transactions.php:11
 msgid "Type"
 msgstr ""
 
-#: src/includes/transactions-list.php:35 src/includes/views/transactions.php:14
+#: build/includes/transactions-list.php:35
+#: build/includes/views/transactions.php:14
 msgid "Amount (+fee)"
 msgstr ""
 
-#: src/includes/transactions-list.php:36 src/includes/views/transactions.php:15
+#: build/includes/transactions-list.php:36
+#: build/includes/views/transactions.php:15
 msgid "Fee"
 msgstr ""
 
-#: src/includes/transactions-list.php:37 src/includes/views/transactions.php:16
+#: build/includes/transactions-list.php:37
+#: build/includes/views/transactions.php:16
 msgid "From"
 msgstr ""
 
-#: src/includes/transactions-list.php:38 src/includes/views/transactions.php:17
+#: build/includes/transactions-list.php:38
+#: build/includes/views/transactions.php:17
 msgid "To"
 msgstr ""
 
-#: src/includes/transactions-list.php:39 src/includes/views/transactions.php:19
+#: build/includes/transactions-list.php:39
+#: build/includes/views/transactions.php:19
 msgid "Comment"
 msgstr ""
 
-#: src/includes/transactions-list.php:40 src/includes/views/transactions.php:12
+#: build/includes/transactions-list.php:40
+#: build/includes/views/transactions.php:12
 msgid "Tags"
 msgstr ""
 
-#: src/includes/transactions-list.php:41 src/includes/views/transactions.php:13
+#: build/includes/transactions-list.php:41
+#: build/includes/views/transactions.php:13
 msgid "Time"
 msgstr ""
 
-#: src/includes/transactions-list.php:42 src/includes/views/transactions.php:20
+#: build/includes/transactions-list.php:42
+#: build/includes/views/transactions.php:20
 msgid "Confirmations"
 msgstr ""
 
-#: src/includes/transactions-list.php:43 src/includes/views/transactions.php:21
+#: build/includes/transactions-list.php:43
+#: build/includes/views/transactions.php:21
 msgid "Status"
 msgstr ""
 
-#: src/includes/transactions-list.php:44
+#: build/includes/transactions-list.php:44
 msgid "Retries left"
 msgstr ""
 
-#: src/includes/transactions-list.php:45
+#: build/includes/transactions-list.php:45
 msgid "Accepted by admin"
 msgstr ""
 
-#: src/includes/transactions-list.php:46
+#: build/includes/transactions-list.php:46
 msgid "Verified by user"
 msgstr ""
 
-#: src/includes/transactions-list.php:236
+#: build/includes/transactions-list.php:237
 msgid "Transaction will be CANCELLED."
 msgstr ""
 
-#: src/includes/transactions-list.php:237
+#: build/includes/transactions-list.php:238
 msgid "&#x1F5D9; Cancel"
 msgstr ""
 
-#: src/includes/transactions-list.php:253
+#: build/includes/transactions-list.php:254
 msgid "Transaction will be RETRIED."
 msgstr ""
 
-#: src/includes/transactions-list.php:254
+#: build/includes/transactions-list.php:255
 msgid "&#8635; Retry"
 msgstr ""
 
-#: src/includes/transactions-list.php:285
+#: build/includes/transactions-list.php:286
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: src/includes/transactions-list.php:286
+#: build/includes/transactions-list.php:287
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:302
+#: build/includes/transactions-list.php:303
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: src/includes/transactions-list.php:303
+#: build/includes/transactions-list.php:304
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: src/includes/transactions-list.php:338
+#: build/includes/transactions-list.php:339
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: src/includes/transactions-list.php:339
+#: build/includes/transactions-list.php:340
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:355
+#: build/includes/transactions-list.php:356
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: src/includes/transactions-list.php:356
+#: build/includes/transactions-list.php:357
 msgid "&#x2713; User accept"
 msgstr ""
 
-#: src/includes/transactions.php:97
-msgid "/* @echo name */ Transactions"
+#: build/includes/transactions.php:97
+msgid "Bitcoin and Altcoin Wallets Transactions"
 msgstr ""
 
-#: src/includes/transactions.php:101
+#: build/includes/transactions.php:101
 msgid "Transaction updated."
 msgstr ""
 
-#: src/includes/transactions.php:109
+#: build/includes/transactions.php:109
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/transactions.php:111
+#: build/includes/transactions.php:111
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Pending transactions will be skipped if they have not been "
@@ -1436,109 +1466,105 @@ msgid ""
 "imported, unless if they already exist in your DB."
 msgstr ""
 
-#: src/includes/transactions.php:116
+#: build/includes/transactions.php:116
 msgid "Import"
 msgstr ""
 
-#: src/includes/transactions.php:376
+#: build/includes/transactions.php:376
 #, php-format
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: src/includes/transactions.php:730
+#: build/includes/transactions.php:750
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:767
+#: build/includes/transactions.php:787
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:775
+#: build/includes/transactions.php:795
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: src/includes/views/deposit.php:5
+#: build/includes/views/deposit.php:6
 msgid "Deposit address"
 msgstr ""
 
-#: src/includes/views/move.php:5
+#: build/includes/views/move.php:5
 msgid "Recipient user"
 msgstr ""
 
-#: src/includes/views/move.php:7
+#: build/includes/views/move.php:7
 msgid "Transfer comment"
 msgstr ""
 
-#: src/includes/views/move.php:8 src/includes/views/withdraw.php:7
+#: build/includes/views/move.php:8 build/includes/views/withdraw.php:7
 msgid "Fee (deducted from amount)"
 msgstr ""
 
-#: src/includes/views/move.php:12 src/includes/views/withdraw.php:11
+#: build/includes/views/move.php:12 build/includes/views/withdraw.php:11
 msgid "Send"
 msgstr ""
 
-#: src/includes/views/move.php:13 src/includes/views/withdraw.php:12
+#: build/includes/views/move.php:13 build/includes/views/withdraw.php:12
 msgid "Reset form"
 msgstr ""
 
-#: src/includes/views/transactions.php:5
+#: build/includes/views/transactions.php:5
 msgid "Rows per page"
 msgstr ""
 
-#: src/includes/views/transactions.php:6
+#: build/includes/views/transactions.php:6
 msgid "Page"
 msgstr ""
 
-#: src/includes/views/transactions.php:18
+#: build/includes/views/transactions.php:18
 msgid "Tx ID"
 msgstr ""
 
-#: src/includes/views/transactions.php:22
+#: build/includes/views/transactions.php:22
 msgid "Retries&nbsp;left"
 msgstr ""
 
-#: src/includes/views/transactions.php:25
+#: build/includes/views/transactions.php:25
 msgid "Admin&nbsp;confirm"
 msgstr ""
 
-#: src/includes/views/transactions.php:28
+#: build/includes/views/transactions.php:28
 msgid "User&nbsp;confirm"
 msgstr ""
 
-#: src/includes/views/transactions.php:39
-#: src/includes/views/transactions.php:62
-#: src/includes/views/transactions.php:83
-#: src/includes/views/transactions.php:84
+#: build/includes/views/transactions.php:39
+#: build/includes/views/transactions.php:62
+#: build/includes/views/transactions.php:83
+#: build/includes/views/transactions.php:84
 msgid "me"
 msgstr ""
 
-#: src/includes/views/withdraw.php:5
+#: build/includes/views/withdraw.php:5
 msgid "Withdraw to address"
 msgstr ""
 
-#: src/includes/views/withdraw.php:8
+#: build/includes/views/withdraw.php:8
 msgid "Transaction comment"
 msgstr ""
 
-#: src/includes/views/withdraw.php:9
-msgid "Address label"
-msgstr ""
-
-#: src/includes/wallets-core.php:215 src/includes/wallets-core.php:225
+#: build/includes/wallets-core.php:215 build/includes/wallets-core.php:225
 msgid "Visit plugin site"
 msgstr ""
 
-#: src/includes/wallets-core.php:216 src/includes/wallets-core.php:226
+#: build/includes/wallets-core.php:216 build/includes/wallets-core.php:226
 msgid "Support"
 msgstr ""
 
-#: src/includes/wallets-core.php:251
+#: build/includes/wallets-core.php:251
 #, php-format
 msgid ""
 "The \"%1$s\" coin adapter can conflict with another adapter \"%2$s\" that is "
@@ -1546,14 +1572,14 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: src/includes/wallets-core.php:275
+#: build/includes/wallets-core.php:341
 #, php-format
 msgid ""
-"/* @echo name */ could NOT create a transactions table \"%s\" in the "
-"database. The plugin may not function properly."
+"Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
+"the database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:284
+#: build/includes/wallets-core.php:352
 #, php-format
 msgid ""
 "The PHP version you are using, %s has reached end-of-life! Please talk to "
@@ -1561,86 +1587,86 @@ msgid ""
 "php.net/supported-versions.php\" target=\"_blank\">supported version</a>."
 msgstr ""
 
-#: src/includes/wallets-core.php:295
+#: build/includes/wallets-core.php:363
 #, php-format
 msgid ""
 "You are using WordPress %s. This plugin has been tested with %s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: src/includes/wallets-core.php:464
+#: build/includes/wallets-core.php:439
 msgid "Plugin version"
 msgstr ""
 
-#: src/includes/wallets-core.php:465
+#: build/includes/wallets-core.php:440
 msgid "Git SHA"
 msgstr ""
 
-#: src/includes/wallets-core.php:466
+#: build/includes/wallets-core.php:441
 msgid "PHP version"
 msgstr ""
 
-#: src/includes/wallets-core.php:467
+#: build/includes/wallets-core.php:442
 msgid "WordPress version"
 msgstr ""
 
-#: src/includes/wallets-core.php:468
+#: build/includes/wallets-core.php:443
 msgid "MySQL version"
 msgstr ""
 
-#: src/includes/wallets-core.php:469
+#: build/includes/wallets-core.php:444
 msgid "DB prefix"
 msgstr ""
 
-#: src/includes/wallets-core.php:470
+#: build/includes/wallets-core.php:445
 msgid "Supports cURL"
 msgstr ""
 
-#: src/includes/wallets-core.php:471
+#: build/includes/wallets-core.php:446
 msgid "Is multisite"
 msgstr ""
 
-#: src/includes/wallets-core.php:472
+#: build/includes/wallets-core.php:447
 msgid "Is network activated"
 msgstr ""
 
-#: src/includes/wallets-core.php:473
+#: build/includes/wallets-core.php:448
 msgid "PHP max execution time"
 msgstr ""
 
-#: src/includes/wallets-core.php:485
+#: build/includes/wallets-core.php:460
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: src/includes/wallets-core.php:530
+#: build/includes/wallets-core.php:505
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:534
+#: build/includes/wallets-core.php:509
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:834
+#: build/includes/wallets-core.php:813
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:858
+#: build/includes/wallets-core.php:837
 msgid "Must withdraw positive amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:864 src/includes/wallets-core.php:979
+#: build/includes/wallets-core.php:843 build/includes/wallets-core.php:959
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:944
+#: build/includes/wallets-core.php:924
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:973
+#: build/includes/wallets-core.php:953
 msgid "Must move positive amount"
 msgstr ""

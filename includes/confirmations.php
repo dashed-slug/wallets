@@ -42,6 +42,7 @@ If you want the withdrawal to proceed, please click on this link to confirm:
 Fees to be paid: ###FEE###
 Transacton requested at: ###CREATED_TIME###
 Comment: ###COMMENT###
+Extra transaction info (optional): ###EXTRA###
 
 If you did not request this transaction, please contact the administrator of this site immediately.
 
@@ -358,6 +359,8 @@ EMAIL
 						<dd><?php esc_html_e( 'The comment attached to the transaction.', 'wallets' ); ?></dd>
 						<dt><code>###ADDRESS###</code></dt>
 						<dd><?php esc_html_e( 'For deposits and withdrawals, the external address.', 'wallets' ); ?></dd>
+						<dt><code>###EXTRA###</code></dt>
+						<dd><?php esc_html_e( 'Optional. For some coins, there is extra information required for deposits/withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc..', 'wallets' ); ?></dd>
 						<dt><code>###TAGS###</code></dt>
 						<dd><?php esc_html_e( 'A space separated list of tags, slugs, etc that further describe the type of transaction.', 'wallets' ); ?></dd>
 					</dl>
@@ -402,7 +405,7 @@ EMAIL
 
 			add_settings_section(
 				'wallets_confirm_move_section',
-				__( 'Internal transaction confirmations', '/* @echo slug' ),
+				__( 'Internal transaction confirmations', 'wallets' ),
 				array( &$this, 'wallets_confirm_move_section_cb' ),
 				'wallets-menu-confirmations'
 			);
@@ -416,7 +419,7 @@ EMAIL
 				array(
 					'label_for' => 'wallets_confirm_move_admin_enabled',
 					'description' => __( 'Check this if you wish internal transfers between users to require a confirmation via the admin panel. ' .
-						'Any user with the manage_wallets capability can perform the confirmation.', '/* @echo slug *' ),
+						'Any user with the manage_wallets capability can perform the confirmation.', 'wallets' ),
 				)
 			);
 
@@ -434,7 +437,7 @@ EMAIL
 				array(
 					'label_for' => 'wallets_confirm_move_user_enabled',
 					'description' => __( 'Check this if you wish internal transfers between users to require a user confirmation. ' .
-						'The user that initiated the transaction will receive an email with a link that they will need to click to confirm the transaction', '/* @echo slug *' ),
+						'The user that initiated the transaction will receive an email with a link that they will need to click to confirm the transaction', 'wallets' ),
 				)
 			);
 
@@ -483,7 +486,7 @@ EMAIL
 
 			add_settings_section(
 				'wallets_confirm_withdraw_section',
-				__( 'Withdraw transaction confirmations', '/* @echo slug' ),
+				__( 'Withdraw transaction confirmations', 'wallets' ),
 				array( &$this, 'wallets_confirm_withdraw_section_cb' ),
 				'wallets-menu-confirmations'
 			);
@@ -497,7 +500,7 @@ EMAIL
 				array(
 					'label_for' => 'wallets_confirm_withdraw_admin_enabled',
 					'description' => __( 'Check this if you wish withdrawals to require a confirmation via the admin panel. ' .
-						'Any user with the manage_wallets capability can perform the confirmation.', '/* @echo slug *' ),
+						'Any user with the manage_wallets capability can perform the confirmation.', 'wallets' ),
 				)
 			);
 
@@ -515,7 +518,7 @@ EMAIL
 				array(
 					'label_for' => 'wallets_confirm_withdraw_user_enabled',
 					'description' => __( 'Check this if you wish withdrawals to require a user confirmation. ' .
-						'The user that initiated the transacion will receive an email with a link that they will need to click to confirm the withdrawal.', '/* @echo slug *' ),
+						'The user that initiated the transacion will receive an email with a link that they will need to click to confirm the withdrawal.', 'wallets' ),
 				)
 			);
 
