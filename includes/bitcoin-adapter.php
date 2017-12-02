@@ -74,6 +74,33 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 			add_option( 'wallets_bitcoin_settings_other_minconf', '6' );
 		}
 
+		/**
+		 * Get IP address of the site host.
+		 *
+		 * @link http://stackoverflow.com/a/12847941/1223744 Code adapted from this
+		 * @internal
+		 * @return string The server's IP address
+		 */
+		private function server_ip() {
+
+			if( array_key_exists( 'SERVER_ADDR', $_SERVER ) ) {
+				return $_SERVER['SERVER_ADDR'];
+
+			} elseif ( array_key_exists( 'LOCAL_ADDR', $_SERVER ) ) {
+				return $_SERVER['LOCAL_ADDR'];
+
+			} elseif ( array_key_exists('SERVER_NAME', $_SERVER ) ) {
+				return gethostbyname( $_SERVER['SERVER_NAME'] );
+
+			} elseif ( php_uname( 'n' ) ) {
+				return gethostbyname( php_uname( 'n' ) );
+
+			} else {
+				$domain = parse_url( get_home_url(), PHP_URL_HOST );
+				return gethostbyname( $domain );
+			}
+		}
+
 		/** @internal */
 		public function show_notices() {
 			$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
@@ -82,7 +109,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 				$notices->error(
 					__( 'The Bitcoin and Altcoin Wallets plugin will not be able to work correctly on your system because you have not installed the PHP curl module. '.
-						'The module must be installed to connect to wallet daemons via their RPC APIs.', '/@ echo slug */' ),
+						'The module must be installed to connect to wallet daemons via their RPC APIs.', 'wallets' ),
 					'no-php-curl' );
 			}
 
@@ -92,22 +119,46 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 			} catch ( Exception $e ) {
 
+				$settings_url = admin_url( 'admin.php?page=wallets-menu-wallets-'. self::SYMBOL );
+
 				$wallet_url = site_url( 'wallets/notify/' . self::SYMBOL . '/wallet/%s' );
 				$block_url = site_url( 'wallets/notify/' . self::SYMBOL . '/block/%s' );
-				$command = "bitcoind -walletnotify='curl -s $wallet_url >/dev/null' -blocknotify='curl -s $block_url >/dev/null'";
+				$wp_ip = $this->server_ip();
+				$user = get_option( 'wallets_bitcoin_settings_rpc_user' );
+				$port = intval( get_option( 'wallets_bitcoin_settings_rpc_port' ) );
+
+				$config = <<<CFG
+server=1
+rpcallowip=127.0.0.1
+rpcallowip=$wp_ip
+rpcport=$port
+walletnotify=curl -s $wallet_url >/dev/null
+blocknotify=curl -s $block_url >/dev/null
+rpcuser=$user
+rpcpassword=<<<ENTER YOUR RPC API PASSWORD HERE>>>
+CFG;
 
 				$notices->error(
-					sprintf(
-						__( '<code>bitcoind</code> cannot be contacted. ' .
-							'You need to make sure that your <a href="%s">Bitcoin RPC settings</a> are correct. ' .
-							'Make sure that you start your Bitcoin daemon client like so: <pre>%s</pre>' .
-						    'You are advised to not dismiss this error manually. ' .
-							'It will stop showing once the daemon can be contacted.',
-							'/@ echo slug */' ),
-						admin_url( 'admin.php?page=wallets-menu-wallets-'. self::SYMBOL ),
-						$command ),
+					__( '<code>bitcoind</code> cannot be contacted.', 'wallets' ) . '<ol><li>' .
 
-					'bitcoind-down' );
+					sprintf(
+						__( 'You need to make sure that your <a href="%s">Bitcoin RPC settings</a> are correctly configured. ', 'wallets' ),
+						esc_attr( $settings_url ) ) .
+					'</li><li><p>' .
+
+					__( 'Then edit your <code>bitcoin.conf</code> and append the following:', 'wallets' ) . '</p>' .
+
+					'<textarea onclick="this.focus();this.select();" readonly="readonly" style="min-height: 12em; min-width: 64em;">' .
+						esc_html( $config ) .
+					'</textarea></li><li>' .
+
+					__( 'Finally, start the bitcoin daemon.', 'wallets' ) . '</li></ol><p>' .
+
+					__( 'You are advised to not dismiss this error manually. ' .
+						'It will stop showing once the daemon can be contacted.',
+						'wallets' ),
+					'bitcoind-down'
+				);
 			}
 		}
 

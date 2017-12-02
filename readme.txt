@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
-Tested up to: 4.7
-Stable tag: 1.0.3
+Tested up to: 4.7.1
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,9 +22,9 @@ It enables financial transactions on your site via Bitcoins and other cryptocurr
 = What is available today =
 
 1. A fully functional **cryptocurrencies API stack**, that enables communication to wallets via:
-   1. **PHP calls** from your themes and plugins,
-   2. a **JSON API**, accessible to logged in users,
-   3. the **frontend UI**, available via a simple set of shortcodes.
+   1. **[PHP calls](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/php-api/)** from your themes and plugins,
+   2. a **[JSON API](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/json-api/)**, accessible to logged in users,
+   3. the **[frontend UI](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shortcodes/)**, available via a simple set of shortcodes.
 2. A built-in **Bitcoin adapter** that redirects requests to a bitcoin daemon.
 3. **Transaction and accounting data** is held on special tables in your MySQL database.
    *The Bitcoin core accounting API is not used since [it is being deprecated](https://github.com/bitcoin/bitcoin/issues/3816).*
@@ -70,6 +70,15 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
   - Easily install coin adapter plugins to use other cryprocurrencies besides Bitcoin.
   - Easily install extension plugins that talk to an accounting API to provide additional functionality.
 
+= follow the slime =
+
+The dashed-slug is a social slug:
+
+- Facebook: [https://www.facebook.com/dashedslug](https://www.facebook.com/dashedslug)
+- Google+: [https://plus.google.com/103549774963556626441](https://plus.google.com/103549774963556626441)
+- RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
+- Youtube channel: [https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA](https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA)
+
 == Installation ==
 
 = Overview =
@@ -86,54 +95,39 @@ What follows is step-by-step instructions:
    and that you are running on **at least PHP 5.5.**
    For security reasons, you are **strongly** recommended to use the latest version of WordPress.
 
-2. **Install a Bitcoin full node** on your server. Detailed instructions
+2. **Install and activate the Wallets plugin.** For general information on installing WordPress plugins, you can consult the
+   [relevant WordPress documentation](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
+
+3. **Install a Bitcoin full node** on your server. Detailed instructions
    [are available here](https://bitcoin.org/en/full-node). Read and follow the instructions carefully.
 
    *Take note of the
    [memory, disk, and bandwidth requirements](https://bitcoin.org/en/full-node#minimum-requirements)
    and check against the resources available on your server.*
 
-3. You will need to edit your `~/.bitcoin/bitcoin.conf` file. At a minimum, **set a username and password**:
 
-   `rpcuser=<<<SOME USERNAME>>>`
-
-   `rpcpassword=<<<A STRONG PASSWORD>>>`
-
-4. If you want to run the daemon on a **different server** to that of your webserver, or to **listen on a TCP port
-   other than the default**, add the following lines and edit as appropriate.
-
-   `rpcport=8332`
-
-   `rpcconnect=127.0.0.1`
-
-   `rpcallowip=127.0.0.1`
-
-   For more information on the bitcoin daemon configuration,
-   consult [the relevant wiki page](https://en.bitcoin.it/wiki/Running_Bitcoin).
-
-5. **Install and activate the Wallets plugin.** For general information on installing WordPress plugins, you can consult the
-   [relevant WordPress documentation](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
-
-6. **Navigate to *Wallets* &rarr; Bitcoin (BTC)** in your WordPress admin area.
+4. **Configure the bitcoin adapter on your WordPress installation.**
+   Navigate to *Wallets* &rarr; *Bitcoin (BTC)* in your WordPress admin area.
 
    At a minimum you need to enter the
    location and credentials to your *Bitcoin daemon RPC API*.
 
    You will need to set the following: `IP`, `Port`, `User`, `Password`, `Path`.
 
-7. **Start the bitcoin daemon on your server.** You will need to specify the parameters `-walletnotify` and `-blocknotify`.
-   This enables the daemon to notify your WordPress installation of any incoming deposits.
+5. **Configure the bitcoin daemon on your server.**
+   You will need to edit your `~/.bitcoin/bitcoin.conf` file and make the configuration match what you entered above.
+   The plugin will give you the exact configuration arguments that you need to start the daemon with.
 
-   The plugin will give you the exact command that you need to start the daemon with.
+   For more information on the bitcoin daemon configuration,
+   consult [the relevant wiki page](https://en.bitcoin.it/wiki/Running_Bitcoin).
 
-   Here's what the command might look like:
+6. **Check that the adapter works.**
+   Navigate to the *Wallets* menu in the admin area.
+   If the Bitcoin *Adapter Status* reads *Responding*, then you're good to go.
 
-   `bitcoind -walletnotify='curl -s http://www.example.com/wallets/notify/BTC/wallet/%s >/dev/null' -blocknotify='curl -s http://www.example.com/wallets/notify/BTC/block/%s >/dev/null'`
+   **Note that for a new `bitcoind` installation, you might have to wait until the entire blockchain downloads first.**
+   This can take a few hours.
 
-   Check the paths to make sure they match the location of your WordPress installation.
-
-You should now be ready to use *Bitcoin and Altcoin Wallets*.
-On the *Wallets* menu, check the *Adapter Status* for *Bitcoin*. If all is well, it should read *Responding*.
 
 = Disclaimer =
 
@@ -229,6 +223,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 1.0.4 =
+* Recommends the configurations needed in your `bitcoin.conf`
+* Does not recommend command line arguments to `bitcoind` any more
+* Updated install instructions in `readme.txt`
+
 = 1.0.3 =
 * Fixed issue where deactivating any plugin would fail due to nonce error
 
@@ -249,7 +248,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-First release.
+1.0.4 is a patch release. It changes the way that the plugin recommends that you run bitcoind.
+The plugin now suggests lines that you can drop into your `~/.bitcoin/bitcoin.conf`.
+You can then run bitcoind without command-line parameters.
 
 == Donating ==
 
