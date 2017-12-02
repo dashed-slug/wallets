@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.8
-Stable tag: 2.5.3
+Tested up to: 4.8.1
+Stable tag: 2.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,6 +171,14 @@ By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that y
 
 == Frequently Asked Questions ==
 
+= Which coins are currently available? =
+
+The list of wallets that you can connect to directly is constantly growing.
+
+To check what’s currently available go to https://www.dashed-slug.net and check the menu under *Wallets* &rarr; *Coin Adapter Extensions* and see the available RPC adapters.
+
+Also, if you are OK with using a web wallet service, then you can install the [CoinPayments adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/). You then automatically get [all of the coins that platform supports](https://www.coinpayments.net/supported-coins/).
+
 = Is it secure? =
 
 The [Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/) plugin is only as secure as your WordPress installation. Regardless of whether you choose to install this plugin, you should have already taken steps to secure your WordPress installation. At a minimum you should do the following:
@@ -222,7 +230,7 @@ Unless your home internet connection has a static IP and you have opened the cor
 
 Check with your hosting plan for disk space and memory requirements against the requirements of the wallet you wish to run. For Bitcoin core, click [here](https://bitcoin.org/en/bitcoin-core/features/requirements).
 
-= How can I integrate it with my site? =
+= How can I integrate the plugin with my site? =
 
 Just insert the [shortcodes](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/wallet-shortcodes/) anywhere to create forms to let a logged in user:
 
@@ -320,6 +328,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.5.4 =
+- Fix: `do_move()` checks the balance of sender, not current user.
+- Fix: Menu item now shows balance(s) of current user, not total wallet balance(s).
+- Improve: Knockout.js assets are now local, not served from CDN.
+- Add: FAQ section about supported coins.
 
 = 2.5.3 =
 - Fix: Issues with frontend JavaScript code that would prevent popups from being displayed.
@@ -543,7 +557,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.5.3 fixes a few front-end bugs.
+Version 2.5.4 fixes a minor server-side bug.
 
 == Donating ==
 
