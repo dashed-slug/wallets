@@ -176,12 +176,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 			<p><?php esc_html_e( 'By using this free plugin you assume all responsibility for handling ' .
 			'the account balances for all your users. Under no circumstances is dashed-slug.net ' .
 			'or any of its affiliates responsible for any damages incurred by the use of this plugin. ' .
+			'Every effort has been made to harden the security of this plugin, ' .
+			'but its safe operation depends on your site being secure overall. ' .
 			'You, the administrator, must take all necessary precautions to secure your WordPress installation ' .
-			'before you connect it to any live wallets. You should at a minimum take the time to: ', 'wallets'); ?></p>
+			'before you connect it to any live wallets. ' .
+			'You are strongly recommended to take the following actions (at a minimum):', 'wallets'); ?></p>
 			<ol><li><a href="https://codex.wordpress.org/Hardening_WordPress" target="_blank"><?php
 			esc_html_e( 'educate yourself about hardening WordPress security', 'wallets' ); ?></a></li>
 			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank"><?php
-			esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li></ol></div><?php
+			esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li></ol><p><?php
+			esc_html_e( 'By continuing to use the Bitcoin and Altcoin Wallets plugin, ' .
+			'you agree that you have read and understood this disclaimer.', 'wallets' );
+			?></p></div><?php
 
 			?><div class="notice notice-info"><h2><?php
 			esc_html_e( 'Wallet plugin extensions', 'wallets' ); ?></h2><p><?php esc_html_e(
@@ -191,7 +197,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 				<li><?php esc_html_e( '"app extensions". App extensions are plugins that utilize the core API ' .
 								'to supply some user functionality. ', '/& @echo slug */' ); ?></li>
 			</ol>
-			<p><a href="<?php echo 'https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin'; ?>" target="_blank">
+			<p><a href="<?php echo 'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin'; ?>" target="_blank">
 				<?php esc_html_e( 'Visit the dashed-slug to see what\'s available', 'wallets' ); ?>
 			</a></p></div>
 

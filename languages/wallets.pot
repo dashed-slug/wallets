@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 18:39+0200\n"
+"POT-Creation-Date: 2017-12-02 18:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,62 +120,70 @@ msgid ""
 "By using this free plugin you assume all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
 "net or any of its affiliates responsible for any damages incurred by the use "
-"of this plugin. You, the administrator, must take all necessary precautions "
-"to secure your WordPress installation before you connect it to any live "
-"wallets. You should at a minimum take the time to: "
+"of this plugin. Every effort has been made to harden the security of this "
+"plugin, but its safe operation depends on your site being secure overall. "
+"You, the administrator, must take all necessary precautions to secure your "
+"WordPress installation before you connect it to any live wallets. You are "
+"strongly recommended to take the following actions (at a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:182
+#: src/includes/admin-menu.php:185
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:184
+#: src/includes/admin-menu.php:187
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:187
+#: src/includes/admin-menu.php:188
+msgid ""
+"By continuing to use the Bitcoin and Altcoin Wallets plugin, you agree that "
+"you have read and understood this disclaimer."
+msgstr ""
+
+#: src/includes/admin-menu.php:193
 msgid "Wallet plugin extensions"
 msgstr ""
 
-#: src/includes/admin-menu.php:188
+#: src/includes/admin-menu.php:194
 msgid ""
 "/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
 "functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:189
+#: src/includes/admin-menu.php:195
 msgid "You can install"
 msgstr ""
 
-#: src/includes/admin-menu.php:190
+#: src/includes/admin-menu.php:196
 msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:191
+#: src/includes/admin-menu.php:197
 msgid ""
 "\"app extensions\". App extensions are plugins that utilize the core API to "
 "supply some user functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:195
+#: src/includes/admin-menu.php:201
 msgid "Visit the dashed-slug to see what's available"
 msgstr ""
 
-#: src/includes/admin-menu.php:198
+#: src/includes/admin-menu.php:204
 msgid "Coin Adapters"
 msgstr ""
 
-#: src/includes/admin-menu.php:204
+#: src/includes/admin-menu.php:210
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/admin-menu.php:206
+#: src/includes/admin-menu.php:212
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Existing transactions will be skipped."
 msgstr ""
 
-#: src/includes/admin-menu.php:209
+#: src/includes/admin-menu.php:215
 msgid "Import"
 msgstr ""
 

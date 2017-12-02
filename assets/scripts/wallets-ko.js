@@ -63,7 +63,7 @@
 					},
 					error: xhrErrorHandler
 				});
-			}
+			};
 
 			self.getCoinsInfo = function() {
 				$.ajax({
@@ -93,7 +93,7 @@
 					},
 					error: xhrErrorHandler
 				});
-			}
+			};
 
 			self.getTransactions = function() {
 				var page = parseInt( self.currentPage() );
