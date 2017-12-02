@@ -1,0 +1,20 @@
+.dashed-slug-wallets {
+	padding: 1em;
+	border: 1px solid black;
+}
+
+.dashed-slug-wallets label {
+	margin-top: 1em;
+	display: inline-block;
+	width: 100%;
+}
+
+.dashed-slug-wallets label input,
+.dashed-slug-wallets label select {
+	display: inline-block;
+	width: 100%;
+}
+
+.dashed-slug-wallets.transactions table {
+	font-size: smaller;
+}
