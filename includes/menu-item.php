@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.5.1',
+				'2.5.2',
 				true
 			);
 		}
@@ -127,12 +127,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 		public function walker_nav_menu_start_el( $item_output, $item, $depth, $args ) {
 
 			if( 'balances' == $item->type ) {
-				$item_output = $args->before;
-				ob_start();
 
+				ob_start();
 				?><a href="#"><?php echo esc_html( $item->title ); ?></a>
-				<ul>
-					<?php	foreach ( Dashed_Slug_Wallets::get_instance()->get_coin_adapters() as $symbol => &$adapter ):
+				<ul class="sub-menu"><?php
+					$adapters = Dashed_Slug_Wallets::get_instance()->get_coin_adapters();
+					foreach ( $adapters as $symbol => &$adapter ):
 						try {
 							$balance = $adapter->get_balance();
 						} catch ( Exception $e ) {
@@ -140,16 +140,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 						}
 					?>
 					<li>
+						<?php echo $args->link_before; ?>
 						<a href="#">
+							<?php echo $args->before; ?>
 							<span class="wallets-coin-name"><?php echo $adapter->get_name(); ?></span>
 							<span class="wallets-balance"><?php printf( $adapter->get_sprintf(), $balance ); ?></span>
+							<?php echo $args->before; ?>
 						</a>
+						<?php echo $args->link_after; ?>
 					</li>
 				<?php endforeach; ?>
 				</ul><?php
+				$item_output = ob_get_clean();
 
-				$item_output .= ob_get_clean();
-				$item_output .= $args->after;
 			} // end if balances
 			return $item_output;
 		} // end function walker_nav_menu_start_el
