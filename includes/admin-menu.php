@@ -96,23 +96,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			</div>
 
 			<div class="card">
-				<h2><?php esc_html_e( 'Download cool plugin extensions:', 'wallets' ); ?></h2>
-
-				<p><?php esc_html_e( 'Bitcoin and Altcoin Wallets is a plugin that offers basic deposit-transfer-withdraw functionality. ', 'wallets' ); ?></p>
-
-				<p><?php esc_html_e( 'You can install', 'wallets' ); ?></p>
-				<ol>
-					<li><?php esc_html_e( '"coin adapters" to make the plugin talk with other cryptocurrencies. ', 'wallets' ); ?></li>
-					<li><?php esc_html_e( '"app extensions". App extensions are plugins that utilize the core API ' .
-									'to supply some user functionality. ', '/& @echo slug */' ); ?></li>
-				</ol>
-
-				<p><a href="<?php echo 'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin'; ?>" target="_blank">
-						<?php esc_html_e( 'Visit the dashed-slug to see what\'s available', 'wallets' ); ?>
-				</a></p>
-			</div>
-
-			<div class="card">
 				<h2><?php esc_html_e( 'Have your say!', 'wallets' ); ?></h2>
 
 				<ol>
@@ -136,10 +119,62 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<p><?php esc_html_e( 'Your support is greatly appreciated.', 'wallets' ); ?></p>
 			</div>
 
+			<div class="card">
+				<h2><?php esc_html_e( 'App extensions', 'wallets' ); ?></h2>
+
+				<p><?php esc_html_e( '"App extensions" are plugins that work on top of the Bitcoin and Altcoin Wallets plugin to provide new functionality to users.', 'wallets' ); ?></p>
+
+				<?php $this->showcase_plugin_extensions( DSWALLETS_PATH . '/assets/data/features.json' ); ?>
+
+			</div>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Coin adapters', 'wallets' ); ?></h2>
+
+				<p><?php esc_html_e( 'With "coin adapters" you can make the Bitcoin and Altcoin Wallets plugin work with other stand-alone and/or web wallets to add support for additional cryptocurrencies. ', 'wallets' ); ?></p>
+
+				<?php $this->showcase_plugin_extensions( DSWALLETS_PATH . '/assets/data/adapters.json' ); ?>
+
+			</div>
+
 			<div style="clear: left;"></div>
 			<?php
 		}
 
+		private function showcase_plugin_extensions( $extensions_data_file ) {
+			$extensions = json_decode( file_get_contents( $extensions_data_file ) ); ?>
+
+			<ul class="wallets-extension">
+
+			<?php foreach ( $extensions as $extension ):
+				$active = is_plugin_active( "{$extension->slug}/{$extension->slug}.php"); ?>
+				<li>
+					<?php if ( $active ): ?><strong><?php endif; ?>
+					<a
+						href="<?php echo esc_attr( $extension->homepage ); ?>?utm_source=dashedslug&utm_medium=plugin&utm_campaign=about">
+
+						<?php echo esc_html( $extension->name); ?></a>
+
+					<?php if ( $active ): ?></strong> (<?php esc_attr_e( 'Installed', 'wallets' ); ?>)<?php endif; ?>
+
+					<a
+						class="button"
+						style="float: right;"
+						href="<?php echo esc_attr( $extension->support ); ?>?utm_source=dashedslug&utm_medium=plugin&utm_campaign=about">
+
+						<?php echo esc_html( 'Support Forum' )?>
+					</a>
+
+					<p
+						class="description">
+
+						<?php echo esc_html( $extension->description ); ?>
+					</p>
+
+					<div style="clear: right;"></div>
+				</li>
+			<?php endforeach;
+		}
 
 	}
 	new Dashed_Slug_Wallets_Admin_Menu();

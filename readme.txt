@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,7 @@ this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wo
 
 Here are all the currently available premium app extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
 
+- [Author Payroll extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension/)
 - [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/)
 - [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
 - [Events Manager Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/)
@@ -183,7 +184,7 @@ Also, if you are OK with using a web wallet service, then you can install the [C
 
 = Is it secure? =
 
-The [Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/) plugin is only as secure as your WordPress installation. Regardless of whether you choose to install this plugin, you should have already taken steps to secure your WordPress installation. At a minimum you should do the following:
+The [Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/) plugin is only as secure as your WordPress installation. Regardless of whether you choose to install this plugin, you should have already taken steps to secure your WordPress installation. At a minimum you should do the following:
 
 - Install a security plugin such as [Wordfence](https://infinitewp.com/addons/wordfence/).
 - Read the Codex resources on [Hardening WordPress](https://codex.wordpress.org/Hardening_WordPress).
@@ -234,7 +235,7 @@ Check with your hosting plan for disk space and memory requirements against the 
 
 = How can I integrate the plugin with my site? =
 
-Just insert the [shortcodes](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/wallet-shortcodes/) anywhere to create forms to let a logged in user:
+Just insert the [shortcodes](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/wallet-shortcodes/) anywhere to create forms to let a logged in user:
 
 - **deposit funds:** `[wallets_deposit]`
 - **withdraw funds:** `[wallets_withdraw]`
@@ -262,24 +263,38 @@ If you wish to create forms with completely different markup, you can provide yo
 Use the `wallets_views_dir` filter to override the directory where the views are stored (the default is `wallets/includes/views`).
 Most people will not need to do this.
 
-Read the [shortcodes documentation](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/wallet-shortcodes/) for more details.
+Read the [shortcodes documentation](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/wallet-shortcodes/) for more details.
 
 = I want to do transactions from JavaScript. I don’t want to use the provided shortcodes and their associated forms. =
 
 The provided built-in forms talk to a JSON API that is available to logged in users.
 If you choose to build your own front-end UI, you can do your AJAX calls directly to the JSON API.
 
-Refer to the [JSON API documentation](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/json-api/) for details.
+Refer to the [JSON API documentation](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/json-api/) for details.
 
 = I want to do transactions from the PHP code of my theme or plugin. =
 
 You can use the PHP API directly.
 
-Refer to the [PHP API documentation](https://www.dashed-slug.net/bitcoin-and-altcoin-wallets-wordpress-plugin/php-api/) for details.
+Refer to the [PHP API documentation](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/php-api/) for details.
+
+= I want to replace an adapter with another one. =
+
+You can only have one coin adapter enabled per each coin. The plugin will warn you about this.
+
+Suppose you wish to replace the internal *Bitcoin core adapter* with the *block.io BTC adapter*. You would have to:
+
+1. Wait for pending deposits and withdrawals to execute. They should be in *'done'* state.
+2. Disable your original coin adapter.
+3. Delete the deposit addresses from your database with:
+
+	`DELETE FROM wp_wallets_adds WHERE symbol = 'BTC';`
+
+4. Activate and configure the new adapter.
 
 = Can you add XYZ coin for me? =
 
-Yes and no. I have received a large amount of requests from small coins and cannot cater for them all at the moment. I do try to implement some of the requests I receive.
+Yes and no. I have received a large amount of requests from small coins and cannot cater for them all. I do try to implement some of the requests I receive.
 
 If your coin's wallet has a standard RPC API that is a direct fork of Bitcoin core, then you should be able to modify the [Litecoin adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) to suite your needs. Feel free to republish it after modifying the code. There are some instructions on how to do this [here](https://www.dashed-slug.net/developers-coin-adapters-api/).
 
@@ -330,6 +345,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.7.1 =
+- Fix: Bug where wrong coin address was displayed in cold storage section.
+- Add: Cold storage section now links to wiki page.
+- Add: All extensions now listed in About section.
 
 = 2.7.0 =
 - Add: Cold storage section, allowing easy addition and withdrawal of funds to and from external wallets.
@@ -579,7 +599,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.7.0 introduces cold storage. Upgrade from 2.6.3 to try this new feature.
+Version 2.7.1 fixes a bug in cold storage deposit addresses.
 
 == Donating ==
 

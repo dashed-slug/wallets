@@ -1,0 +1,41 @@
+[
+	{
+		"name": "Author Payroll extension",
+		"description": "Pay your article authors with cryptocurrencies based on Google Analytics metrics.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/author-payroll-extension-support/",
+		"slug": "wallets-author-payroll"
+	},
+
+	{
+		"name": "Events Manager Cryptocurrency Payment Gateway",
+		"description": "Let logged in users pay for tickets in Events Manager Pro from their cryptocurrency wallet.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/",
+		"support": "https://www.dashed-slug.net/forums/forum/events-manager-cryptocurrency-payment-gateway-extension-support/",
+		"slug": "wallets-em"
+	},
+
+	{
+		"name": "Faucet Extension",
+		"description": "Reward your users for solving CAPTCHAs.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/",
+		"support": "https://www.dashed-slug.net/forums/forum/faucet-extension-support/",
+		"slug": "wallets-faucet"
+	},
+
+	{
+		"name": "Tip the Author",
+		"description": "Allows users with cryptocurrency wallets to tip content authors.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/",
+		"support": "https://www.dashed-slug.net/forums/forum/tip-author-extension-support/",
+		"slug": "wallets-tips"
+	},
+
+	{
+		"name": "WooCommerce Cryptocurrency Payment Gateway",
+		"description": "Let logged in users pay at WooCommerce checkout from their cryptocurrency wallet.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/",
+		"support": "https://www.dashed-slug.net/forums/forum/woocommerce-cryptocurrency-payment-gateway-extension-support/",
+		"slug": "wallets-woo"
+	}
+]

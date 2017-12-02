@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.7.0',
+				'2.7.1',
 				true
 			);
 		}
@@ -141,7 +141,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets: Transfer to and from cold storage', 'wallets' ); ?></h1>
 
-				<p><?php esc_html_e( 'You can remove part of your site\'s funds from the online wallet to mitigate risk in the event of a cyber-attack. ', 'wallets' ); ?></p>
+				<p><?php echo __( '<a href="https://en.bitcoin.it/wiki/Cold_storage" target="_blank">Cold storage</a> lets you remove part of your site\'s funds from the online wallet to mitigate risk in the event of a cyber-attack. ', 'wallets' ); ?></p>
 				<p><?php esc_html_e( 'Any funds you withdraw or deposit here will affect your total wallet balance but not any user balances. ', 'wallets' ); ?></p>
 
 				<div>
@@ -262,7 +262,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 					elseif ( 'deposit' == $cold_storage_tab ):
 
-					$deposit_address = Dashed_Slug_Wallets::get_option( "/* @echo slugus &/_cs_address_$symbol" ); ?>
+					$deposit_address = Dashed_Slug_Wallets::get_option( "/* @echo slugus &/_cs_address_$cold_storage_symbol" ); ?>
 
 					<div class="card" style="text-align:center;margin:10px auto;">
 						<h2><?php echo sprintf( __( 'Deposit %s from cold storage:', 'wallets' ), $adapter->get_name() ); ?></h2>

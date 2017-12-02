@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:12+0200\n"
+"POT-Creation-Date: 2017-12-02 19:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,44 +185,16 @@ msgid "Like the Facebook page to learn the latest news:"
 msgstr ""
 
 #: src/includes/admin-menu.php:99
-msgid "Download cool plugin extensions:"
-msgstr ""
-
-#: src/includes/admin-menu.php:101
-msgid ""
-"/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
-"functionality. "
-msgstr ""
-
-#: src/includes/admin-menu.php:103
-msgid "You can install"
-msgstr ""
-
-#: src/includes/admin-menu.php:105
-msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
-msgstr ""
-
-#: src/includes/admin-menu.php:106
-msgid ""
-"\"app extensions\". App extensions are plugins that utilize the core API to "
-"supply some user functionality. "
-msgstr ""
-
-#: src/includes/admin-menu.php:111
-msgid "Visit the dashed-slug to see what's available"
-msgstr ""
-
-#: src/includes/admin-menu.php:116
 msgid "Have your say!"
 msgstr ""
 
-#: src/includes/admin-menu.php:119
+#: src/includes/admin-menu.php:102
 msgid ""
 "Did you find this plugin useful? Leave a review on <a href=\"https://"
 "wordpress.org/support/plugin/wallets/reviews/\">wordpress.org</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:120
+#: src/includes/admin-menu.php:103
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a href=\"https://wordpress."
 "org/support/plugin/wallets\">wordpress.org support forum</a> for the main "
@@ -230,36 +202,61 @@ msgid ""
 "net</a> support forums for the extensions."
 msgstr ""
 
-#: src/includes/admin-menu.php:121
+#: src/includes/admin-menu.php:104
 msgid ""
 "Something else on your mind? <a href=\"https://dashed-slug.net/contact"
 "\">Contact me</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:126
+#: src/includes/admin-menu.php:109
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: src/includes/admin-menu.php:128
+#: src/includes/admin-menu.php:111
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: src/includes/admin-menu.php:131
+#: src/includes/admin-menu.php:114
 msgid ""
 "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: src/includes/admin-menu.php:132
+#: src/includes/admin-menu.php:115
 msgid ""
 "Donate a few shatoshi to the dashed-slug Bitcoin address: <a href="
 "\"bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-"
 "slug&message=donation\">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>."
 msgstr ""
 
-#: src/includes/admin-menu.php:136
+#: src/includes/admin-menu.php:119
 msgid "Your support is greatly appreciated."
+msgstr ""
+
+#: src/includes/admin-menu.php:123
+msgid "App extensions"
+msgstr ""
+
+#: src/includes/admin-menu.php:125
+msgid ""
+"\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
+"Wallets plugin to provide new functionality to users."
+msgstr ""
+
+#: src/includes/admin-menu.php:132
+msgid "Coin adapters"
+msgstr ""
+
+#: src/includes/admin-menu.php:134
+msgid ""
+"With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
+"work with other stand-alone and/or web wallets to add support for additional "
+"cryptocurrencies. "
+msgstr ""
+
+#: src/includes/admin-menu.php:158
+msgid "Installed"
 msgstr ""
 
 #: src/includes/caps.php:25
@@ -596,8 +593,9 @@ msgstr ""
 
 #: src/includes/cold-storage.php:144
 msgid ""
-"You can remove part of your site's funds from the online wallet to mitigate "
-"risk in the event of a cyber-attack. "
+"<a href=\"https://en.bitcoin.it/wiki/Cold_storage\" target=\"_blank\">Cold "
+"storage</a> lets you remove part of your site's funds from the online wallet "
+"to mitigate risk in the event of a cyber-attack. "
 msgstr ""
 
 #: src/includes/cold-storage.php:145
