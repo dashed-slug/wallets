@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.1
-Stable tag: 2.5.4
+Stable tag: 2.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -328,6 +328,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.6.0 =
+- Fix: Added back Knockout.js that was missing due to changes in 2.5.4 (oops!)
+- Add: Functions for pulling exchange rates are now in wallets core, available for all extensions.
 
 = 2.5.4 =
 - Fix: `do_move()` checks the balance of sender, not current user.
