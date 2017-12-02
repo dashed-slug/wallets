@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,7 +60,6 @@ Here are all the currently available extensions to the Bitcoin and Altcoin Walle
 = And here's a preview of what is to come: =
 
 - **[More payment gateways](https://en.wikipedia.org/wiki/Payment_gateway)** for spending balances on common e-commerce plugins.
-- A plugin that will let **users reward (tip) authors** for high-quality content.
 - Plugins that **[reward user engagement](https://en.wikipedia.org/wiki/Gamification)**.
 - An **[ad exchange](https://en.wikipedia.org/wiki/Ad_exchange)** plugin to enable administrators to sell ad spaces and
   to let advertisers bid for these ad spaces.
@@ -256,6 +255,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 2.2.1 =
+- Add: Deposit addresses now also shown as QR-Codes
+- Add: After import show both successful and unsuccessful transaction counts
+- Fix: Users now are not allowed to transfer funds to self
+- Fix: E-mail notifications withdrawals would show timestamps, now show human-readable date/time
 
 = 2.2.0 =
 - Change: Improved coin adapters API. All current adapters need update to the 2.2.0 API.

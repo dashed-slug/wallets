@@ -119,8 +119,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					} elseif ( 'get_users_info' == $action ) {
 
 						if (
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER )
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER )
 						) {
 							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 						}
@@ -131,7 +131,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$response['users'] = array();
 							foreach ( $users as $user ) {
-								if ( user_can( $user, Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) && $user->ID != $current_user_id ) {
+								if ( user_can( $user, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) && $user->ID != $current_user_id ) {
 									$response['users'][] = array(
 										'id' => $user->ID,
 										'name' => $user->user_login
@@ -144,7 +144,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'get_coins_info' == $action ) {
-						if ( ! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )  ) {
+						if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )  ) {
 							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 						}
 
@@ -178,6 +178,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->withdraw_fee_string = sprintf( $format, $adapter->get_withdraw_fee() );
 
 								$coin_info->deposit_address = $core->get_new_address( $symbol );
+								$coin_info->deposit_address_qrcode_uri = $adapter->get_uri_scheme() . ':' . $coin_info->deposit_address;
+
 
 								$response['coins'][ $symbol ] = $coin_info;
 
@@ -189,8 +191,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 					} elseif ( 'get_transactions' == $action ) {
 						if (
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::LIST_WALLET_TRANSACTIONS )
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS )
 						) {
 							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 						}
@@ -216,8 +218,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 					} elseif ( 'do_withdraw' == $action ) {
 						if (
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
 						) {
 							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 						}
@@ -244,8 +246,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					} elseif ( 'do_move' == $action ) {
 
 						if (
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
-							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER )
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER )
 						) {
 							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 						}

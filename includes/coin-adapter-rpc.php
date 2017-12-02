@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || die( '-1' );
 
 if ( ! class_exists( 'Bitcoin' ) ) {
-	include_once ( DSWALLETS_PATH . '/EasyBitcoin-PHP/easybitcoin.php' );
+	include_once ( DSWALLETS_PATH . '/includes/third-party/easybitcoin.php' );
 }
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {

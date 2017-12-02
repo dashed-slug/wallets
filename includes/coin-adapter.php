@@ -338,6 +338,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 */
 		public abstract function get_name();
 
+		/**
+		 * BIP0020-like URI scheme prefix.
+		 *
+		 * e.g. for Bitcoin, this would be "bitcoin". Override this as needed.
+		 *
+		 * @see https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki
+		 * @return string The string to be used as a RFC-3986-like scheme in a BIP0020 URI.
+		 */
+		public function get_uri_scheme() {
+			return strtolower( $this->get_name() );
+		}
+
 		/** Settings URL in admin menu.
 		 *
 		 * Override this to provide your own url if needed. Return null if there are no settings screens.

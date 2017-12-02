@@ -7,8 +7,8 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
-	class Dashed_Slug_Wallets_Admin_Menu_Capabilities {
+if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
+	class Dashed_Slug_Wallets_Capabilities {
 
 		const MANAGE_WALLETS = 'manage_wallets';
 		const HAS_WALLETS = 'has_wallets';
@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'2.2.0'
+				'2.2.1'
 			);
 		}
 
@@ -197,8 +197,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Capabilities' ) ) {
 
 			<?php
 		} // end function wallets_caps_section_cb
-	} // end class Dashed_Slug_Wallets_Admin_Menu_Capabilities
+	} // end class Dashed_Slug_Wallets_Capabilities
 
- 	new Dashed_Slug_Wallets_Admin_Menu_Capabilities();
+	new Dashed_Slug_Wallets_Capabilities();
 }
 

@@ -59,7 +59,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 					wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 				}
 
-
 				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
 				if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -77,8 +76,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 					if ( false !== $result ) {
 						$notices->success(
 							sprintf(
-								__( '<code>%d</code> transactions from <code>%s</code> imported successfully', 'wallets' ),
-								$result, $moved_file_name ) );
+								__( '<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</code> were imported successfully.', 'wallets' ),
+								$result['total_rows_affected'], $result['total_rows'], basename( $moved_file_name ) ) );
 					}
 
 				} else {
@@ -92,7 +91,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				// Finally delete the uploaded .csv file
 				unlink( $moved_file_name );
 			}
-
 		}
 
 		public function admin_menu() {
@@ -176,8 +174,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				</ol><p><a href="<?php echo 'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin'; ?>" target="_blank">
 					<?php esc_html_e( 'Visit the dashed-slug to see what\'s available', 'wallets' ); ?>
 				</a></p></div><?php
-
-
 		}
 
 		private function csv_export( $symbols ) {
@@ -218,8 +214,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 		private function csv_import( $filename ) {
 			try {
-				$rows_read = 0;
-				$rows_written = 0;
+				$total_rows = 0;
+				$total_rows_affected = 0;
 
 				// see http://php.net/manual/en/function.fgetcsv.php
 				if ( version_compare( PHP_VERSION, '5.1.0' ) >= 0 ) {
@@ -236,7 +232,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 					while (( $data = fgetcsv( $fh, $len )) !== false ) {
 
-						$rows_read++;
+						$total_rows++;
 						$rows_affected = $wpdb->query( $wpdb->prepare(
 							"
 								INSERT INTO
@@ -260,16 +256,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 						) );
 
 						if ( false !== $rows_affected ) {
-							$rows_written += $rows_affected;
+							$total_rows_affected += $rows_affected;
 						}
 					}
-					return $rows_written;
+					return array(
+						'total_rows' => $total_rows,
+						'total_rows_affected' => $total_rows_affected,
+					);
 				}
 			} catch ( Exception $e ) {
 				fclose( $fh );
 				throw $e;
 			}
 			fclose( $fh );
+			return false;
 		} // end function csv_import()
 	}
 	new Dashed_Slug_Wallets_Admin_Menu();

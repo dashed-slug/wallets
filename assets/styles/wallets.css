@@ -18,3 +18,7 @@
 .dashed-slug-wallets.transactions table {
 	font-size: smaller;
 }
+
+.dashed-slug-wallets.deposit .qrcode {
+	text-align: center;
+}

@@ -3,8 +3,8 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Email' ) ) {
-	class Dashed_Slug_Wallets_Admin_Menu_Email {
+if ( ! class_exists( 'Dashed_Slug_Wallets_Email' ) ) {
+	class Dashed_Slug_Wallets_Email {
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
@@ -303,7 +303,7 @@ EMAIL
 
 
 		public function wallets_email_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -473,5 +473,5 @@ EMAIL
 
 	}
 
-	new Dashed_Slug_Wallets_Admin_Menu_Email();
+	new Dashed_Slug_Wallets_Email();
 }

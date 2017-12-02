@@ -89,7 +89,8 @@
 								balance_string: ko.observable( response.coins[ symbol ].balance_string ),
 								move_fee_string: ko.observable( response.coins[ symbol ].move_fee_string ),
 								withdraw_fee_string: ko.observable( response.coins[ symbol ].withdraw_fee_string ),
-								depositAddress: ko.observable( response.coins[ symbol ].deposit_address )
+								depositAddress: ko.observable( response.coins[ symbol ].deposit_address ),
+								depositAddressQRCodeURI: ko.observable( response.coins[ symbol ].deposit_address_qrcode_uri )
 							};
 						}
 						if ( self.wallets.length ) {
@@ -136,6 +137,14 @@
 			self.selectedCoin.subscribe( self.getTransactions );
 			self.currentPage.subscribe( self.getTransactions );
 			self.rowsPerPage.subscribe( self.getTransactions );
+
+			if ( 'function' === typeof ( jQuery.fn.qrcode ) ) {
+				self.selectedCoin.subscribe( function() {
+					$( '.dashed-slug-wallets.deposit .qrcode' ).empty().qrcode( {
+						text: self.wallets[ self.selectedCoin() ].depositAddressQRCodeURI()
+					} );
+				} );
+			}
 
 			self.doWithdraw = function( form ) {
 				var address = self.withdrawAddress(),

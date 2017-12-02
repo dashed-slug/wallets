@@ -12,11 +12,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 	class Dashed_Slug_Wallets_Shortcodes {
 
 		private $shortcodes_caps = array(
-			'wallets_balance' => Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS,
-			'wallets_transactions' => Dashed_Slug_Wallets_Admin_Menu_Capabilities::LIST_WALLET_TRANSACTIONS,
-			'wallets_deposit' => Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS,
-			'wallets_withdraw' => Dashed_Slug_Wallets_Admin_Menu_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
-			'wallets_move' => Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER
+			'wallets_balance' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_transactions' => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
+			'wallets_deposit' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_withdraw' => Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
+			'wallets_move' => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER
 		);
 
 		public function __construct() {
@@ -32,7 +32,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 
 			if ( ! (
 				isset( $this->shortcodes_caps[ $tag ] ) &&
-				current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
+				current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
 				current_user_can( $this->shortcodes_caps[ $tag ] )
 			) ) {
 				// user not allowed to view this shortcode

@@ -37,6 +37,9 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option( "{$option_slug}-fees-withdraw" );
 	delete_option( "{$option_slug}-other-minconf" );
 
+	// remove qr code settings
+	delete_option( 'wallets_qrcode_enabled' );
+
 	// remove user roles
 	$user_roles = array_keys( get_editable_roles() );
 	$user_roles[] = 'administrator';

@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -72,269 +72,44 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:25
-msgid ""
-"Can configure all settings related to wallets. This is for administrators "
-"only."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:27
-msgid "Can have balances and use the wallets API."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:29
-msgid "Can view a list of past transactions."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:31
-msgid "Can send cryptocurrencies to other users on this site."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:33
-msgid "Can withdraw cryptocurrencies from the site to an external address."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:90 src/includes/admin-menu.php:39
-#: src/includes/admin-menu.php:59 src/includes/json-api.php:228
-#: src/includes/json-api.php:256
-msgid "Possible request forgery detected. Please reload and try again."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:95 src/includes/admin-menu-caps.php:143
-#: src/includes/admin-menu-cron.php:170 src/includes/admin-menu-email.php:307
 #: src/includes/admin-menu.php:33 src/includes/admin-menu.php:53
-#: src/includes/admin-menu.php:125 src/includes/coin-adapter-bitcoin.php:54
+#: src/includes/admin-menu.php:123 src/includes/caps.php:95
+#: src/includes/caps.php:143 src/includes/coin-adapter-bitcoin.php:54
 #: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
 #: src/includes/coin-adapter.php:156 src/includes/coin-adapter.php:165
 #: src/includes/coin-adapter.php:185 src/includes/coin-adapter.php:238
+#: src/includes/cron.php:170 src/includes/email.php:307
+#: src/includes/qrcode.php:60
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:108
-msgid "Capabilities matrix"
+#: src/includes/admin-menu.php:39 src/includes/admin-menu.php:59
+#: src/includes/caps.php:90 src/includes/json-api.php:230
+#: src/includes/json-api.php:258
+msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: src/includes/admin-menu-caps.php:132 src/includes/admin-menu-caps.php:133
-msgid "Capabilities"
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:146
-msgid "/* @echo name */ Capabilities"
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:148
-msgid ""
-"Users in WordPress are assigned to roles, and these roles have capabilities. "
-"Here you can set which wallets-related capabilities you want each user role "
-"to have."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:152
-msgid "Read about Roles and Capabilities in the Codex."
-msgstr ""
-
-#: src/includes/admin-menu-caps.php:165
-msgid "Use the matrix below to assign capabilities to roles."
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:48
-msgid "Every five minutes"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:53
-msgid "Every ten minutes"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:58
-msgid "Every twenty minutes"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:63
-msgid "Every half an hour"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:68
-msgid "Every one hour"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:73
-msgid "Every four hours"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:133
-msgid "Perioric checks"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:140
-msgid "Double-check for missing deposits and addresses"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:173
-msgid "/* @echo name */ cron settings"
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:174
-msgid "Cron settings."
-msgstr ""
-
-#: src/includes/admin-menu-cron.php:184
-msgid ""
-"Deposit addresses and deposits can be overlooked if their callback "
-"notification mechanism is not correctly setup, or if they do not have a "
-"callback mechanism, or if something else goes wrong. Adapters can offer a "
-"cron() function that does periodic checks for these things. Adapters can "
-"discover overlooked addresses and transactions and notify the plugin to "
-"record them. For some adapters this will be a failsafe-check, and for other "
-"adapters it will be the main mechanism of polling for deposits. Adapters can "
-"also opt to not offer a cron() method."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:23
-msgid "You have performed a withdrawal. - ###COMMENT###"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:39
-msgid "You have sent funds to another user. - ###COMMENT###"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:56
-msgid "You have received funds from another user. - ###COMMENT### "
-msgstr ""
-
-#: src/includes/admin-menu-email.php:72
-msgid "You have performed a ###SYMBOL### deposit."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:91
-msgid "E-mail notification settings for withdrawals"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:98
-msgid "Notify users about withdrawals"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:112 src/includes/admin-menu-email.php:163
-#: src/includes/admin-menu-email.php:213 src/includes/admin-menu-email.php:264
-msgid "Template for e-mail subject line:"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:126 src/includes/admin-menu-email.php:177
-#: src/includes/admin-menu-email.php:227 src/includes/admin-menu-email.php:278
-msgid "Template for e-mail message body:"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:142
-msgid "E-mail notification settings for deposits"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:149
-msgid "Notify users about depositals"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:192
-msgid "E-mail notification settings for outgoing fund transfers"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:199
-msgid "Notify users about outgoing fund transfers"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:243
-msgid "E-mail notification settings for incoming fund transfers"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:250
-msgid "Notify users about incoming fund transfers"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:310
-msgid "/* @echo name */ E-mail notification settings"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:312
-msgid ""
-"Users are notified by e-mail when they perform deposits or withdrawals and "
-"when they send or receive funds. Here you can set template messages for "
-"these emails."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:316
-msgid "The following variables are substituted:"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:319
-msgid "Account username"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:321
-msgid "Username of other account (for fund transfers between users)"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:323
-msgid ""
-"Transaction ID. ( This is normally the same as the txid on the blockchain. "
-"Internal transactions are also assigned a unique ID. )"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:325
-msgid "The amount transacted."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:327
-msgid "For withdrawals and transfers, the fees paid to the site."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:329
-msgid "The coin symbol for this transaction (e.g. \"BTC\" for Bitcoin)"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:331
-msgid ""
-"The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:"
-"ssZZZZ"
-msgstr ""
-
-#: src/includes/admin-menu-email.php:333
-msgid "For internal fund transfers, the comment attached to the transaction."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:335
-msgid "For deposits and withdrawals, the external address."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:337
-msgid ""
-"A space separated list of tags, slugs, etc that further describe the type of "
-"transaction."
-msgstr ""
-
-#: src/includes/admin-menu-email.php:367
-msgid ""
-"Here you can choose whether users receive e-mail notifications on this "
-"event. You can also edit the template used to produce the email subject line "
-"and text body. You can use the available variable substitutions in both the "
-"subject line and the message body."
-msgstr ""
-
-#: src/includes/admin-menu.php:80
+#: src/includes/admin-menu.php:79
 #, php-format
-msgid "<code>%d</code> transactions from <code>%s</code> imported successfully"
+msgid ""
+"<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
+"code> were imported successfully."
 msgstr ""
 
-#: src/includes/admin-menu.php:88
+#: src/includes/admin-menu.php:87
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: src/includes/admin-menu.php:103 src/includes/admin-menu.php:113
+#: src/includes/admin-menu.php:101 src/includes/admin-menu.php:111
 msgid "Wallets"
 msgstr ""
 
-#: src/includes/admin-menu.php:133
+#: src/includes/admin-menu.php:131
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: src/includes/admin-menu.php:135
+#: src/includes/admin-menu.php:133
 msgid ""
 "By using this free plugin you accept all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
@@ -347,74 +122,123 @@ msgid ""
 "a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:144
+#: src/includes/admin-menu.php:142
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:146
+#: src/includes/admin-menu.php:144
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
 msgstr ""
 
-#: src/includes/admin-menu.php:147
+#: src/includes/admin-menu.php:145
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:148
+#: src/includes/admin-menu.php:146
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: src/includes/admin-menu.php:150
+#: src/includes/admin-menu.php:148
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate "
 "that you have understood and agreed to this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:154
+#: src/includes/admin-menu.php:152
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:160
+#: src/includes/admin-menu.php:158
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/admin-menu.php:162
+#: src/includes/admin-menu.php:160
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Existing transactions will be skipped."
 msgstr ""
 
-#: src/includes/admin-menu.php:165
+#: src/includes/admin-menu.php:163
 msgid "Import"
 msgstr ""
 
-#: src/includes/admin-menu.php:170
+#: src/includes/admin-menu.php:168
 msgid "Wallet plugin extensions"
 msgstr ""
 
-#: src/includes/admin-menu.php:171
+#: src/includes/admin-menu.php:169
 msgid ""
 "/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
 "functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:172
+#: src/includes/admin-menu.php:170
 msgid "You can install"
 msgstr ""
 
-#: src/includes/admin-menu.php:173
+#: src/includes/admin-menu.php:171
 msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:174
+#: src/includes/admin-menu.php:172
 msgid ""
 "\"app extensions\". App extensions are plugins that utilize the core API to "
 "supply some user functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:177
+#: src/includes/admin-menu.php:175
 msgid "Visit the dashed-slug to see what's available"
+msgstr ""
+
+#: src/includes/caps.php:25
+msgid ""
+"Can configure all settings related to wallets. This is for administrators "
+"only."
+msgstr ""
+
+#: src/includes/caps.php:27
+msgid "Can have balances and use the wallets API."
+msgstr ""
+
+#: src/includes/caps.php:29
+msgid "Can view a list of past transactions."
+msgstr ""
+
+#: src/includes/caps.php:31
+msgid "Can send cryptocurrencies to other users on this site."
+msgstr ""
+
+#: src/includes/caps.php:33
+msgid "Can withdraw cryptocurrencies from the site to an external address."
+msgstr ""
+
+#: src/includes/caps.php:108
+msgid "Capabilities matrix"
+msgstr ""
+
+#: src/includes/caps.php:132 src/includes/caps.php:133
+msgid "Capabilities"
+msgstr ""
+
+#: src/includes/caps.php:146
+msgid "/* @echo name */ Capabilities"
+msgstr ""
+
+#: src/includes/caps.php:148
+msgid ""
+"Users in WordPress are assigned to roles, and these roles have capabilities. "
+"Here you can set which wallets-related capabilities you want each user role "
+"to have."
+msgstr ""
+
+#: src/includes/caps.php:152
+msgid "Read about Roles and Capabilities in the Codex."
+msgstr ""
+
+#: src/includes/caps.php:165
+msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
 #: src/includes/coin-adapter-bitcoin.php:57 src/includes/coin-adapter.php:168
@@ -593,6 +417,185 @@ msgstr ""
 msgid "These are the settings for this %s adapter"
 msgstr ""
 
+#: src/includes/cron.php:48
+msgid "Every five minutes"
+msgstr ""
+
+#: src/includes/cron.php:53
+msgid "Every ten minutes"
+msgstr ""
+
+#: src/includes/cron.php:58
+msgid "Every twenty minutes"
+msgstr ""
+
+#: src/includes/cron.php:63
+msgid "Every half an hour"
+msgstr ""
+
+#: src/includes/cron.php:68
+msgid "Every one hour"
+msgstr ""
+
+#: src/includes/cron.php:73
+msgid "Every four hours"
+msgstr ""
+
+#: src/includes/cron.php:133
+msgid "Perioric checks"
+msgstr ""
+
+#: src/includes/cron.php:140
+msgid "Double-check for missing deposits and addresses"
+msgstr ""
+
+#: src/includes/cron.php:173
+msgid "/* @echo name */ cron settings"
+msgstr ""
+
+#: src/includes/cron.php:174
+msgid "Cron settings."
+msgstr ""
+
+#: src/includes/cron.php:184
+msgid ""
+"Deposit addresses and deposits can be overlooked if their callback "
+"notification mechanism is not correctly setup, or if they do not have a "
+"callback mechanism, or if something else goes wrong. Adapters can offer a "
+"cron() function that does periodic checks for these things. Adapters can "
+"discover overlooked addresses and transactions and notify the plugin to "
+"record them. For some adapters this will be a failsafe-check, and for other "
+"adapters it will be the main mechanism of polling for deposits. Adapters can "
+"also opt to not offer a cron() method."
+msgstr ""
+
+#: src/includes/email.php:23
+msgid "You have performed a withdrawal. - ###COMMENT###"
+msgstr ""
+
+#: src/includes/email.php:39
+msgid "You have sent funds to another user. - ###COMMENT###"
+msgstr ""
+
+#: src/includes/email.php:56
+msgid "You have received funds from another user. - ###COMMENT### "
+msgstr ""
+
+#: src/includes/email.php:72
+msgid "You have performed a ###SYMBOL### deposit."
+msgstr ""
+
+#: src/includes/email.php:91
+msgid "E-mail notification settings for withdrawals"
+msgstr ""
+
+#: src/includes/email.php:98
+msgid "Notify users about withdrawals"
+msgstr ""
+
+#: src/includes/email.php:112 src/includes/email.php:163
+#: src/includes/email.php:213 src/includes/email.php:264
+msgid "Template for e-mail subject line:"
+msgstr ""
+
+#: src/includes/email.php:126 src/includes/email.php:177
+#: src/includes/email.php:227 src/includes/email.php:278
+msgid "Template for e-mail message body:"
+msgstr ""
+
+#: src/includes/email.php:142
+msgid "E-mail notification settings for deposits"
+msgstr ""
+
+#: src/includes/email.php:149
+msgid "Notify users about depositals"
+msgstr ""
+
+#: src/includes/email.php:192
+msgid "E-mail notification settings for outgoing fund transfers"
+msgstr ""
+
+#: src/includes/email.php:199
+msgid "Notify users about outgoing fund transfers"
+msgstr ""
+
+#: src/includes/email.php:243
+msgid "E-mail notification settings for incoming fund transfers"
+msgstr ""
+
+#: src/includes/email.php:250
+msgid "Notify users about incoming fund transfers"
+msgstr ""
+
+#: src/includes/email.php:310
+msgid "/* @echo name */ E-mail notification settings"
+msgstr ""
+
+#: src/includes/email.php:312
+msgid ""
+"Users are notified by e-mail when they perform deposits or withdrawals and "
+"when they send or receive funds. Here you can set template messages for "
+"these emails."
+msgstr ""
+
+#: src/includes/email.php:316
+msgid "The following variables are substituted:"
+msgstr ""
+
+#: src/includes/email.php:319
+msgid "Account username"
+msgstr ""
+
+#: src/includes/email.php:321
+msgid "Username of other account (for fund transfers between users)"
+msgstr ""
+
+#: src/includes/email.php:323
+msgid ""
+"Transaction ID. ( This is normally the same as the txid on the blockchain. "
+"Internal transactions are also assigned a unique ID. )"
+msgstr ""
+
+#: src/includes/email.php:325
+msgid "The amount transacted."
+msgstr ""
+
+#: src/includes/email.php:327
+msgid "For withdrawals and transfers, the fees paid to the site."
+msgstr ""
+
+#: src/includes/email.php:329
+msgid "The coin symbol for this transaction (e.g. \"BTC\" for Bitcoin)"
+msgstr ""
+
+#: src/includes/email.php:331
+msgid ""
+"The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:"
+"ssZZZZ"
+msgstr ""
+
+#: src/includes/email.php:333
+msgid "For internal fund transfers, the comment attached to the transaction."
+msgstr ""
+
+#: src/includes/email.php:335
+msgid "For deposits and withdrawals, the external address."
+msgstr ""
+
+#: src/includes/email.php:337
+msgid ""
+"A space separated list of tags, slugs, etc that further describe the type of "
+"transaction."
+msgstr ""
+
+#: src/includes/email.php:367
+msgid ""
+"Here you can choose whether users receive e-mail notifications on this "
+"event. You can also edit the template used to produce the email subject line "
+"and text body. You can use the available variable substitutions in both the "
+"subject line and the message body."
+msgstr ""
+
 #: src/includes/json-api.php:15
 msgid ""
 "You do not seem to be using SSL/TLS on this site. Requests to this plugin's "
@@ -609,11 +612,11 @@ msgid "Must be logged in"
 msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
-#: src/includes/json-api.php:195 src/includes/json-api.php:222
-#: src/includes/json-api.php:250 src/includes/wallets-core.php:346
+#: src/includes/json-api.php:197 src/includes/json-api.php:224
+#: src/includes/json-api.php:252 src/includes/wallets-core.php:346
 #: src/includes/wallets-core.php:383 src/includes/wallets-core.php:433
 #: src/includes/wallets-core.php:487 src/includes/wallets-core.php:551
-#: src/includes/wallets-core.php:635 src/includes/wallets-core.php:751
+#: src/includes/wallets-core.php:635 src/includes/wallets-core.php:755
 msgid "Not allowed"
 msgstr ""
 
@@ -621,24 +624,48 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: src/includes/json-api.php:213
+#: src/includes/json-api.php:215
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: src/includes/json-api.php:240
+#: src/includes/json-api.php:242
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: src/includes/json-api.php:268
+#: src/includes/json-api.php:270
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: src/includes/json-api.php:272
+#: src/includes/json-api.php:274
 #, php-format
 msgid "Unknown action %s specified"
+msgstr ""
+
+#: src/includes/qrcode.php:24
+msgid "QR Code display settings"
+msgstr ""
+
+#: src/includes/qrcode.php:31
+msgid "Enable QR Codes"
+msgstr ""
+
+#: src/includes/qrcode.php:63
+msgid "/* @echo name */ QR Code settings"
+msgstr ""
+
+#: src/includes/qrcode.php:65
+msgid "The [wallets_deposit] shortcode displays deposit addresses."
+msgstr ""
+
+#: src/includes/qrcode.php:67
+msgid "The word \"QR Code\" is registered trademark of DENSO WAVE INCORPORATED"
+msgstr ""
+
+#: src/includes/qrcode.php:83
+msgid "Here you can control whether addresses are displayed as QR Codes."
 msgstr ""
 
 #: src/includes/sidebar-widgets.php:33
@@ -800,7 +827,7 @@ msgstr ""
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:576 src/includes/wallets-core.php:660
+#: src/includes/wallets-core.php:576 src/includes/wallets-core.php:664
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
@@ -809,6 +836,10 @@ msgstr ""
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/wallets-core.php:654
+#: src/includes/wallets-core.php:639
+msgid "Cannot send funds to self"
+msgstr ""
+
+#: src/includes/wallets-core.php:658
 msgid "Cannot move negative amount"
 msgstr ""

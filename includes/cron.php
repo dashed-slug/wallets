@@ -3,8 +3,8 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Cron' ) ) {
-	class Dashed_Slug_Wallets_Admin_Menu_Cron {
+if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
+	class Dashed_Slug_Wallets_Cron {
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
@@ -208,6 +208,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu_Cron' ) ) {
 			?></select><?php
 		}
 	}
-	new Dashed_Slug_Wallets_Admin_Menu_Cron();
+	new Dashed_Slug_Wallets_Cron();
 }
 

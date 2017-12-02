@@ -159,7 +159,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'2.2.0'
+				'2.2.1'
 			);
 		}
 
@@ -341,7 +341,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 */
 		public function get_coin_adapters( $symbol = null, $check_capabilities = false ) {
 			if ( $check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 			)  {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
@@ -378,7 +378,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			if (
 				$check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 			) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
@@ -428,7 +428,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public function get_balance( $symbol, $minconf = null, $check_capabilities = false ) {
 			if (
 				$check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 			 ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
@@ -481,8 +481,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 public function get_transactions( $symbol, $count = 10, $from = 0, $minconf = null, $check_capabilities = false ) {
 			if (
 					$check_capabilities &&
-					! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
-					current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::LIST_WALLET_TRANSACTIONS ) )
+					! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
+					current_user_can( Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS ) )
 			) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 			}
@@ -545,8 +545,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '', $check_capabilities = false ) {
 			if (
 				$check_capabilities &&
-				! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
-				current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
+				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
+				current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
 			) ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 			}
@@ -596,7 +596,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$txrow->symbol = $symbol;
 				$txrow->amount = -floatval( $amount_plus_fee );
 				$txrow->fee = $fee;
-				$txrow->created_time = time();
+				$txrow->created_time = $current_time_gmt;
 				$txrow->updated_time = $txrow->created_time;
 				$txrow->comment = $comment;
 
@@ -629,10 +629,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '' ) {
 			if (
 				$check_capabilities &&
-				! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
-				current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER ) )
+				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
+				current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER ) )
 			) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+			}
+
+			if ( $toaccount == get_current_user_id() ) {
+				throw new Exception( __( 'Cannot send funds to self', 'wallets' ), self::ERR_DO_MOVE );
 			}
 
 			$adapter = $this->get_coin_adapters( $symbol );
@@ -746,7 +750,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 public function get_new_address( $symbol, $check_capabilities = false ) {
 			if (
 				$check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 			) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
