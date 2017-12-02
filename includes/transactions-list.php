@@ -157,8 +157,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			case 'symbol':
 			case 'comment':
 			case 'tags':
-			case 'created_time':
 			case 'status':
+			case 'created_time':
 				return esc_html( $item[ $column_name ] );
 
 			case 'admin_confirm':
@@ -198,13 +198,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				return 'move' == $item['category'] ? '' : esc_html( $item[ 'confirmations' ] );
 
 			case 'retries':
-				if ( 'withdraw' != $item['category'] ) {
-					return '';
-				}
-				if ( 'unconfirmed' == $item['status'] || 'pending' == $item['status'] ) {
-					return intval( $item['retries'] );
-				}
-				return '';
+				return 'deposit' == $item['category'] ? '' : esc_html( $item[ $column_name ] );
 
 			default:
 				return '';
@@ -220,6 +214,49 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="adaper[]" value="%s" />', $item['symbol'] );
+	}
+
+	public function column_status( $item ) {
+		$actions = array();
+		if ( 'move' == $item['category'] ) {
+			if ( 'cancelled' != $item['status'] ) {
+				$actions['cancel_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					add_query_arg(
+						array(
+							'page' => 'wallets-menu-transactions',
+							'action' => 'cancel_tx',
+							'tx_id' => $item['id'],
+							'paged' => $this->get_pagenum(),
+							'order' => $this->order,
+							'orderby' => $this->orderby,
+							'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] )
+						),
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						),
+					__( 'Transaction will be CANCELLED.', 'wallets' ),
+					__( '&#x1F5D9; Cancel', 'wallets' )
+				);
+			} else {
+				$actions['retry_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					add_query_arg(
+						array(
+							'page' => 'wallets-menu-transactions',
+							'action' => 'retry_tx',
+							'tx_id' => $item['id'],
+							'paged' => $this->get_pagenum(),
+							'order' => $this->order,
+							'orderby' => $this->orderby,
+							'_wpnonce' => wp_create_nonce( 'wallets-retry-tx-' . $item['id'] )
+						),
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						),
+					__( 'Transaction will be RETRIED.', 'wallets' ),
+					__( '&#8635; Retry', 'wallets' )
+				);
+
+			}
+		}
+		return $item['status'] . '<br />' . $this->row_actions( $actions, true );
 	}
 
 	public function column_admin_confirm( $item ) {
@@ -328,29 +365,4 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	}
 
-	public function column_retries( $item ) {
-
-		$actions = array();
-		if ( 'done' != $item['status'] && 'deposit' != 'category' ) {
-			$actions['reset_retries'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
-				add_query_arg(
-					array(
-						'page' => 'wallets-menu-transactions',
-						'action' => 'reset_retries',
-						'tx_id' => $item['id'],
-						'paged' => $this->get_pagenum(),
-						'order' => $this->order,
-						'orderby' => $this->orderby,
-						'_wpnonce' => wp_create_nonce( 'wallets-reset-retries-' . $item['id'] )
-					),
-					call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
-				),
-				__( 'Reset the number of retries for this transaction', 'wallets' ),
-				__( '&#8635; Reset retries', 'wallets' )
-			);
-		}
-
-		return sprintf( '%d %s', $item['retries'], $this->row_actions( $actions, true ) );
-
-	}
 }

@@ -30,7 +30,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_Bitcoin' ) ) {
 			$block_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/block/%s' );
 			$wp_ip = self::server_ip();
 			$user = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
+			$password = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-password" );
 			$port = intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) );
+
+			$salt = bin2hex( random_bytes( 16 ) );
+			$result = hash_hmac( 'sha256', $password, $salt );
+			$salted_pass = $user . ':' . $salt . '$' . $result;
 
 			return <<<CFG
 server=1
@@ -39,8 +44,7 @@ rpcallowip=$wp_ip
 rpcport=$port
 walletnotify=curl -s $wallet_url >/dev/null
 blocknotify=curl -s $block_url >/dev/null
-rpcuser=$user
-rpcpassword=ENTER_SECRET_RPC_PASSWORD_HERE
+rpcauth=$salted_pass
 CFG;
 		}
 

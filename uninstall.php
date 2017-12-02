@@ -75,6 +75,12 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	//remove exchange rate providers settings
 	wallets_delete_option( 'wallets_rates_provider' );
 	wallets_delete_option( 'wallets_rates_cache_expiry' );
+	wallets_delete_option( 'wallets_rates' );
+	wallets_delete_option( 'wallets_rates_cryptos' );
+	wallets_delete_option( 'wallets_rates_fiats' );
+	delete_transient( 'wallets_rates' );
+	delete_transient( 'wallets_rates_cryptos' );
+	delete_transient( 'wallets_rates_fiats' );
 
 	// remove bitcoin builtin adapter settings
 	$option_slug = 'wallets-bitcoin-core-node-settings';

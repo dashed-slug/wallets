@@ -3,11 +3,11 @@
 # This file is distributed under the same license as the Bitcoin_and_Altcoin_Wallets package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: src/includes/rates.php:99
+#: src/includes/rates.php:193
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.4\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -70,26 +70,26 @@ msgstr ""
 
 #: src/includes/adapters-list.php:90 src/includes/adapters-list.php:124
 #: src/includes/admin-menu.php:59 src/includes/caps.php:95
-#: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:54
+#: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:58
 #: src/includes/coin-adapter-json.php:75 src/includes/coin-adapter-rpc.php:224
 #: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
 #: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
 #: src/includes/cold-storage.php:135 src/includes/confirmations.php:297
-#: src/includes/cron.php:281 src/includes/email.php:505
-#: src/includes/qrcode.php:65 src/includes/rates.php:94
+#: src/includes/cron.php:282 src/includes/email.php:505
+#: src/includes/qrcode.php:65 src/includes/rates.php:188
 #: src/includes/transactions.php:92 src/includes/transactions.php:741
-#: src/includes/transactions.php:922 src/includes/transactions.php:943
-#: src/includes/transactions.php:964 src/includes/transactions.php:984
-#: src/includes/transactions.php:1004
+#: src/includes/transactions.php:922 src/includes/transactions.php:942
+#: src/includes/transactions.php:962 src/includes/transactions.php:981
+#: src/includes/transactions.php:1001 src/includes/transactions.php:1023
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/adapters-list.php:96 src/includes/caps.php:90
 #: src/includes/cold-storage.php:114 src/includes/json-api.php:232
 #: src/includes/json-api.php:260 src/includes/transactions.php:747
-#: src/includes/transactions.php:926 src/includes/transactions.php:947
-#: src/includes/transactions.php:968 src/includes/transactions.php:988
-#: src/includes/transactions.php:1008
+#: src/includes/transactions.php:926 src/includes/transactions.php:946
+#: src/includes/transactions.php:966 src/includes/transactions.php:985
+#: src/includes/transactions.php:1005 src/includes/transactions.php:1027
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -139,7 +139,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: src/includes/admin-menu.php:79 src/includes/cold-storage.php:305
-#: src/includes/cold-storage.php:318
+#: src/includes/cold-storage.php:318 src/includes/rates.php:254
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -314,35 +314,35 @@ msgstr ""
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:57 src/includes/coin-adapter.php:218
+#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:218
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:60 src/includes/coin-adapter.php:221
+#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:221
 msgid "Transaction fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:222
+#: src/includes/coin-adapter-bitcoin.php:65 src/includes/coin-adapter.php:222
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:63 src/includes/coin-adapter.php:224
+#: src/includes/coin-adapter-bitcoin.php:67 src/includes/coin-adapter.php:224
 msgid "Withdrawal fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:225
+#: src/includes/coin-adapter-bitcoin.php:68 src/includes/coin-adapter.php:225
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:65 src/includes/coin-adapter.php:226
+#: src/includes/coin-adapter-bitcoin.php:69 src/includes/coin-adapter.php:226
 msgid ""
 "Fees are calculated as: <i>total_fees = fixed_fees + amount * "
 "proportional_fees</i>."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:66
+#: src/includes/coin-adapter-bitcoin.php:70
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -351,7 +351,7 @@ msgid ""
 "maxtxfee, etc."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:67
+#: src/includes/coin-adapter-bitcoin.php:71
 msgid "Refer to the documentation for details."
 msgstr ""
 
@@ -920,75 +920,75 @@ msgid ""
 "Check the accompanying PDF manual for ways to debug and solve the issue."
 msgstr ""
 
-#: src/includes/cron.php:45
+#: src/includes/cron.php:43
 msgid ""
 "The <code>wp_cron</code> job has not run in a while and might be disabled. "
 "Until you fix this, transactions can be delayed. Triggering a cron run now. "
 "Check the accompanying PDF manual for ways to debug and solve the issue."
 msgstr ""
 
-#: src/includes/cron.php:92
+#: src/includes/cron.php:93
 msgid "minute"
 msgstr ""
 
-#: src/includes/cron.php:97
+#: src/includes/cron.php:98
 msgid "three minutes"
 msgstr ""
 
-#: src/includes/cron.php:102
+#: src/includes/cron.php:103
 msgid "five minutes"
 msgstr ""
 
-#: src/includes/cron.php:107
+#: src/includes/cron.php:108
 msgid "ten minutes"
 msgstr ""
 
-#: src/includes/cron.php:112
+#: src/includes/cron.php:113
 msgid "twenty minutes"
 msgstr ""
 
-#: src/includes/cron.php:117
+#: src/includes/cron.php:118
 msgid "half an hour"
 msgstr ""
 
-#: src/includes/cron.php:192
+#: src/includes/cron.php:193
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/cron.php:199
+#: src/includes/cron.php:200
 msgid "Run every"
 msgstr ""
 
-#: src/includes/cron.php:213
+#: src/includes/cron.php:214
 msgid "Max batch size"
 msgstr ""
 
-#: src/includes/cron.php:219
+#: src/includes/cron.php:220
 msgid "Up to this many transactions will be attempted per run of the cron job."
 msgstr ""
 
-#: src/includes/cron.php:230
+#: src/includes/cron.php:231
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: src/includes/cron.php:236
+#: src/includes/cron.php:237
 msgid "Failed withdrawals will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:247
+#: src/includes/cron.php:248
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: src/includes/cron.php:253
+#: src/includes/cron.php:254
 msgid ""
 "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: src/includes/cron.php:284
+#: src/includes/cron.php:285
 msgid "/* @echo name */ cron settings"
 msgstr ""
 
-#: src/includes/cron.php:285
+#: src/includes/cron.php:286
 msgid ""
 "You can set here the periodicity of all recurring tasks for this plugin. "
 "Every time cron runs, a batch of transactions is attempted. You can choose "
@@ -999,7 +999,7 @@ msgid ""
 "enabled adapters."
 msgstr ""
 
-#: src/includes/cron.php:314
+#: src/includes/cron.php:315
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron job."
 msgstr ""
@@ -1127,10 +1127,10 @@ msgstr ""
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:199 src/includes/json-api.php:226
 #: src/includes/json-api.php:254 src/includes/transactions.php:705
-#: src/includes/wallets-core.php:521 src/includes/wallets-core.php:615
-#: src/includes/wallets-core.php:669 src/includes/wallets-core.php:725
-#: src/includes/wallets-core.php:796 src/includes/wallets-core.php:938
-#: src/includes/wallets-core.php:1083
+#: src/includes/wallets-core.php:523 src/includes/wallets-core.php:617
+#: src/includes/wallets-core.php:671 src/includes/wallets-core.php:727
+#: src/includes/wallets-core.php:798 src/includes/wallets-core.php:940
+#: src/includes/wallets-core.php:1085
 msgid "Not allowed"
 msgstr ""
 
@@ -1206,39 +1206,77 @@ msgstr ""
 msgid "Here you can control whether addresses are displayed as QR Codes."
 msgstr ""
 
-#: src/includes/rates.php:34
+#: src/includes/rates.php:69
 msgid "Exchange rates settings"
 msgstr ""
 
-#: src/includes/rates.php:41
+#: src/includes/rates.php:76
 msgid "Rates provider"
 msgstr ""
 
-#: src/includes/rates.php:47
+#: src/includes/rates.php:82
 msgid "Pick the API that you wish to use as a source of exchange rates. "
 msgstr ""
 
-#: src/includes/rates.php:58
+#: src/includes/rates.php:93
 msgid "Rates cache expiry (minutes)"
 msgstr ""
 
-#: src/includes/rates.php:64
+#: src/includes/rates.php:99
 msgid ""
 "The exchange rates will be cached for this many minutes before being "
-"updated. "
+"updated. Currency symbols are always cached for one hour."
 msgstr ""
 
-#: src/includes/rates.php:97
+#: src/includes/rates.php:114
+msgid "Exchange rates debug views"
+msgstr ""
+
+#: src/includes/rates.php:121
+msgid "Known fiat currencies"
+msgstr ""
+
+#: src/includes/rates.php:127
+msgid "View a list of fiat currencies reported by fixer.io (for debugging). "
+msgstr ""
+
+#: src/includes/rates.php:139
+msgid "Known cryptocurrencies"
+msgstr ""
+
+#: src/includes/rates.php:145
+msgid ""
+"View a list of cryptocurrencies reported by the selected provider (for "
+"debugging). "
+msgstr ""
+
+#: src/includes/rates.php:156
+msgid "Exchange rates"
+msgstr ""
+
+#: src/includes/rates.php:162
+msgid ""
+"View a list of exhange rates reported by this provider (for debugging). For "
+"YoBit, exchange rates are only shown for coins that you have enabled."
+msgstr ""
+
+#: src/includes/rates.php:191
 msgid "/* @echo name */ Exchange Rates settings"
 msgstr ""
 
-#: src/includes/rates.php:170
+#: src/includes/rates.php:308
 #, php-format
 msgid ""
 "App extensions, such as the <a href=\"%s\">WooCommerce</a> and <a href=\"%s"
 "\">Events Manager</a> payment gateways, use exchange rates for price "
 "calculation. Choose which API will be used to pull exchange rates between "
 "various cryptocurrencies."
+msgstr ""
+
+#: src/includes/rates.php:317
+msgid ""
+"Use these views to verify that data is being pulled correctly from your "
+"exchange rates provider."
 msgstr ""
 
 #: src/includes/sidebar-widgets.php:33
@@ -1326,48 +1364,56 @@ msgstr ""
 msgid "Verified by user"
 msgstr ""
 
-#: src/includes/transactions-list.php:248
+#: src/includes/transactions-list.php:236
+msgid "Transaction will be CANCELLED."
+msgstr ""
+
+#: src/includes/transactions-list.php:237
+msgid "&#x1F5D9; Cancel"
+msgstr ""
+
+#: src/includes/transactions-list.php:253
+msgid "Transaction will be RETRIED."
+msgstr ""
+
+#: src/includes/transactions-list.php:254
+msgid "&#8635; Retry"
+msgstr ""
+
+#: src/includes/transactions-list.php:285
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: src/includes/transactions-list.php:249
+#: src/includes/transactions-list.php:286
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:265
+#: src/includes/transactions-list.php:302
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: src/includes/transactions-list.php:266
+#: src/includes/transactions-list.php:303
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: src/includes/transactions-list.php:301
+#: src/includes/transactions-list.php:338
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: src/includes/transactions-list.php:302
+#: src/includes/transactions-list.php:339
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: src/includes/transactions-list.php:318
+#: src/includes/transactions-list.php:355
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: src/includes/transactions-list.php:319
+#: src/includes/transactions-list.php:356
 msgid "&#x2713; User accept"
-msgstr ""
-
-#: src/includes/transactions-list.php:348
-msgid "Reset the number of retries for this transaction"
-msgstr ""
-
-#: src/includes/transactions-list.php:349
-msgid "&#8635; Reset retries"
 msgstr ""
 
 #: src/includes/transactions.php:97
@@ -1523,70 +1569,78 @@ msgid ""
 msgstr ""
 
 #: src/includes/wallets-core.php:464
-msgid "PHP version"
+msgid "Plugin version"
 msgstr ""
 
 #: src/includes/wallets-core.php:465
-msgid "WordPress version"
+msgid "Git SHA"
 msgstr ""
 
 #: src/includes/wallets-core.php:466
-msgid "MySQL version"
+msgid "PHP version"
 msgstr ""
 
 #: src/includes/wallets-core.php:467
-msgid "DB prefix"
+msgid "WordPress version"
 msgstr ""
 
 #: src/includes/wallets-core.php:468
-msgid "Supports cURL"
+msgid "MySQL version"
 msgstr ""
 
 #: src/includes/wallets-core.php:469
-msgid "Is multisite"
+msgid "DB prefix"
 msgstr ""
 
 #: src/includes/wallets-core.php:470
-msgid "Is network activated"
+msgid "Supports cURL"
 msgstr ""
 
 #: src/includes/wallets-core.php:471
+msgid "Is multisite"
+msgstr ""
+
+#: src/includes/wallets-core.php:472
+msgid "Is network activated"
+msgstr ""
+
+#: src/includes/wallets-core.php:473
 msgid "PHP max execution time"
 msgstr ""
 
-#: src/includes/wallets-core.php:483
+#: src/includes/wallets-core.php:485
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: src/includes/wallets-core.php:528
+#: src/includes/wallets-core.php:530
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:532
+#: src/includes/wallets-core.php:534
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:832
+#: src/includes/wallets-core.php:834
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:856
-msgid "Cannot withdraw negative amount"
+#: src/includes/wallets-core.php:858
+msgid "Must withdraw positive amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:862 src/includes/wallets-core.php:977
+#: src/includes/wallets-core.php:864 src/includes/wallets-core.php:979
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:942
+#: src/includes/wallets-core.php:944
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:971
-msgid "Cannot move negative amount"
+#: src/includes/wallets-core.php:973
+msgid "Must move positive amount"
 msgstr ""

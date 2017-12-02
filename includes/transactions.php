@@ -810,7 +810,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								INSERT INTO
 								$table_name_txs(" . Dashed_Slug_Wallets_TXs::$tx_columns . ")
 									VALUES
-										( %s, %d, NULLIF(%d, ''), %s, %s, %s, %20.10f, %20.10f, NULLIF(%s, ''), %s, %s, %d, %s, %d, %s, %d, %d, %d )
+										( %s, %d, NULLIF(%d, ''), %s, %s, %s, %s, %s, NULLIF(%s, ''), %s, %s, %d, %s, %d, %s, %d, %d, %d )
 								",
 								$data[0],
 								$data[1],
@@ -818,8 +818,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								$data[3],
 								$data[4],
 								$data[5],
-								$data[6],
-								$data[7],
+								number_format( $data[6], 10, '.', '' ),
+								number_format( $data[7], 10, '.', '' ),
 								$data[8],
 								$data[9],
 								$data[10],
@@ -926,8 +926,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(
-							"
+						$affected_rows = $wpdb->query(	"
 							UPDATE
 								$table_name_txs
 							SET
@@ -947,8 +946,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(
-							"
+						$affected_rows = $wpdb->query(	"
 							UPDATE
 								$table_name_txs
 							SET
@@ -968,8 +966,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(
-							"
+						$affected_rows = $wpdb->query(	"
 							UPDATE
 								$table_name_txs
 							SET
@@ -988,8 +985,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(
-							"
+						$affected_rows = $wpdb->query(	"
 							UPDATE
 								$table_name_txs
 							SET
@@ -999,33 +995,52 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							");
 						break;
 
-					case 'reset_retries':
+					case 'cancel_tx':
+
 						if ( ! current_user_can( 'manage_wallets' ) )  {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
-						if ( ! wp_verify_nonce( $nonce, "wallets-reset-retries-$id" ) ) {
+						if ( ! wp_verify_nonce( $nonce, "wallets-cancel-tx-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( $wpdb->prepare(
+						$affected_rows = $wpdb->query(	"
+							UPDATE
+								$table_name_txs
+							SET
+								status = 'cancelled'
+							WHERE
+								id IN ( $set_of_ids )
 							"
+						);
+
+						break;
+
+					case 'retry_tx':
+
+						if ( ! current_user_can( 'manage_wallets' ) )  {
+							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
+						}
+
+						if ( ! wp_verify_nonce( $nonce, "wallets-retry-tx-$id" ) ) {
+							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
+						}
+
+						$affected_rows = $wpdb->query(	$wpdb->prepare( "
 							UPDATE
 								$table_name_txs
 							SET
 								retries = IF( category='withdraw', %d, %d ),
-								status = IF ( status='failed', 'pending', status )
+								status = 'pending'
 							WHERE
-								id IN ( $set_of_ids ) AND
-								category IN ( 'withdraw', 'move' )
+								id IN ( $set_of_ids )
 							",
 							Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
-							Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ),
-							$id
+							Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 )
 						) );
 
 						break;
-
 				}
 
 				$redirect_args = array(

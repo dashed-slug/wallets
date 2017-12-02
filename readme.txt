@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.7.4
+Stable tag: 2.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,16 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.8.0 =
+- Add: Admins can cancel internal transactions.
+- Add: Admins can retry cancelled internal transactions.
+- Improve: Exchange rates are now not slowing down the system. Better caching mechanism. Runs on PHP shutdown.
+- Add: YoBit and Cryptopia exchanges added as exchange rate sources.
+- Add: Exchange rate sources are now pluggable (see PDF documentation).
+- Add: Dashboard debug info now includes commit hash and plugin version.
+- Fix: Bug with failsafe mechanism for systems where WP Cron is not running, introduced in 2.7.4
+- Improve: When not connected, the internal Bitcoin core plugin now suggests a salted password for the bitcoin.conf file, using the rpcauth= argument.
+
 = 2.7.4 =
 - Add: Failsafe mechanism for systems where WP Cron is not running.
 - Add: Panel with useful system debug info in Dashboard area. Users can copy and paste it when requesting support.
@@ -614,7 +624,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.7.4 is a patch release. It fixes issues with hosts where wp cron fails to run.
+Version 2.8.0 introduces improvements mostly in the exchange rates system.
 
 == Donating ==
 

@@ -172,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.7.4',
+					'2.8.0',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -185,7 +185,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.7.4',
+					'2.8.0',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -198,7 +198,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.7.4'
+					'2.8.0'
 				);
 			}
 		}
@@ -461,6 +461,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.8.0';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '538fbe7';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
@@ -852,15 +854,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$balance = $this->get_balance( $symbol, null, $check_capabilities );
 				$fee = $adapter->get_withdraw_fee() + $amount * $adapter->get_withdraw_fee_proportional();
 
-				if ( $amount < 0 ) {
-					throw new Exception( __( 'Cannot withdraw negative amount', 'wallets' ), self::ERR_DO_WITHDRAW );
+				if ( $amount <= 0 ) {
+					throw new Exception( __( 'Must withdraw positive amount', 'wallets' ), self::ERR_DO_WITHDRAW );
 				}
 				if ( $balance < $amount ) {
 					$format = $adapter->get_sprintf();
 					throw new Exception(
 						sprintf(
 							__( 'Insufficient funds: %s > %s', 'wallets' ),
-								sprintf( $format, $amount),
+								sprintf( $format, $amount ),
 								sprintf( $format, $balance ) ),
 							self::ERR_DO_WITHDRAW );
 				}
@@ -967,8 +969,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$balance = $this->get_balance( $symbol, null, $check_capabilities, $fromaccount );
 				$fee = $adapter->get_move_fee() + $amount * $adapter->get_move_fee_proportional();
 
-				if ( $amount < 0 ) {
-					throw new Exception( __( 'Cannot move negative amount', 'wallets' ), self::ERR_DO_MOVE );
+				if ( $amount <= 0 ) {
+					throw new Exception( __( 'Must move positive amount', 'wallets' ), self::ERR_DO_MOVE );
 				}
 				if ( $balance < $amount ) {
 					$format = $adapter->get_sprintf();
@@ -1151,10 +1153,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		/**
-		 * Returns the exchange rate between two fiat currencies or cryptocurrencies,
-		 * using fixer.io and bittrex.
+		 * Returns the exchange rate between two currencies.
 		 *
-		 * example: get_exchange_rate( 'USD', 'BTC' ) would return
+		 * example: get_exchange_rate( 'USD', 'BTC' ) would return a value such that
+		 *
+		 * amount_in_usd / value = amount_in_btc
 		 *
 		 * @param string $from The currency to convert from.
 		 * @param string $to The currency to convert to.
@@ -1166,7 +1169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/**
 		 * True if the symbol corresponds to a known fiat currency
-		 * @param unknown $symbol A currency symbol
+		 * @param string $symbol A currency symbol
 		 * @return boolean True if fiat
 		 */
 		public static function is_fiat( $symbol ) {
@@ -1175,7 +1178,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/**
 		 * True if the symbol corresponds to a known cryptocurrency
-		 * @param unknown $symbol A currency symbol
+		 * @param string $symbol A currency symbol
 		 * @return boolean True if crypto
 		 */
 		public static function is_crypto( $symbol ) {

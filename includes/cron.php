@@ -32,25 +32,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'),
 					'wallets-cron-disabled' );
 			} else {
-				$last_cron_run = intval( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run' ) );
+				$last_cron_run = intval( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
 
-				if ( $last_cron_run ) {
+				$schedules = $this->filter_cron_schedules( array() );
+				$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+				$interval = $schedules[ $cron_interval ]['interval'];
 
-					$schedules = $this->filter_cron_schedules( array() );
-					$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-					$interval = $schedules[ $cron_interval ]['interval'];
+				if ( $last_cron_run < ( time() - $interval * 1.5 ) ) {
+					Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
+						__( 'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
+							'Triggering a cron run now. Check the accompanying PDF manual for ways to debug and solve the issue.',
+							'wallets' ),
+						'wallets-cron-not-running' );
 
-					if ( $last_cron_run < ( time() - $interval * 1.5 ) ) {
-						Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
-							__( 'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
-								'Triggering a cron run now. Check the accompanying PDF manual for ways to debug and solve the issue.',
-								'wallets' ),
-							'wallets-cron-not-running' );
-
-						do_action( 'wallets_periodic_checks' );
-					}
+					add_action( 'shutdown', 'Dashed_Slug_Wallets_Cron::trigger_cron' );
 				}
 			}
+		}
+
+		public static function trigger_cron() {
+			do_action( 'wallets_periodic_checks' );
 		}
 
 		public static function action_activate( $network_active ) {
@@ -146,6 +147,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 *
 		 */
 		public function cron( ) {
+			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 
@@ -163,7 +165,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			}
 
-			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 		}
 
 		private function call_cron_on_all_adapters() {
