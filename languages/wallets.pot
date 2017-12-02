@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.6.3\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:10+0200\n"
+"POT-Creation-Date: 2017-12-02 19:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,29 +41,29 @@ msgstr ""
 msgid "Adapter Status"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:93
+#: src/includes/adapters-list-table.php:66
 msgid "Responding"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:95
+#: src/includes/adapters-list-table.php:68
 msgid "n/a"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:96
+#: src/includes/adapters-list-table.php:69
 #, php-format
 msgid "Not Responding: %s"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:168
+#: src/includes/adapters-list-table.php:141
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:169
+#: src/includes/adapters-list-table.php:142
 msgid "Settings"
 msgstr ""
 
-#: src/includes/adapters-list-table.php:174
-#: src/includes/adapters-list-table.php:175
+#: src/includes/adapters-list-table.php:147
+#: src/includes/adapters-list-table.php:148
 msgid "Export transactions to .csv"
 msgstr ""
 
@@ -73,20 +73,21 @@ msgstr ""
 #: src/includes/coin-adapter-json.php:75 src/includes/coin-adapter-rpc.php:224
 #: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
 #: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
-#: src/includes/confirmations.php:297 src/includes/cron.php:279
-#: src/includes/email.php:505 src/includes/qrcode.php:65
-#: src/includes/transactions.php:82 src/includes/transactions.php:731
-#: src/includes/transactions.php:912 src/includes/transactions.php:933
-#: src/includes/transactions.php:954 src/includes/transactions.php:974
-#: src/includes/transactions.php:994
+#: src/includes/cold-storage.php:135 src/includes/confirmations.php:297
+#: src/includes/cron.php:279 src/includes/email.php:505
+#: src/includes/qrcode.php:65 src/includes/transactions.php:82
+#: src/includes/transactions.php:731 src/includes/transactions.php:912
+#: src/includes/transactions.php:933 src/includes/transactions.php:954
+#: src/includes/transactions.php:974 src/includes/transactions.php:994
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/adapters-list.php:96 src/includes/caps.php:90
-#: src/includes/json-api.php:232 src/includes/json-api.php:260
-#: src/includes/transactions.php:737 src/includes/transactions.php:916
-#: src/includes/transactions.php:937 src/includes/transactions.php:958
-#: src/includes/transactions.php:978 src/includes/transactions.php:998
+#: src/includes/cold-storage.php:114 src/includes/json-api.php:232
+#: src/includes/json-api.php:260 src/includes/transactions.php:737
+#: src/includes/transactions.php:916 src/includes/transactions.php:937
+#: src/includes/transactions.php:958 src/includes/transactions.php:978
+#: src/includes/transactions.php:998
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -135,7 +136,8 @@ msgstr ""
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:71
+#: src/includes/admin-menu.php:71 src/includes/cold-storage.php:305
+#: src/includes/cold-storage.php:318
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -573,6 +575,122 @@ msgstr ""
 msgid "These are the settings for this %s adapter"
 msgstr ""
 
+#: src/includes/cold-storage.php:88
+#, php-format
+msgid "Cannot withdraw to cold storage: %s"
+msgstr ""
+
+#: src/includes/cold-storage.php:92
+#, php-format
+msgid "Sent %s to cold storage address %s"
+msgstr ""
+
+#: src/includes/cold-storage.php:108
+#, php-format
+msgid "Failed to withdraw to cold storage: %s"
+msgstr ""
+
+#: src/includes/cold-storage.php:142
+msgid "/* @echo name */: Transfer to and from cold storage"
+msgstr ""
+
+#: src/includes/cold-storage.php:144
+msgid ""
+"You can remove part of your site's funds from the online wallet to mitigate "
+"risk in the event of a cyber-attack. "
+msgstr ""
+
+#: src/includes/cold-storage.php:145
+msgid ""
+"Any funds you withdraw or deposit here will affect your total wallet balance "
+"but not any user balances. "
+msgstr ""
+
+#: src/includes/cold-storage.php:148
+msgid "Cold storage state for your online wallets:"
+msgstr ""
+
+#: src/includes/cold-storage.php:151
+msgid "Adapter"
+msgstr ""
+
+#: src/includes/cold-storage.php:152
+msgid "Currency"
+msgstr ""
+
+#: src/includes/cold-storage.php:153
+msgid "User Balances"
+msgstr ""
+
+#: src/includes/cold-storage.php:154
+msgid "Online Balance"
+msgstr ""
+
+#: src/includes/cold-storage.php:155
+msgid "Actions"
+msgstr ""
+
+#: src/includes/cold-storage.php:192
+msgid "Deposit"
+msgstr ""
+
+#: src/includes/cold-storage.php:197
+msgid "Withdraw"
+msgstr ""
+
+#: src/includes/cold-storage.php:220
+#, php-format
+msgid "Withdraw %s to cold storage:"
+msgstr ""
+
+#: src/includes/cold-storage.php:243 src/includes/views/move.php:6
+#: src/includes/views/withdraw.php:6
+msgid "Amount"
+msgstr ""
+
+#: src/includes/cold-storage.php:251
+msgid "External address"
+msgstr ""
+
+#: src/includes/cold-storage.php:257
+msgid "Withdraw to storage"
+msgstr ""
+
+#: src/includes/cold-storage.php:268
+#, php-format
+msgid "Deposit %s from cold storage:"
+msgstr ""
+
+#: src/includes/cold-storage.php:300
+msgid "Need a hardware wallet?"
+msgstr ""
+
+#: src/includes/cold-storage.php:328
+msgid "You are responsible for the money people deposit on your site. "
+msgstr ""
+
+#: src/includes/cold-storage.php:329
+msgid "Get a hardware wallet and sleep easier!"
+msgstr ""
+
+#: src/includes/cold-storage.php:362
+#, php-format
+msgid "To have <code>%d%%</code> online (<code>%s</code>), %s %s."
+msgstr ""
+
+#: src/includes/cold-storage.php:365
+msgid "deposit"
+msgstr ""
+
+#: src/includes/cold-storage.php:365
+msgid "withdraw"
+msgstr ""
+
+#: src/includes/cold-storage.php:373
+#, php-format
+msgid "You currently have <code>%01.2f%%</code> online (<code>%s</code>)."
+msgstr ""
+
 #: src/includes/confirmations.php:32
 msgid "Your withdrawal request requires confirmation. - ###COMMENT###"
 msgstr ""
@@ -1005,9 +1123,10 @@ msgstr ""
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:199 src/includes/json-api.php:226
 #: src/includes/json-api.php:254 src/includes/transactions.php:695
-#: src/includes/wallets-core.php:445 src/includes/wallets-core.php:539
-#: src/includes/wallets-core.php:608 src/includes/wallets-core.php:679
-#: src/includes/wallets-core.php:821 src/includes/wallets-core.php:966
+#: src/includes/wallets-core.php:448 src/includes/wallets-core.php:542
+#: src/includes/wallets-core.php:596 src/includes/wallets-core.php:652
+#: src/includes/wallets-core.php:723 src/includes/wallets-core.php:865
+#: src/includes/wallets-core.php:1010
 msgid "Not allowed"
 msgstr ""
 
@@ -1267,10 +1386,6 @@ msgstr ""
 msgid "Recipient user"
 msgstr ""
 
-#: src/includes/views/move.php:6 src/includes/views/withdraw.php:6
-msgid "Amount"
-msgstr ""
-
 #: src/includes/views/move.php:7
 msgid "Transfer comment"
 msgstr ""
@@ -1353,33 +1468,33 @@ msgid ""
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:452
+#: src/includes/wallets-core.php:455
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:456
+#: src/includes/wallets-core.php:459
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:715
+#: src/includes/wallets-core.php:759
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:739
+#: src/includes/wallets-core.php:783
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:745 src/includes/wallets-core.php:860
+#: src/includes/wallets-core.php:789 src/includes/wallets-core.php:904
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:825
+#: src/includes/wallets-core.php:869
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:854
+#: src/includes/wallets-core.php:898
 msgid "Cannot move negative amount"
 msgstr ""

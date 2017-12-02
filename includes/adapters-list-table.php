@@ -44,35 +44,6 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 		return $order === 'asc' ? $result : -$result;
     }
 
-    private function get_balances() {
-		global $wpdb;
-
-		$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-
-		$user_balances_query = $wpdb->prepare( "
-			SELECT
-				SUM(amount) as balance,
-				symbol
-			FROM
-				$table_name_txs
-			WHERE
-				( blog_id = %d || %d ) AND
-				status = 'done'
-			GROUP BY
-				symbol
-			",
-			get_current_blog_id(),
-			is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
-		);
-
-		$results = $wpdb->get_results( $user_balances_query );
-		$balances = array();
-		foreach ( $results as $row ) {
-			$balances[ $row->symbol ] = $row->balance;
-		}
-		return $balances;
-    }
-
     public function prepare_items() {
 
 		$this->_column_headers = array(
@@ -81,10 +52,12 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			$this->get_sortable_columns(),
 		);
 
-		$adapters = Dashed_Slug_Wallets::get_instance()->get_coin_adapters();
+		$dsw = Dashed_Slug_Wallets::get_instance();
+
+		$adapters = $dsw->get_coin_adapters();
 		$this->items = array();
 
-		$balances = $this->get_balances();
+		$balances = $dsw->get_balance_totals_per_coin();
 
 		foreach ( $adapters as $symbol => &$adapter ) {
 

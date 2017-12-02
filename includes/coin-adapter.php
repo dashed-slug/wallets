@@ -562,7 +562,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @api
 		 * @uses get_minconf()
 		 * @return number Total amount of coins held in the wallet.
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 
 		public abstract function get_balance();
@@ -570,7 +570,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		/**
 		 * Scrapes transaction IDs and passes them to the wallets core for recording in the transactions DB table.
 		 *
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 * @return void
 		 */
 		public abstract function cron();
@@ -584,7 +584,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 *
 		 * @api
 		 * @return string A deposit address.
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public abstract function get_new_address( );
 
@@ -598,7 +598,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @param float $amount The amount to withdraw.
 		 * @param string $comment A comment attached to this withdrawal (optional).
 		 * @param string $comment_to A comment about this destination address (optional).
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 * @return string A transaction ID that uniquely identifies the withdrawal to this adapter.
 		 */
 		public abstract function do_withdraw( $address, $amount, $comment = '', $comment_to = '' );
@@ -615,7 +615,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 *
 		 * @api
 		 * @param string $tx A transaction ID that has been updated.
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public abstract function action_wallets_notify_wallet( $txid );
 
@@ -630,7 +630,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 *
 		 * @api
 		 * @param string $blockhash The hash of the latest block.
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public abstract function action_wallets_notify_block( $blockhash );
 

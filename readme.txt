@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.6.3
+Stable tag: 2.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,11 +52,13 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
  You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all
  subscribers at [dashed-slug](https://www.dashed-slug.net) (you do not have to pay for membership).
 
+- [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
+- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
 - [Feathercoin adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/feathercoin-adapter-extension/)
 - [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/)
 - [Gridcoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/gridcoin-adapter-extension/)
-- [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
-- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
+
+...plus more!
 
 = Premium plugin extensions available today =
 
@@ -329,6 +331,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.7.0 =
+- Add: Cold storage section, allowing easy addition and withdrawal of funds to and from external wallets.
+- Improve: Uninstalling and re-installing the plugin now fixes the SQL table schemas if they are missing or damaged.
+
 = 2.6.3 =
 - Add: When coin adapters report a new status for an existing transaction, the plugin can now update the status of the transaction.
 
@@ -573,7 +579,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.6.3 is a bugfix release. Please upgrade.
+Version 2.7.0 introduces cold storage. Upgrade from 2.6.3 to try this new feature.
 
 == Donating ==
 

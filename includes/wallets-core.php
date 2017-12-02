@@ -171,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.6.3',
+					'2.7.0',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.6.3',
+					'2.7.0',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.6.3'
+					'2.7.0'
 				);
 			}
 		}
@@ -399,6 +399,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// flush json api rules
 			self::flush_rules();
+
+			// remove db revision so that reactivating repairs the sql tables
+			Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 		}
 
 		/** @internal */
@@ -580,6 +583,47 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			}
 
 			return 0;
+		}
+
+		/**
+		 * Get confirmed balance totals for all users grouped by coin.
+		 *
+		 * @since 2.7
+		 * @return An assoc array of symbols to total confirmed user balance sums.
+		 */
+		public function get_balance_totals_per_coin() {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+			}
+			static $balances = array();
+			if ( $balances ) {
+				return $balances;
+			}
+
+			global $wpdb;
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+			$user_balances_query = $wpdb->prepare( "
+				SELECT
+					SUM(amount) as balance,
+					symbol
+				FROM
+					$table_name_txs
+				WHERE
+					( blog_id = %d || %d ) AND
+					status = 'done'
+				GROUP BY
+					symbol
+				",
+				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+			);
+
+			$results = $wpdb->get_results( $user_balances_query );
+			foreach ( $results as $row ) {
+				$balances[ $row->symbol ] = $row->balance;
+			}
+			return $balances;
 		}
 
 		/**

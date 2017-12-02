@@ -89,6 +89,9 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	// remove qr code settings
 	wallets_delete_option( 'wallets_qrcode_enabled' );
 
+	// remove db schema revision
+	wallets_delete_option( 'wallets_db_revision' );
+
 	// remove user roles
 	$user_roles = array_keys( get_editable_roles() );
 	$user_roles[] = 'administrator';
