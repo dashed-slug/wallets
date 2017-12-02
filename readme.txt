@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
-Tested up to: 4.7.1
-Stable tag: 1.0.5
+Tested up to: 4.7.2
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,9 +93,12 @@ This will typically require SSH access and some basic knowledge of UNIX/Linux.*
 
 What follows is step-by-step instructions:
 
-1. Make sure that you have **at least WordPress version 3.8** installed,
-   and that you are running on **at least PHP 5.5.**
-   For security reasons, you are **strongly** recommended to use the latest version of WordPress.
+1. Make sure that you have **the latest WordPress version** installed,
+   and that you are running on **at least PHP 5.6.**
+   Even though the plugin has been tested on WordPress 3.8 and PHP 5.3,
+   for security reasons you are **strongly** recommended to use the latest version of WordPress and a supported version of PHP.
+   [Check to see here](http://php.net/supported-versions.php) if your PHP version is currently supported for security issues.
+   As of 2017, anything below 5.6 has reached its end-of-life and is no longer supported.
 
 2. **Install and activate the Wallets plugin.** For general information on installing WordPress plugins, you can consult the
    [relevant WordPress documentation](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
@@ -225,6 +228,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 1.0.6 =
+* Made compatible with PHP versions earlier than 5.5
+* Added warning in readme about running on PHP versions that have reached end-of-life
+
 = 1.0.5 =
 * Deactivate button not shown for built in Bitcoin adapter
 * Added video tutorial to readme
@@ -254,7 +261,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-1.0.5 is a patch release. It fixes a minor bug and introduces the tutorial video in the readme.
+1.0.6 is a patch release. It introduces support for PHP installations earlier than 5.5. The plugin is tested on 5.3.
 
 == Donating ==
 

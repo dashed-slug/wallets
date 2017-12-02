@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.5\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 18:56+0200\n"
+"POT-Creation-Date: 2017-12-02 19:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -306,7 +306,7 @@ msgstr ""
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/core.php:454 src/includes/core.php:519
+#: src/includes/core.php:454 src/includes/core.php:522
 #, php-format
 msgid "Insufficient funds: %f + %f fees < %f"
 msgstr ""
@@ -315,49 +315,49 @@ msgstr ""
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/core.php:516
+#: src/includes/core.php:519
 msgid "Cannot move negative amount"
 msgstr ""
 
-#: src/includes/core.php:761
+#: src/includes/core.php:767
 msgid "Adapter"
 msgstr ""
 
-#: src/includes/core.php:762
+#: src/includes/core.php:768
 msgid "Transaction"
 msgstr ""
 
-#: src/includes/core.php:763
+#: src/includes/core.php:769
 msgid "Error"
 msgstr ""
 
-#: src/includes/core.php:768
+#: src/includes/core.php:774
 msgid "The following errors occured while updating transactions: "
 msgstr ""
 
-#: src/includes/core.php:770
+#: src/includes/core.php:776
 msgid ""
 "Please check the settings of your coin adapters and make sure that the "
 "adapters can connect to your wallet daemons."
 msgstr ""
 
-#: src/includes/core.php:783
+#: src/includes/core.php:789
 msgid "You have performed a withdrawal."
 msgstr ""
 
-#: src/includes/core.php:798
+#: src/includes/core.php:804
 msgid "You have sent funds to another user."
 msgstr ""
 
-#: src/includes/core.php:814
+#: src/includes/core.php:820
 msgid "You have received funds from another user."
 msgstr ""
 
-#: src/includes/core.php:826
+#: src/includes/core.php:832
 msgid "You have performed a deposit."
 msgstr ""
 
-#: src/includes/core.php:836
+#: src/includes/core.php:842
 msgid "Transaction details follow"
 msgstr ""
 

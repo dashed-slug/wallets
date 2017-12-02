@@ -151,7 +151,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'1.0.5'
+				'1.0.6'
 			);
 		}
 
@@ -485,9 +485,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
 				}
 
-			} finally {
+			} catch ( Exception $e ) {
 				$wpdb->query( 'UNLOCK TABLES' );
+				throw $e;
 			}
+			$wpdb->query( 'UNLOCK TABLES' );
+
 			do_action( 'wallets_withdraw', $row );
 		}
 
@@ -568,9 +571,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row2, true ) );
 				}
 
-			} finally {
+			} catch ( Exception $e ) {
 				$wpdb->query( 'UNLOCK TABLES' );
+				throw $e;
 			}
+			$wpdb->query( 'UNLOCK TABLES' );
+
 			do_action( 'wallets_move_send', $row1 );
 			do_action( 'wallets_move_receive', $row2 );
 		}

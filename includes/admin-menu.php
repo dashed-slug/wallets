@@ -301,9 +301,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 					}
 					return $rows_written;
 				}
-			} finally {
+			} catch ( Exception $e ) {
 				fclose( $fh );
+				throw $e;
 			}
+			fclose( $fh );
 		} // end function csv_import()
 	}
 }
