@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Bitcoin and Altcoin Wallets
  * Description: Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
- * Version: 2.2.5
+ * Version: 2.3.0
  * Plugin URI: https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
  * Author: dashed-slug <info@dashed-slug.net>
  * Author URI: http://dashed-slug.net
@@ -48,7 +48,9 @@ require_once 'includes/coin-adapter-rpc.php';
 require_once 'includes/coin-adapter-json.php';
 
 require_once 'includes/admin-menu.php';
+require_once 'includes/transactions.php';
 require_once 'includes/caps.php';
+require_once 'includes/confirmations.php';
 require_once 'includes/cron.php';
 require_once 'includes/email.php';
 require_once 'includes/qrcode.php';

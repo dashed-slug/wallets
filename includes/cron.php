@@ -29,7 +29,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public static function action_activate() {
-			add_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+			add_option( 'wallets_cron_interval', 'wallets_three_minutes' );
+			add_option( 'wallets_retries_withdraw', 3 );
+			add_option( 'wallets_retries_move', 1 );
+			add_option( 'wallets_cron_batch_size', 8 );
 		}
 
 		public static function action_deactivate() {
@@ -48,34 +51,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 * @internal
 		 */
 		public function filter_cron_schedules( $schedules ) {
+			$schedules['wallets_one_minute'] = array(
+				'interval' => MINUTE_IN_SECONDS,
+				'display'  => esc_html__( 'minute', 'wallets' ),
+			);
+
+			$schedules['wallets_three_minutes'] = array(
+				'interval' => 3 * MINUTE_IN_SECONDS,
+				'display'  => esc_html__( 'three minutes', 'wallets' ),
+			);
+
 			$schedules['wallets_five_minutes'] = array(
 				'interval' => 5 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every five minutes', 'wallets' ),
+				'display'  => esc_html__( 'five minutes', 'wallets' ),
 			);
 
 			$schedules['wallets_ten_minutes'] = array(
 				'interval' => 10 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every ten minutes', 'wallets' ),
+				'display'  => esc_html__( 'ten minutes', 'wallets' ),
 			);
 
 			$schedules['wallets_twenty_minutes'] = array(
 				'interval' => 20 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every twenty minutes', 'wallets' ),
+				'display'  => esc_html__( 'twenty minutes', 'wallets' ),
 			);
 
 			$schedules['wallets_thirty_minutes'] = array(
 				'interval' => 30 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every half an hour', 'wallets' ),
-			);
-
-			$schedules['wallets_one_hour'] = array(
-				'interval' => 1 * HOUR_IN_SECONDS,
-				'display'  => esc_html__( 'Every one hour', 'wallets' ),
-			);
-
-			$schedules['wallets_four_hours'] = array(
-				'interval' => 4 * HOUR_IN_SECONDS,
-				'display'  => esc_html__( 'Every four hours', 'wallets' ),
+				'display'  => esc_html__( 'half an hour', 'wallets' ),
 			);
 
 			return $schedules;
@@ -141,18 +144,70 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			);
 
 			add_settings_field(
-				"wallets_cron_interval",
-				__( 'Double-check for missing deposits and addresses', 'wallets' ),
+				'wallets_cron_interval',
+				__( 'Run every', 'wallets' ),
 				array( &$this, 'settings_interval_cb'),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
-				array( 'label_for' => "wallets_cron_interval" )
+				array( 'label_for' => 'wallets_cron_interval' )
 			);
 
 			register_setting(
 				'wallets-menu-cron',
 				'wallets_cron_interval'
 			);
+
+			add_settings_field(
+				'wallets_cron_batch_size',
+				__( 'Max batch size', 'wallets' ),
+				array( &$this, 'settings_int8_cb'),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for' => 'wallets_cron_batch_size',
+					'description' => __( 'Up to this many transactions will be attempted per run of the cron job.' )
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_cron_batch_size'
+			);
+
+			add_settings_field(
+				'wallets_retries_withdraw',
+				__( 'Max retries for failed withdrawals', 'wallets' ),
+				array( &$this, 'settings_int8_cb'),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for' => 'wallets_retries_withdraw',
+					'description' => __( 'Failed withdrawals will be attempted up to this many times.' )
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_retries_withdraw'
+			);
+
+			add_settings_field(
+				'wallets_retries_move',
+				__( 'Max retries for failed transfers to other users', 'wallets' ),
+				array( &$this, 'settings_int8_cb'),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for' => 'wallets_retries_move',
+					'description' => __( 'Failed transfers to other users will be attempted up to this many times.' )
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_retries_move'
+			);
+
 		}
 
 		public function action_admin_menu() {
@@ -165,7 +220,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					'Cron job',
 					'manage_wallets',
 					'wallets-menu-cron',
-					array( &$this, "wallets_cron_page_cb" )
+					array( &$this, 'wallets_cron_page_cb' )
 				);
 			}
 		}
@@ -176,9 +231,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			}
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets cron settings', 'wallets' ); ?></h1>
-					<p><?php esc_html_e( 'Cron settings.', 'wallets' ); ?></p>
+					<p><?php esc_html_e( 'You can set here the periodicity of all recurring tasks for this plugin. ' .
+					'Every time cron runs, a batch of transactions is attempted. You can choose ' .
+					'how large the batch is and how many retries to do on a failed transaction before it is aborted. ' .
 
-					<form method="post" action="options.php" class="card"><?php
+					'Also, coin adapters can have a cron() function that can discover missing/overlooked deposits, ' .
+					'or do other tasks that are specific to the adapter. The cron job calls the cron() function on all enabled adapters.', 'wallets' ); ?></p>
+
+					<form method="post" action="options.php"><?php
 					settings_fields( 'wallets-menu-cron' );
 					do_settings_sections( 'wallets-menu-cron' );
 					submit_button();
@@ -186,18 +246,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public function wallets_cron_section_cb() {
-			?><p><?php esc_html_e( 'Deposit addresses and deposits can be overlooked ' .
-					'if their callback notification mechanism is not correctly setup, ' .
-					'or if they do not have a callback mechanism, or if something else goes wrong. ' .
-					'Adapters can offer a cron() function that does periodic checks for these things. ' .
-					'Adapters can discover overlooked addresses and transactions and notify the plugin ' .
-					'to record them. For some adapters this will be a failsafe-check, ' .
-					'and for other adapters it will be the main mechanism of polling for deposits. ' .
-					'Adapters can also opt to not offer a cron() method.', 'wallets');
+			?><p><?php esc_html_e( 'You can set the frequency, batch size and number of retries for the cron job.', 'wallets');
 			?></p><?php
 		}
 
-		/** @internal */
+		public function settings_int8_cb( $arg ) {
+			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+			type="number" min="1" max="256" step="1" value="<?php echo esc_attr( intval( get_option( $arg['label_for'] ) ) ); ?>" />
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
+			echo esc_html( $arg['description'] ); ?></p><?php
+		}
+
 		public function settings_interval_cb( $arg ) {
 			$cron_intervals = apply_filters( 'cron_schedules', array() );
 			$selected_value = get_option( $arg['label_for'] );

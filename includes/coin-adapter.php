@@ -395,7 +395,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return number Minimum amount of confirmations required to consider a transaction as confirmed.
 		 */
 		public function get_minconf() {
-			return intval( $this->get_adapter_option( 'other_minconf' ) || 1 );
+			return intval( $this->get_adapter_option( 'other-minconf', 1 ) );
 		}
 
 		/**

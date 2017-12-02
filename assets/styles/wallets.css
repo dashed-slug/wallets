@@ -19,6 +19,25 @@
 	font-size: smaller;
 	overflow-x: scroll;
 	display: block;
+	color: black;
+}
+
+.dashed-slug-wallets.transactions table tr {
+	background-color: white;
+}
+.dashed-slug-wallets.transactions table .unconfirmed {
+	color: gray;
+}
+
+.dashed-slug-wallets.transactions table .pending {
+}
+
+.dashed-slug-wallets.transactions table .done {
+	background-color: #58b858;
+}
+
+.dashed-slug-wallets.transactions table .failed {
+	background-color: #d85848;
 }
 
 .dashed-slug-wallets.deposit .qrcode {

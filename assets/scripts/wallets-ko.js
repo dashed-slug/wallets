@@ -237,14 +237,14 @@
 			$('html').on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
 				if ( response.result == 'success' ) {
 					self.resetMove();
-					alert( 'Successfully sent ' + amount + ' ' + symbol );
+					alert( 'Successfully submitted a transaction request of ' + amount + ' ' + symbol );
 				}
 			});
 
 			$('html').on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
 				if ( response.result == 'success' ) {
 					self.resetWithdraw();
-					alert( 'Successfully withdrew ' + amount + ' ' + symbol + ' to ' + address );
+					alert( 'Successfully submitted a withdrawal request of ' + amount + ' ' + symbol + ' to ' + address );
 				}
 			});
 

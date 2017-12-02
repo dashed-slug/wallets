@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
-Tested up to: 4.7.4
-Stable tag: 2.2.5
+Tested up to: 4.8
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,33 +40,45 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 - **Widgets** the same UI elements available via shortcodes can also be used as widgets in your theme.
 - Configure who has a wallet and who does what using WordPress capabilities.
 - Configure e-mail notifications for users.
+- Configure e-mail confirmations for transactions and optionally confirm transactions via the admin interface.
 - **Backup and restore transactions**: An **import/export** functionality to backup transactions to and from
   [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 - **Extensible architecture**
   - Easily install coin adapter plugins to use other cryprocurrencies besides Bitcoin.
   - Easily install extension plugins that talk to the PHP API to provide additional functionality such as payment gateways.
 
-= Premium plugin extensions available today =
+= Free coin adapter extensions =
 
-Registered [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to
-this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wordpress.org/plugins/slate/) FREE WordPress plugin).
+ You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all
+ subscribers at [dashed-slug](https://www.dashed-slug.net) (you do not have to pay for membership).
 
-Here are all the currently available extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
-
-- [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
 - [Feathercoin adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/feathercoin-adapter-extension/)
 - [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/)
+- [Gridcoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/gridcoin-adapter-extension/)
 - [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
+- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
+
+= Premium plugin extensions available today =
+
+Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to
+this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wordpress.org/plugins/slate/) FREE WordPress plugin).
+
+Here are all the currently available feature extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
+
+- [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/)
+- [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
 - [Events Manager Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/)
+
+Premium members also get auto-updates for any installed extensions. [Instructions for how to set up auto-updates are here](https://www.dashed-slug.net/dashed-slug/extension-updates-activation/).
 
 = And here's a preview of what is to come: =
 
-- **[More payment gateways](https://en.wikipedia.org/wiki/Payment_gateway)** for spending balances on common e-commerce plugins.
+- A faucet.
+- A way to exchange between various currencies using the CoinPayments API.
+- An interest-paying plugin for investment-type sites.
 - Plugins that **[reward user engagement](https://en.wikipedia.org/wiki/Gamification)**.
 - An **[ad exchange](https://en.wikipedia.org/wiki/Ad_exchange)** plugin to enable administrators to sell ad spaces and
   to let advertisers bid for these ad spaces.
-- **[Faucets](https://en.wikipedia.org/wiki/Bitcoin_faucet)**
-- **Currency exchanges**
 - etc.
 
 **The dashed-slug.net development is driven by your feedback. Send in your feature requests today.**
@@ -171,22 +183,13 @@ At a minimum you should do the following:
 
 = Do I really need to run a full node? bitcoind is too resource-hungry for my server. =
 
-Running a full node requires the full blockchain to be downloaded. This can take tens of GigaBytes on your server.
+Running a full node requires the full blockchain to be downloaded and is best for people who are able to administer a server.
+Remember that a copy of the blockchain can take tens of GigaBytes on your server, so check your available disk and network resources first.
+
 You currently have the following alternative options:
-1. Install and configure the [bittiraha-walletd](https://github.com/prasos/bittiraha-walletd) wallet. Point your RPC API settings to that wallet.
-2. Become a premium dashed-slug.net member and use the
-    [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
-
-From version 1.1.0 onward, this plugin is compatible with the [bittiraha-walletd](https://github.com/prasos/bittiraha-walletd) wallet.
-From the project's description on GitHub:
-
-> Lightweight Bitcoin RPC compatible HD wallet
-> This project is meant as a drop-in replacement for bitcoind for use in lightweight servers.
-
-This is a wallet based on `bitcoinj` and does not store the blockchain locally.
-
-**block.io** is a "wallet as a service" online wallet that is very easy to configure with this plugin.
-Essentially you just need to copy the API keys into your WordPress admin screens.
+1. Use the [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
+2. Use the [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
+3. Install and configure the [bittiraha-walletd](https://github.com/prasos/bittiraha-walletd) wallet. Point your RPC API settings to that wallet. This is a wallet based on `bitcoinj` and does not store the blockchain locally.
 
 = How can I integrate the Bitcoin and Altcoin Wallets plugin with my site's frontend? =
 
@@ -257,6 +260,21 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 2.3.0 =
+- Add: Administrator panel to show all transactions in the system.
+- Change: The `.csv` import functionality is now moved to the transactions admin panel.
+- Change: Transaction requests are now decoupled from transaction executions. They are executed by cron jobs in batches of configurable size and frequency.
+- Add: Transactions can require confirmation by an administrator with `manage_wallets`.
+- Add: Transactions can require the user to click on a link sent by email.
+- Add: Failed transactions are retried a configurable number of times.
+- Add: Transaction retries can be reset by an administrator with `manage_wallets`.
+- Add: Users can now be notified by email if their transaction fails.
+- Add: Frontend transactions lists (wallets_transactions UI) now show the TXID.
+- Add: Frontend transaction lists (wallets_transactions UI) are now color coded based on transaction state.
+- Fix: The minimum number of confirmations reported by get_minconf() was always `1` instead of the user-supplied value.
+- Change: Performance improvement in the code that calculates balances for users (function `get_balance()`).
+- Change: Internal transfers that cause two row inserts are now surrounded by a DB lock and atomic transaction to ensure consistency even in case of an unexpected error.
 
 = 2.2.5 =
 - Fix: Administrator capabilities were erroneously being erased in 2.2.4 when editing other role capabilities
@@ -378,7 +396,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.2.5 fixes a defect introduced in 2.2.4 regarding administrator capabilities.
+Release 2.3.0 is a major milestone for the Bitcoin and Altcoin Wallets WordPress plugin.
+
+The main improvement is that transactions now have a lifecycle and are displayed in the admin panels. Transaction requests are entered as before via the admin interface, but now their execution is decoupled from submission.
+
+Transactions can now require confirmation either by the user that submitted them via email, or by an administrator, or both. Failed transactions can be retried for a configurable amount of times.
+
+To learn more, see the changelog, or study the new Transactions section in the accompanying PDF manual. You can get the PDF manual when you download the bundle from the downloads section on the dashed-slug website.
 
 == Donating ==
 
@@ -397,7 +421,8 @@ These are all the ways you can show your support, if you so choose:
     - [Wordfence](https://infinitewp.com/addons/wordfence/?ref=260 "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
     - [block.io](http://www.block.io/#_l_193__dashed-slug "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
     - [CoinPayments.net](https://www.coinpayments.net/index.php?ref=288913d08a3402c24ed9481f72ba594d "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
-3. **Spread the word** to your friends.
-4. If you wish, you may **donate** any amount [via flattr](https://flattr.com/profile/dashed-slug)
+3. **Report bugs.**
+4. **Spread the word** to your friends.
+5. If you wish, you may **donate** any amount [via flattr](https://flattr.com/profile/dashed-slug)
     or via Bitcoin at `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`.
 

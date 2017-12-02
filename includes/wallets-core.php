@@ -80,10 +80,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			// bind the built-in rpc coin adapter
 			add_action( 'wallets_declare_adapters', array( &$this, 'action_wallets_declare_adapters' ) );
 
-			// these actions record a transaction or address to the DB
-			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
-			add_action( 'wallets_address',	array( &$this, 'action_wallets_address' ) );
-
 			global $wpdb;
 			if ( is_multisite() ) {
 				$prefix = $wpdb->base_prefix;
@@ -114,8 +110,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/**
 		 * Notifications entrypoint. Bound to wallets_notify action, triggered from JSON API.
 		 * Routes `-blocknotify` and `-walletnotify` notifications from the daemon.
-		 * $type can be 'wallet' or 'block'.
-		 * $arg is a txid for wallet notifications or a blockhash for block notifications
+		 * $notification->type can be 'wallet' or 'block' or 'alert'.
+		 * $notification->arg is: a txid for wallet notifications, a blockhash for block notifications, a string for alert notifications
+		 * $notification->symbol is the coin
 		 *
 		 * @internal
 		 */
@@ -168,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.2.5'
+					'2.3.0'
 				);
 			}
 		}
@@ -251,9 +248,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 5;
+			$current_db_revision = 6;
 
-			if ( $installed_db_revision <= $current_db_revision ) {
+			if ( $installed_db_revision < $current_db_revision ) {
+
+				$status_col_exists = intval( $wpdb->get_var( "SELECT count(*) FROM information_schema.COLUMNS WHERE COLUMN_NAME='status' and TABLE_NAME='{$table_name_txs}'") );
 
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
@@ -273,13 +272,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				created_time datetime NOT NULL COMMENT 'when transaction was entered into the system in GMT',
 				updated_time datetime NOT NULL COMMENT 'when transaction was last updated in GMT (e.g. for update to confirmations count)',
 				confirmations mediumint unsigned DEFAULT 0 COMMENT 'amount of confirmations received from blockchain, or null for category==move',
+				status enum('unconfirmed','pending','done','failed','cancelled') NOT NULL DEFAULT 'unconfirmed' COMMENT 'state of transaction',
+				retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed',
+				admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction',
+				user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email',
 				PRIMARY KEY  (id),
 				INDEX account_idx (account),
 				INDEX txid_idx (txid),
+				INDEX blogid_idx (blog_id),
 				UNIQUE KEY `uq_tx_idx` (`symbol`, `address`, `txid`)
 				) $charset_collate;";
 
 				dbDelta( $sql );
+
+				// all existing transactions are assumed done
+				if ( ! $status_col_exists ) {
+					$wpdb->query( "UPDATE $table_name_txs SET status = 'done'" );
+				}
 
 				$sql = "CREATE TABLE {$table_name_adds} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -389,70 +398,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			return $this->_adapters[ $symbol ];
 		}
 
-		/**
-		 *_adapters Account ID corresponding to an address.
-		 *
-		 * Returns the WordPress user ID for the account that has the specified address in the specified coin's wallet.
-		 *
-		 * @since 2.1.0 Added $check_capabilities argument
-		 * @since 1.0.0 Introduced
-		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
-		 * @param string $address The address
-		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
-		 * @throws Exception If the address is not associated with an account.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
-		 * @return integer The WordPress user ID for the account found.
-		 */
-		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false ) {
-			global $wpdb;
 
-			if (
-				$check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
-			) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
-			}
-
-			$table_name_adds = self::$table_name_adds;
-			$account = $wpdb->get_var( $wpdb->prepare(
-				"
-				SELECT
-					account
-				FROM
-					$table_name_adds a
-				WHERE
-					blog_id = %d AND
-					symbol = %s AND
-					address = %s
-				ORDER BY
-					created_time DESC
-				LIMIT 1
-				",
-				get_current_blog_id(),
-				$symbol,
-				$address
-			) );
-
-			if ( is_null( $account ) ) {
-				throw new Exception( sprintf( __( 'Could not get account for %s address %s', 'wallets' ), $symbol, $address ), self::ERR_GET_COINS_INFO );
-			}
-
-			return intval( $account );
-		}
 
 
 		/**
 		 * Get user's wallet balance.
 		 *
-		 * Get the current logged in user's total wallet balance for a specific coin. If a minimum number of confirmations
-		 * is specified, only deposits with than number of confirmations or higher are counted. All withdrawals and
-		 * moves are counted at all times.
+		 * Get the current logged in user's total wallet balance for a specific coin. Only transactions with status = 'done' are counted.
+		 * This replaces the previous filtering based on the $minconf argument.
 		 *
 		 * @api
-		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 2.3.0 The $minconf parameter is deprecated.
+		 * @since 2.1.0 Added $check_capabilities argument.
 		 * @since 1.0.0 Introduced
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
-		 * @param integer $minconf (optional) Minimum number of confirmations. If left out, the default adapter setting is used.
+		 * @param null $minconf Ignored.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return float The balance.
@@ -465,34 +425,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
 
-			$adapter = $this->get_coin_adapters( $symbol );
+			static $user_balances = null;
 
-			if ( ! is_int( $minconf ) ) {
-				$minconf = $adapter->get_minconf();
-			}
+			if ( is_null( $user_balances ) ) {
 
-			global $wpdb;
-			$table_name_txs = self::$table_name_txs;
-			$balance = $wpdb->get_var( $wpdb->prepare(
-				"
+				global $wpdb;
+				$table_name_txs = self::$table_name_txs;
+
+				$user_balances_query= $wpdb->prepare(
+					"
 					SELECT
-						sum(amount)
+						symbol,
+						sum(amount) AS balance
 					FROM
 						$table_name_txs
 					WHERE
 						blog_id = %d AND
-						symbol = %s AND
-						account = %s AND (
-							confirmations >= %d OR
-							category != 'deposit'
-						)
-				",
-				get_current_blog_id(),
-				$adapter->get_symbol(),
-				self::get_current_account_id(),
-				intval( $minconf )
-			) );
-			return floatval( $balance );
+						account = %s AND
+						status = 'done'
+					GROUP BY
+						symbol
+					",
+					get_current_blog_id(),
+					self::get_current_account_id()
+				);
+
+				$user_balances = $wpdb->get_results( $user_balances_query );
+			}
+
+			foreach ( $user_balances as &$user_balance ) {
+				if ( $user_balance->symbol == $symbol ) {
+					return $user_balance->balance;
+				}
+			}
+
+			return 0;
 		}
 
 		/**
@@ -557,6 +524,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			foreach ( $txs as &$tx ) {
 				unset( $tx->id );
+				unset( $tx->blog_id );
 			}
 
 			return $txs;
@@ -567,6 +535,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Withdraw from current logged in user's account.
 		 *
 		 * @api
+		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
 		 * @since 2.1.0 Added $check_capabilities argument
 		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
@@ -595,10 +564,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 			$table_name_options = $wpdb->options;
 
+			// start db transaction and lock tables
+			$wpdb->query( 'SET autocommit=0' );
 			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_options WRITE, $table_name_adds READ" );
 
 			try {
-				$balance = $this->get_balance( $symbol );
+				$balance = $this->get_balance( $symbol, null, $check_capabilities );
 				$fee = $adapter->get_withdraw_fee();
 				$amount_plus_fee = $amount + $fee;
 
@@ -616,41 +587,52 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 							self::ERR_DO_WITHDRAW );
 				}
 
-				$txid = $adapter->do_withdraw( $address, $amount, $comment, $comment_to );
+				$time = current_time( 'mysql', true );
 
-				if ( ! is_string( $txid ) ) {
-					throw new Exception( __( 'Adapter did not return TXID for withdrawal', 'wallets' ), self::ERR_DO_WITHDRAW );
+				$txrow = array(
+					'blog_id' => get_current_blog_id(),
+					'category' => 'withdraw',
+					'account' => self::get_current_account_id(),
+					'address' => $address,
+					'symbol' => $symbol,
+					'amount' => -floatval( $amount_plus_fee ),
+					'fee' => $fee,
+					'created_time' => $time,
+					'updated_time' => $time,
+					'comment' => $comment,
+					'status' => 'unconfirmed',
+					'retries' => get_option( 'wallets_retries_withdraw', 1 ),
+				);
+
+				$affected = $wpdb->insert(
+					self::$table_name_txs,
+					$txrow,
+					array( '%d', '%s', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d' )
+				);
+
+				if ( false === $affected ) {
+					throw new Exception( 'DB insert failed ' . print_r( $txrow, true ) );
 				}
-
-				$current_time_gmt = current_time( 'mysql', true );
-
-				$txrow = new stdClass();
-				$txrow->category = 'withdraw';
-				$txrow->account = self::get_current_account_id();
-				$txrow->address = $address;
-				$txrow->txid = $txid;
-				$txrow->symbol = $symbol;
-				$txrow->amount = -floatval( $amount_plus_fee );
-				$txrow->fee = $fee;
-				$txrow->created_time = $current_time_gmt;
-				$txrow->updated_time = $txrow->created_time;
-				$txrow->comment = $comment;
-
-				do_action( 'wallets_transaction', $txrow );
+				$txrow['id'] = $wpdb->insert_id;
 
 			} catch ( Exception $e ) {
+				$wpdb->query( 'ROLLBACK' );
 				$wpdb->query( 'UNLOCK TABLES' );
 				throw $e;
 			}
+			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			do_action( 'wallets_withdraw', (array)$txrow );
+			if ( get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
+				do_action( 'wallets_send_user_confirm_email', $txrow );
+			}
 		}
 
 		/**
 		 * Move funds from the current logged in user's balance to the specified user.
 		 *
 		 * @api
+		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
 		 * @since 2.1.0 Added $check_capabilities argument
 		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
@@ -683,6 +665,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 			$table_name_options = $wpdb->options;
 
+			// start db transaction and lock tables
+			$wpdb->query( 'SET autocommit=0' );
 			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_options WRITE, $table_name_adds READ" );
 
 			try {
@@ -714,7 +698,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				sort( $tags );
 				$tags = implode( ' ', $tags );
 
-				$row1 = array(
+				$txrow1 = array(
 					'blog_id' => get_current_blog_id(),
 					'category' => 'move',
 					'tags' => trim( "send $tags" ),
@@ -726,20 +710,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'fee' => $fee,
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
-					'comment' => $comment
+					'comment' => $comment,
+					'status' => 'unconfirmed',
+					'retries' => get_option( 'wallets_retries_move', 1 ),
 				);
 
-				$affected = $wpdb->insert(
-					self::$table_name_txs,
-					$row1,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
-				);
-
-				if ( false === $affected ) {
-					error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row1, true ) );
-				}
-
-				$row2 = array(
+				$txrow2 = array(
 					'blog_id' => get_current_blog_id(),
 					'category' => 'move',
 					'tags' => trim( "receive $tags" ),
@@ -751,27 +727,47 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'fee' => 0,
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
-					'comment' => $comment
+					'comment' => $comment,
+					'status' => 'unconfirmed',
+					'retries' => get_option( 'wallets_retries_move', 1 ),
 				);
 
-				$wpdb->insert(
+				$affected = $wpdb->insert(
 					self::$table_name_txs,
-					$row2,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
+					$txrow1,
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d' )
 				);
 
 				if ( false === $affected ) {
-					error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row2, true ) );
+					throw new Exception( 'DB insert failed ' . print_r( $txrow1, true ) );
 				}
 
+				$txrow1['id'] = $wpdb->insert_id;
+
+				$affected = $wpdb->insert(
+					self::$table_name_txs,
+					$txrow2,
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d' )
+				);
+
+				if ( false === $affected ) {
+					throw new Exception( 'DB insert failed ' . print_r( $txrow2, true ) );
+				}
+
+				$txrow1['id'] = $wpdb->insert_id;
+
 			} catch ( Exception $e ) {
+				$wpdb->query( 'ROLLBACK' );
 				$wpdb->query( 'UNLOCK TABLES' );
 				throw $e;
 			}
+			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			do_action( 'wallets_move_send', $row1 );
-			do_action( 'wallets_move_receive', $row2 );
+			if ( get_option( 'wallets_confirm_move_user_enabled' ) ) {
+				do_action( 'wallets_send_user_confirm_email', $txrow1 );
+			}
+
 		}
 
 		/**
@@ -832,197 +828,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		} // function get_new_address()
 
-
-		//////// notification API
-
-		/**
-		 * Handler attached to the action wallets_transaction.
-		 *
-		 * Called by the coin adapter when a transaction is first seen or is updated.
-		 * Adds new deposits and updates confirmation counts for existing deposits and withdrawals.
-		 *
-		 * @internal
-		 * @param stdClass $tx The transaction details.
-		 */
-		public function action_wallets_transaction( $tx ) {
-
-			$adapter = $this->get_coin_adapters( $tx->symbol );
-
-			if ( $adapter ) {
-
-				if ( ! isset( $tx->created_time ) ) {
-					$tx->created_time = time();
-				}
-
-				if ( is_numeric( $tx->created_time ) ) {
-					$tx->created_time = date( DATE_ISO8601, $tx->created_time );
-				}
-
-				$current_time_gmt = current_time( 'mysql', true );
-				$table_name_txs = self::$table_name_txs;
-
-				global $wpdb;
-
-				if ( isset( $tx->category ) ) {
-
-					if ( 'deposit' == $tx->category ) {
-						try {
-							$account_id = $this->get_account_id_for_address( $tx->symbol, $tx->address );
-						} catch ( Exception $e ) {
-							// we don't know about this address - ignore it
-							return;
-						}
-
-						$affected = $wpdb->query( $wpdb->prepare(
-							"
-								INSERT INTO $table_name_txs(
-									blog_id,
-									category,
-									account,
-									address,
-									txid,
-									symbol,
-									amount,
-									created_time,
-									updated_time,
-									confirmations)
-								VALUES(%d,%s,%d,%s,%s,%s,%20.10f,%s,%s,%d)
-								ON DUPLICATE KEY UPDATE updated_time = %s , confirmations = %d
-							",
-							get_current_blog_id(),
-							$tx->category,
-							$account_id,
-							$tx->address,
-							$tx->txid,
-							$tx->symbol,
-							$tx->amount,
-							$tx->created_time,
-							$current_time_gmt,
-							$tx->confirmations,
-
-							$current_time_gmt,
-							$tx->confirmations
-						) );
-
-						$row = array(
-							'account' => $account_id,
-							'address' => $tx->address,
-							'txid' => $tx->txid,
-							'symbol' => $tx->symbol,
-							'amount' => $tx->amount,
-							'created_time' => $tx->created_time,
-							'confirmations' => $tx->confirmations
-						);
-
-						if ( false === $affected ) {
-							error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
-						}
-
-						if ( 1 === $affected ) {
-							// row was inserted, not updated
-							do_action( 'wallets_deposit', $row );
-						}
-
-					} elseif ( 'withdraw' == $tx->category ) {
-
-						$affected = 0;
-
-						// try to record as new withdrawal if this is not an old transaction
-						// old transactions that are rediscovered via cron do not have an account id
-
-						if ( isset( $tx->account ) )  {
-
-							$affected = $wpdb->insert(
-								self::$table_name_txs,
-								array(
-									'blog_id' => get_current_blog_id(),
-									'category' => 'withdraw',
-									'account' => $tx->account,
-									'address' => $tx->address,
-									'txid' => $tx->txid,
-									'symbol' => $tx->symbol,
-									'amount' => $tx->amount,
-									'fee' => $tx->fee,
-									'comment' => $tx->comment,
-									'created_time' => $tx->created_time,
-									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0
-								),
-								array( '%d', '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%d' )
-							);
-						}
-
-						if ( 1 != $affected ) {
-
-							// this is a withdrawal update. set confirmations.
-
-							$wpdb->update(
-								self::$table_name_txs,
-								array(
-									'updated_time'	=> $current_time_gmt,
-									'confirmations'	=> $tx->confirmations,
-								),
-								array(
-									'address' => $tx->address,
-									'txid' => $tx->txid,
-									'blog_id' => get_current_blog_id()
-								),
-								array( '%s', '%d' ),
-								array( '%s', '%s', '%d' )
-							);
-
-							if ( false === $affected ) {
-								error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
-							}
-						}
-
-					} // end if category == withdraw
-				} // end if isset category
-			} // end if false !== $adapter
-		} // end function action_wallets_transaction()
-
-		/**
-		 * Handler attached to the action wallets_address.
-		 *
-		 * Called by core or the coin adapter when a new user-address mapping is seen..
-		 * Adds the link between an address and a user.
-		 * Core should always record new addresses. Adapters that choose to notify about
-		 * user-address mappings do so as a failsafe mechanism only. Addresses that have
-		 * already been assigned are not reaassigned because the address column is UNIQUE
-		 * on the DB.
-		 *
-		 * @internal
-		 * @param stdClass $tx The address mapping.
-		 */
-		public function action_wallets_address( $address ) {
-			global $wpdb;
-			$table_name_adds = self::$table_name_adds;
-
-			if ( ! isset( $address->created_time ) ) {
-				$address->created_time = time();
-			}
-
-			if ( is_numeric( $address->created_time ) ) {
-				$address->created_time = date( DATE_ISO8601, $address->created_time );
-			}
-
-			// Disable errors about duplicate inserts, since $wpdb has no INSERT IGNORE
-			$suppress_errors = $wpdb->suppress_errors;
-			$wpdb->suppress_errors();
-
-			$wpdb->insert(
-				$table_name_adds,
-				array(
-					'blog_id' => get_current_blog_id(),
-					'account' => $address->account,
-					'symbol' => $address->symbol,
-					'address' => $address->address,
-					'created_time' => $address->created_time
-				),
-				array( '%d', '%d', '%s', '%s', '%s' )
-			);
-
-			$wpdb->suppress_errors( $suppress_errors );
-		}
 	}
 }
 

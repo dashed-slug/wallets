@@ -15,12 +15,22 @@
 					<th class="fee"><?php esc_html_e( 'Fee', 'wallets' ); ?></th>
 					<th class="from user"><?php esc_html_e( 'From', 'wallets' ); ?></th>
 					<th class="to user"><?php esc_html_e( 'To', 'wallets' ); ?></th>
+					<th class="txid"><?php esc_html_e( 'Tx ID', 'wallets' ); ?></th>
 					<th class="comment"><?php esc_html_e( 'Comment', 'wallets' ); ?></th>
 					<th class="confirmations"><?php esc_html_e( 'Confirmations', 'wallets' ); ?></th>
+					<th class="status"><?php esc_html_e( 'Status', 'wallets' ); ?></th>
+					<th class="retries"><?php esc_html_e( 'Retries&nbsp;left', 'wallets' ); ?></th>
+					<?php
+					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					<th class="admin_confirm"><?php esc_html_e( 'Admin&nbsp;confirm', 'wallets' ); ?></th>
+					<?php endif;
+					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<th class="admin_confirm"><?php esc_html_e( 'User&nbsp;confirm', 'wallets' ); ?></th>
+					<?php endif; ?>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: wallets[selectedCoin()].transactions">
-				<tr data-bind="if: ( category == 'withdraw' )" class="withdraw">
+				<tr data-bind="if: ( category == 'withdraw' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
@@ -28,11 +38,21 @@
 					<td class="fee" data-bind="text: fee_string"></td>
 					<td class="from user" data-bind="text: '<?php esc_attr_e( 'me', 'wallets' ); ?>'"></td>
 					<td class="to user" data-bind="text: address"></td>
+					<td class="txid" data-bind="text: txid"></td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
+					<td class="status" data-bind="text: status"></td>
+					<td class="retries" data-bind="text: ( 'unconfirmed' == status || 'pending' == status ) ? retries : ''"></td>
+					<?php
+					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					<td class="admin_confirm" data-bind="text: parseInt( admin_confirm ) ? '\u2611' : '\u2610' "></td>
+					<?php endif;
+					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
+					<?php endif; ?>
 				</tr>
 
-				<tr data-bind="if: ( category == 'deposit' )" class="deposit">
+				<tr data-bind="if: ( category == 'deposit' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
@@ -40,11 +60,21 @@
 					<td class="fee" data-bind="text: fee_string"></td>
 					<td class="from user" data-bind="text: address"></td>
 					<td class="to user" data-bind="text: '<?php esc_attr_e( 'me', 'wallets' ); ?>'"></td>
+					<td class="txid" data-bind="text: txid"></td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
+					<td class="status" data-bind="text: status"></td>
+					<td class="retries"></td>
+					<?php
+					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					<td class="admin_confirm"></td>
+					<?php endif;
+					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<td class="user_confirm"></td>
+					<?php endif; ?>
 				</tr>
 
-				<tr data-bind="if: ( category == 'move' )" class="move">
+				<tr data-bind="if: ( category == 'move' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
@@ -52,8 +82,18 @@
 					<td class="fee" data-bind="text: fee_string"></td>
 					<td class="from user" data-bind="text: (amount>= 0 ? other_account_name : '<?php esc_attr_e( 'me', 'wallets' ); ?>')"></td>
 					<td class="to user" data-bind="text: (amount < 0 ? other_account_name : '<?php esc_attr_e( 'me', 'wallets' ); ?>')"></td>
+					<td class="txid" data-bind="text: txid"></td>
 					<td class="comment" data-bind="text: comment"></td>
-					<td class="confirmations">-</td>
+					<td class="confirmations"></td>
+					<td class="status" data-bind="text: status"></td>
+					<td class="retries"></td>
+					<?php
+					if ( get_option( 'wallets_confirm_move_admin_enabled' ) || get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					<td class="admin_confirm" data-bind="text: admin_confirm ? '\u2611' : '\u2610' "></td>
+					<?php endif;
+					if ( get_option( 'wallets_confirm_move_user_enabled' ) || get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
+					<?php endif; ?>
 				</tr>
 			</tbody>
 		</table>
