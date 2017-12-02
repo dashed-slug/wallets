@@ -32,16 +32,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 			// admin UI bindings
 			add_action( 'wallets_admin_menu', array( &$this, 'action_wallets_admin_menu' ) );
-			add_action( 'admin_init', array( &$this, 'show_notices' ) );
 			add_action( 'admin_init', array( &$this, 'show_settings' ) );
 
-			// listens for notifications from the daemon (through the JSON API)
-			add_action( 'wallets_notify', array( &$this, 'action_wallets_notify' ) );
-			add_action( 'wallets_notify_wallet_BTC', array( &$this, 'action_wallets_notify_wallet_BTC' ) );
-			add_action( 'wallets_notify_block_BTC', array( &$this, 'action_wallets_notify_block_BTC' ) );
+			$enabled = get_option( "{$this->option_slug}_general_enabled" );
+			if ( $enabled ) {
+				add_action( 'admin_init', array( &$this, 'show_notices' ) );
 
-			// registers this adapter
-			add_filter( 'wallets_coin_adapters', 	array( &$this, 'filter_coin_adapter' ) );
+				// listen for notifications from the daemon (through the JSON API)
+				add_action( 'wallets_notify', array( &$this, 'action_wallets_notify' ) );
+				add_action( 'wallets_notify_wallet_BTC', array( &$this, 'action_wallets_notify_wallet_BTC' ) );
+				add_action( 'wallets_notify_block_BTC', array( &$this, 'action_wallets_notify_block_BTC' ) );
+
+				// make this adapter available
+				add_filter( 'wallets_coin_adapters', 	array( &$this, 'filter_coin_adapter' ) );
+			}
 		}
 
 		public static function get_instance() {
@@ -53,10 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 		/** @internal */
 		public function filter_coin_adapter( $coins ) {
-			$enabled = get_option( "{$this->option_slug}_general_enabled" );
-			if ( $enabled ) {
-				$coins[ self::SYMBOL ] = $this;
-			}
+			$coins[ self::SYMBOL ] = $this;
 			return $coins;
 		}
 
@@ -115,33 +116,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 		/** @internal */
 		public function show_notices() {
-			$enabled = get_option( "{$this->option_slug}_general_enabled" );
-			if ( $enabled ) {
-				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+			$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
-				if ( ! function_exists( 'curl_init' ) ) {
+			if ( ! function_exists( 'curl_init' ) ) {
 
-					$notices->error(
-						__( 'The Bitcoin and Altcoin Wallets plugin will not be able to work correctly on your system because you have not installed the PHP curl module. '.
-							'The module must be installed to connect to wallet daemons via their RPC APIs.', 'wallets' ),
-						'no-php-curl' );
-				}
+				$notices->error(
+					__( 'The Bitcoin and Altcoin Wallets plugin will not be able to work correctly on your system because you have not installed the PHP curl module. '.
+						'The module must be installed to connect to wallet daemons via their RPC APIs.', 'wallets' ),
+					'no-php-curl' );
+			}
 
-				try {
-					// will throw exception if daemon is not contactable
-					$this->get_balance();
+			try {
+				// will throw exception if daemon is not contactable
+				$this->get_balance();
 
-				} catch ( Exception $e ) {
+			} catch ( Exception $e ) {
 
-					$settings_url = admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
+				$settings_url = admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 
-					$wallet_url = site_url( 'wallets/notify/' . self::SYMBOL . '/wallet/%s' );
-					$block_url = site_url( 'wallets/notify/' . self::SYMBOL . '/block/%s' );
-					$wp_ip = $this->server_ip();
-					$user = get_option( "{$this->option_slug}_rpc_user" );
-					$port = intval( get_option( "{$this->option_slug}_rpc_port" ) );
+				$wallet_url = site_url( 'wallets/notify/' . self::SYMBOL . '/wallet/%s' );
+				$block_url = site_url( 'wallets/notify/' . self::SYMBOL . '/block/%s' );
+				$wp_ip = $this->server_ip();
+				$user = get_option( "{$this->option_slug}_rpc_user" );
+				$port = intval( get_option( "{$this->option_slug}_rpc_port" ) );
 
-					$config = <<<CFG
+				$config = <<<CFG
 server=1
 rpcallowip=127.0.0.1
 rpcallowip=$wp_ip
@@ -152,28 +151,27 @@ rpcuser=$user
 rpcpassword=<<<ENTER YOUR RPC API PASSWORD HERE>>>
 CFG;
 
-					$notices->error(
-						__( '<code>bitcoind</code> cannot be contacted.', 'wallets' ) . '<ol><li>' .
+				$notices->error(
+					__( '<code>bitcoind</code> cannot be contacted.', 'wallets' ) . '<ol><li>' .
 
-						sprintf(
-							__( 'You need to make sure that your <a href="%s">Bitcoin RPC settings</a> are correctly configured. ', 'wallets' ),
-							esc_attr( $settings_url ) ) .
-						'</li><li><p>' .
+					sprintf(
+						__( 'You need to make sure that your <a href="%s">Bitcoin RPC settings</a> are correctly configured. ', 'wallets' ),
+						esc_attr( $settings_url ) ) .
+					'</li><li><p>' .
 
-						__( 'Then edit your <code>bitcoin.conf</code> and append the following:', 'wallets' ) . '</p>' .
+					__( 'Then edit your <code>bitcoin.conf</code> and append the following:', 'wallets' ) . '</p>' .
 
-						'<textarea onclick="this.focus();this.select();" readonly="readonly" style="min-height: 12em; min-width: 64em;">' .
-							esc_html( $config ) .
-						'</textarea></li><li>' .
+					'<textarea onclick="this.focus();this.select();" readonly="readonly" style="min-height: 12em; min-width: 64em;">' .
+						esc_html( $config ) .
+					'</textarea></li><li>' .
 
-						__( 'Finally, start the bitcoin daemon.', 'wallets' ) . '</li></ol><p>' .
+					__( 'Finally, start the bitcoin daemon.', 'wallets' ) . '</li></ol><p>' .
 
-						__( 'You are advised to not dismiss this error manually. ' .
-							'It will stop showing once the daemon can be contacted.',
-							'wallets' ),
-						'bitcoind-down'
-					);
-				}
+					__( 'You are advised to not dismiss this error manually. ' .
+						'It will stop showing once the daemon can be contacted.',
+						'wallets' ),
+					'bitcoind-down'
+				);
 			}
 		}
 
@@ -298,7 +296,7 @@ CFG;
 
 			add_settings_field(
 				"{$this->option_slug}_fees_move",
-				__( 'Transaction fees between users', 'wallets' ),
+				__( 'Transaction fee between users', 'wallets' ),
 				array( &$this, 'settings_currency_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}_fees",
@@ -357,7 +355,7 @@ CFG;
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			echo '<p>' . esc_html( 'General settings regarding this coin adapter.', 'wallets' ) . '</p>';
+			echo '<p>' . esc_html( 'Make sure that any other Bitcoin adapters are disabled when you enable this one.', 'wallets' ) . '</p>';
 
 		}
 
@@ -377,8 +375,18 @@ CFG;
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			echo '<p>' . esc_html( 'You can setup fees related to Bitcoins here.', 'wallets' ) . '</p>';
-
+			?><p><?php esc_html_e( 'You can set two types of fees:', 'wallets'); ?></p>
+				<ul>
+					<li>
+						<strong><?php esc_html_e( 'Transaction fees', 'wallets' )?></strong> &mdash;
+						<?php esc_html_e( 'These are the fees a user pays when they send funds to other users.', 'wallets' )?>
+					</li><li>
+						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' )?></strong> &mdash;
+						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' )?></p>
+						<p style="font-size: smaller"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees use the wallet settings in bitcoin.conf: paytxfee, mintxfee, maxtxfee, etc.', 'wallets' ) ?>
+						<a href="https://en.bitcoin.it/wiki/Running_Bitcoin" target="_blank"><?php esc_html_e( 'Refer to the documentation for details.', 'wallets' )?></a></p>
+					</li>
+				</ul><?php
 		}
 
 		/** @internal */
@@ -607,53 +615,80 @@ CFG;
 		}
 
 		/**
-		 * Total amount of coins ever deposited to an address.
+		 * Scrapes transaction IDs and passes them to the wallets core for recording in the transactions DB table.
 		 *
-		 * This corresponds directly to `getreceivedbyaddress` in Bitcoin core and friends.
-		 *
-		 * @api
-		 * @uses Dashed_Slug_Wallets_Bitcoin->get_minconf()
-		 * @return number Total amount of coins ever deposited to specified address.
 		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @return void
 		 */
-
-		public function get_received_by_address( $address ) {
-			$result = $this->rpc->getreceivedbyaddress( $address, $this->get_minconf() );
-
-			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+		public function cron() {
+			try {
+				$this->cron_scrape_listtransactions();
+				$this->cron_scrape_listreceivedbyaddress();
+			} catch ( Exception $e ) {
+				// bittiraha lightweight wallet only implements listunspent, not listtransactions or listreceivedbyaddress
+				$this->cron_scrape_listunspent();
 			}
-			return floatval( $result );
 		}
 
-		/**
-		 * Call the listreceivedbyaddress RPC command on RPC APIs and scrapes transaction IDs.
-		 *
-		 * This is an optional command that not all adapters need to implement.
-		 * It helps in the doublecheck_deposits mechanism.
-		 *
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
-		 * @return string[] Transaction IDs in the wallet.
-		 */
-		public function list_transactions() {
-			$result = $this->rpc->listreceivedbyaddress();
-
+		private function cron_scrape_listtransactions() {
+			$result = $this->rpc->listtransactions( '*', 32 );
 			if ( false === $result ) {
 				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 
-			$txids = array();
+			foreach ( $result as &$transaction ) {
+				if ( isset( $transaction['txid'] ) ) {
+					do_action( 'wallets_notify_wallet_BTC', $transaction['txid'] );
+				}
+			}
+		}
+
+		private function cron_scrape_listreceivedbyaddress() {
+			$result = $this->rpc->listreceivedbyaddress();
+			if ( false === $result ) {
+				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+			}
 
 			if ( is_array( $result ) ) {
 				foreach ( $result as &$address ) {
 					if ( isset( $address['txids'] ) ) {
 						foreach ( $address['txids'] as $txid ) {
-							$txids[ $txid ] = true;
+							do_action( 'wallets_notify_wallet_BTC', $txid );
 						}
 					}
 				}
 			}
-			return array_keys( $txids );
+		}
+
+		private function cron_scrape_listunspent() {
+			$result = $this->rpc->listunspent();
+			if ( false === $result ) {
+				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+			}
+
+			if ( is_array( $result ) ) {
+				foreach ( $result as &$unspent ) {
+					if ( isset( $unspent['txid'] ) ) {
+						try {
+							do_action( 'wallets_notify_wallet_BTC', $unspent['txid'] );
+						} catch ( Exception $e ) {
+
+							// bittiraha lightweight wallet does not implement gettransaction
+							$txrow = new stdClass();
+							$txrow->symbol = self::SYMBOL;
+							$txrow->txid= $unspent['txid'];
+							$txrow->address = $unspent['address'];
+							$txrow->amount = $unspent['amount'];
+							$txrow->confirmations = $unspent['confirmations'];
+							$txrow->created_time = time();
+							$txrow->category = 'deposit';
+
+							do_action( 'wallets_transaction', $txrow );
+
+						}
+					}
+				}
+			}
 		}
 
 		/**
@@ -751,8 +786,12 @@ CFG;
 					}
 
 					switch ( $row['category'] ) {
-						case 'send':		$tx->category = 'withdraw'; break;
-						case 'receive':		$tx->category = 'deposit'; break;
+						case 'send':
+							$tx->category = 'withdraw'; break;
+						case 'receive':
+							$tx->category = 'deposit'; break;
+						default:
+							return;
 					}
 
 					do_action( 'wallets_transaction', $tx );

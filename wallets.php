@@ -2,9 +2,9 @@
 /*
  * Plugin Name: Bitcoin and Altcoin Wallets
  * Description: Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
- * Version: 1.2.0
+ * Version: 2.0.0
  * Plugin URI: https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
- * Author: Dashed-Slug <info@dashed-slug.net>
+ * Author: dashed-slug <info@dashed-slug.net>
  * Author URI: http://dashed-slug.net
  * Text Domain: wallets
  * Domain Path: /languages/
@@ -29,7 +29,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- Copyright Dashed-Slug <info@dashed-slug.net>
+ Copyright dashed-slug <info@dashed-slug.net>
  */
 
 

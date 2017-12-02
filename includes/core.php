@@ -77,6 +77,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// actions defined by this plugin
 			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
+			add_action( 'wallets_address',	array( &$this, 'action_wallets_address' ) );
+
 
 			add_action( 'wallets_withdraw',		array( &$this, 'action_withdraw' ) );
 			add_action( 'wallets_move_send',		array( &$this, 'action_move_send' ) );
@@ -85,10 +87,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// wp_cron mechanism for double-checking for deposits
 			add_filter( 'cron_schedules', array( &$this, 'filter_cron_schedules' ) );
-			add_action( 'wallets_doublecheck_deposits', array( &$this, 'action_wallets_doublecheck_deposits') );
-			if ( false === wp_next_scheduled( 'wallets_doublecheck_deposits' ) ) {
+			add_action( 'wallets_periodic_checks', array( &$this, 'action_wallets_periodic_checks') );
+			if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
 				$cron_interval = get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-				wp_schedule_event( time(), $cron_interval, 'wallets_doublecheck_deposits' );
+				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
 			}
 
 			global $wpdb;
@@ -158,7 +160,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'1.2.0'
+				'2.0.0'
 			);
 		}
 
@@ -192,7 +194,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 1;
+			$current_db_revision = 2;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 
@@ -228,7 +230,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
 				PRIMARY KEY  (id),
 				INDEX retrieve_idx (account,symbol),
-				INDEX lookup_idx (address)
+				INDEX lookup_idx (address),
+				UNIQUE KEY `uq_ad_idx` (`address`, `symbol`)
 				) $charset_collate;";
 
 				dbDelta( $sql );
@@ -338,53 +341,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/**
 		 * Get user's wallet balance.
 		 *
-		 * Get the current logged in user's total wallet balance for the specified coin.
-		 *
-		 * Internally the balance is calculated by summing all `getreceivedbyaddress` for all the user's deposit addresses,
-		 * minus all moves and withdrawals associated with the user. Calls to `getreceivedbyaddress` are cached for 1 minute.
+		 * Get the current logged in user's total wallet balance for a specific coin. If a minimum number of confirmations
+		 * is specified, only deposits with than number of confirmations or higher are counted. All withdrawals and
+		 * moves are counted at all times.
 		 *
 		 * @api
 		 * @since 1.0.0
-		 * @return float The user's balance.
+		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
+		 * @param integer $minconf (optional) Minimum number of confirmations. If left out, the default adapter setting is used.
+		 * @return float The balance.
 		 */
-		public function get_balance( $symbol ) {
+		public function get_balance( $symbol, $minconf = null ) {
 			$adapter = $this->get_coin_adapters( $symbol );
+
+			if ( ! is_int( $minconf ) ) {
+				$minconf = $adapter->get_minconf();
+			}
 
 			global $wpdb;
 			$table_name_txs = self::$table_name_txs;
-			$table_name_adds = self::$table_name_adds;
-
-			$balance = 0;
-
-			$deposit_addresses = $wpdb->get_results( $wpdb->prepare(
-				"
-					SELECT
-						address
-					FROM
-						$table_name_adds
-					WHERE
-						symbol = %s AND
-						account = %d
-				",
-				$symbol,
-				$this->account
-			) );
-
-			// plus all deposits
-			foreach ( $deposit_addresses as &$deposit_address_row ) {
-				$deposit_address = $deposit_address_row->address;
-
-				$transient_key = md5( "wallets-received-$deposit_address");
-				$address_deposit_amount = get_transient( $transient_key );
-				if ( false === $address_deposit_amount ) {
-					$address_deposit_amount = $adapter->get_received_by_address( $deposit_address );
-					set_transient( $transient_key, $address_deposit_amount, MINUTE_IN_SECONDS );
-				}
-				$balance += $address_deposit_amount;
-			}
-
-			// minus all payments and withdrawals
-			$balance += floatval( $wpdb->get_var( $wpdb->prepare(
+			$balance = $wpdb->get_var( $wpdb->prepare(
 				"
 					SELECT
 						sum(amount)
@@ -392,13 +368,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						$table_name_txs
 					WHERE
 						symbol = %s AND
-						account = %s AND
-						category != 'deposit'
+						account = %s AND (
+							confirmations >= %d OR
+							category != 'deposit'
+						)
 				",
 				$adapter->get_symbol(),
-				intval( $this->account )
-			) ) );
-
+				intval( $this->account ),
+				intval( $minconf )
+			) );
 			return floatval( $balance );
 		}
 
@@ -471,11 +449,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '' ) {
 			$adapter = $this->get_coin_adapters( $symbol );
 
+			global $wpdb;
+
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
+			$table_name_options = $wpdb->options;
 
-			global $wpdb;
-			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_adds READ" );
+			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_options WRITE, $table_name_adds READ" );
 
 			try {
 				$balance = $this->get_balance( $symbol );
@@ -542,11 +522,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public function do_move( $symbol, $toaccount, $amount, $comment) {
 			$adapter = $this->get_coin_adapters( $symbol );
 
+			global $wpdb;
+
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
+			$table_name_options = $wpdb->options;
 
-			global $wpdb;
-			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_adds READ" );
+			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_options WRITE, $table_name_adds READ" );
 
 			try {
 				$balance = $this->get_balance( $symbol );
@@ -654,16 +636,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$address = $adapter->get_new_address();
 				$current_time_gmt = current_time( 'mysql', true );
 
-				$wpdb->insert(
-					$table_name_adds,
-					array(
-						'account' => $this->account,
-						'symbol' => $symbol,
-						'address' => $address,
-						'created_time' => $current_time_gmt
-					),
-					array( '%d', '%s', '%s', '%s' )
-				);
+				$address_row = new stdClass();
+				$address_row->account = $this->account;
+				$address_row->symbol = $symbol;
+				$address_row->address = $address;
+				$address_row->created_time = $current_time_gmt;
+
+				// trigger action that inserts user-address mapping to db
+				do_action( 'wallets_address', $address_row );
 			}
 
 			return $address;
@@ -695,7 +675,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				if ( isset( $tx->category ) ) {
 
 					if ( 'deposit' == $tx->category ) {
-						$account_id = $this->get_account_id_for_address( $tx->symbol, $tx->address );
+						try {
+							$account_id = $this->get_account_id_for_address( $tx->symbol, $tx->address );
+						} catch ( Exception $e ) {
+							// we don't know about this address - ignore it
+							return;
+						}
 
 						$affected = $wpdb->query( $wpdb->prepare(
 							"
@@ -766,6 +751,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				} // end if isset category
 			} // end if false !== $adapter
 		} // end function action_wallets_transaction()
+
+		/**
+		 * Handler attached to the action wallets_address.
+		 *
+		 * Called by core or the coin adapter when a new user-address mapping is seen..
+		 * Adds the link between an address and a user.
+		 * Core should always record new addresses. Adapters that choose to notify about
+		 * user-address mappings do so as a failsafe mechanism only. Addresses that have
+		 * already been assigned are not reaassigned because the address column is UNIQUE
+		 * on the DB.
+		 *
+		 * @internal
+		 * @param stdClass $tx The address mapping.
+		 */
+		public function action_wallets_address( $address ) {
+			global $wpdb;
+			$table_name_adds = self::$table_name_adds;
+
+			$wpdb->insert(
+				$table_name_adds,
+				(array) $address,
+				array( '%d', '%s', '%s', '%s' )
+			);
+		}
 
 		/** @internal */
 		public function action_withdraw( $row ) {
@@ -865,7 +874,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$schedules['wallets_twenty_minutes'] = array(
 				'interval' => 20 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every twentyminutes', 'wallets' ),
+				'display'  => esc_html__( 'Every twenty minutes', 'wallets' ),
 			);
 
 			$schedules['wallets_thirty_minutes'] = array(
@@ -887,29 +896,35 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		/**
-		 * Ensures that deposit will eventually be processed even if they have been overlooked.
+		 * Trigger the cron function of each adapter.
 		 *
-		 * If the notification mechanism is not correctly setup, or if something else goes wrong,
-		 * this cron task will eventually pick up any deposits involving users' deposit addresses that may
-		 * have been overlooked. This is a fail-safe mechanism that should not be strictly necessary
-		 * but is a good idea to have in practice.
+		 * Deposit addresses and deposits can be overlooked if the RPC callback notification
+		 * mechanism is not correctly setup, or if something else goes wrong.
+		 * Adapters can offer a cron() function that does periodic checks for these things.
+		 * Adapters can discover overlooked addresses and transactions and trigger the actions
+		 * wallets_transaction and wallets_address
+		 *
+		 * For some adapters this will be a failsafe-check and for others it will be the main mechanism
+		 * of polling for deposits. Adapters can also opt to not offer a cron() method.
 		 *
 		 */
-		public function action_wallets_doublecheck_deposits( ) {
+		public function action_wallets_periodic_checks( ) {
 			foreach ( $this->get_coin_adapters() as $adapter ) {
-				if ( method_exists( $adapter, 'list_transactions' ) ) {
+				if ( method_exists( $adapter, 'cron' ) ) {
 					try {
-						$txids = $adapter->list_transactions();
-						$symbol = $adapter->get_symbol();
-						foreach ( $txids as $txid ) {
-							do_action( "wallets_notify_wallet_$symbol", $txid );
-						}
+						$adapter->cron();
 					} catch ( Exception $e ) {
-						error_log( sprintf( 'Function %s failed on coin %s due to: %s', __FUNCTION__, $adapter->get_name(), $e->getMessage() ) );
+						error_log(
+							sprintf( 'Function %s failed to run cron() on adapter %s and coin %s due to: %s',
+								__FUNCTION__,
+								$adapter->get_adapter_name(),
+								$adapter->get_name(),
+								$e->getMessage()
+							)
+						);
 					}
 				}
 			}
-
 		}
 	}
 }

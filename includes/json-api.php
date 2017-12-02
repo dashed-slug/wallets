@@ -5,6 +5,15 @@ defined( 'ABSPATH' ) || die( '-1' );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
+	// check for SSL
+	if ( ! is_ssl() ) {
+		Dashed_Slug_Wallets_Admin_Notices::get_instance()->warning(
+			__(	'You do not seem to be using SSL/TLS on this site. ' .
+				'Requests to this plugin\'s JSON API could be vunerable to a replay attack, resulting in loss of funds. ' .
+				'You must enable SSL or TLS if this is a live site.',
+				'wallets' ), 'warnssl' );
+	}
+
 	class Dashed_Slug_Wallets_JSON_API {
 
 		private static $_instance;

@@ -115,14 +115,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 
 			add_settings_section(
 				'wallets_cron_settings_section',
-				__( 'Cron settings', '/* @echo slug' ),
+				__( 'Perioric checks', '/* @echo slug' ),
 				array( &$this, 'wallets_settings_cron_section_cb' ),
 				'wallets-menu-settings'
 			);
 
 			add_settings_field(
 				"wallets_cron_interval",
-				__( 'Double-check for missing deposits', 'wallets' ),
+				__( 'Double-check for missing deposits and addresses', 'wallets' ),
 				array( &$this, 'settings_interval_cb'),
 				'wallets-menu-settings',
 				'wallets_cron_settings_section',
@@ -179,11 +179,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 		}
 
 		public function wallets_settings_cron_section_cb() {
-			?><p><?php
-			esc_html_e( 'A cron mechanism goes through the various enabled coin adapters '.
-				'and ensures every now and then that users\' deposits will eventually be processed, ' .
-				'even if they have been overlooked. Deposits may be overlooked if the notification mechanism ' .
-				'fails or if it is not correctly set up.', 'Bitcoin and Altcoin Wallets');
+			?><p><?php esc_html_e( 'Deposit addresses and deposits can be overlooked ' .
+			'if their callback notification mechanism is not correctly setup, ' .
+			'or if they do not have a callback mechanism, or if something else goes wrong. ' .
+			'Adapters can offer a cron() function that does periodic checks for these things. ' .
+			'Adapters can discover overlooked addresses and transactions and notify the plugin ' .
+			'to record them. For some adapters this will be a failsafe-check, ' .
+			'and for other adapters it will be the main mechanism of polling for deposits. ' .
+			'Adapters can also opt to not offer a cron() method.', 'wallets');
 			?></p><?php
 		}
 
