@@ -175,7 +175,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.10.0',
+					'2.10.1',
 					true
 				);
 
@@ -189,7 +189,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.10.0',
+					'2.10.1',
 					true
 				);
 
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.10.0'
+					'2.10.1'
 				);
 			}
 		}
@@ -279,7 +279,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision = 11;
+			$current_db_revision = 12;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 				error_log( sprintf( 'Upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
@@ -301,10 +301,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
-				address varchar(255) NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
+				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
 				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
-				txid varchar(255) DEFAULT NULL COMMENT 'blockchain transaction id',
-				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id',
+				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
 				fee decimal(20,10) signed NOT NULL DEFAULT 0 COMMENT 'fees deducted from account',
 				comment TEXT DEFAULT NULL COMMENT 'transaction comment',
@@ -340,8 +340,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				dbDelta( $sql );
 
-				// make sure that constraints are correct.
+				// make sure that schema is correct:
 
+				// 1. transactions table
 				$wpdb->suppress_errors();
 				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
 				$wpdb->suppress_errors( $suppress_errors );
@@ -359,14 +360,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						{$table_name_txs}.id > t2.id AND
 						{$table_name_txs}.txid = t2.txid AND
 						{$table_name_txs}.symbol = t2.symbol;" );
+
+				// make sure that index is on ascii columns only to avoid "Specified key was too long" error
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'" );
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR'" );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id'" );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)'" );
+
+				// recreate constraint that ensures unique transactions
 				$wpdb->query( "CREATE UNIQUE INDEX uq_tx_idx ON {$table_name_txs} (txid,symbol);" );
+
+				// 2. deposit addresses table
 
 				$wpdb->suppress_errors();
 				$wpdb->query( "ALTER TABLE {$table_name_adds} DROP INDEX uq_ad_idx;" );
 				$wpdb->suppress_errors( $suppress_errors );
 
 				$wpdb->query( "UPDATE {$table_name_adds} SET extra='' WHERE extra IS NULL;" );
+				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)'" );
+				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL" );
 				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR';" );
 				$wpdb->query( "CREATE UNIQUE INDEX `uq_ad_idx` on {$table_name_adds} (address,symbol,extra);" );
 
@@ -491,8 +503,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.0';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '344cb26';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.1';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '5e4ff51';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );

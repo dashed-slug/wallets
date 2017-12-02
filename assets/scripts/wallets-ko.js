@@ -146,7 +146,7 @@
 			self.moveUser = ko.observable();
 			self.moveAmount = ko.observable();
 			self.moveComment = ko.observable();
-			self.move_fee = ko.computed( function( ) {
+			self.moveFee = ko.computed( function( ) {
 				var coins = self.coins();
 				for ( var coin in coins ) {
 					if ( coins[coin].symbol == self.selectedCoin() ) {
@@ -157,6 +157,7 @@
 				}
 				return '-';
 			});
+			self.move_fee = self.moveFee; // backwards compatibility
 
 			self.users = ko.computed( function() {
 				var users = [];
@@ -250,7 +251,7 @@
 			self.withdrawComment = ko.observable();
 			self.withdrawExtra = ko.observable();
 
-			self.withdraw_fee = ko.computed( function() {
+			self.withdrawFee = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
 					if ( coins[coin].symbol == self.selectedCoin() ) {
@@ -261,6 +262,7 @@
 				}
 				return '-';
 			});
+			self.withdraw_fee = self.withdrawFee;
 
 			self.doWithdraw = function( form ) {
 				var address = self.withdrawAddress(),

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 2.10.0
+Stable tag: 2.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.10.1 =
+- Fix: More DB columns changed to ASCII. Saves space, plus fixes "Specified key was too long" on some databases and server locales.
+- Improve: Frontend observables `withdraw_fee` and `move_fee` changed to camelCase to match other observables.
+- Add: Debug log markers at uninstall script boundaries. Should aid in troubleshooting.
+
 = 2.10.0 =
 - Improve: Better knockout bindings in frontend. Bindings applied to UI elements only, not entire page. Allows for playing nice with other knockout code.
 - Add: The wallets viewmodel is now available for inheritance under the global wp object. Allows for extensions that modify the UI.
@@ -645,7 +650,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.9.0 introduces BuddyPress integration.
+Version 2.10.1 is a bugfix release on 2.10.0.
 
 == Donating ==
 

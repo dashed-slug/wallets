@@ -1,6 +1,8 @@
 <?php
 if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
+	error_log( 'Started uninstalling Bitcoin and Altcoin Wallets' );
+
 	function wallets_delete_option( $option ) {
 		static $blog_ids = null;
 
@@ -128,4 +130,6 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	} else {
 		$wpdb->query( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE 'wallets_dismissed_%';" );
 	}
+
+	error_log( 'Finished uninstalling Bitcoin and Altcoin Wallets' );
 }
