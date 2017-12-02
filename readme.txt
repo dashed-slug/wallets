@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.3
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -256,6 +256,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 2.1.2 =
+- Fix: Errors were not being reported on frontend. (JSON API now always returns status 200 OK even if carrying an error message.)
 
 = 2.1.1 =
 - Add: The capabilities matrix is now hookable by extensions

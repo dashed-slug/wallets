@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.1.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.1.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

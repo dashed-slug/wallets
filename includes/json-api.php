@@ -280,23 +280,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					while ( $e = $e->getPrevious() ) {
 						$response['message'] .= ': ' . $e->getMessage();
 					}
-
-					switch ( $response['code'] ) {
-						case Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN:
-							$status = 401;
-							break;
-						case Dashed_Slug_Wallets::ERR_NOT_ALLOWED:
-							$status = 403;
-							break;
-						default:
-							$status = 500;
-					}
-
-					// send error response
-					wp_send_json(
-						$response,
-						$status
-					);
 				}
 
 				// send successful response
