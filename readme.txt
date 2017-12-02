@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.3
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,6 +254,17 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.0.2 =
+- Add: Link to homepage and settings page from plugin list
+- Fix: When altering cron duration from admin screens cron job is correctly rescheduled
+- Fix: Cron job is now unscheduled on plugin deactivation
+- Fix: Uninstall script now correctly unschedules cron job
+- Fix: Safer user ID detection (does not depend on `wp_load` action)
+- Fix: Using `sprintf` format from adapter in error messages
+- Fix: Typo in error message when insufficient balance for withdraw/move
+- Improve: Better code organisation for admin screens
+- Improve: Safer inserting of new addresses in `wallets_address` action
+
 = 2.0.1 =
 - Fix: Dates in the [wallets_transactions] UI were not showing correctly in Internet Explorer
 - Improve: Refactored the withdrawal API for compatibility with changes to block.io adapter 1.0.2
@@ -316,9 +327,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.0.1 is a minor patch release that fixes issues in 2.0.0.
-
-If you have installed the block.io adapter extension, please upgrade it to 1.0.2.
+Version 2.0.2 is a minor patch release that fixes multiple issues in 2.0.1.
 
 == Donating ==
 

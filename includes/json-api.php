@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Provides a JSON endpoint to access the core PHP API from the web. This is mainly useful for displaying the shortcodes.
+ */
+
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 

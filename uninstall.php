@@ -1,9 +1,9 @@
 <?php
 if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
-	$timestamp = wp_next_scheduled( 'wallets_doublecheck_deposits' );
+	$timestamp = wp_next_scheduled( 'wallets_periodic_checks' );
 	if ( false !== $timestamp ) {
-		wp_unschedule_event( $timestamp, 'wallets_doublecheck_deposits' );
+		wp_unschedule_event( $timestamp, 'wallets_periodic_checks' );
 	}
 
 	$option_slug = 'wallets_bitcoin-core-node_settings';
@@ -20,7 +20,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 	delete_option( "{$option_slug}_other_minconf" );
 
-	delete_option( "wallets_cron_interval" );
+	delete_option( 'wallets_cron_interval' );
 
 	global $wpdb;
 	$wpdb->query( 'DELETE FROM wp_options WHERE option_name LIKE "wallets_dismissed_%";' );

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Displays the various UI views that correspond to the wallets_shortcodes. The frontend UI elements
+ * tak to the JSON API to perform user requests.
+ */
+
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 

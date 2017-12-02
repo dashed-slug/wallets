@@ -1,7 +1,8 @@
 <?php
 /**
+ * This interfaces to a standalone Bitcoin node. It is the only built-in coin adapter. You can provide more coin adapters
+ * with plugin extensions.
  *
- * @license GNU General Public License, version 2
  * @package wallets
  * @since 1.0.0
  */

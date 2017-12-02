@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Provides an easy way to enqueue and display dismissible admin notices in the WordPress admin interface.
+ * @link https://www.alexgeorgiou.gr/persistently-dismissible-notices-wordpress/ Read more about the implementation at my blog.
+ */
+
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 

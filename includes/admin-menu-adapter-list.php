@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * This is the adapters list that appears in the main "Wallets" admin screen.
+ */
+
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 

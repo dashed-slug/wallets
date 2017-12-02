@@ -4,15 +4,17 @@
  * The core of the wallets plugin.
  *
  * Provides an API for other plugins and themes to perform wallet actions, bound to the current logged in user.
+ * This code acts as a middleware between apps and coin adapters. Coin adapters talk to the various cryptocurrency APIs
+ * and present a unified API to the wallets plugin.
  */
 
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-include_once( 'shortcodes.php' );
-include_once( 'admin-menu-adapter-list.php' );
-include_once( 'admin-menu.php' );
 include_once( 'admin-notices.php' );
+include_once( 'shortcodes.php' );
+include_once( 'admin-menu.php' );
+include_once( 'admin-menu-settings.php' );
 include_once( 'json-api.php' );
 
 
@@ -60,20 +62,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		private function __construct() {
+
+			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
+			register_deactivation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_deactivate' ) );
+
+
 			Dashed_Slug_Wallets_Shortcodes::get_instance();
 			$this->_notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
 			if ( is_admin() ) {
 				Dashed_Slug_Wallets_Admin_Menu::get_instance();
+				Dashed_Slug_Wallets_Admin_Menu_Settings::get_instance();
 			} else {
 				Dashed_Slug_Wallets_JSON_API::get_instance();
 			}
 
 			// wp actions
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
-			add_action( 'wp_loaded', array( &$this, 'action_wp_loaded' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
+			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'action_plugin_action_links' ) );
+
 
 			// actions defined by this plugin
 			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
@@ -86,6 +95,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'wallets_deposit',		array( &$this, 'action_deposit' ) );
 
 			// wp_cron mechanism for double-checking for deposits
+			add_filter( 'pre_update_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
 			add_filter( 'cron_schedules', array( &$this, 'filter_cron_schedules' ) );
 			add_action( 'wallets_periodic_checks', array( &$this, 'action_wallets_periodic_checks') );
 			if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
@@ -167,8 +177,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'2.0.1'
+				'2.0.2'
 			);
+		}
+
+		/** @internal */
+		public function action_plugin_action_links( $links ) {
+			$links[] = '<a href="' . admin_url( 'admin.php?page=wallets-menu-settings' ) . '">'
+				. __( 'Settings', 'wallets' ) . '</a>';
+			$links[] = '<a href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin" style="color: #dd9933;">dashed-slug.net</a>';
+			return $links;
 		}
 
 		/** @internal */
@@ -186,9 +204,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		/** @internal */
-		public function action_wp_loaded() {
+		private static function get_current_account_id() {
 			$user = wp_get_current_user();
-			$this->account = "$user->ID";
+			return intval( $user->ID );
 		}
 
 		/** @internal */
@@ -254,6 +272,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$role = get_role( 'administrator' );
 			$role->add_cap( 'manage_wallets' );
 
+			// for the cron job
+			add_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+
 			// flush json api rules
 			self::flush_rules();
 		}
@@ -265,6 +286,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			// access control
 			$role = get_role( 'administrator' );
 			$role->remove_cap( 'manage_wallets' );
+
+			// remove cron
+			$timestamp = wp_next_scheduled( 'wallets_periodic_checks' );
+			if ( false !== $timestamp ) {
+				wp_unschedule_event( $timestamp, 'wallets_periodic_checks' );
+			}
 
 			// flush json api rules
 			self::flush_rules();
@@ -381,7 +408,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						)
 				",
 				$adapter->get_symbol(),
-				intval( $this->account ),
+				self::get_current_account_id(),
 				intval( $minconf )
 			) );
 			return floatval( $balance );
@@ -429,7 +456,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					LIMIT
 						$from, $count
 				",
-				intval( $this->account ),
+				self::get_current_account_id(),
 				$symbol,
 				intval( $minconf )
 			) );
@@ -469,11 +496,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$fee = $adapter->get_withdraw_fee();
 				$amount_plus_fee = $amount + $fee;
 
-				if ( $amount < 0) {
+				if ( $amount < 0 ) {
 					throw new Exception( __( 'Cannot withdraw negative amount', 'wallets' ), self::ERR_DO_WITHDRAW );
 				}
-				if ( $balance < $amount_plus_fee) {
-					throw new Exception( sprintf( __( 'Insufficient funds: %f + %f fees < %f', 'wallets' ), $amount, $fee, $balance ), self::ERR_DO_WITHDRAW );
+				if ( $balance < $amount_plus_fee ) {
+					$format = $adapter->get_sprintf();
+					throw new Exception(
+						sprintf(
+							__( 'Insufficient funds: %s + %s fees > %s', 'wallets' ),
+								sprintf( $format, $amount),
+								sprintf( $format, $fee),
+								sprintf( $format, $balance ) ),
+							self::ERR_DO_WITHDRAW );
 				}
 
 				$txid = $adapter->do_withdraw( $address, $amount, $comment, $comment_to );
@@ -486,7 +520,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$txrow = new stdClass();
 				$txrow->category = 'withdraw';
-				$txrow->account = intval( $this->account );
+				$txrow->account = self::get_current_account_id();
 				$txrow->address = $address;
 				$txrow->txid = $txid;
 				$txrow->symbol = $symbol;
@@ -537,7 +571,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					throw new Exception( __( 'Cannot move negative amount', 'wallets' ), self::ERR_DO_MOVE );
 				}
 				if ( $balance < $amount_plus_fee ) {
-					throw new Exception( sprintf( __( 'Insufficient funds: %f + %f fees < %f', 'wallets' ), $amount, $fee, $balance ), self::ERR_DO_WITHDRAW );
+					$format = $adapter->get_sprintf();
+					throw new Exception(
+						sprintf(
+							__( 'Insufficient funds: %s + %s fees > %s', 'wallets' ),
+							sprintf( $format, $amount ),
+							sprintf( $format, $fee ),
+							sprintf( $format, $balance ) ),
+						self::ERR_DO_WITHDRAW );
 				}
 
 				$current_time_gmt = current_time( 'mysql', true );
@@ -545,7 +586,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$row1 = array(
 					'category' => 'move',
-					'account' => intval( $this->account ),
+					'account' => self::get_current_account_id(),
 					'other_account' => intval( $toaccount ),
 					'txid' => "$txid-send",
 					'symbol' => $symbol,
@@ -569,7 +610,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$row2 = array(
 					'category' => 'move',
 					'account' => intval( $toaccount ),
-					'other_account' => intval( $this->account ),
+					'other_account' => self::get_current_account_id(),
 					'txid' => "$txid-receive",
 					'symbol' => $symbol,
 					'amount' => $amount,
@@ -626,7 +667,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						created_time DESC
 					LIMIT 1
 				",
-				intval( $this->account ),
+				self::get_current_account_id(),
 				$symbol
 			) );
 
@@ -635,7 +676,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$current_time_gmt = current_time( 'mysql', true );
 
 				$address_row = new stdClass();
-				$address_row->account = $this->account;
+				$address_row->account = self::get_current_account_id();
 				$address_row->symbol = $symbol;
 				$address_row->address = $address;
 				$address_row->created_time = $current_time_gmt;
@@ -802,7 +843,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$wpdb->insert(
 				$table_name_adds,
-				(array) $address,
+				array(
+					'account' => $address->account,
+					'symbol' => $address->symbol,
+					'address' => $address->address,
+					'created_time' => $address->created_time
+				),
 				array( '%d', '%s', '%s', '%s' )
 			);
 		}
@@ -924,6 +970,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			);
 
 			return $schedules;
+		}
+
+		/** @internal */
+		public function filter_update_option_wallets_cron_interval( $new_value, $old_value ) {
+			if ( $new_value != $old_value ) {
+
+				// remove cron
+				$timestamp = wp_next_scheduled( 'wallets_periodic_checks' );
+				if ( false !== $timestamp ) {
+					wp_unschedule_event( $timestamp, 'wallets_periodic_checks' );
+				}
+
+				if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
+					wp_schedule_event( time(), $new_value, 'wallets_periodic_checks' );
+				}
+			}
+			return $new_value;
 		}
 
 		/**

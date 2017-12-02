@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.0.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.0.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -18,100 +18,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. />', // TODO bulk actions
-#: src/includes/admin-menu-adapter-list.php:15
+#: src/includes/admin-menu-adapter-list.php:19
 msgid "Adapter name"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:16
+#: src/includes/admin-menu-adapter-list.php:20
 msgid "Coin Icon"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:17
+#: src/includes/admin-menu-adapter-list.php:21
 msgid "Coin Symbol"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:18
+#: src/includes/admin-menu-adapter-list.php:22
 msgid "Coin Name"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:19
+#: src/includes/admin-menu-adapter-list.php:23
 msgid "Total Balance"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:20
+#: src/includes/admin-menu-adapter-list.php:24
 msgid "Adapter Status"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:59
+#: src/includes/admin-menu-adapter-list.php:63
 msgid "Responding"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:61
+#: src/includes/admin-menu-adapter-list.php:65
 msgid "n/a"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:62
+#: src/includes/admin-menu-adapter-list.php:66
 #, php-format
 msgid "Not Responding: %s"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:110
+#: src/includes/admin-menu-adapter-list.php:114
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:111
+#: src/includes/admin-menu-adapter-list.php:115 src/includes/core.php:187
 msgid "Settings"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:119
+#: src/includes/admin-menu-adapter-list.php:123
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: src/includes/admin-menu-adapter-list.php:120
+#: src/includes/admin-menu-adapter-list.php:124
 msgid "Export"
 msgstr ""
 
-#: src/includes/admin-menu.php:39 src/includes/admin-menu.php:51
-#: src/includes/admin-menu.php:71 src/includes/admin-menu.php:168
-#: src/includes/admin-menu.php:195 src/includes/bitcoin-adapter.php:355
-#: src/includes/bitcoin-adapter.php:365 src/includes/bitcoin-adapter.php:375
-#: src/includes/bitcoin-adapter.php:395 src/includes/bitcoin-adapter.php:467
-msgid "You do not have sufficient permissions to access this page."
-msgstr ""
-
-#: src/includes/admin-menu.php:57 src/includes/admin-menu.php:77
-#: src/includes/json-api.php:198 src/includes/json-api.php:218
-msgid "Possible request forgery detected. Please reload and try again."
-msgstr ""
-
-#: src/includes/admin-menu.php:98
-#, php-format
-msgid "<code>%d</code> transactions from <code>%s</code> imported successfully"
-msgstr ""
-
-#: src/includes/admin-menu.php:106
-#, php-format
-msgid "Failed to import file %s : %s"
-msgstr ""
-
-#: src/includes/admin-menu.php:118
+#: src/includes/admin-menu-settings.php:33
 msgid "Perioric checks"
 msgstr ""
 
-#: src/includes/admin-menu.php:125
+#: src/includes/admin-menu-settings.php:40
 msgid "Double-check for missing deposits and addresses"
 msgstr ""
 
-#: src/includes/admin-menu.php:145
-msgid "Wallets"
+#: src/includes/admin-menu-settings.php:73 src/includes/admin-menu.php:41
+#: src/includes/admin-menu.php:53 src/includes/admin-menu.php:73
+#: src/includes/admin-menu.php:134 src/includes/bitcoin-adapter.php:356
+#: src/includes/bitcoin-adapter.php:366 src/includes/bitcoin-adapter.php:376
+#: src/includes/bitcoin-adapter.php:396 src/includes/bitcoin-adapter.php:468
+msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/includes/admin-menu.php:172
+#: src/includes/admin-menu-settings.php:77
 msgid ""
 "General settings that apply to the plugin, not any particular coin adapter."
 msgstr ""
 
-#: src/includes/admin-menu.php:182
+#: src/includes/admin-menu-settings.php:87
 msgid ""
 "Deposit addresses and deposits can be overlooked if their callback "
 "notification mechanism is not correctly setup, or if they do not have a "
@@ -123,11 +104,30 @@ msgid ""
 "also opt to not offer a cron() method."
 msgstr ""
 
-#: src/includes/admin-menu.php:203
+#: src/includes/admin-menu.php:59 src/includes/admin-menu.php:79
+#: src/includes/json-api.php:202 src/includes/json-api.php:222
+msgid "Possible request forgery detected. Please reload and try again."
+msgstr ""
+
+#: src/includes/admin-menu.php:100
+#, php-format
+msgid "<code>%d</code> transactions from <code>%s</code> imported successfully"
+msgstr ""
+
+#: src/includes/admin-menu.php:108
+#, php-format
+msgid "Failed to import file %s : %s"
+msgstr ""
+
+#: src/includes/admin-menu.php:123
+msgid "Wallets"
+msgstr ""
+
+#: src/includes/admin-menu.php:142
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: src/includes/admin-menu.php:205
+#: src/includes/admin-menu.php:144
 msgid ""
 "By using this free plugin you assume all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
@@ -140,173 +140,173 @@ msgid ""
 "(at a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:214
+#: src/includes/admin-menu.php:153
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:217
+#: src/includes/admin-menu.php:156
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:218
+#: src/includes/admin-menu.php:157
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you agree that "
 "you have read and understood this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:223
-msgid "Wallet plugin extensions"
-msgstr ""
-
-#: src/includes/admin-menu.php:224
-msgid ""
-"/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
-"functionality. "
-msgstr ""
-
-#: src/includes/admin-menu.php:225
-msgid "You can install"
-msgstr ""
-
-#: src/includes/admin-menu.php:226
-msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
-msgstr ""
-
-#: src/includes/admin-menu.php:227
-msgid ""
-"\"app extensions\". App extensions are plugins that utilize the core API to "
-"supply some user functionality. "
-msgstr ""
-
-#: src/includes/admin-menu.php:231
-msgid "Visit the dashed-slug to see what's available"
-msgstr ""
-
-#: src/includes/admin-menu.php:234
+#: src/includes/admin-menu.php:161
 msgid "Coin Adapters"
 msgstr ""
 
-#: src/includes/admin-menu.php:240
+#: src/includes/admin-menu.php:167
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/admin-menu.php:242
+#: src/includes/admin-menu.php:169
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Existing transactions will be skipped."
 msgstr ""
 
-#: src/includes/admin-menu.php:245
+#: src/includes/admin-menu.php:172
 msgid "Import"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:124
+#: src/includes/admin-menu.php:177
+msgid "Wallet plugin extensions"
+msgstr ""
+
+#: src/includes/admin-menu.php:178
+msgid ""
+"/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
+"functionality. "
+msgstr ""
+
+#: src/includes/admin-menu.php:179
+msgid "You can install"
+msgstr ""
+
+#: src/includes/admin-menu.php:180
+msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
+msgstr ""
+
+#: src/includes/admin-menu.php:181
+msgid ""
+"\"app extensions\". App extensions are plugins that utilize the core API to "
+"supply some user functionality. "
+msgstr ""
+
+#: src/includes/admin-menu.php:184
+msgid "Visit the dashed-slug to see what's available"
+msgstr ""
+
+#: src/includes/bitcoin-adapter.php:125
 msgid ""
 "The /* @echo name */ plugin will not be able to work correctly on your "
 "system because you have not installed the PHP curl module. The module must "
 "be installed to connect to wallet daemons via their RPC APIs."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:155
+#: src/includes/bitcoin-adapter.php:156
 msgid "<code>bitcoind</code> cannot be contacted."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:158
+#: src/includes/bitcoin-adapter.php:159
 #, php-format
 msgid ""
 "You need to make sure that your <a href=\"%s\">Bitcoin RPC settings</a> are "
 "correctly configured. "
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:162
+#: src/includes/bitcoin-adapter.php:163
 msgid "Then edit your <code>bitcoin.conf</code> and append the following:"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:168
+#: src/includes/bitcoin-adapter.php:169
 msgid "Finally, start the bitcoin daemon."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:170
+#: src/includes/bitcoin-adapter.php:171
 msgid ""
 "You are advised to not dismiss this error manually. It will stop showing "
 "once the daemon can be contacted."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:188
+#: src/includes/bitcoin-adapter.php:189
 msgid "General adapter settings"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:195
+#: src/includes/bitcoin-adapter.php:196
 msgid "Enabled"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:212
+#: src/includes/bitcoin-adapter.php:213
 msgid "Bitcoin daemon RPC API"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:219
+#: src/includes/bitcoin-adapter.php:220
 msgid "IP"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:233
+#: src/includes/bitcoin-adapter.php:234
 msgid "Port"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:247
+#: src/includes/bitcoin-adapter.php:248
 msgid "User"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:261
+#: src/includes/bitcoin-adapter.php:262
 msgid "Password"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:275
+#: src/includes/bitcoin-adapter.php:276
 msgid "Path"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:292
+#: src/includes/bitcoin-adapter.php:293
 msgid "Bitcoin fees"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:299
+#: src/includes/bitcoin-adapter.php:300
 msgid "Transaction fee between users"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:313
+#: src/includes/bitcoin-adapter.php:314
 msgid "Withdrawal fee"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:329
+#: src/includes/bitcoin-adapter.php:330
 msgid "Other Bitcoin settings"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:336
+#: src/includes/bitcoin-adapter.php:337
 msgid "Minumum confirmations"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:378
+#: src/includes/bitcoin-adapter.php:379
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:381
+#: src/includes/bitcoin-adapter.php:382
 msgid "Transaction fees"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:382
+#: src/includes/bitcoin-adapter.php:383
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:384
+#: src/includes/bitcoin-adapter.php:385
 msgid "Withdrawal fees"
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:385
+#: src/includes/bitcoin-adapter.php:386
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:386
+#: src/includes/bitcoin-adapter.php:387
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -315,144 +315,144 @@ msgid ""
 "maxtxfee, etc."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:387
+#: src/includes/bitcoin-adapter.php:388
 msgid "Refer to the documentation for details."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:472
+#: src/includes/bitcoin-adapter.php:473
 msgid "This adapter is for communicating with a Bitcoin Core node."
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:612 src/includes/bitcoin-adapter.php:636
-#: src/includes/bitcoin-adapter.php:649 src/includes/bitcoin-adapter.php:666
-#: src/includes/bitcoin-adapter.php:709 src/includes/bitcoin-adapter.php:737
-#: src/includes/bitcoin-adapter.php:760
+#: src/includes/bitcoin-adapter.php:613 src/includes/bitcoin-adapter.php:637
+#: src/includes/bitcoin-adapter.php:650 src/includes/bitcoin-adapter.php:667
+#: src/includes/bitcoin-adapter.php:710 src/includes/bitcoin-adapter.php:738
+#: src/includes/bitcoin-adapter.php:761
 #, php-format
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/bitcoin-adapter.php:822
+#: src/includes/bitcoin-adapter.php:823
 #, php-format
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/core.php:181
+#: src/includes/core.php:199
 #, php-format
 msgid ""
 "%s could NOT create a transactions table (\"%s\") in the database. The "
 "plugin may not function properly."
 msgstr ""
 
-#: src/includes/core.php:299
+#: src/includes/core.php:326
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/core.php:303
+#: src/includes/core.php:330
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/core.php:341
+#: src/includes/core.php:368
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/core.php:473
+#: src/includes/core.php:500
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/core.php:476 src/includes/core.php:540
+#: src/includes/core.php:506 src/includes/core.php:577
 #, php-format
-msgid "Insufficient funds: %f + %f fees < %f"
+msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/core.php:482
+#: src/includes/core.php:516
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/core.php:537
+#: src/includes/core.php:571
 msgid "Cannot move negative amount"
 msgstr ""
 
-#: src/includes/core.php:817
+#: src/includes/core.php:863
 msgid "You have performed a withdrawal."
 msgstr ""
 
-#: src/includes/core.php:832
+#: src/includes/core.php:878
 msgid "You have sent funds to another user."
 msgstr ""
 
-#: src/includes/core.php:848
+#: src/includes/core.php:894
 msgid "You have received funds from another user."
 msgstr ""
 
-#: src/includes/core.php:860
+#: src/includes/core.php:906
 msgid "You have performed a deposit."
 msgstr ""
 
-#: src/includes/core.php:870
+#: src/includes/core.php:916
 msgid "Transaction details follow"
 msgstr ""
 
-#: src/includes/core.php:898
+#: src/includes/core.php:944
 msgid "Every five minutes"
 msgstr ""
 
-#: src/includes/core.php:903
+#: src/includes/core.php:949
 msgid "Every ten minutes"
 msgstr ""
 
-#: src/includes/core.php:908
+#: src/includes/core.php:954
 msgid "Every twenty minutes"
 msgstr ""
 
-#: src/includes/core.php:913
+#: src/includes/core.php:959
 msgid "Every half an hour"
 msgstr ""
 
-#: src/includes/core.php:918
+#: src/includes/core.php:964
 msgid "Every one hour"
 msgstr ""
 
-#: src/includes/core.php:923
+#: src/includes/core.php:969
 msgid "Every four hours"
 msgstr ""
 
-#: src/includes/json-api.php:11
+#: src/includes/json-api.php:15
 msgid ""
 "You do not seem to be using SSL/TLS on this site. Requests to this plugin's "
 "JSON API could be vunerable to a replay attack, resulting in loss of funds. "
 "You must enable SSL or TLS if this is a live site."
 msgstr ""
 
-#: src/includes/json-api.php:109
+#: src/includes/json-api.php:113
 msgid "Could not process notification."
 msgstr ""
 
-#: src/includes/json-api.php:113
+#: src/includes/json-api.php:117
 msgid "Must be logged in"
 msgstr ""
 
-#: src/includes/json-api.php:130
+#: src/includes/json-api.php:134
 msgid "Could not get info about users: "
 msgstr ""
 
-#: src/includes/json-api.php:190
+#: src/includes/json-api.php:194
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: src/includes/json-api.php:210
+#: src/includes/json-api.php:214
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: src/includes/json-api.php:229
+#: src/includes/json-api.php:233
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: src/includes/json-api.php:233
+#: src/includes/json-api.php:237
 #, php-format
 msgid "Unknown action %s specified"
 msgstr ""
