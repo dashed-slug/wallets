@@ -177,7 +177,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->withdraw_fee = $adapter->get_withdraw_fee();
 								$coin_info->withdraw_fee_string = sprintf( $format, $adapter->get_withdraw_fee() );
 
-								$coin_info->deposit_address = $core->get_new_address( $symbol );
+								$coin_info->deposit_address = $core->get_deposit_address( $symbol );
 								$coin_info->deposit_address_qrcode_uri = $adapter->get_uri_scheme() . ':' . $coin_info->deposit_address;
 
 

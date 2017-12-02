@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.1\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -827,8 +827,8 @@ msgstr ""
 #: src/includes/json-api.php:197 src/includes/json-api.php:224
 #: src/includes/json-api.php:252 src/includes/transactions.php:683
 #: src/includes/wallets-core.php:413 src/includes/wallets-core.php:506
-#: src/includes/wallets-core.php:570 src/includes/wallets-core.php:641
-#: src/includes/wallets-core.php:781 src/includes/wallets-core.php:923
+#: src/includes/wallets-core.php:574 src/includes/wallets-core.php:645
+#: src/includes/wallets-core.php:789 src/includes/wallets-core.php:936
 msgid "Not allowed"
 msgstr ""
 
@@ -1158,24 +1158,24 @@ msgstr ""
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:677
+#: src/includes/wallets-core.php:681
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:702
+#: src/includes/wallets-core.php:706
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:708 src/includes/wallets-core.php:817
+#: src/includes/wallets-core.php:712 src/includes/wallets-core.php:829
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:785
+#: src/includes/wallets-core.php:793
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:811
+#: src/includes/wallets-core.php:823
 msgid "Cannot move negative amount"
 msgstr ""

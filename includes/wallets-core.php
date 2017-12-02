@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.4.1'
+					'2.4.2'
 				);
 			}
 		}
@@ -498,12 +498,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 * @return float The balance.
 		 */
-		public function get_balance( $symbol, $minconf = null, $check_capabilities = false ) {
+		public function get_balance( $symbol, $minconf = null, $check_capabilities = false, $account = null ) {
 			if (
 				$check_capabilities &&
 				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 			 ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
+			if ( is_null( $account ) ) {
+				$account = get_current_user_id();
 			}
 
 			static $user_balances = null;
@@ -513,7 +517,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				global $wpdb;
 				$table_name_txs = self::$table_name_txs;
 
-				$user_balances_query= $wpdb->prepare(
+				$user_balances_query = $wpdb->prepare(
 					"
 					SELECT
 						symbol,
@@ -522,14 +526,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						$table_name_txs
 					WHERE
 						( blog_id = %d || %d ) AND
-						account = %s AND
+						account = %d AND
 						status = 'done'
 					GROUP BY
 						symbol
 					",
 					get_current_blog_id(),
 					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-					get_current_user_id()
+					$account
 				);
 
 				$user_balances = $wpdb->get_results( $user_balances_query );
@@ -744,10 +748,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );
 				$wpdb->query( 'UNLOCK TABLES' );
+				$wpdb->query( 'SET autocommit=1' );
 				throw $e;
 			}
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
+			$wpdb->query( 'SET autocommit=1' );
 
 			if ( ! $skip_confirm && isset( $txrow['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
 				do_action( 'wallets_send_user_confirm_email', $txrow );
@@ -758,6 +764,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Move funds from the current logged in user's balance to the specified user.
 		 *
 		 * @api
+		 * @since 2.4.2 Added $fromaccount.
 		 * @since 2.4.0 Added $skip_confirm argument.
 		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
 		 * @since 2.1.0 Added $check_capabilities argument
@@ -769,10 +776,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @param string $tags A space separated list of tags, slugs, etc that further describe the type of transaction.
 		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
+		 * @param int|null $fromaccount The WordPress user_ID of the sender, or null for current user ID.
 		 * @return void
 		 * @throws Exception If move fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
 		 */
-		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '', $skip_confirm = false ) {
+		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '', $skip_confirm = false, $fromaccount = null  ) {
 			if (
 				$check_capabilities &&
 				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
@@ -781,8 +789,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 			}
 
-			if ( $toaccount == get_current_user_id() ) {
+			if ( $toaccount == $fromaccount ) {
 				throw new Exception( __( 'Cannot send funds to self', 'wallets' ), self::ERR_DO_MOVE );
+			}
+
+			if ( is_null( $fromaccount ) ) {
+				$fromaccount = get_current_user_id();
 			}
 
 			$adapter = $this->get_coin_adapters( $symbol );
@@ -835,7 +847,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'blog_id' => get_current_blog_id(),
 					'category' => 'move',
 					'tags' => trim( "send $tags" ),
-					'account' => get_current_user_id(),
+					'account' => $fromaccount,
 					'other_account' => intval( $toaccount ),
 					'txid' => "$txid-send",
 					'symbol' => $symbol,
@@ -854,7 +866,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'category' => 'move',
 					'tags' => trim( "receive $tags" ),
 					'account' => intval( $toaccount ),
-					'other_account' => get_current_user_id(),
+					'other_account' => $fromaccount,
 					'txid' => "$txid-receive",
 					'symbol' => $symbol,
 					'amount' => $amount,
@@ -893,10 +905,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );
 				$wpdb->query( 'UNLOCK TABLES' );
+				$wpdb->query( 'SET autocommit=1' );
 				throw $e;
 			}
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
+			$wpdb->query( 'SET autocommit=1' );
 
 			if ( ! $skip_confirm && isset( $txrow1['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
 				do_action( 'wallets_send_user_confirm_email', $txrow1 );
@@ -908,19 +922,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Get a deposit address for the current logged in user's account.
 		 *
 		 * @api
-		 * @since 2.1.0 Added $check_capabilities argument
-		 * @since 1.0.0 Introduced
+		 * @since 2.4.2 Introduced to replace get_new_address
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return string A deposit address associated with the current logged in user.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 * @throws Exception If the operation fails.
 		 */
-		 public function get_new_address( $symbol, $check_capabilities = false ) {
+		 public function get_deposit_address( $symbol, $account = null, $check_capabilities = false ) {
 			if (
 				$check_capabilities &&
 				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 			) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
+			if ( is_null( $account ) ) {
+				$account = get_current_user_id();
 			}
 
 			$adapter = $this->get_coin_adapters( $symbol );
@@ -943,7 +960,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				",
 				get_current_blog_id(),
 				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-				get_current_user_id(),
+				$account,
 				$symbol
 			) );
 
@@ -951,7 +968,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$address = $adapter->get_new_address();
 
 				$address_row = new stdClass();
-				$address_row->account = get_current_user_id();
+				$address_row->account = $account;
 				$address_row->symbol = $symbol;
 				$address_row->address = $address;
 
@@ -961,7 +978,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			return $address;
 
-		} // function get_new_address()
+		} // function get_deposit_address()
 
+
+		/**
+		 * Get a deposit address for the current logged in user's account.
+		 *
+		 * @deprecated Use get_deposit_address instead.
+		 * @api
+		 * @see Dashed_Slug_Wallets::get_deposit_address()
+		 * @since 2.4.2 Superseeded by get_deposit_address
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
+		 * @param string $symbol Character symbol of the wallet's coin.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @return string A deposit address associated with the current logged in user.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 */
+		public function get_new_address( $symbol, $check_capabilities = false ) {
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use get_deposit_address instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+			);
+			return $this->get_deposit_address($symbol, null, $check_capabilities );
+		}
 	}
 }

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,8 +268,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
-= 2.4.1 =
+= 2.4.2 =
+- Improve: `get_new_address()` deprecated in favor of `get_deposit_address()`.
+- Add: `do_move()` can now do a funds transfer from users other than the current one.
+- Fix: Bug where a DB transaction started after a funds transfer is now fixed.
 
+= 2.4.1 =
 - Fix: When performing actions in transactions admin panel, redirect to that same panel without the action arguments (allows page refresh).
 - Add: PHPdoc for new helper functions introduced in 2.4.0
 - Add: Text warning about security best practices regarding RPC API communications over untrusted networks.
@@ -446,7 +450,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.4.1 introduces minor bug fixes from 2.4.0.
+Version 2.4.2 contains a minor bug fix and minor iprovements on version 2.4.1. These improvements are necessary for the upcoming faucet plugin.
 
 == Donating ==
 
