@@ -165,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.2'
+					'2.3.3'
 				);
 			}
 		}
@@ -641,7 +641,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			if ( get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
+			if ( isset( $txrow['id'] ) && get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
 				do_action( 'wallets_send_user_confirm_email', $txrow );
 			}
 		}
@@ -782,7 +782,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			if ( get_option( 'wallets_confirm_move_user_enabled' ) ) {
+			if ( isset( $txrow1['id'] ) && get_option( 'wallets_confirm_move_user_enabled' ) ) {
 				do_action( 'wallets_send_user_confirm_email', $txrow1 );
 			}
 

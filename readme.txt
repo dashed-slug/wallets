@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -261,6 +261,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.3.3 =
+- Fix: Deposit notifications restored after being disabled in 2.3.2
+- Fix: Only send confirmation emails if DB insert succeeds
+
 = 2.3.2 =
 - Fix: Issue introduced in 2.3.0 where pending (not executed) withdrawals to the same address would fail.
 - Fix: Unhandled exception when sending a notification email while the corresponding adapter is disabled.
@@ -404,7 +408,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.3.2 fixes bugs introduced in 2.3.0.
+Version 2.3.3 fixes bugs introduced in 2.3.x.
 
 == Donating ==
 

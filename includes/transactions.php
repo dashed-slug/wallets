@@ -419,7 +419,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						);
 
 						if ( ! $affected ) {
-							$wpdb->insert(
+							$affected = $wpdb->insert(
 								Dashed_Slug_Wallets::$table_name_txs,
 								array(
 									'blog_id' => get_current_blog_id(),
@@ -439,6 +439,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'%d', '%s', '%d', '%s', '%s', '%s', '%20.10f', '%s', '%s', '%d', '%s', '%d'
 								)
 							);
+
+							if ( 1 === $affected ) {
+								// row was inserted, not updated
+								do_action( 'wallets_deposit', $tx );
+							}
+
 						}
 
 						$affected = $wpdb->query( $wpdb->prepare(

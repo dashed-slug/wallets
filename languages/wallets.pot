@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.3.2\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.3.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -80,18 +80,18 @@ msgstr ""
 #: src/includes/coin-adapter.php:185 src/includes/coin-adapter.php:238
 #: src/includes/confirmations.php:271 src/includes/cron.php:230
 #: src/includes/email.php:502 src/includes/qrcode.php:60
-#: src/includes/transactions.php:44 src/includes/transactions.php:641
-#: src/includes/transactions.php:809 src/includes/transactions.php:829
-#: src/includes/transactions.php:849 src/includes/transactions.php:869
-#: src/includes/transactions.php:889
+#: src/includes/transactions.php:44 src/includes/transactions.php:647
+#: src/includes/transactions.php:815 src/includes/transactions.php:835
+#: src/includes/transactions.php:855 src/includes/transactions.php:875
+#: src/includes/transactions.php:895
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/admin-menu.php:45 src/includes/caps.php:90
 #: src/includes/json-api.php:230 src/includes/json-api.php:258
-#: src/includes/transactions.php:647 src/includes/transactions.php:813
-#: src/includes/transactions.php:833 src/includes/transactions.php:853
-#: src/includes/transactions.php:873 src/includes/transactions.php:893
+#: src/includes/transactions.php:653 src/includes/transactions.php:819
+#: src/includes/transactions.php:839 src/includes/transactions.php:859
+#: src/includes/transactions.php:879 src/includes/transactions.php:899
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -808,7 +808,7 @@ msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:197 src/includes/json-api.php:224
-#: src/includes/json-api.php:252 src/includes/transactions.php:606
+#: src/includes/json-api.php:252 src/includes/transactions.php:612
 #: src/includes/wallets-core.php:403 src/includes/wallets-core.php:443
 #: src/includes/wallets-core.php:506 src/includes/wallets-core.php:574
 #: src/includes/wallets-core.php:671 src/includes/wallets-core.php:807
@@ -1019,32 +1019,32 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: src/includes/transactions.php:630
+#: src/includes/transactions.php:636
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:667
+#: src/includes/transactions.php:673
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:675
+#: src/includes/transactions.php:681
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: src/includes/transactions.php:917
+#: src/includes/transactions.php:923
 msgid "Successfully updated transaction"
 msgstr ""
 
-#: src/includes/transactions.php:921
+#: src/includes/transactions.php:927
 msgid "The transaction to be updated was not found"
 msgstr ""
 
-#: src/includes/transactions.php:925
+#: src/includes/transactions.php:931
 msgid "Failed to update transaction"
 msgstr ""
 
