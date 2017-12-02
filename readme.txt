@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 2.3.5
+Stable tag: 2.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -261,6 +261,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.3.6 =
+- Add: When a user requests to withdraw to a known deposit address of another user, an internal move transaction is performed instead.
+- Improve: Frontend transactions in `[wallets_transactions]` are sorted by descending created time.
+- Improve: Admin transactions list defaults to sorted by descending created time.
+- Add: If a coin adapter does not override the sprintf format for amounts, the format now includes the coin's symbol letters.
+- Fix: Uncaught exception when user-unapproving a transaction in admin when it corresponds to a currently disabled adapter.
+- Fix: Uncaught exception when performing `wallets_transaction` action on a currently disabled adapter.
+- Fix: Suppress a logs warning in `Dashed_Slug_Wallets_Coin_Adapter::server_ip()`.
+
 = 2.3.5 =
 - Fix: Withdrawals to addresses that are also deposit addresses on the same system are no longer allowed.
 - Fix: Email notifications for successful withdrawals now correctly report the transaction ID.
@@ -418,7 +427,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
- Version 2.3.5 is a security release. It fixes an important security issue. All users please upgrade to 2.3.5 as soon as possible.
+Version 2.3.6 patches minor bugs from 2.3.5. Upgrade at your convenience.
 
 == Donating ==
 

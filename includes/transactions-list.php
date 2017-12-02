@@ -15,6 +15,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	const PER_PAGE = 10;
 
+	private $order;
+	private $orderby;
+
+	public function __construct( $args = array() ) {
+		parent::__construct( $args );
+
+		// sorting vars
+		$this->order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
+		$this->orderby = filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
+	}
+
 	public function get_columns() {
 		return array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
@@ -78,10 +89,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			'per_page' => self::PER_PAGE
 		) );
 
-		// sorting
-		$order = empty( $_GET['order'] ) ? 'asc' : filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-		$orderby = empty( $_GET['orderby'] ) ? 'created_time' : filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
-
 		// get data
 		$sql_query = $wpdb->prepare(
 			"
@@ -110,7 +117,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			WHERE
 				blog_id = %d
 			ORDER BY
-				$orderby $order
+				$this->orderby $this->order
 			LIMIT
 				%d, %d
 			",
@@ -196,10 +203,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_admin_confirm( $item ) {
-		// sorting vars
-		$order = empty( $_GET['order'] ) ? 'asc' : filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-		$orderby = empty( $_GET['orderby'] ) ? 'created_time' : filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
-
 
 		$actions = array();
 
@@ -216,8 +219,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'action' => 'admin_unconfirm',
 								'tx_id' => $item['id'],
 								'paged' => $this->get_pagenum(),
-								'order' => $order,
-								'orderby' => $orderby,
+								'order' => $this->order,
+								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-admin-unconfirm-' . $item['id'] )
 							),
 							admin_url( 'admin.php' )
@@ -233,8 +236,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'action' => 'admin_confirm',
 								'tx_id' => $item['id'],
 								'paged' => $this->get_pagenum(),
-								'order' => $order,
-								'orderby' => $orderby,
+								'order' => $this->order,
+								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-admin-confirm-' . $item['id'] )
 							),
 							admin_url( 'admin.php' )
@@ -253,9 +256,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_user_confirm( $item ) {
-		// sorting vars
-		$order = empty( $_GET['order'] ) ? 'asc' : filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-		$orderby = empty( $_GET['orderby'] ) ? 'created_time' : filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
 
 		$actions = array();
 
@@ -272,8 +272,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'action' => 'user_unconfirm',
 								'tx_id' => $item['id'],
 								'paged' => $this->get_pagenum(),
-								'order' => $order,
-								'orderby' => $orderby,
+								'order' => $this->order,
+								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-user-unconfirm-' . $item['id'] )
 							),
 							admin_url( 'admin.php' )
@@ -289,8 +289,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 								'action' => 'user_confirm',
 								'tx_id' => $item['id'],
 								'paged' => $this->get_pagenum(),
-								'order' => $order,
-								'orderby' => $orderby,
+								'order' => $this->order,
+								'orderby' => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-user-confirm-' . $item['id'] )
 							),
 							admin_url( 'admin.php' )
@@ -309,9 +309,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_retries( $item ) {
-		// sorting vars
-		$order = empty( $_GET['order'] ) ? 'asc' : filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-		$orderby = empty( $_GET['orderby'] ) ? 'created_time' : filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
 
 		$actions = array();
 		if ( 'done' != $item['status'] && 'deposit' != 'category' ) {
@@ -322,8 +319,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 						'action' => 'reset_retries',
 						'tx_id' => $item['id'],
 						'paged' => $this->get_pagenum(),
-						'order' => $order,
-						'orderby' => $orderby,
+						'order' => $this->order,
+						'orderby' => $this->orderby,
 						'_wpnonce' => wp_create_nonce( 'wallets-reset-retries-' . $item['id'] )
 					),
 					admin_url( 'admin.php' )

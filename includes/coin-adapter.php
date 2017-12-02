@@ -270,7 +270,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		protected static function server_ip() {
 			if ( false === ( $result = get_transient( 'wallets-server-ip' ) ) ) {
 				try {
-					$ip = file_get_contents( 'http://api.ipify.org' );
+					$ip = @file_get_contents( 'http://api.ipify.org' );
 					if ( false !== $ip && filter_var( $ip, FILTER_VALIDATE_IP ) !== false ) {
 						$result = $ip;
 					}
@@ -372,7 +372,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return string The pattern to use for formatting currency amounts.
 		 */
 		public function get_sprintf() {
-			return '%01.8F';
+			return $this->get_symbol() . ' %01.8F';
 		}
 
 		/**

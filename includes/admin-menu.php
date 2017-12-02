@@ -1,6 +1,8 @@
 <?php
 
-include_once( 'admin-menu-adapter-list.php' );
+if ( 'wallets-menu-wallets' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
+	include_once( 'admin-menu-adapter-list.php' );
+}
 
 /**
  * This is the main "Wallets" admin screen that features the coin adapters list. The list itself is implemented in admin-menu-adapter-list.php .

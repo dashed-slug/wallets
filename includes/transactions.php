@@ -3,7 +3,9 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-include_once( 'transactions-list.php' );
+if ( 'wallets-menu-transactions' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
+	include_once( 'transactions-list.php' );
+}
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 	class Dashed_Slug_Wallets_TXs {
@@ -14,6 +16,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'init', array( &$this, 'import_handler' ) );
 			add_action( 'admin_init', array( &$this, 'actions_handler' ) );
+			add_action( 'admin_init', array( &$this, 'redirect_if_no_sort_params' ) );
 
 
 			// these actions record a transaction or address to the DB
@@ -24,6 +27,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			add_action( 'wallets_periodic_checks', array( &$this, 'fail_transactions' ) );
 			add_action( 'wallets_periodic_checks', array( &$this, 'execute_pending_moves' ) );
 			add_action( 'wallets_periodic_checks', array( &$this, 'execute_pending_withdrawals' ) );
+		}
+
+		public function redirect_if_no_sort_params() {
+			// make sure that sorting params are set
+			if ( 'wallets-menu-transactions' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
+				if ( ! filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING ) || ! filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING ) ) {
+					wp_redirect(
+						add_query_arg(
+							array(
+								'page' => 'wallets-menu-transactions',
+								'order' => 'desc',
+								'orderby' => 'created_time',
+							),
+							admin_url( 'admin.php' )
+							)
+						);
+					exit;
+				}
+			}
 		}
 
 		public function action_admin_menu() {
@@ -276,13 +298,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					$deposit_address = $wpdb->get_row( $wpdb->prepare(
 						"
 						SELECT
-							a.account,
-							u.user_login
+							a.account
 						FROM
 							{$table_name_adds} a
-						LEFT JOIN
-							{$wpdb->users} u
-						ON ( u.ID = a.account )
 						WHERE
 							a.blog_id = %d AND
 							a.symbol = %s AND
@@ -300,8 +318,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						throw new Exception(
 							sprintf(
-								__( 'Cannot withdraw to address %s because it is a deposit address for user %s on this system. Perform an internal transfer instead.', 'wallets' ),
-								$wd_tx->address, $deposit_address->user_login ),
+								__( 'Cannot withdraw to address %s because it is a deposit address on this system.', 'wallets' ),
+								$wd_tx->address ),
 							Dashed_Slug_Wallets::ERR_DO_WITHDRAW );
 					}
 
@@ -413,8 +431,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 * @param stdClass $tx The transaction details.
 		 */
 		public function action_wallets_transaction( $tx ) {
-
-			$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $tx->symbol, false );
+			try {
+				$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $tx->symbol, false );
+			} catch ( Exception $e ) {
+				error_log( __FUNCTION__ . ": Adapter for transaction $tx->txid is not online" );
+				return;
+			}
 
 			if ( $adapter ) {
 
@@ -457,22 +479,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						);
 
 						if ( ! $affected ) {
+							$new_tx_data = array(
+								'blog_id' => get_current_blog_id(),
+								'category' => 'deposit',
+								'account' => $tx->account,
+								'address' => $tx->address,
+								'txid' => $tx->txid,
+								'symbol' => $tx->symbol,
+								'amount' => $tx->amount,
+								'created_time' => $tx->created_time,
+								'updated_time' => $current_time_gmt,
+								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
+								'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
+								'retries' => 255
+							);
+
 							$affected = $wpdb->insert(
 								Dashed_Slug_Wallets::$table_name_txs,
-								array(
-									'blog_id' => get_current_blog_id(),
-									'category' => 'deposit',
-									'account' => $tx->account,
-									'address' => $tx->address,
-									'txid' => $tx->txid,
-									'symbol' => $tx->symbol,
-									'amount' => $tx->amount,
-									'created_time' => $tx->created_time,
-									'updated_time' => $current_time_gmt,
-									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
-									'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
-									'retries' => 255
-								),
+								$new_tx_data,
 								array(
 									'%d', '%s', '%d', '%s', '%s', '%s', '%20.10f', '%s', '%s', '%d', '%s', '%d'
 								)

@@ -165,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.5'
+					'2.3.6'
 				);
 			}
 		}
@@ -229,12 +229,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						$table_name_txs
 				) );
 			}
-		}
-
-		/** @internal */
-		private static function get_current_account_id() {
-			$user = wp_get_current_user();
-			return intval( $user->ID );
 		}
 
 		/** @internal */
@@ -466,7 +460,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						symbol
 					",
 					get_current_blog_id(),
-					self::get_current_account_id()
+					get_current_user_id()
 				);
 
 				$user_balances = $wpdb->get_results( $user_balances_query );
@@ -531,12 +525,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						txs.symbol = %s AND
 						( txs.confirmations >= %d OR txs.category = 'move' )
 					ORDER BY
-						created_time
+						created_time DESC
 					LIMIT
 						$from, $count
 				",
 				get_current_blog_id(),
-				self::get_current_account_id(),
+				get_current_user_id(),
 				$symbol,
 				intval( $minconf )
 			) );
@@ -582,6 +576,38 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
 
+			// first check if address belongs to another user on this system, and if so do a move transaction instead
+			$deposit_address = $wpdb->get_row( $wpdb->prepare(
+				"
+				SELECT
+					a.account
+				FROM
+					{$table_name_adds} a
+				WHERE
+					a.blog_id = %d AND
+					a.symbol = %s AND
+					a.address = %s
+				ORDER BY
+					created_time DESC
+				LIMIT 1
+				",
+				get_current_blog_id(),
+				$symbol,
+				$address
+			) );
+
+			if ( ! is_null( $deposit_address ) ) {
+
+				if ( get_current_user_id() == $deposit_address->account ) {
+					throw new Exception(
+						__( 'You cannot withdraw to one of your own deposit addresses on this system.', 'wallets' ),
+						self::ERR_DO_WITHDRAW );
+
+				}
+				$this->do_move( $symbol, $deposit_address->account, $amount, $comment, $check_capabilities );
+				return;
+			}
+
 			// start db transaction and lock tables
 			$wpdb->query( 'SET autocommit=0' );
 			$wpdb->query( "
@@ -591,38 +617,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				{$wpdb->users} u READ" );
 
 			try {
-
-				$deposit_address = $wpdb->get_row( $wpdb->prepare(
-					"
-					SELECT
-						a.account,
-						u.user_login
-					FROM
-						{$table_name_adds} a
-					LEFT JOIN
-						{$wpdb->users} u
-					ON ( u.ID = a.account )
-					WHERE
-						a.blog_id = %d AND
-						a.symbol = %s AND
-						a.address = %s
-					ORDER BY
-						created_time DESC
-					LIMIT 1
-					",
-					get_current_blog_id(),
-					$symbol,
-					$address
-				) );
-
-				if ( ! is_null( $deposit_address ) ) {
-
-					throw new Exception(
-						sprintf(
-							__( 'Cannot withdraw to address %s because it is a deposit address for user %s on this system. Perform an internal transfer instead.', 'wallets' ),
-							$address, $deposit_address->user_login ),
-						self::ERR_DO_WITHDRAW );
-				}
 
 				$balance = $this->get_balance( $symbol, null, $check_capabilities );
 				$fee = $adapter->get_withdraw_fee();
@@ -647,7 +641,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$txrow = array(
 					'blog_id' => get_current_blog_id(),
 					'category' => 'withdraw',
-					'account' => self::get_current_account_id(),
+					'account' => get_current_user_id(),
 					'address' => $address,
 					'symbol' => $symbol,
 					'amount' => -floatval( $amount_plus_fee ),
@@ -758,7 +752,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'blog_id' => get_current_blog_id(),
 					'category' => 'move',
 					'tags' => trim( "send $tags" ),
-					'account' => self::get_current_account_id(),
+					'account' => get_current_user_id(),
 					'other_account' => intval( $toaccount ),
 					'txid' => "$txid-send",
 					'symbol' => $symbol,
@@ -777,7 +771,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'category' => 'move',
 					'tags' => trim( "receive $tags" ),
 					'account' => intval( $toaccount ),
-					'other_account' => self::get_current_account_id(),
+					'other_account' => get_current_user_id(),
 					'txid' => "$txid-receive",
 					'symbol' => $symbol,
 					'amount' => $amount,
@@ -865,7 +859,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					LIMIT 1
 				",
 				get_current_blog_id(),
-				self::get_current_account_id(),
+				get_current_user_id(),
 				$symbol
 			) );
 
@@ -873,7 +867,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$address = $adapter->get_new_address();
 
 				$address_row = new stdClass();
-				$address_row->account = self::get_current_account_id();
+				$address_row->account = get_current_user_id();
 				$address_row->symbol = $symbol;
 				$address_row->address = $address;
 
