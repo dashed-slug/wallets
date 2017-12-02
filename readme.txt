@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.7.2
+Stable tag: 2.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.7.3 =
+- Fix: Incompatibility with PHP 5.3 introduced in 2.7.2.
+- Improve: More efficient pulling of bittrex exchange rates.
+
 = 2.7.2 =
 - Add: Exchange rates API now uses a choice of Bittrex, Poloniex or Novaexchange APIs.
 - Add: Blockchain.info donation button in about section.
@@ -605,7 +609,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.7.2 introduces configurable exchange rate providers that affect price calculation in some app extensions.
+Version 2.7.3 is a patch release.
 
 == Donating ==
 

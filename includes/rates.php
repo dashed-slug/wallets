@@ -213,22 +213,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				} elseif ( self::is_crypto( $to ) ) {
 					$rate1 = self::get_exchange_rate_fixer( $from, 'USD' );
-					$rate2 = self::{"get_exchange_rate_$bridge_provider"}( 'USD', 'BTC' );
-					$rate3 = self::{"get_exchange_rate_$provider"}( 'BTC', $to );
+					$rate2 = call_user_func( "self::get_exchange_rate_$bridge_provider", 'USD', 'BTC' );
+					$rate3 = call_user_func( "self::get_exchange_rate_$provider", 'BTC', $to );
 					$rate = $rate1 * $rate2 * $rate3;
 				}
 
 			} elseif ( self::is_crypto( $from ) ) {
 
 				if ( self::is_fiat( $to ) ) {
-					$rate1 = self::{"get_exchange_rate_$provider"}( $from, 'BTC' );
-					$rate2 = self::{"get_exchange_rate_$bridge_provider"}( 'BTC', 'USD' );
-					$rate3 = self::get_exchange_rate_fixer( 'USD', $to );
+					$rate1 = call_user_func( "self::get_exchange_rate_$provider", $from, 'BTC' );
+					$rate2 = call_user_func( "self::get_exchange_rate_$bridge_provider", 'BTC', 'USD' );
+					$rate3 = call_user_func( "self::get_exchange_rate_fixer", 'USD', $to );
 					$rate = $rate1 * $rate2 * $rate3;
 
 				} elseif ( self::is_crypto( $to ) ) {
-					$rate1 = self::{"get_exchange_rate_$provider"}( $from, 'BTC' );
-					$rate2 = self::{"get_exchange_rate_$provider"}( 'BTC', $to );
+					$rate1 = call_user_func( "self::get_exchange_rate_$provider", $from, 'BTC' );
+					$rate2 = call_user_func( "self::get_exchange_rate_$provider", 'BTC', $to );
 					$rate = $rate1 * $rate2;
 				}
 			}
@@ -327,13 +327,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				$to = 'USDT';
 			}
 
-			$url = "https://bittrex.com/api/v1.1/public/getticker?market=$from-$to";
+			$url = "https://bittrex.com/api/v1.1/public/getmarketsummaries";
 			$json = self::file_get_cached_contents( $url );
 			if ( false !== $json ) {
 				$obj = json_decode( $json );
 				if ( isset( $obj->success ) && $obj->success ) {
-					if ( isset( $obj->result ) && isset( $obj->result->Bid ) ) {
-						return floatval( $obj->result->Bid );
+					foreach ( $obj->result as $market ) {
+						if ( $market->MarketName == "{$from}-{$to}" ) {
+							return floatval( $market->Bid );
+						} elseif ( $market->MarketName == "{$to}-{$from}" ) {
+							return floatval( 1 / $market->Bid );
+						}
 					}
 				}
 			}
