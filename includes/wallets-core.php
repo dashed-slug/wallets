@@ -165,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.4'
+					'2.3.5'
 				);
 			}
 		}
@@ -581,13 +581,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
-			$table_name_options = $wpdb->options;
 
 			// start db transaction and lock tables
 			$wpdb->query( 'SET autocommit=0' );
-			$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $table_name_options WRITE, $table_name_adds READ" );
+			$wpdb->query( "
+				LOCK TABLES $table_name_txs WRITE,
+				{$wpdb->options} WRITE,
+				$table_name_adds a READ,
+				{$wpdb->users} u READ" );
 
 			try {
+
+				$deposit_address = $wpdb->get_row( $wpdb->prepare(
+					"
+					SELECT
+						a.account,
+						u.user_login
+					FROM
+						{$table_name_adds} a
+					LEFT JOIN
+						{$wpdb->users} u
+					ON ( u.ID = a.account )
+					WHERE
+						a.blog_id = %d AND
+						a.symbol = %s AND
+						a.address = %s
+					ORDER BY
+						created_time DESC
+					LIMIT 1
+					",
+					get_current_blog_id(),
+					$symbol,
+					$address
+				) );
+
+				if ( ! is_null( $deposit_address ) ) {
+
+					throw new Exception(
+						sprintf(
+							__( 'Cannot withdraw to address %s because it is a deposit address for user %s on this system. Perform an internal transfer instead.', 'wallets' ),
+							$address, $deposit_address->user_login ),
+						self::ERR_DO_WITHDRAW );
+				}
+
 				$balance = $this->get_balance( $symbol, null, $check_capabilities );
 				$fee = $adapter->get_withdraw_fee();
 				$amount_plus_fee = $amount + $fee;

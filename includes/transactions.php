@@ -264,29 +264,66 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 			foreach ( $wd_txs as $wd_tx ) {
 
-				$wpdb->query( "LOCK TABLES $table_name_txs WRITE, $wpdb->options WRITE, $table_name_adds READ" );
+				$wpdb->query( "
+					LOCK TABLES $table_name_txs WRITE,
+					{$wpdb->options} WRITE,
+					$table_name_adds a READ,
+					{$wpdb->users} u READ" );
 
-				$balance_query = $wpdb->prepare(
-					"
-					SELECT
-						SUM(amount)
-					FROM
-						{$table_name_txs}
-					WHERE
-						blog_id = %d AND
-						symbol = %s AND
-						status = 'done' AND
-						account = %d
-					",
-					get_current_blog_id(),
-					$wd_tx->symbol,
-					$wd_tx->account
-				);
-
-				$balance = $wpdb->get_var( $balance_query );
 
 				$txid = null;
 				try {
+					$deposit_address = $wpdb->get_row( $wpdb->prepare(
+						"
+						SELECT
+							a.account,
+							u.user_login
+						FROM
+							{$table_name_adds} a
+						LEFT JOIN
+							{$wpdb->users} u
+						ON ( u.ID = a.account )
+						WHERE
+							a.blog_id = %d AND
+							a.symbol = %s AND
+							a.address = %s
+						ORDER BY
+							created_time DESC
+						LIMIT 1
+						",
+						get_current_blog_id(),
+						$wd_tx->symbol,
+						$wd_tx->address
+					) );
+
+					if ( ! is_null( $deposit_address ) ) {
+
+						throw new Exception(
+							sprintf(
+								__( 'Cannot withdraw to address %s because it is a deposit address for user %s on this system. Perform an internal transfer instead.', 'wallets' ),
+								$wd_tx->address, $deposit_address->user_login ),
+							Dashed_Slug_Wallets::ERR_DO_WITHDRAW );
+					}
+
+					$balance_query = $wpdb->prepare(
+						"
+						SELECT
+							SUM(amount)
+						FROM
+							{$table_name_txs}
+						WHERE
+							blog_id = %d AND
+							symbol = %s AND
+							status = 'done' AND
+							account = %d
+						",
+						get_current_blog_id(),
+						$wd_tx->symbol,
+						$wd_tx->account
+					);
+
+					$balance = $wpdb->get_var( $balance_query );
+
 					if ( is_null( $balance ) ) {
 						throw new Exception( 'Could not get balance' );
 					}
@@ -325,6 +362,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 					$wpdb->query( "UNLOCK TABLES" );
 
+					$wd_tx->txid = $txid;
 					do_action( 'wallets_withdraw', $wd_tx );
 
 				} catch ( Exception $e ) {

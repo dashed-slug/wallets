@@ -49,7 +49,6 @@ You have attempted to withdraw ###AMOUNT### ###SYMBOL### to address ###ADDRESS##
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Last error message: ###LAST_ERROR###
-Transaction ID: ###TXID###
 Transacton created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 
