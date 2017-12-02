@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 18:07+0200\n"
+"POT-Creation-Date: 2017-12-02 18:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -115,63 +115,67 @@ msgstr ""
 msgid "IMPORTANT SECURITY WARNING:"
 msgstr ""
 
-#: src/includes/admin-menu.php:175
+#: src/includes/admin-menu.php:176
 msgid ""
 "By using this free plugin you assume all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
-"net or its affiliates responsible for any damages incurred by the use of "
-"this plugin. You, the administrator, must take all necessary precautions to "
-"secure your WordPress installation before you connect it to any live "
-"wallets. You should at a minimum take the time to <a href=\"https://codex."
-"wordpress.org/Hardening_WordPress\" target=\"_blank\">educate yourself about "
-"hardening WordPress security</a> and to install a security plugin such as <a "
-"href=\"https://infinitewp.com/addons/wordfence/?ref=260\" target=\"_blank"
-"\">Wordfence</a>."
+"net or any of its affiliates responsible for any damages incurred by the use "
+"of this plugin. You, the administrator, must take all necessary precautions "
+"to secure your WordPress installation before you connect it to any live "
+"wallets. You should at a minimum take the time to: "
 msgstr ""
 
-#: src/includes/admin-menu.php:186
-msgid "Wallet plugin extensions"
+#: src/includes/admin-menu.php:182
+msgid "educate yourself about hardening WordPress security"
+msgstr ""
+
+#: src/includes/admin-menu.php:184
+msgid "install a security plugin such as Wordfence"
 msgstr ""
 
 #: src/includes/admin-menu.php:187
+msgid "Wallet plugin extensions"
+msgstr ""
+
+#: src/includes/admin-menu.php:188
 msgid ""
 "/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
 "functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:188
+#: src/includes/admin-menu.php:189
 msgid "You can install"
 msgstr ""
 
-#: src/includes/admin-menu.php:189
+#: src/includes/admin-menu.php:190
 msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:190
+#: src/includes/admin-menu.php:191
 msgid ""
 "\"app extensions\". App extensions are plugins that utilize the core API to "
 "supply some user functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:194
+#: src/includes/admin-menu.php:195
 msgid "Visit the dashed-slug to see what's available"
 msgstr ""
 
-#: src/includes/admin-menu.php:197
+#: src/includes/admin-menu.php:198
 msgid "Coin Adapters"
 msgstr ""
 
-#: src/includes/admin-menu.php:203
+#: src/includes/admin-menu.php:204
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/admin-menu.php:205
+#: src/includes/admin-menu.php:206
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Existing transactions will be skipped."
 msgstr ""
 
-#: src/includes/admin-menu.php:208
+#: src/includes/admin-menu.php:209
 msgid "Import"
 msgstr ""
 
