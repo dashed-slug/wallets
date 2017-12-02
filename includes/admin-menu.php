@@ -112,8 +112,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<h2><?php esc_html_e( 'Get the free PDF manual!', 'wallets' ); ?></h2>
 				<ol>
 					<li><?php echo __( 'Visit the dashed-slug <a href="https://dashed-slug.net/downloads">download area</a>.', 'wallets' ); ?></li>
-					<li><?php echo __( 'Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>.', 'wallets' ); ?></li>
-					<li><?php echo __( 'You will find a PDF file in the ZIP file. RTFM! :-)', 'wallets' ); ?></li>
+					<li><?php echo __( 'Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>. ' .
+						'You will find the PDF file inside the ZIP download. ', 'wallets' ); ?></li>
+					<li><?php echo __( 'RTFM! :-)', 'wallets' ); ?></li>
 				</ol>
 			</div>
 

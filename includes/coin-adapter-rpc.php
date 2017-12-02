@@ -39,20 +39,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 		}
 
 		public function action_admin_init_notices() {
-			if ( ! function_exists( 'curl_init' ) ) {
-
-				$this->_notices->error(
-					sprintf(
-						__( 'The coin adapter for %s will not be able to work correctly on your system because you have not installed the PHP curl module. '.
-							'The module must be installed to connect to wallet daemons via their RPC APIs. The adapter has now been disabled.', 'wallets' ),
-						$this->get_adapter_name()
-						),
-					'no-php-curl'
-					);
-
-				Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-enabled", false );
-
-			} else {
+			if ( extension_loaded( 'curl' ) ) {
 
 				try {
 					// will throw exception if daemon is not contactable

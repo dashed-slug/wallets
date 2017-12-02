@@ -12,6 +12,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 		public function __construct() {
 			add_action( 'edit_user_profile', array( &$this, 'action_user_profile' ), 10, 1 );
+			add_action( 'show_user_profile', array( &$this, 'action_user_profile' ), 10, 1 );
 		}
 
 		public function action_user_profile( $profileuser ) {

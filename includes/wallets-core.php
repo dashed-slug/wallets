@@ -175,7 +175,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.10.3',
+					'2.10.4',
 					true
 				);
 
@@ -189,7 +189,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.10.3',
+					'2.10.4',
 					true
 				);
 
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.10.3'
+					'2.10.4'
 				);
 			}
 		}
@@ -491,8 +491,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						'4.9' ),
 					'old-wp-ver' );
 			}
-		}
 
+			// Check for needed PHP extensions
+			$extensions_needed = array( 'mbstring', 'curl' );
+			$extensions_missing = array();
+			foreach ( $extensions_needed as $extension ) {
+				if ( ! extension_loaded( $extension ) ) {
+					$extensions_missing[] = $extension;
+				}
+			}
+			if ( $extensions_missing ) {
+				$this->_notices->warning(
+					sprintf(
+						__( 'The plugin may not function properly because the following PHP extensions are not installed on your server: %s. ' .
+							'Install these extensions or talk to your hosting provider about this.', 'wallets' ),
+						implode( ', ', $extensions_missing ) ),
+					'missing-extensions' );
+			}
+		}
 
 		/** @internal */
 		public static function action_activate( $network_active ) {
@@ -563,8 +579,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.3';
-			$data[ __( 'Git SHA', 'wallets' ) ] = 'e3a1fd1';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.4';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'cb71588';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );

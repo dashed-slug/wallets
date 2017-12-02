@@ -112,19 +112,43 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	// remove db schema revision
 	wallets_delete_option( 'wallets_db_revision' );
 
-	// remove user roles
-	$user_roles = array_keys( get_editable_roles() );
-	$user_roles[] = 'administrator';
-	foreach ( $user_roles as $role_name ) {
+	// remove user caps
+	if ( is_multisite() ) {
+		global $wpdb;
+		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+		foreach ( $blog_ids as $blog_id ) {
+			switch_to_blog( $blog_id );
+			$user_roles = array_keys( get_editable_roles() );
+			$user_roles[] = 'administrator';
+			foreach ( $user_roles as $role_name ) {
 
-		$role = get_role( $role_name );
+				$role = get_role( $role_name );
 
-		if ( ! is_null( $role ) ) {
-			$role->remove_cap( 'manage_wallets' );
-			$role->remove_cap( 'has_wallets' );
-			$role->remove_cap( 'list_wallet_transactions' );
-			$role->remove_cap( 'send_funds_to_user' );
-			$role->remove_cap( 'withdraw_funds_from_wallet' );
+				if ( ! is_null( $role ) ) {
+					$role->remove_cap( 'manage_wallets' );
+					$role->remove_cap( 'has_wallets' );
+					$role->remove_cap( 'list_wallet_transactions' );
+					$role->remove_cap( 'send_funds_to_user' );
+					$role->remove_cap( 'withdraw_funds_from_wallet' );
+				}
+			}
+			restore_current_blog();
+		}
+
+	} else {
+		$user_roles = array_keys( get_editable_roles() );
+		$user_roles[] = 'administrator';
+		foreach ( $user_roles as $role_name ) {
+
+			$role = get_role( $role_name );
+
+			if ( ! is_null( $role ) ) {
+				$role->remove_cap( 'manage_wallets' );
+				$role->remove_cap( 'has_wallets' );
+				$role->remove_cap( 'list_wallet_transactions' );
+				$role->remove_cap( 'send_funds_to_user' );
+				$role->remove_cap( 'withdraw_funds_from_wallet' );
+			}
 		}
 	}
 

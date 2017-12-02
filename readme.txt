@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 2.10.3
+Stable tag: 2.10.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -315,7 +315,7 @@ Yes this is in the future plans.
 
 = I want to pay for premium membership but cannot or do not want to pay via PayPal. =
 
-I am curretly in the process of building a plugin extension that will allow you to pay for membership via cryptocurrencies.
+I am currently in the process of building a plugin extension that will allow you to pay for membership via cryptocurrencies.
 In the meantime, you may contact me directly at [info@dashed-slug.net](mailto:info@dashed-slug.net) if you wish to send a Bitcoin payment and I will activate your membership manually.
 
 = How can I get support or submit feedback? =
@@ -346,6 +346,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.10.4 =
+- Fix: Setting capabilities in network-activated multisite installs now modifies capabilities accross the network.
+- Add: Plugin warns user if needed PHP extensions are not installed.
+- Add: Admins can now view their own deposit addresses and balances in their user profile screen.
+- Improve: Bumped included `bs58check` library from 2.0.2 to 2.1.0.
 
 = 2.10.3 =
 - Add: Admins with `manage_wallets` can now view deposit addresses and balances of users in the user profile screen.
@@ -667,7 +673,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.10.2 introduces some extra safety checks and bugfixes.
+Version 2.10.4 introduces an important bugfix for network-activated multisite.
 
 == Donating ==
 

@@ -164,7 +164,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 			case 'admin_confirm':
 			case 'user_confirm':
-				return mb_convert_encoding( $item[ $column_name ] ? '&#x2611;' : '&#x2610;', 'UTF-8', 'HTML-ENTITIES' );
+				return $item[ $column_name ] ? '&#x2611;' : '&#x2610;';
 
 			case 'from':
 				if ( 'deposit' == $item['category'] ) {
@@ -199,7 +199,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				return 'move' == $item['category'] ? '' : esc_html( $item[ 'confirmations' ] );
 
 			case 'retries':
-				return 'deposit' == $item['category'] ? '' : esc_html( $item[ $column_name ] );
+				return 'deposit' == $item['category'] ? '' : esc_html( $item[ 'retries' ] );
 
 			default:
 				return '';
@@ -307,7 +307,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			}
 		}
 
-		$checkbox = mb_convert_encoding( $item[ 'admin_confirm' ] ? '&#x2611;' : '&#x2610;', 'UTF-8', 'HTML-ENTITIES' );
+		$checkbox = $item[ 'admin_confirm' ] ? '&#x2611;' : '&#x2610;';
 
 		return sprintf( '%s %s', $checkbox, $this->row_actions( $actions, true ) );
 
@@ -360,7 +360,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			}
 		}
 
-		$checkbox = mb_convert_encoding( $item[ 'user_confirm' ] ? '&#x2611;' : '&#x2610;', 'UTF-8', 'HTML-ENTITIES' );
+		$checkbox = $item[ 'user_confirm' ] ? '&#x2611;' : '&#x2610;';
 
 		return sprintf( '%s %s', $checkbox, $this->row_actions( $actions, true ) );
 

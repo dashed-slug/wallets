@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.10.3\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.10.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-02 19:28+0200\n"
+"POT-Creation-Date: 2017-12-02 19:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,9 +70,9 @@ msgstr ""
 
 #: build/includes/adapters-list.php:90 build/includes/adapters-list.php:124
 #: build/includes/admin-menu.php:59 build/includes/caps.php:95
-#: build/includes/caps.php:145 build/includes/coin-adapter-bitcoin.php:58
+#: build/includes/caps.php:162 build/includes/coin-adapter-bitcoin.php:58
 #: build/includes/coin-adapter-json.php:75
-#: build/includes/coin-adapter-rpc.php:224 build/includes/coin-adapter.php:206
+#: build/includes/coin-adapter-rpc.php:211 build/includes/coin-adapter.php:206
 #: build/includes/coin-adapter.php:215 build/includes/coin-adapter.php:236
 #: build/includes/coin-adapter.php:301 build/includes/cold-storage.php:135
 #: build/includes/confirmations.php:298 build/includes/cron.php:282
@@ -202,24 +202,26 @@ msgid ""
 msgstr ""
 
 #: build/includes/admin-menu.php:115
-msgid "Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>."
+msgid ""
+"Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>. You will "
+"find the PDF file inside the ZIP download. "
 msgstr ""
 
-#: build/includes/admin-menu.php:116
-msgid "You will find a PDF file in the ZIP file. RTFM! :-)"
+#: build/includes/admin-menu.php:117
+msgid "RTFM! :-)"
 msgstr ""
 
-#: build/includes/admin-menu.php:121
+#: build/includes/admin-menu.php:122
 msgid "Have your say!"
 msgstr ""
 
-#: build/includes/admin-menu.php:124
+#: build/includes/admin-menu.php:125
 msgid ""
 "Did you find this plugin useful? Leave a review on <a href=\"https://"
 "wordpress.org/support/plugin/wallets/reviews/\">wordpress.org</a>."
 msgstr ""
 
-#: build/includes/admin-menu.php:125
+#: build/includes/admin-menu.php:126
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a href=\"https://wordpress."
 "org/support/plugin/wallets\">wordpress.org support forum</a> for the main "
@@ -227,60 +229,60 @@ msgid ""
 "net</a> support forums for the extensions."
 msgstr ""
 
-#: build/includes/admin-menu.php:126
+#: build/includes/admin-menu.php:127
 msgid ""
 "Something else on your mind? <a href=\"https://dashed-slug.net/contact"
 "\">Contact me</a>."
 msgstr ""
 
-#: build/includes/admin-menu.php:131
+#: build/includes/admin-menu.php:132
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: build/includes/admin-menu.php:133
+#: build/includes/admin-menu.php:134
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: build/includes/admin-menu.php:136
+#: build/includes/admin-menu.php:137
 msgid ""
 "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: build/includes/admin-menu.php:137
+#: build/includes/admin-menu.php:138
 msgid ""
 "Donate a few shatoshi to the dashed-slug Bitcoin address: <a href="
 "\"bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-"
 "slug&message=donation\">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>."
 msgstr ""
 
-#: build/includes/admin-menu.php:187
+#: build/includes/admin-menu.php:188
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: build/includes/admin-menu.php:191
+#: build/includes/admin-menu.php:192
 msgid "App extensions"
 msgstr ""
 
-#: build/includes/admin-menu.php:193
+#: build/includes/admin-menu.php:194
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: build/includes/admin-menu.php:200
+#: build/includes/admin-menu.php:201
 msgid "Coin adapters"
 msgstr ""
 
-#: build/includes/admin-menu.php:202
+#: build/includes/admin-menu.php:203
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for additional "
 "cryptocurrencies. "
 msgstr ""
 
-#: build/includes/admin-menu.php:226
+#: build/includes/admin-menu.php:227
 msgid "Installed"
 msgstr ""
 
@@ -306,30 +308,30 @@ msgstr ""
 msgid "Can withdraw cryptocurrencies from the site to an external address."
 msgstr ""
 
-#: build/includes/caps.php:110
+#: build/includes/caps.php:127
 msgid "Capabilities matrix"
 msgstr ""
 
-#: build/includes/caps.php:134 build/includes/caps.php:135
+#: build/includes/caps.php:151 build/includes/caps.php:152
 msgid "Capabilities"
 msgstr ""
 
-#: build/includes/caps.php:148
+#: build/includes/caps.php:165
 msgid "Bitcoin and Altcoin Wallets Capabilities"
 msgstr ""
 
-#: build/includes/caps.php:150
+#: build/includes/caps.php:167
 msgid ""
 "Users in WordPress are assigned to roles, and these roles have capabilities. "
 "Here you can set which wallets-related capabilities you want each user role "
 "to have."
 msgstr ""
 
-#: build/includes/caps.php:154
+#: build/includes/caps.php:171
 msgid "Read about Roles and Capabilities in the Codex."
 msgstr ""
 
-#: build/includes/caps.php:167
+#: build/includes/caps.php:184
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
@@ -404,114 +406,105 @@ msgid ""
 "fetched from the remote API (in seconds)."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:46
-#, php-format
-msgid ""
-"The coin adapter for %s will not be able to work correctly on your system "
-"because you have not installed the PHP curl module. The module must be "
-"installed to connect to wallet daemons via their RPC APIs. The adapter has "
-"now been disabled."
-msgstr ""
-
-#: build/includes/coin-adapter-rpc.php:68
+#: build/includes/coin-adapter-rpc.php:55
 #, php-format
 msgid "The %s RPC API cannot be contacted."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:71
+#: build/includes/coin-adapter-rpc.php:58
 #, php-format
 msgid ""
 "You need to make sure that your <a href=\"%1$s\">%2$s RPC settings</a> are "
 "correctly configured. "
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:76
+#: build/includes/coin-adapter-rpc.php:63
 msgid "Then edit your <code>.conf</code> file and append the following:"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:82
+#: build/includes/coin-adapter-rpc.php:69
 msgid "Finally, start the daemon."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:84
+#: build/includes/coin-adapter-rpc.php:71
 msgid ""
 "You are advised to not dismiss this error manually. It will stop showing "
 "once the daemon can be contacted."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:101
+#: build/includes/coin-adapter-rpc.php:88
 msgid "Daemon RPC API"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:108
+#: build/includes/coin-adapter-rpc.php:95
 msgid "IP"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:114
+#: build/includes/coin-adapter-rpc.php:101
 msgid ""
 "This is the IP of the machine running your wallet daemon. Set to 127.0.0.1 "
 "if you are running the daemon on the same machine as WordPress."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:125
+#: build/includes/coin-adapter-rpc.php:112
 msgid "Port"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:131
+#: build/includes/coin-adapter-rpc.php:118
 msgid ""
 "This is the TCP port where the daemon listens for JSON-RPC connections. It "
 "should match the <code>rpcport</code> setting in your daemon."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:142
+#: build/includes/coin-adapter-rpc.php:129
 msgid "User"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:148
+#: build/includes/coin-adapter-rpc.php:135
 msgid ""
 "This is the username part of the credentials to connect to the JSON-RPC "
 "port. It should match the <code>rpcuser</code> setting in your daemon."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:159
+#: build/includes/coin-adapter-rpc.php:146
 msgid "Password"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:165
+#: build/includes/coin-adapter-rpc.php:152
 msgid ""
 "This is the password part of the credentials to connect to the JSON-RPC "
 "port. It should match the <code>rpcpassword</code> setting in your daemon."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:176
+#: build/includes/coin-adapter-rpc.php:163
 msgid "Path"
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:182
+#: build/includes/coin-adapter-rpc.php:169
 msgid ""
 "This is the path location of the JSON-RPC API endpoint. Normally you will "
 "want to leave this empty."
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:229
+#: build/includes/coin-adapter-rpc.php:216
 #, php-format
 msgid ""
 "The %1$s adapter needs to know the location and credentials to the RPC API "
 "of the %2$s daemon."
 msgstr ""
 
+#: build/includes/coin-adapter-rpc.php:249
 #: build/includes/coin-adapter-rpc.php:262
-#: build/includes/coin-adapter-rpc.php:275
-#: build/includes/coin-adapter-rpc.php:294
-#: build/includes/coin-adapter-rpc.php:319
+#: build/includes/coin-adapter-rpc.php:281
+#: build/includes/coin-adapter-rpc.php:306
+#: build/includes/coin-adapter-rpc.php:401
 #: build/includes/coin-adapter-rpc.php:414
-#: build/includes/coin-adapter-rpc.php:427
-#: build/includes/coin-adapter-rpc.php:444
+#: build/includes/coin-adapter-rpc.php:431
 #, php-format
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: build/includes/coin-adapter-rpc.php:368
+#: build/includes/coin-adapter-rpc.php:355
 #, php-format
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
@@ -1054,10 +1047,10 @@ msgstr ""
 #: build/includes/json-api.php:131 build/includes/json-api.php:161
 #: build/includes/json-api.php:221 build/includes/json-api.php:254
 #: build/includes/json-api.php:280 build/includes/json-api.php:314
-#: build/includes/transactions.php:754 build/includes/wallets-core.php:625
-#: build/includes/wallets-core.php:719 build/includes/wallets-core.php:773
-#: build/includes/wallets-core.php:829 build/includes/wallets-core.php:902
-#: build/includes/wallets-core.php:1047 build/includes/wallets-core.php:1193
+#: build/includes/transactions.php:754 build/includes/wallets-core.php:641
+#: build/includes/wallets-core.php:735 build/includes/wallets-core.php:789
+#: build/includes/wallets-core.php:845 build/includes/wallets-core.php:918
+#: build/includes/wallets-core.php:1063 build/includes/wallets-core.php:1209
 msgid "Not allowed"
 msgstr ""
 
@@ -1717,79 +1710,87 @@ msgid ""
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: build/includes/wallets-core.php:566
+#: build/includes/wallets-core.php:506
+#, php-format
+msgid ""
+"The plugin may not function properly because the following PHP extensions "
+"are not installed on your server: %s. Install these extensions or talk to "
+"your hosting provider about this."
+msgstr ""
+
+#: build/includes/wallets-core.php:582
 msgid "Plugin version"
 msgstr ""
 
-#: build/includes/wallets-core.php:567
+#: build/includes/wallets-core.php:583
 msgid "Git SHA"
 msgstr ""
 
-#: build/includes/wallets-core.php:568
+#: build/includes/wallets-core.php:584
 msgid "PHP version"
 msgstr ""
 
-#: build/includes/wallets-core.php:569
+#: build/includes/wallets-core.php:585
 msgid "WordPress version"
 msgstr ""
 
-#: build/includes/wallets-core.php:570
+#: build/includes/wallets-core.php:586
 msgid "MySQL version"
 msgstr ""
 
-#: build/includes/wallets-core.php:571
+#: build/includes/wallets-core.php:587
 msgid "DB prefix"
 msgstr ""
 
-#: build/includes/wallets-core.php:572
+#: build/includes/wallets-core.php:588
 msgid "Supports cURL"
 msgstr ""
 
-#: build/includes/wallets-core.php:573
+#: build/includes/wallets-core.php:589
 msgid "Is multisite"
 msgstr ""
 
-#: build/includes/wallets-core.php:574
+#: build/includes/wallets-core.php:590
 msgid "Is network activated"
 msgstr ""
 
-#: build/includes/wallets-core.php:575
+#: build/includes/wallets-core.php:591
 msgid "PHP max execution time"
 msgstr ""
 
-#: build/includes/wallets-core.php:587
+#: build/includes/wallets-core.php:603
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: build/includes/wallets-core.php:632
+#: build/includes/wallets-core.php:648
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: build/includes/wallets-core.php:636
+#: build/includes/wallets-core.php:652
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: build/includes/wallets-core.php:940
+#: build/includes/wallets-core.php:956
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: build/includes/wallets-core.php:964
+#: build/includes/wallets-core.php:980
 msgid "Must withdraw positive amount"
 msgstr ""
 
-#: build/includes/wallets-core.php:970 build/includes/wallets-core.php:1086
+#: build/includes/wallets-core.php:986 build/includes/wallets-core.php:1102
 #, php-format
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: build/includes/wallets-core.php:1051
+#: build/includes/wallets-core.php:1067
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: build/includes/wallets-core.php:1080
+#: build/includes/wallets-core.php:1096
 msgid "Must move positive amount"
 msgstr ""

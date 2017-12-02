@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'2.10.3'
+				'2.10.4'
 			);
 		}
 
@@ -95,11 +95,28 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 				}
 
-				foreach ( get_editable_roles() as $role_name => $role_info ) {
-					if ( 'administrator' != $role_name ) {
-						foreach ( $this->caps as $capability => $description ) {
-							$this->update_cap( $role_name, $capability );
+				if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					foreach ( get_editable_roles() as $role_name => $role_info ) {
+						if ( 'administrator' != $role_name ) {
+							foreach ( $this->caps as $capability => $description ) {
+								$this->update_cap( $role_name, $capability );
+							}
 						}
+					}
+				} else {
+					global $wpdb;
+					$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+
+					foreach ( $blog_ids as $blog_id ) {
+						switch_to_blog( $blog_id );
+						foreach ( get_editable_roles() as $role_name => $role_info ) {
+							if ( 'administrator' != $role_name ) {
+								foreach ( $this->caps as $capability => $description ) {
+									$this->update_cap( $role_name, $capability );
+								}
+							}
+						}
+						restore_current_blog();
 					}
 				}
 			}

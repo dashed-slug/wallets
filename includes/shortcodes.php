@@ -40,14 +40,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 					'bs58check',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( ),
-					'2.0.2',
+					'2.1.0',
 					true
 				);
 			}
 		}
 
 		public function shortcode( $atts, $content = '', $tag ) {
-
 			$template = preg_replace( '/^wallets_/', '', $tag );
 			$views_dir = rtrim( apply_filters( 'wallets_views_dir', __DIR__ . '/views' ) , '/\\' );
 
