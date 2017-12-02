@@ -165,7 +165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.3.1'
+					'2.3.2'
 				);
 			}
 		}
@@ -247,14 +247,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
 
-			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 7;
+			$installed_db_revision = intval( get_option( 'wallets_db_revision', 0 ) );
+			$current_db_revision = 8;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 
 				$status_col_exists = intval( $wpdb->get_var( "SELECT count(*) FROM information_schema.COLUMNS WHERE COLUMN_NAME='status' and TABLE_NAME='{$table_name_txs}'") );
 
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+				// explicitly remove old constraints/indices
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `uq_tx_idx`" );
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid_idx`" );
+				$wpdb->query( "ALTER TABLE $table_name_txs DROP INDEX `txid`" );
 
 				$sql = "CREATE TABLE {$table_name_txs} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -263,8 +268,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
-				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
-				txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain transaction id',
+				address varchar(255) NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
+				txid varchar(255) DEFAULT NULL COMMENT 'blockchain transaction id',
 				symbol varchar(5) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
 				fee decimal(20,10) signed NOT NULL DEFAULT 0 COMMENT 'fees deducted from account',
@@ -278,12 +283,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				user_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if the user has confirmed this transaction over email',
 				PRIMARY KEY  (id),
 				INDEX account_idx (account),
-				INDEX txid_idx (txid),
-				INDEX blogid_idx (blog_id),
-				UNIQUE KEY `uq_tx_idx` (`symbol`, `address`, `txid`)
+				INDEX blogid_idx (blog_id)
 				) $charset_collate;";
 
 				dbDelta( $sql );
+
+				// changing latin1 collations explicitly to conserve index space
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'," );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id'" );
+
+				// changing empty txids to null and applying unique constraint
+				$wpdb->query( "UPDATE {$table_name_txs} SET txid=NULL WHERE txid=''" );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin UNIQUE DEFAULT NULL COMMENT 'blockchain transaction id'" );
 
 				// all existing transactions are assumed done
 				if ( ! $status_col_exists ) {

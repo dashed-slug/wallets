@@ -672,17 +672,20 @@ EMAIL
 
 			// use pattern for displaying amounts
 			if ( isset( $row->symbol ) ) {
-				$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $row->symbol );
-				if ( $adapter ) {
-					if ( isset( $row->amount ) ) {
-						$row->amount = sprintf( $adapter->get_sprintf(), $row->amount );
-					}
-					if ( isset( $row->fee ) ) {
-						$row->fee = sprintf( $adapter->get_sprintf(), $row->fee );
-					}
+				try {
+					$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $row->symbol, false );
+					$sprintf = $adapter->get_sprintf();
+				} catch ( Exception $e ) {
+					$sprintf = '%01.8F';
+				}
+
+				if ( isset( $row->amount ) ) {
+					$row->amount = sprintf( $sprintf, $row->amount );
+				}
+				if ( isset( $row->fee ) ) {
+					$row->fee = sprintf( $sprintf, $row->fee );
 				}
 			}
-
 
 
 			// variable substitution

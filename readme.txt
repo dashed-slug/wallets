@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -261,6 +261,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.3.2 =
+- Fix: Issue introduced in 2.3.0 where pending (not executed) withdrawals to the same address would fail.
+- Fix: Unhandled exception when sending a notification email while the corresponding adapter is disabled.
+- Change: CSV import feature only imports transactions with "done" status to maintain DB consistency.
+
 = 2.3.1 =
 - Fix: Issue where on some systems MySQL tables were not being updated correctly, resulting in user balances appearing as 0.
 
@@ -399,13 +404,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Release 2.3.0 is a major milestone for the Bitcoin and Altcoin Wallets WordPress plugin.
-
-The main improvement is that transactions now have a lifecycle and are displayed in the admin panels. Transaction requests are entered as before via the admin interface, but now their execution is decoupled from submission.
-
-Transactions can now require confirmation either by the user that submitted them via email, or by an administrator, or both. Failed transactions can be retried for a configurable amount of times.
-
-To learn more, see the changelog, or study the new Transactions section in the accompanying PDF manual. You can get the PDF manual when you download the bundle from the downloads section on the dashed-slug website.
+Version 2.3.2 fixes bugs introduced in 2.3.0.
 
 == Donating ==
 
