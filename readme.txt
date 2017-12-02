@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.3
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,6 +254,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.0.1 =
+- Fix: Dates in the [wallets_transactions] UI were not showing correctly in Internet Explorer
+- Improve: Refactored the withdrawal API for compatibility with changes to block.io adapter 1.0.2
+
 = 2.0.0 =
 - Add: Generalised `wp_cron` mechanism lets coin adapters perform any periodic checks via an optional `cron()` method.
 - Improve: Various improvements to the coin adapter API. `list_transactions` was removed in favor of the generic `cron()` method.
@@ -312,15 +316,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.0.0 features compatibility with a new block.io coin adapter, as well as various other improvements.
+Version 2.0.1 is a minor patch release that fixes issues in 2.0.0.
 
-If you are a registered member and have installed any of the previously available coin adapters, please update them to their latest versions:
-
-- Litecoin Adapter 1.2.0
-- Feathercoin Adapter 1.3.0
-
-Today version 1.0.0 of the block.io Cloud Wallet Adapter premium extension is released.
-The WooCommerce Cryptocurrency Payment Gateway extension is unaffected by this update.
+If you have installed the block.io adapter extension, please upgrade it to 1.0.2.
 
 == Donating ==
 

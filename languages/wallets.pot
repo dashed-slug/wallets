@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.0.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -336,85 +336,85 @@ msgstr ""
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/core.php:174
+#: src/includes/core.php:181
 #, php-format
 msgid ""
 "%s could NOT create a transactions table (\"%s\") in the database. The "
 "plugin may not function properly."
 msgstr ""
 
-#: src/includes/core.php:292
+#: src/includes/core.php:299
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/core.php:296
+#: src/includes/core.php:303
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/core.php:334
+#: src/includes/core.php:341
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/core.php:466
+#: src/includes/core.php:473
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/core.php:469 src/includes/core.php:542
+#: src/includes/core.php:476 src/includes/core.php:540
 #, php-format
 msgid "Insufficient funds: %f + %f fees < %f"
 msgstr ""
 
-#: src/includes/core.php:475
+#: src/includes/core.php:482
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/core.php:539
+#: src/includes/core.php:537
 msgid "Cannot move negative amount"
 msgstr ""
 
-#: src/includes/core.php:786
+#: src/includes/core.php:817
 msgid "You have performed a withdrawal."
 msgstr ""
 
-#: src/includes/core.php:801
+#: src/includes/core.php:832
 msgid "You have sent funds to another user."
 msgstr ""
 
-#: src/includes/core.php:817
+#: src/includes/core.php:848
 msgid "You have received funds from another user."
 msgstr ""
 
-#: src/includes/core.php:829
+#: src/includes/core.php:860
 msgid "You have performed a deposit."
 msgstr ""
 
-#: src/includes/core.php:839
+#: src/includes/core.php:870
 msgid "Transaction details follow"
 msgstr ""
 
-#: src/includes/core.php:867
+#: src/includes/core.php:898
 msgid "Every five minutes"
 msgstr ""
 
-#: src/includes/core.php:872
+#: src/includes/core.php:903
 msgid "Every ten minutes"
 msgstr ""
 
-#: src/includes/core.php:877
+#: src/includes/core.php:908
 msgid "Every twenty minutes"
 msgstr ""
 
-#: src/includes/core.php:882
+#: src/includes/core.php:913
 msgid "Every half an hour"
 msgstr ""
 
-#: src/includes/core.php:887
+#: src/includes/core.php:918
 msgid "Every one hour"
 msgstr ""
 
-#: src/includes/core.php:892
+#: src/includes/core.php:923
 msgid "Every four hours"
 msgstr ""
 

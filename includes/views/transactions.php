@@ -21,7 +21,7 @@
 			<tbody data-bind="foreach: wallets[selectedCoin()].transactions">
 				<tr data-bind="if: ( category == 'withdraw' )" class="withdraw">
 					<td class="type"			data-bind="text: category"></td>
-					<td class="time"><time		data-bind="text: new Date( created_time + '.000Z' ).toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
+					<td class="time"><time		data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount"			data-bind="text: amount_string"></td>
 					<td class="fee"				data-bind="text: fee_string"></td>
 					<td class="from user"		data-bind="text: '<?php esc_attr_e( 'me', 'wallets' ); ?>'"></td>
@@ -32,7 +32,7 @@
 
 				<tr data-bind="if: ( category == 'deposit' )" class="deposit">
 					<td class="type"			data-bind="text: category"></td>
-					<td class="time"><time		data-bind="text: new Date( created_time + '.000Z' ).toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
+					<td class="time"><time		data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount"			data-bind="text: amount_string"></td>
 					<td class="fee"				data-bind="text: fee_string"></td>
 					<td class="from user"		data-bind="text: address"></td>
@@ -43,7 +43,7 @@
 
 				<tr data-bind="if: ( category == 'move' )" class="move">
 					<td class="type"			data-bind="text: category"></td>
-					<td class="time"><time		data-bind="text: new Date( created_time + '.000Z' ).toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
+					<td class="time"><time		data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount"			data-bind="text: amount_string"></td>
 					<td class="fee"				data-bind="text: fee_string"></td>
 					<td class="from user"		data-bind="text: (amount >= 0 ? other_account_name : '<?php esc_attr_e( 'me', 'wallets' ); ?>')"></td>

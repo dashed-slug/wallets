@@ -137,6 +137,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'3.4.0',
 				true );
 
+			wp_enqueue_script(
+				'momentjs',
+				plugins_url( 'moment.min.js', "wallets/assets/scripts/moment.min.js" ),
+				array(),
+				'2.17.1',
+				true );
+
 			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko.min.js' ) ) {
 				$ko_script = 'wallets-ko.min.js';
 			} else {
@@ -146,7 +153,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			wp_enqueue_script(
 				'wallets_ko',
 				plugins_url( $ko_script, "wallets/assets/scripts/$ko_script" ),
-				array( 'knockout' ),
+				array( 'knockout', 'momentjs' ),
 				false,
 				true );
 
@@ -160,7 +167,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'2.0.0'
+				'2.0.1'
 			);
 		}
 
@@ -477,28 +484,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$current_time_gmt = current_time( 'mysql', true );
 
-				$row = array(
-					'category' => 'withdraw',
-					'account' => intval( $this->account ),
-					'address' => $address,
-					'txid' => $txid,
-					'symbol' => $symbol,
-					'amount' => -floatval( $amount_plus_fee ),
-					'fee' => $fee,
-					'created_time' => $current_time_gmt,
-					'updated_time' => $current_time_gmt,
-					'comment' => $comment
-				);
+				$txrow = new stdClass();
+				$txrow->category = 'withdraw';
+				$txrow->account = intval( $this->account );
+				$txrow->address = $address;
+				$txrow->txid = $txid;
+				$txrow->symbol = $symbol;
+				$txrow->amount = -floatval( $amount_plus_fee );
+				$txrow->fee = $fee;
+				$txrow->created_time = time();
+				$txrow->updated_time = $txrow->created_time;
+				$txrow->comment = $comment;
 
-				$affected = $wpdb->insert(
-					self::$table_name_txs,
-					$row,
-					array( '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
-				);
-
-				if ( false === $affected ) {
-					error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
-				}
+				do_action( 'wallets_transaction', $txrow );
 
 			} catch ( Exception $e ) {
 				$wpdb->query( 'UNLOCK TABLES' );
@@ -506,7 +504,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			}
 			$wpdb->query( 'UNLOCK TABLES' );
 
-			do_action( 'wallets_withdraw', $row );
+			do_action( 'wallets_withdraw', (array)$txrow );
 		}
 
 		/**
@@ -732,21 +730,54 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 					} elseif ( 'withdraw' == $tx->category ) {
 
-						// Withdrawals should have been already entered into the database.
+						$affected = 0;
 
-						$wpdb->update(
-							self::$table_name_txs,
-							array(
-								'updated_time'	=> $current_time_gmt,
-								'confirmations'	=> $tx->confirmations,
-							),
-							array(
-								'address'		=> $tx->address,
-								'txid'			=> $tx->txid,
-							),
-							array( '%s', '%d' ),
-							array( '%s', '%s' )
-						);
+						// try to record as new withdrawal if this is not an old transaction
+						// old transactions that are rediscovered via cron do not have an account id
+
+						if ( isset( $tx->account ) )  {
+
+							$affected = $wpdb->insert(
+								self::$table_name_txs,
+								array(
+									'category' => 'withdraw',
+									'account' => $tx->account,
+									'address' => $tx->address,
+									'txid' => $tx->txid,
+									'symbol' => $tx->symbol,
+									'amount' => $tx->amount,
+									'fee' => $tx->fee,
+									'comment' => $tx->comment,
+									'created_time' =>	$created_time,
+									'confirmations'	=> 0
+								),
+								array( '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%d' )
+							);
+						}
+
+						if ( 1 != $affected ) {
+
+							// this is a withdrawal update. set confirmations.
+
+							$wpdb->update(
+								self::$table_name_txs,
+								array(
+									'updated_time'	=> $current_time_gmt,
+									'confirmations'	=> $tx->confirmations,
+								),
+								array(
+									'address'		=> $tx->address,
+									'txid'			=> $tx->txid,
+								),
+								array( '%s', '%d' ),
+								array( '%s', '%s' )
+							);
+
+							if ( false === $affected ) {
+								error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
+							}
+						}
+
 					} // end if category == withdraw
 				} // end if isset category
 			} // end if false !== $adapter
@@ -906,6 +937,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *
 		 * For some adapters this will be a failsafe-check and for others it will be the main mechanism
 		 * of polling for deposits. Adapters can also opt to not offer a cron() method.
+		 * @internal
+		 * @since 2.0.0
 		 *
 		 */
 		public function action_wallets_periodic_checks( ) {
