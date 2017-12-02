@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.2
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -115,7 +115,7 @@ What follows is step-by-step instructions:
 4. **Configure the bitcoin adapter on your WordPress installation.**
    Navigate to *Wallets* &rarr; *Bitcoin (BTC)* in your WordPress admin area.
 
-   At a minimum you need to enter the
+   At a minimum you need to enable the adapter and enter the
    location and credentials to your *Bitcoin daemon RPC API*.
 
    You will need to set the following: `IP`, `Port`, `User`, `Password`, `Path`.
@@ -146,7 +146,7 @@ You, the site administrator, must take all necessary precautions to secure your 
 You are strongly recommended to take the following actions (at a minimum):
 
 - [educate yourself about hardening WordPress security](https://codex.wordpress.org/Hardening_WordPress)
-- [install a security plugin such as Wordfence](https://infinitewp.com/addons/wordfence/?ref=260)
+- [install a security plugin such as Wordfence](https://infinitewp.com/addons/wordfence/?ref=260 "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.")
 
 By continuing to use the Bitcoin and Altcoin Wallets plugin, you agree that you have read and understood this disclaimer.
 
@@ -166,7 +166,7 @@ Regardless of whether you choose to install this plugin,
 you should have already taken steps to secure your WordPress installation.
 At a minimum you should do the following:
 
-1. Install a security plugin such as [Wordfence](https://infinitewp.com/addons/wordfence/?ref=260).
+1. Install a security plugin such as [Wordfence](https://infinitewp.com/addons/wordfence/?ref=260 "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.").
 2. Read the Codex resources on [Hardening WordPress](https://codex.wordpress.org/Hardening_WordPress).
 
 = Do I really need to run a full node? bitcoind is too resource-hungry for my server. =
@@ -223,15 +223,7 @@ Refer to the documentation for details.
 
 You can use the PHP API directly.
 
-`get_balance(string  $symbol, integer  $minconf = null) : float`
-
-`get_transactions(string  $symbol, integer  $count = 10, integer  $from, integer  $minconf = null) : array`
-
-`do_withdraw(string  $symbol, string  $address, float  $amount, string  $comment = '', string  $comment_to = '')`
-
-`do_move(string  $symbol, integer  $toaccount, float  $amount, string  $comment)`
-
-Refer to the documentation for details.
+[Refer to the documentation for details.](http://wallets-phpdoc.dashed-slug.net/classes/Dashed_Slug_Wallets.html)
 
 = How can I get support or submit feedback? =
 
@@ -251,6 +243,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 1.2.0 =
+* Add: Multiple coin adapters per extension and per coin (see release notes)
+* Add: Fail-safe mechanism that periodically checks for deposits that have not been recorded.
+* Add: New setting panel in admin for settings that are not specific to any coin adapters.
+* Fix: Exceptions thrown during failed deposit notifications are now caught.
 
 = 1.1.0 =
 * Add: Compatibility with the `prasos/bittiraha-walletd` lightweight wallet (see FAQ).
@@ -291,14 +289,18 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-1.1.0 introduces compatibility with the `prasos/bittiraha-walletd` lightweight wallet (see FAQ).
-This is in response to users requesting a way to run the plugin without a full Bitcoin node.
+Up to now all available coin adapters had connected to the RPC API of a wallet daemon.
+You will soon have other options including connection to cloud wallets such as **block.io** or **blockchain.info**.
 
-This release breaks compatibility with existing altcoin adapters.
-If you have purchased access to altcoin adapters, please update them to their latest versions:
+1.2.0 introduces architectural changes necessary so you can choose between alternative coin adapter implementations for any one coin.
+You can now turn adapters on or off from their settings page. One plugin extension can now offer multiple coin adapters.
 
-* wallets-feathercoin 1.0.1
-* wallets-litecoin 1.0.3
+This release breaks API compatibility with existing altcoin adapters. Your already stored transactions are safe,
+but if you have purchased access to the altcoin adapters available on dashed-slug.net,
+please update the adapters to their latest versions:
+
+* `wallets-feathercoin` 1.1.0
+* `wallets-litecoin` 1.1.0
 
 
 == Donating ==

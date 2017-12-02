@@ -20,17 +20,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 		private static $_instance;
 		private $rpc = null;
+		private $menu_slug;
+		private $option_slug;
 
 		private function __construct() {
+			$this->menu_slug = 'wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' );
+			$this->option_slug = 'wallets_' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) . '_settings';
+
 			// instantiates EasyBitcoin
-			add_action( 'init', 								array( &$this, 'load_rpc' ) );
-			add_action( 'admin_init',							array( &$this, 'show_notices' ) );
-			add_action( 'admin_init',							array( &$this, 'show_settings' ) );
+			add_action( 'init', array( &$this, 'load_rpc' ) );
+
+			// admin UI bindings
+			add_action( 'wallets_admin_menu', array( &$this, 'action_wallets_admin_menu' ) );
+			add_action( 'admin_init', array( &$this, 'show_notices' ) );
+			add_action( 'admin_init', array( &$this, 'show_settings' ) );
 
 			// listens for notifications from the daemon (through the JSON API)
-			add_action( 'wallets_notify',			array( &$this, 'action_wallets_notify' ) );
-			add_action( 'wallets_notify_wallet_BTC',	array( &$this, 'action_wallets_notify_wallet_BTC' ) );
-			add_action( 'wallets_notify_block_BTC',	array( &$this, 'action_wallets_notify_block_BTC' ) );
+			add_action( 'wallets_notify', array( &$this, 'action_wallets_notify' ) );
+			add_action( 'wallets_notify_wallet_BTC', array( &$this, 'action_wallets_notify_wallet_BTC' ) );
+			add_action( 'wallets_notify_block_BTC', array( &$this, 'action_wallets_notify_block_BTC' ) );
 
 			// registers this adapter
 			add_filter( 'wallets_coin_adapters', 	array( &$this, 'filter_coin_adapter' ) );
@@ -45,33 +53,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 		/** @internal */
 		public function filter_coin_adapter( $coins ) {
-			$coins[ self::SYMBOL ] = $this;
+			$enabled = get_option( "{$this->option_slug}_general_enabled" );
+			if ( $enabled ) {
+				$coins[ self::SYMBOL ] = $this;
+			}
 			return $coins;
 		}
 
 		/** @internal */
 		public function load_rpc() {
 			$this->rpc = new Bitcoin(
-				get_option( 'wallets_bitcoin_settings_rpc_user' ),
-				get_option( 'wallets_bitcoin_settings_rpc_password' ),
-				get_option( 'wallets_bitcoin_settings_rpc_ip' ),
-				intval( get_option( 'wallets_bitcoin_settings_rpc_port' ) ),
-				get_option( 'wallets_bitcoin_settings_rpc_path' )
+				get_option( "{$this->option_slug}_rpc_user" ),
+				get_option( "{$this->option_slug}_rpc_password" ),
+				get_option( "{$this->option_slug}_rpc_ip" ),
+				intval( get_option( "{$this->option_slug}_rpc_port" ) ),
+				get_option( "{$this->option_slug}_rpc_path" )
 			);
 		}
 
 		/** @internal */
 		public static function action_activate() {
-			add_option( 'wallets_bitcoin_settings_rpc_ip', '127.0.0.1' );
-			add_option( 'wallets_bitcoin_settings_rpc_port', '8332' );
-			add_option( 'wallets_bitcoin_settings_rpc_user', '' );
-			add_option( 'wallets_bitcoin_settings_rpc_password', '' );
-			add_option( 'wallets_bitcoin_settings_rpc_path', '' );
+			add_option( "wallets_bitcoin-core-node_settings_general_enabled", 'on' );
+			add_option( "wallets_bitcoin-core-node_settings_rpc_ip", '127.0.0.1' );
+			add_option( "wallets_bitcoin-core-node_settings_rpc_port", '8332' );
+			add_option( "wallets_bitcoin-core-node_settings_rpc_user", '' );
+			add_option( "wallets_bitcoin-core-node_settings_rpc_password", '' );
+			add_option( "wallets_bitcoin-core-node_settings_rpc_path", '' );
 
-			add_option( 'wallets_bitcoin_settings_fees_move', '0.00000100' );
-			add_option( 'wallets_bitcoin_settings_fees_withdraw', '0.00005000' );
+			add_option( "wallets_bitcoin-core-node_settings_fees_move", '0.00000100' );
+			add_option( "wallets_bitcoin-core-node_settings_fees_withdraw", '0.00005000' );
 
-			add_option( 'wallets_bitcoin_settings_other_minconf', '6' );
+			add_option( "wallets_bitcoin-core-node_settings_other_minconf", '6' );
 		}
 
 		/**
@@ -103,31 +115,33 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Bitcoin' ) ) {
 
 		/** @internal */
 		public function show_notices() {
-			$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+			$enabled = get_option( "{$this->option_slug}_general_enabled" );
+			if ( $enabled ) {
+				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
-			if ( ! function_exists( 'curl_init' ) ) {
+				if ( ! function_exists( 'curl_init' ) ) {
 
-				$notices->error(
-					__( 'The Bitcoin and Altcoin Wallets plugin will not be able to work correctly on your system because you have not installed the PHP curl module. '.
-						'The module must be installed to connect to wallet daemons via their RPC APIs.', 'wallets' ),
-					'no-php-curl' );
-			}
+					$notices->error(
+						__( 'The Bitcoin and Altcoin Wallets plugin will not be able to work correctly on your system because you have not installed the PHP curl module. '.
+							'The module must be installed to connect to wallet daemons via their RPC APIs.', 'wallets' ),
+						'no-php-curl' );
+				}
 
-			try {
-				// will throw exception if daemon is not contactable
-				$this->get_balance();
+				try {
+					// will throw exception if daemon is not contactable
+					$this->get_balance();
 
-			} catch ( Exception $e ) {
+				} catch ( Exception $e ) {
 
-				$settings_url = admin_url( 'admin.php?page=wallets-menu-wallets-'. self::SYMBOL );
+					$settings_url = admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 
-				$wallet_url = site_url( 'wallets/notify/' . self::SYMBOL . '/wallet/%s' );
-				$block_url = site_url( 'wallets/notify/' . self::SYMBOL . '/block/%s' );
-				$wp_ip = $this->server_ip();
-				$user = get_option( 'wallets_bitcoin_settings_rpc_user' );
-				$port = intval( get_option( 'wallets_bitcoin_settings_rpc_port' ) );
+					$wallet_url = site_url( 'wallets/notify/' . self::SYMBOL . '/wallet/%s' );
+					$block_url = site_url( 'wallets/notify/' . self::SYMBOL . '/block/%s' );
+					$wp_ip = $this->server_ip();
+					$user = get_option( "{$this->option_slug}_rpc_user" );
+					$port = intval( get_option( "{$this->option_slug}_rpc_port" ) );
 
-				$config = <<<CFG
+					$config = <<<CFG
 server=1
 rpcallowip=127.0.0.1
 rpcallowip=$wp_ip
@@ -138,27 +152,28 @@ rpcuser=$user
 rpcpassword=<<<ENTER YOUR RPC API PASSWORD HERE>>>
 CFG;
 
-				$notices->error(
-					__( '<code>bitcoind</code> cannot be contacted.', 'wallets' ) . '<ol><li>' .
+					$notices->error(
+						__( '<code>bitcoind</code> cannot be contacted.', 'wallets' ) . '<ol><li>' .
 
-					sprintf(
-						__( 'You need to make sure that your <a href="%s">Bitcoin RPC settings</a> are correctly configured. ', 'wallets' ),
-						esc_attr( $settings_url ) ) .
-					'</li><li><p>' .
+						sprintf(
+							__( 'You need to make sure that your <a href="%s">Bitcoin RPC settings</a> are correctly configured. ', 'wallets' ),
+							esc_attr( $settings_url ) ) .
+						'</li><li><p>' .
 
-					__( 'Then edit your <code>bitcoin.conf</code> and append the following:', 'wallets' ) . '</p>' .
+						__( 'Then edit your <code>bitcoin.conf</code> and append the following:', 'wallets' ) . '</p>' .
 
-					'<textarea onclick="this.focus();this.select();" readonly="readonly" style="min-height: 12em; min-width: 64em;">' .
-						esc_html( $config ) .
-					'</textarea></li><li>' .
+						'<textarea onclick="this.focus();this.select();" readonly="readonly" style="min-height: 12em; min-width: 64em;">' .
+							esc_html( $config ) .
+						'</textarea></li><li>' .
 
-					__( 'Finally, start the bitcoin daemon.', 'wallets' ) . '</li></ol><p>' .
+						__( 'Finally, start the bitcoin daemon.', 'wallets' ) . '</li></ol><p>' .
 
-					__( 'You are advised to not dismiss this error manually. ' .
-						'It will stop showing once the daemon can be contacted.',
-						'wallets' ),
-					'bitcoind-down'
-				);
+						__( 'You are advised to not dismiss this error manually. ' .
+							'It will stop showing once the daemon can be contacted.',
+							'wallets' ),
+						'bitcoind-down'
+					);
+				}
 			}
 		}
 
@@ -167,144 +182,169 @@ CFG;
 		/** @internal */
 		public function show_settings() {
 
+
+			// General settings
+
+			add_settings_section(
+				"{$this->option_slug}_general",
+				__( 'General adapter settings', 'wallets' ),
+				array( &$this, 'settings_general_cb' ),
+				$this->menu_slug
+			);
+
+			add_settings_field(
+				"{$this->option_slug}_general_enabled",
+				__( 'Enabled', 'wallets' ),
+				array( &$this, 'settings_checkbox_cb'),
+				$this->menu_slug,
+				"{$this->option_slug}_general",
+				array( 'label_for' => "{$this->option_slug}_general_enabled" )
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}_general_enabled"
+			);
+
+
 			// RPC API
 
 			add_settings_section(
-				'wallets_bitcoin_settings_rpc',
+				"{$this->option_slug}_rpc",
 				__( 'Bitcoin daemon RPC API', 'wallets' ),
 				array( &$this, 'settings_rpc_cb' ),
-				'wallets-menu-wallets-' . self::SYMBOL
+				$this->menu_slug
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_rpc_ip',
+				"{$this->option_slug}_rpc_ip",
 				__( 'IP', 'wallets' ),
 				array( &$this, 'settings_text_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc',
-				array( 'label_for' => 'wallets_bitcoin_settings_rpc_ip' )
+				$this->menu_slug,
+				"{$this->option_slug}_rpc",
+				array( 'label_for' => "{$this->option_slug}_rpc_ip" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc_ip'
+				$this->menu_slug,
+				"{$this->option_slug}_rpc_ip"
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_rpc_port',
+				"{$this->option_slug}_rpc_port",
 				__( 'Port', 'wallets' ),
 				array( &$this, 'settings_int16_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc',
-				array( 'label_for' => 'wallets_bitcoin_settings_rpc_port' )
+				$this->menu_slug,
+				"{$this->option_slug}_rpc",
+				array( 'label_for' => "{$this->option_slug}_rpc_port" )
 				);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc_port'
+				$this->menu_slug,
+				"{$this->option_slug}_rpc_port"
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_rpc_user',
+				"{$this->option_slug}_rpc_user",
 				__( 'User', 'wallets' ),
 				array( &$this, 'settings_text_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc',
-				array( 'label_for' => 'wallets_bitcoin_settings_rpc_user' )
+				$this->menu_slug,
+				"{$this->option_slug}_rpc",
+				array( 'label_for' => "{$this->option_slug}_rpc_user" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc_user'
+				$this->menu_slug,
+				"{$this->option_slug}_rpc_user"
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_rpc_password',
+				"{$this->option_slug}_rpc_password",
 				__( 'Password', 'wallets' ),
 				array( &$this, 'settings_pw_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc',
-				array( 'label_for' => 'wallets_bitcoin_settings_rpc_password' )
+				$this->menu_slug,
+				"{$this->option_slug}_rpc",
+				array( 'label_for' => "{$this->option_slug}_rpc_password" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc_password'
+				$this->menu_slug,
+				"{$this->option_slug}_rpc_password"
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_rpc_path',
+				"{$this->option_slug}_rpc_path",
 				__( 'Path', 'wallets' ),
 				array( &$this, 'settings_text_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc',
-				array( 'label_for' => 'wallets_bitcoin_settings_rpc_path' )
+				$this->menu_slug,
+				"{$this->option_slug}_rpc",
+				array( 'label_for' => "{$this->option_slug}_rpc_path" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_rpc_path'
+				$this->menu_slug,
+				"{$this->option_slug}_rpc_path"
 			);
 
 
 			// FEES
 
 			add_settings_section(
-				'wallets_bitcoin_settings_fees',
+				"{$this->option_slug}_fees",
 				__( 'Bitcoin fees', 'wallets' ),
 				array( &$this, 'settings_fees_cb' ),
-				'wallets-menu-wallets-' . self::SYMBOL
+				$this->menu_slug
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_fees_move',
+				"{$this->option_slug}_fees_move",
 				__( 'Transaction fees between users', 'wallets' ),
 				array( &$this, 'settings_currency_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_fees',
-				array( 'label_for' => 'wallets_bitcoin_settings_fees_move' )
+				$this->menu_slug,
+				"{$this->option_slug}_fees",
+				array( 'label_for' => "{$this->option_slug}_fees_move" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_fees_move'
+				$this->menu_slug,
+				"{$this->option_slug}_fees_move"
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_fees_withdraw',
+				"{$this->option_slug}_fees_withdraw",
 				__( 'Withdrawal fee', 'wallets' ),
 				array( &$this, 'settings_currency_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_fees',
-				array( 'label_for' => 'wallets_bitcoin_settings_fees_withdraw' )
+				$this->menu_slug,
+				"{$this->option_slug}_fees",
+				array( 'label_for' => "{$this->option_slug}_fees_withdraw" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_fees_withdraw'
+				$this->menu_slug,
+				"{$this->option_slug}_fees_withdraw"
 			);
 
 			// Other
 
 			add_settings_section(
-				'wallets_bitcoin_settings_other',
+				"{$this->option_slug}_other",
 				__( 'Other Bitcoin settings' ),
 				array( &$this, 'settings_other_cb' ),
-				'wallets-menu-wallets-' . self::SYMBOL
+				$this->menu_slug
 			);
 
 			add_settings_field(
-				'wallets_bitcoin_settings_other_minconf',
+				"{$this->option_slug}_other_minconf",
 				__( 'Minumum confirmations', 'wallets' ),
 				array( &$this, 'settings_int8_cb'),
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_other',
-				array( 'label_for' => 'wallets_bitcoin_settings_other_minconf' )
+				$this->menu_slug,
+				"{$this->option_slug}_other",
+				array( 'label_for' => "{$this->option_slug}_other_minconf" )
 			);
 
 			register_setting(
-				'wallets-menu-wallets-' . self::SYMBOL,
-				'wallets_bitcoin_settings_other_minconf'
+				$this->menu_slug,
+				"{$this->option_slug}_other_minconf"
 			);
 
 		}
@@ -312,8 +352,18 @@ CFG;
 		// section callbacks
 
 		/** @internal */
+		public function settings_general_cb() {
+			if ( ! current_user_can( 'manage_wallets' ) )  {
+				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
+			}
+
+			echo '<p>' . esc_html( 'General settings regarding this coin adapter.', 'wallets' ) . '</p>';
+
+		}
+
+		/** @internal */
 		public function settings_rpc_cb() {
-			if ( ! current_user_can( 'manage_options' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -323,7 +373,7 @@ CFG;
 
 		/** @internal */
 		public function settings_fees_cb() {
-			if ( ! current_user_can( 'manage_options' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -333,7 +383,7 @@ CFG;
 
 		/** @internal */
 		public function settings_other_cb() {
-			if ( ! current_user_can( 'manage_options' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -342,6 +392,13 @@ CFG;
 		}
 
 		// input field callbacks
+
+		/** @internal */
+		public function settings_checkbox_cb( $arg ) {
+			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"checkbox\"";
+			checked( get_option( $arg['label_for'] ), 'on' );
+			echo ' />';
+		}
 
 		/** @internal */
 		public function settings_text_cb( $arg ) {
@@ -373,28 +430,61 @@ CFG;
 			echo esc_attr( get_option( $arg['label_for'] ) ) . '"/>';
 		}
 
-		// Bitcoin settings page callback
-		// All adapters must implement this
 
-		/** @internal */
+		/**
+		 * Bitcoin settings page binding
+		 *
+		 * @internal
+		 *
+		 */
+		public function action_wallets_admin_menu() {
+			add_submenu_page(
+				'wallets-menu-wallets',
+				sprintf( 'Bitcoin and Altcoin Wallets: %s (%s) Adapter Settings' , $this->get_adapter_name(), $this->get_symbol() ),
+				sprintf( '%s (%s)' , $this->get_adapter_name(), $this->get_symbol() ),
+				'manage_wallets',
+				$this->menu_slug,
+				array( &$this, "admin_menu_wallets_BTC_cb" )
+			);
+		}
+
+		/**
+		 * Bitcoin settings page callback
+		 *
+		 * @internal
+		 *
+		 */
 		public function admin_menu_wallets_BTC_cb() {
-			if ( ! current_user_can( 'manage_options' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			echo '<h1><img src="' . esc_attr( $this->get_icon_url() ) . '" style="height: 1em;" /> Bitcoin and Altcoin Wallets: Bitcoin Adapter Settings</h1>';
+			echo '<h1><img src="' . esc_attr( $this->get_icon_url() ) . '" style="height: 1em;" /> ' . $this->get_adapter_name() . ' Adapter Settings</h1>';
 			echo '<div><p>';
-			esc_html_e( 'This adapter is for the Bitcoin wallet. All settings related to Bitcoins are here.', 'wallets' );
+			esc_html_e( 'This adapter is for communicating with a Bitcoin Core node.', 'wallets' );
+			echo ' <a href="https://bitcoin.org/en/full-node" target="_blank">' . esc_html( 'Click here for instructions.', 'wallets' ) . '</a>';
 			echo '</p></div>';
 
 			echo '<form method="post" action="options.php" class="card">';
-			settings_fields( 'wallets-menu-wallets-' . self::SYMBOL );
-			do_settings_sections( 'wallets-menu-wallets-' . self::SYMBOL );
+			settings_fields( 'wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
+			do_settings_sections( 'wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 			submit_button();
 			echo '</form>';
 		}
 
 		// Wallet API
+
+		/**
+		 * Adapter name.
+		 *
+		 * This is different from the coin name. It describes the type of wallet that this adapter connects to.
+		 *
+		 * @api
+		 * @return string Returns 'Bitcoin Core node'
+		 */
+		public function get_adapter_name() {
+			return 'Bitcoin Core node';
+		}
 
 		/**
 		 * Coin name.
@@ -436,18 +526,6 @@ CFG;
 		}
 
 		/**
-		 * Adapter plugin.
-		 *
-		 * The WordPress coordinates of this adapter plugin. Consists of this plugin's directory, followed by
-		 * the filename of the main .php file.
-		 *
-		 * @return string Returns the local path and filename of this plugin.
-		 */
-		public function get_plugin() {
-			return plugin_basename( __FILE__ );
-		}
-
-		/**
 		 * Coin icon.
 		 *
 		 * Returns a url to an 64x64 icon of the coin.
@@ -458,8 +536,8 @@ CFG;
 			return plugins_url( '../assets/sprites/bitcoin-logo.png', __FILE__ );
 		}
 
-		private function get_setting( $setting_name ) {
-			return get_option( "wallets_bitcoin_settings_$setting_name");
+		private function get_setting( $setting_name, $default = false ) {
+			return get_option( "{$this->option_slug}_$setting_name", $default );
 		}
 
 		/**
@@ -549,6 +627,36 @@ CFG;
 		}
 
 		/**
+		 * Call the listreceivedbyaddress RPC command on RPC APIs and scrapes transaction IDs.
+		 *
+		 * This is an optional command that not all adapters need to implement.
+		 * It helps in the doublecheck_deposits mechanism.
+		 *
+		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
+		 * @return string[] Transaction IDs in the wallet.
+		 */
+		public function list_transactions() {
+			$result = $this->rpc->listreceivedbyaddress();
+
+			if ( false === $result ) {
+				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+			}
+
+			$txids = array();
+
+			if ( is_array( $result ) ) {
+				foreach ( $result as &$address ) {
+					if ( isset( $address['txids'] ) ) {
+						foreach ( $address['txids'] as $txid ) {
+							$txids[ $txid ] = true;
+						}
+					}
+				}
+			}
+			return array_keys( $txids );
+		}
+
+		/**
 		 * Get a new deposit address.
 		 *
 		 * Returns a deposit address that can be used to send funds to this wallet. It is the responsibility
@@ -597,30 +705,7 @@ CFG;
 		}
 
 		/**
-		 * Gets the latest transactions received.
-		 *
-		 * A frontend to listtransactions.
-		 *
-		 * @param number $count Retrieve up to this many transactions.
-		 * @param number $from Offset transactions (optional).
-		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
-		 * @return array The transaction records in array form.
-		 */
-		public function get_transactions( $count, $from = 0) {
-			$result = $this->rpc->listtransactions(
-				'*',
-				$count,
-				$from
-			);
-
-			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
-			}
-			return $result;
-		}
-
-		/**
-		 * Handles a notification about a transaction update.
+		 * Handles a notification about a transaction ID.
 		 *
 		 * Wallets such as the Bitcoin wallet have a -walletnotify feature that lets you specify a command line
 		 * to be executed every time a transaction is updated. This lets you get notified about deposits to
@@ -701,9 +786,14 @@ CFG;
 				do_action( 'wallets_block', $result );
 			}
 		}
+
+
 	}
+
+	register_activation_hook( DSWALLETS_PATH . '/wallets.php' , array( 'Dashed_Slug_Wallets_Bitcoin', 'action_activate' ) );
+
 }
 
-// Instantiate the plugin class
+// Instantiate
 Dashed_Slug_Wallets_Bitcoin::get_instance();
 

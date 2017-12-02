@@ -11,12 +11,13 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 	public function get_columns() {
 		return array(
-			// 'cb'        => '<input type="checkbox" />', // TODO bulk actions
-			'icon'			=> esc_html__('Coin Icon', 'wallets' ),
-			'symbol'		=> esc_html__('Coin Symbol', 'wallets' ),
-			'name'			=> esc_html__('Coin Name', 'wallets' ),
-			'balance'		=> esc_html__('Total Balance', 'wallets' ),
-			'status'		=> esc_html__('Adapter Status', 'wallets' ),
+			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
+			'adapter_name' => esc_html__( 'Adapter name', 'wallets' ),
+			'icon' => esc_html__( 'Coin Icon', 'wallets' ),
+			'symbol' => esc_html__( 'Coin Symbol', 'wallets' ),
+			'name' => esc_html__( 'Coin Name', 'wallets' ),
+			'balance' => esc_html__( 'Total Balance', 'wallets' ),
+			'status' => esc_html__( 'Adapter Status', 'wallets' ),
 		);
 	}
 
@@ -26,9 +27,10 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 	public function get_sortable_columns() {
         return array(
-			'symbol'		=> array( 'symbol', false ),
-			'name'			=> array( 'name', true ),
-			'balance'		=> array( 'balance', false),
+			'symbol' => array( 'symbol', false ),
+			'name' => array( 'name', true ),
+			'adapter_name' => array( 'name', false ),
+			'balance' => array( 'balance', false),
         );
     }
 
@@ -66,6 +68,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 				'icon' => $adapter->get_icon_url(),
 				'symbol' => $adapter->get_symbol(),
 				'name' => $adapter->get_name(),
+				'adapter_name' => $adapter->get_adapter_name(),
 				'balance' => sprintf( $format, $balance ),
 				'status' => $status
 			);
@@ -78,6 +81,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 		switch( $column_name ) {
 			case 'symbol':
 			case 'name':
+			case 'adapter_name':
 			case 'balance':
 			case 'status':
 				return esc_html( $item[ $column_name ] );
@@ -90,7 +94,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 	public function get_bulk_actions() {
 		$actions = array(
-			// 'deactivate-adapter' => esc_html( 'Deactivate', 'wallets' ), // TODO bulk actions
+			// TODO bulk actions
 		);
 		return $actions;
 	}
@@ -119,25 +123,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 				'export',
 				esc_attr( $item['symbol'] ),
 				wp_create_nonce( 'wallets-export-tx-' . $item['symbol'] ) ),
-
-			'deactivate-adapter' => sprintf(
-				'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
-				esc_attr__( 'Deactivate the plugin that provides this adapter', 'wallets') . '">' .
-				__( 'Deactivate', 'wallets') . '</a>',
-
-				esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
-				'deactivate-adapter',
-				esc_attr( $item['symbol'] ),
-				wp_create_nonce( 'wallets-deactivate-' . $item['symbol'] ) )
 		);
-
-		// Cannot deactivate BTC adapter since it's built-in to the plugin.
-		// To avoid using it, simply don't set any RPC settings,
-		// and dismiss the admin screen error messages.
-		// Adapters that cannot contact their wallets are not shown in the frontend.
-		if ( 'BTC' == $item['symbol'] ) {
-			unset( $actions['deactivate-adapter'] );
-		}
 
 		return sprintf('%1$s %2$s', $item['symbol'], $this->row_actions( $actions ) );
 	}

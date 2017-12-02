@@ -21,6 +21,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 			return self::$_instance;
 		}
 
+		public static function action_activate() {
+			add_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+		}
+
 		public function admin_init() {
 			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 
@@ -36,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 					}
 
 					if ( is_object( $adapter ) ) {
-						$url = admin_url( "admin.php?page=wallets-menu-wallets-$symbol" );
+						$url = admin_url( 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $adapter->get_adapter_name(), null, 'save' ) );
 						Header( "Location: $url" );
 						exit;
 					}
@@ -55,26 +59,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 
 					if ( is_object( $adapter ) ) {
 						$this->csv_export( array( $adapter->get_symbol() ) );
-						exit;
-					}
-					break;
-
-				case 'deactivate-adapter':
-					if ( ! current_user_can( 'manage_wallets' ) )  {
-						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-					}
-
-					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
-
-					if ( ! wp_verify_nonce( $nonce, "wallets-deactivate-$symbol" ) ) {
-						wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
-					}
-
-
-					if ( is_object( $adapter ) ) {
-						deactivate_plugins( $adapter->get_plugin() );
-						$url = admin_url( 'admin.php?page=wallets-menu-wallets' );
-						Header( "Location: $url" );
 						exit;
 					}
 					break;
@@ -126,42 +110,84 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 				// Finally delete the uploaded .csv file
 				unlink( $moved_file_name );
 			}
+
+			// bind settings subpage
+
+			add_settings_section(
+				'wallets_cron_settings_section',
+				__( 'Cron settings', '/* @echo slug' ),
+				array( &$this, 'wallets_settings_cron_section_cb' ),
+				'wallets-menu-settings'
+			);
+
+			add_settings_field(
+				"wallets_cron_interval",
+				__( 'Double-check for missing deposits', 'wallets' ),
+				array( &$this, 'settings_interval_cb'),
+				'wallets-menu-settings',
+				'wallets_cron_settings_section',
+				array( 'label_for' => "wallets_cron_interval" )
+			);
+
+			register_setting(
+				'wallets-menu-settings',
+				"wallets_cron_interval"
+			);
+
 		}
 
 		public function admin_menu() {
 
 			if ( current_user_can( 'manage_wallets' ) ) {
 
-				$parent_slug = 'wallets-menu-wallets';
-
 				add_menu_page(
 					'Bitcoin and Altcoin Wallets',
 					__( 'Wallets' ),
 					'manage_wallets',
-					$parent_slug,
-					array( &$this, 'admin_menu_wallets_page_cb' ),
+					'wallets-menu-wallets',
+					array( &$this, 'wallets_page_cb' ),
 					plugins_url( 'assets/sprites/wallet-icon.png', DSWALLETS_PATH . '/wallets.php' )
 				);
 
-				$core = Dashed_Slug_Wallets::get_instance();
-				$adapters = $core->get_coin_adapters( );
+				add_submenu_page(
+					'wallets-menu-wallets',
+					'Bitcoin and Altcoin Wallets: Settings',
+					'Settings',
+					'manage_wallets',
+					'wallets-menu-settings',
+					array( &$this, "admin_menu_wallets_settings_cb" )
+				);
 
-				foreach ( $adapters as $symbol => $adapter ) {
+				do_action( 'wallets_admin_menu' );
 
-					add_submenu_page(
-						$parent_slug,
-						'Bitcoin and Altcoin Wallets: ' . $adapter->get_name() . " ($symbol) Adapter Settings",
-						$adapter->get_name() . ' (' . $adapter->get_symbol() . ')',
-						'manage_wallets',
-						"wallets-menu-wallets-$symbol",
-						array( $adapter, "admin_menu_wallets_{$symbol}_cb" )
-
-					);
-				}
 			}
 		}
 
-		public function admin_menu_wallets_page_cb() {
+		public function admin_menu_wallets_settings_cb() {
+			if ( ! current_user_can( 'manage_wallets' ) )  {
+				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
+			}
+
+			?><h1>Bitcoin and Altcoin Wallets settings</h1>
+			<p><?php esc_html_e( 'General settings that apply to the plugin, not any particular coin adapter.', 'wallets' ); ?></p>
+
+			<form method="post" action="options.php" class="card"><?php
+			settings_fields( 'wallets-menu-settings' );
+			do_settings_sections( 'wallets-menu-settings' );
+			submit_button();
+			?></form><?php
+		}
+
+		public function wallets_settings_cron_section_cb() {
+			?><p><?php
+			esc_html_e( 'A cron mechanism goes through the various enabled coin adapters '.
+				'and ensures every now and then that users\' deposits will eventually be processed, ' .
+				'even if they have been overlooked. Deposits may be overlooked if the notification mechanism ' .
+				'fails or if it is not correctly set up.', 'Bitcoin and Altcoin Wallets');
+			?></p><?php
+		}
+
+		public function wallets_page_cb() {
 			if ( ! current_user_can( 'manage_wallets' ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
@@ -171,19 +197,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 			?><h1><?php echo 'Bitcoin and Altcoin Wallets' ?></h1>
 
 			<div class="notice notice-warning"><h2 style="color: red"><?php
-			esc_html_e( 'IMPORTANT SECURITY WARNING:', 'wallets' ); ?></h2>
+			esc_html_e( 'IMPORTANT SECURITY DISCLAIMER:', 'wallets' ); ?></h2>
 
 			<p><?php esc_html_e( 'By using this free plugin you assume all responsibility for handling ' .
 			'the account balances for all your users. Under no circumstances is dashed-slug.net ' .
 			'or any of its affiliates responsible for any damages incurred by the use of this plugin. ' .
 			'Every effort has been made to harden the security of this plugin, ' .
-			'but its safe operation depends on your site being secure overall. ' .
+			'but its safe operation is your responsibility and depends on your site being secure overall. ' .
 			'You, the administrator, must take all necessary precautions to secure your WordPress installation ' .
 			'before you connect it to any live wallets. ' .
 			'You are strongly recommended to take the following actions (at a minimum):', 'wallets'); ?></p>
 			<ol><li><a href="https://codex.wordpress.org/Hardening_WordPress" target="_blank"><?php
 			esc_html_e( 'educate yourself about hardening WordPress security', 'wallets' ); ?></a></li>
-			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank"><?php
+			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank"
+			title="This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking."><?php
 			esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li></ol><p><?php
 			esc_html_e( 'By continuing to use the Bitcoin and Altcoin Wallets plugin, ' .
 			'you agree that you have read and understood this disclaimer.', 'wallets' );
@@ -215,6 +242,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 				<input type="submit" value="<?php esc_attr_e( 'Import', 'wallets' ) ?>" />
 				<?php wp_nonce_field( 'wallets-import' ); ?>
 			</form><?php
+		}
+
+		/** @internal */
+		public function settings_interval_cb( $arg ) {
+			$cron_intervals = apply_filters( 'cron_schedules', array() );
+			$selected_value = get_option( $arg['label_for'] ); ?>
+
+			<select name="<?php echo esc_attr( $arg['label_for'] ) ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" ><?php
+
+					foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ):
+						if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
+							?><option value="<?php echo esc_attr( $cron_interval_slug ) ?>"<?php if ( $cron_interval_slug == $selected_value ) { echo ' selected="selected" '; }; ?>><?php echo $cron_interval['display']; ?></option><?php
+						endif;
+					endforeach;
+
+			?></select><?php
 		}
 
 		private function csv_export( $symbols ) {

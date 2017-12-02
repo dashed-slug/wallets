@@ -25,9 +25,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 	 */
 	final class Dashed_Slug_Wallets {
 
-		/** @internal read or update up to this many transactions when a new block is found */
-		const TX_UPDATE_COUNT = 32;
-
 		/** error code for exception thrown while getting user info */
 		const ERR_GET_USERS_INFO = -101;
 
@@ -72,20 +69,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				Dashed_Slug_Wallets_JSON_API::get_instance();
 			}
 
-			/* wp actions */
-			add_action( 'admin_init', 						array( &$this, 'action_admin_init' ) );
-			add_action( 'wp_loaded', 						array( &$this, 'action_wp_loaded' ) );
-			add_action( 'wp_enqueue_scripts',				array( &$this, 'action_wp_enqueue_scripts' ) );
-			add_action( 'shutdown',							'Dashed_Slug_Wallets::flush_rules' );
+			// wp actions
+			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
+			add_action( 'wp_loaded', array( &$this, 'action_wp_loaded' ) );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
+			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
 
-			/* actions of this plugin */
+			// actions defined by this plugin
 			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
-			add_action( 'wallets_block',			array( &$this, 'action_wallets_block' ) );
 
 			add_action( 'wallets_withdraw',		array( &$this, 'action_withdraw' ) );
 			add_action( 'wallets_move_send',		array( &$this, 'action_move_send' ) );
 			add_action( 'wallets_move_receive',	array( &$this, 'action_move_receive' ) );
 			add_action( 'wallets_deposit',		array( &$this, 'action_deposit' ) );
+
+			// wp_cron mechanism for double-checking for deposits
+			add_filter( 'cron_schedules', array( &$this, 'filter_cron_schedules' ) );
+			add_action( 'wallets_doublecheck_deposits', array( &$this, 'action_wallets_doublecheck_deposits') );
+			if ( false === wp_next_scheduled( 'wallets_doublecheck_deposits' ) ) {
+				$cron_interval = get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+				wp_schedule_event( time(), $cron_interval, 'wallets_doublecheck_deposits' );
+			}
 
 			global $wpdb;
 			self::$table_name_txs = "{$wpdb->prefix}wallets_txs";
@@ -154,7 +158,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'1.1.0'
+				'1.2.0'
 			);
 		}
 
@@ -681,137 +685,87 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public function action_wallets_transaction( $tx ) {
 			$adapter = $this->get_coin_adapters( $tx->symbol );
 
-			$created_time = date( DATE_ISO8601, $tx->created_time );
-			$current_time_gmt = current_time( 'mysql', true );
-			$table_name_txs = self::$table_name_txs;
+			if ( false !== $adapter ) {
+				$created_time = date( DATE_ISO8601, $tx->created_time );
+				$current_time_gmt = current_time( 'mysql', true );
+				$table_name_txs = self::$table_name_txs;
 
-			global $wpdb;
+				global $wpdb;
 
-			if ( isset( $tx->category ) ) {
+				if ( isset( $tx->category ) ) {
 
-				if ( 'deposit' == $tx->category ) {
-					$account_id = $this->get_account_id_for_address( $tx->symbol, $tx->address );
+					if ( 'deposit' == $tx->category ) {
+						$account_id = $this->get_account_id_for_address( $tx->symbol, $tx->address );
 
-					$affected = $wpdb->query( $wpdb->prepare(
-						"
-							INSERT INTO $table_name_txs(
-								category,
-								account,
-								address,
-								txid,
-								symbol,
-								amount,
-								created_time,
-								updated_time,
-								confirmations)
-							VALUES(%s,%d,%s,%s,%s,%20.10f,%s,%s,%d)
-							ON DUPLICATE KEY UPDATE updated_time = %s , confirmations = %d
-						",
-						$tx->category,
-						$account_id,
-						$tx->address,
-						$tx->txid,
-						$tx->symbol,
-						$tx->amount,
-						$created_time,
-						$current_time_gmt,
-						$tx->confirmations,
+						$affected = $wpdb->query( $wpdb->prepare(
+							"
+								INSERT INTO $table_name_txs(
+									category,
+									account,
+									address,
+									txid,
+									symbol,
+									amount,
+									created_time,
+									updated_time,
+									confirmations)
+								VALUES(%s,%d,%s,%s,%s,%20.10f,%s,%s,%d)
+								ON DUPLICATE KEY UPDATE updated_time = %s , confirmations = %d
+							",
+							$tx->category,
+							$account_id,
+							$tx->address,
+							$tx->txid,
+							$tx->symbol,
+							$tx->amount,
+							$created_time,
+							$current_time_gmt,
+							$tx->confirmations,
 
-						$current_time_gmt,
-						$tx->confirmations
-					) );
+							$current_time_gmt,
+							$tx->confirmations
+						) );
 
-					$row = array(
-						'account'		=>	$account_id,
-						'address'		=>	$tx->address,
-						'txid'			=>	$tx->txid,
-						'symbol'		=>	$tx->symbol,
-						'amount'		=>	$tx->amount,
-						'created_time'	=>	$created_time,
-						'confirmations'	=>	$tx->confirmations
-					);
-
-					if ( false === $affected ) {
-						error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
-					}
-
-					if ( 1 === $affected ) {
-						// row was inserted, not updated
-						do_action( 'wallets_deposit', $row );
-					}
-
-				} elseif ( 'withdraw' == $tx->category ) {
-
-					// Withdrawals should have been already entered into the database.
-
-					$wpdb->update(
-						self::$table_name_txs,
-						array(
-							'updated_time'	=> $current_time_gmt,
-							'confirmations'	=> $tx->confirmations,
-						),
-						array(
-							'address'		=> $tx->address,
-							'txid'			=> $tx->txid,
-						),
-						array( '%s', '%d' ),
-						array( '%s', '%s' )
-					);
-				} // end if category == withdraw
-			} // end if isset category
-		} // end function action_wallets_transaction()
-
-		/**
-		 * Handler attached to the action wallets_transaction.
-		 *
-		 * Called by the coin adapter when a transaction is first seen or is updated.
-		 * Adds new deposits and updates confirmation counts for existing deposits and withdrawals.
-		 *
-		 * @internal
-		 * @param stdClass $tx The transaction details.
-		 */
-		public function action_wallets_block( $block ) {
-
-			global $wpdb;
-
-			$table_name_txs = self::$table_name_txs;
-			$current_time_gmt = current_time( 'mysql', true );
-			$adapter = $this->get_coin_adapters( $block->symbol );
-
-			$txs = $adapter->get_transactions( self::TX_UPDATE_COUNT );
-
-			if ( count( $txs ) ) {
-
-				$errors = array();
-
-				foreach ( $txs as $tx ) {
-					try {
-						do_action( "wallets_notify_wallet_{$block->symbol}", $tx['txid'] );
-					} catch ( Exception $e ) {
-						$errors[] = array(
-							'txid' => $tx['txid'],
-							'e' => $e
+						$row = array(
+							'account'		=>	$account_id,
+							'address'		=>	$tx->address,
+							'txid'			=>	$tx->txid,
+							'symbol'		=>	$tx->symbol,
+							'amount'		=>	$tx->amount,
+							'created_time'	=>	$created_time,
+							'confirmations'	=>	$tx->confirmations
 						);
-					}
-				}
 
-				$warning_message = '';
-				foreach ( $errors as $f ) {
-					$warning_message .=
-					__( 'Adapter', 'wallets' ) . ': <code>' . $block->symbol . '</code>, ' .
-					__( 'Transaction', 'wallets' ) . ': <code>' . $f['txid'] . '</code>, ' .
-					__( 'Error', 'wallets' ) . ': <code>' . $f['e']->getMessage() ."</code><br />\n";
-				}
+						if ( false === $affected ) {
+							error_log( __FUNCTION__ . " Transaction was not recorded! Details: " . print_r( $row, true ) );
+						}
 
-				if ( count( $errors ) ) {
-					$this->_notices->error(
-						__( "The following errors occured while updating transactions: ", 'wallets' ) .
-						"<br />\n$warning_message" .
-						__( "Please check the settings of your coin adapters and make sure that the adapters can connect to your wallet daemons.", 'wallets' )
-					);
-				}
-			}
-		} // end function action_wallets_block()
+						if ( 1 === $affected ) {
+							// row was inserted, not updated
+							do_action( 'wallets_deposit', $row );
+						}
+
+					} elseif ( 'withdraw' == $tx->category ) {
+
+						// Withdrawals should have been already entered into the database.
+
+						$wpdb->update(
+							self::$table_name_txs,
+							array(
+								'updated_time'	=> $current_time_gmt,
+								'confirmations'	=> $tx->confirmations,
+							),
+							array(
+								'address'		=> $tx->address,
+								'txid'			=> $tx->txid,
+							),
+							array( '%s', '%d' ),
+							array( '%s', '%s' )
+						);
+					} // end if category == withdraw
+				} // end if isset category
+			} // end if false !== $adapter
+		} // end function action_wallets_transaction()
 
 		/** @internal */
 		public function action_withdraw( $row ) {
@@ -891,5 +845,74 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				);
 			}
 		}
+
+		/**
+		 * Register some wp_cron intervals on which we can bind
+		 * action_ensure_transaction_notify .
+		 *
+		 * @internal
+		 */
+		public function filter_cron_schedules( $schedules ) {
+			$schedules['wallets_five_minutes'] = array(
+				'interval' => 5 * MINUTE_IN_SECONDS,
+				'display'  => esc_html__( 'Every five minutes', 'wallets' ),
+			);
+
+			$schedules['wallets_ten_minutes'] = array(
+				'interval' => 10 * MINUTE_IN_SECONDS,
+				'display'  => esc_html__( 'Every ten minutes', 'wallets' ),
+			);
+
+			$schedules['wallets_twenty_minutes'] = array(
+				'interval' => 20 * MINUTE_IN_SECONDS,
+				'display'  => esc_html__( 'Every twentyminutes', 'wallets' ),
+			);
+
+			$schedules['wallets_thirty_minutes'] = array(
+				'interval' => 30 * MINUTE_IN_SECONDS,
+				'display'  => esc_html__( 'Every half an hour', 'wallets' ),
+			);
+
+			$schedules['wallets_one_hour'] = array(
+				'interval' => 1 * HOUR_IN_SECONDS,
+				'display'  => esc_html__( 'Every one hour', 'wallets' ),
+			);
+
+			$schedules['wallets_four_hours'] = array(
+				'interval' => 4 * HOUR_IN_SECONDS,
+				'display'  => esc_html__( 'Every four hours', 'wallets' ),
+			);
+
+			return $schedules;
+		}
+
+		/**
+		 * Ensures that deposit will eventually be processed even if they have been overlooked.
+		 *
+		 * If the notification mechanism is not correctly setup, or if something else goes wrong,
+		 * this cron task will eventually pick up any deposits involving users' deposit addresses that may
+		 * have been overlooked. This is a fail-safe mechanism that should not be strictly necessary
+		 * but is a good idea to have in practice.
+		 *
+		 */
+		public function action_wallets_doublecheck_deposits( ) {
+			foreach ( $this->get_coin_adapters() as $adapter ) {
+				if ( method_exists( $adapter, 'list_transactions' ) ) {
+					try {
+						$txids = $adapter->list_transactions();
+						$symbol = $adapter->get_symbol();
+						foreach ( $txids as $txid ) {
+							do_action( "wallets_notify_wallet_$symbol", $txid );
+						}
+					} catch ( Exception $e ) {
+						error_log( sprintf( 'Function %s failed on coin %s due to: %s', __FUNCTION__, $adapter->get_name(), $e->getMessage() ) );
+					}
+				}
+			}
+
+		}
 	}
 }
+
+// Instantiate
+Dashed_Slug_Wallets::get_instance();

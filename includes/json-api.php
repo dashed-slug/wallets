@@ -231,10 +231,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					while ( $e = $e->getPrevious() ) {
 						$response['message'] .= ': ' . $e->getMessage();
 					}
+
+					wp_send_json(
+						$response,
+						Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ? 401 : 200
+					);
 				}
+
 				wp_send_json(
-					$response,
-					Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ? 401 : 200
+					$response
 				);
 			}
 		}
