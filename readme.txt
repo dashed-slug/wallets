@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.4
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,9 @@ Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitco
 
 == Description ==
 
-[youtube https://www.youtube.com/watch?v=_dbkKHhEzRQ ]
+https://www.youtube.com/watch?v=_dbkKHhEzRQ
+
+### Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
 
 = At a glance =
 
@@ -256,6 +258,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.2.2 =
+- Fix: Do not popup error to users who are not logged in
+
 = 2.2.1 =
 - Add: Deposit addresses now also shown as QR-Codes
 - Add: After import show both successful and unsuccessful transaction counts
@@ -357,9 +362,8 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-This version features multiple improvements under the hood.
-
-If you install this version 2.2.0 you must upgrade all coin adapters that you have installed to their latest versions, 2.0.0.
+2.2.2 is a patch release. Users who are not logged in will not be nagged with an error.
+This issue was squashed in 1.1.0 and reintroduced in 2.1.2 due to other changes. Please upgrade.
 
 == Donating ==
 
