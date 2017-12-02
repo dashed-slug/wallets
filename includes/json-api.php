@@ -117,6 +117,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						throw new Exception( __( 'Must be logged in' ), Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN );
 
 					} elseif ( 'get_users_info' == $action ) {
+
+						if (
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER )
+						) {
+							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+						}
+
 						try {
 							$users = get_users();
 							$current_user_id = get_current_user_id();
@@ -136,6 +144,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'get_coins_info' == $action ) {
+						if ( ! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )  ) {
+							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+						}
+
 						$all_adapters = $core->get_coin_adapters();
 						$response['coins'] = array();
 
@@ -176,6 +188,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'get_transactions' == $action ) {
+						if (
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::LIST_WALLET_TRANSACTIONS )
+						) {
+							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+						}
+
 						try {
 							$symbol = strtoupper( sanitize_text_field( $wp->query_vars['__wallets_symbol'] ) );
 							$count = intval( $wp->query_vars['__wallets_tx_count'] );
@@ -196,6 +215,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'do_withdraw' == $action ) {
+						if (
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
+						) {
+							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+						}
+
 						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
 						if ( ! wp_verify_nonce( $nonce, "wallets-withdraw" ) ) {
@@ -216,6 +242,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['result'] = 'success';
 
 					} elseif ( 'do_move' == $action ) {
+
+						if (
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) ||
+							! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER )
+						) {
+							throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+						}
+
 						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
 						if ( ! wp_verify_nonce( $nonce, "wallets-move" ) ) {
@@ -245,12 +279,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$response['message'] .= ': ' . $e->getMessage();
 					}
 
+					switch ( $response['code'] ) {
+						case Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN:
+							$status = 401;
+							break;
+						case Dashed_Slug_Wallets::ERR_NOT_ALLOWED:
+							$status = 403;
+							break;
+						default:
+							$status = 500;
+					}
+
+					// send error response
 					wp_send_json(
 						$response,
-						Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ? 401 : 200
+						$status
 					);
 				}
 
+				// send successful response
 				wp_send_json(
 					$response
 				);

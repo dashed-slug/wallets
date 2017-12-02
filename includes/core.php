@@ -12,10 +12,10 @@
 defined( 'ABSPATH' ) || die( '-1' );
 
 include_once( 'admin-notices.php' );
-include_once( 'shortcodes.php' );
 include_once( 'admin-menu.php' );
-include_once( 'admin-menu-settings.php' );
+include_once( 'shortcodes.php' );
 include_once( 'json-api.php' );
+include_once( 'sidebar-widgets.php' );
 
 
 if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
@@ -45,6 +45,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/** error code for exception thrown due to user not being logged in */
 		const ERR_NOT_LOGGED_IN = -106;
 
+		/** error code for exception thrown due to insufficient capabilities */
+		const ERR_NOT_ALLOWED = -107;
+
 		/** @internal */
 		private static $_instance;
 
@@ -67,13 +70,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			register_deactivation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_deactivate' ) );
 
 
-			Dashed_Slug_Wallets_Shortcodes::get_instance();
 			$this->_notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
-			if ( is_admin() ) {
-				Dashed_Slug_Wallets_Admin_Menu::get_instance();
-				Dashed_Slug_Wallets_Admin_Menu_Settings::get_instance();
-			} else {
+			if ( ! is_admin() ) {
 				Dashed_Slug_Wallets_JSON_API::get_instance();
 			}
 
@@ -84,24 +83,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'action_plugin_action_links' ) );
 
 
-			// actions defined by this plugin
+			// these actions record a transaction or address to the DB
 			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
 			add_action( 'wallets_address',	array( &$this, 'action_wallets_address' ) );
 
-
-			add_action( 'wallets_withdraw',		array( &$this, 'action_withdraw' ) );
-			add_action( 'wallets_move_send',		array( &$this, 'action_move_send' ) );
-			add_action( 'wallets_move_receive',	array( &$this, 'action_move_receive' ) );
-			add_action( 'wallets_deposit',		array( &$this, 'action_deposit' ) );
-
-			// wp_cron mechanism for double-checking for deposits
-			add_filter( 'pre_update_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
-			add_filter( 'cron_schedules', array( &$this, 'filter_cron_schedules' ) );
-			add_action( 'wallets_periodic_checks', array( &$this, 'action_wallets_periodic_checks') );
-			if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
-				$cron_interval = get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
-			}
 
 			global $wpdb;
 			self::$table_name_txs = "{$wpdb->prefix}wallets_txs";
@@ -112,7 +97,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Returns the singleton core of this plugin that provides the application-facing API.
 		 *
 		 *  @api
-		 *  @since 1.0.0
+		 *  @since 1.0.0 Introduced
 		 *  @return object The singleton instance of this class.
 		 *
 		 */
@@ -177,7 +162,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'2.0.2'
+				'2.1.0'
 			);
 		}
 
@@ -268,13 +253,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				}
 			}
 
-			// access control
-			$role = get_role( 'administrator' );
-			$role->add_cap( 'manage_wallets' );
-
-			// for the cron job
-			add_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-
 			// flush json api rules
 			self::flush_rules();
 		}
@@ -282,16 +260,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/** @internal */
 		public static function action_deactivate() {
 			// will not remove DB tables for safety
-
-			// access control
-			$role = get_role( 'administrator' );
-			$role->remove_cap( 'manage_wallets' );
-
-			// remove cron
-			$timestamp = wp_next_scheduled( 'wallets_periodic_checks' );
-			if ( false !== $timestamp ) {
-				wp_unschedule_event( $timestamp, 'wallets_periodic_checks' );
-			}
 
 			// flush json api rules
 			self::flush_rules();
@@ -309,12 +277,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *
 		 * The adapters provide the low-level API for talking to the various wallets.
 		 *
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @throws Exception If the symbol passed does not correspond to a coin adapter
 		 * @return stdClass|array The adapter or array of adapters requested.
 		 */
-		public function get_coin_adapters( $symbol = null ) {
+		public function get_coin_adapters( $symbol = null, $check_capabilities = false ) {
+			if ( $check_capabilities &&
+				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+			)  {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
 			static $adapters = null;
 			if ( is_null( $adapters ) ) {
 				$adapters = apply_filters( 'wallets_coin_adapters', array() );
@@ -337,14 +313,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *
 		 * Returns the WordPress user ID for the account that has the specified address in the specified coin's wallet.
 		 *
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param string $address The address
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @throws Exception If the address is not associated with an account.
 		 * @return integer The WordPress user ID for the account found.
 		 */
-		public function get_account_id_for_address( $symbol, $address ) {
+		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false ) {
 			global $wpdb;
+
+			if (
+				$check_capabilities &&
+				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
 
 			$table_name_adds = self::$table_name_adds;
 			$account = $wpdb->get_var( $wpdb->prepare(
@@ -380,12 +365,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * moves are counted at all times.
 		 *
 		 * @api
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
 		 * @param integer $minconf (optional) Minimum number of confirmations. If left out, the default adapter setting is used.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return float The balance.
 		 */
-		public function get_balance( $symbol, $minconf = null ) {
+		public function get_balance( $symbol, $minconf = null, $check_capabilities = false ) {
+			if (
+				$check_capabilities &&
+				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+			 ) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
 			$adapter = $this->get_coin_adapters( $symbol );
 
 			if ( ! is_int( $minconf ) ) {
@@ -421,15 +415,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * for the specified coin.
 		 *
 		 * @api
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param integer $count Maximal number of transactions to return.
 		 * @param integer $from Start retrieving transactions from this offset.
 		 * @param integer $minconf (optional) Minimum number of confirmations for deposits and withdrawals. If left out, the default adapter setting is used.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return array The transactions.
 		 */
-		 public function get_transactions( $symbol, $count = 10, $from = 0, $minconf = null ) {
-			$adapter = $this->get_coin_adapters( $symbol );
+		 public function get_transactions( $symbol, $count = 10, $from = 0, $minconf = null, $check_capabilities = false ) {
+			if (
+					$check_capabilities &&
+					! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
+					current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::LIST_WALLET_TRANSACTIONS ) )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+			}
+
+			$adapter = $this->get_coin_adapters( $symbol, $check_capabilities );
 
 			if ( ! is_int( $minconf ) ) {
 				$minconf = $adapter->get_minconf();
@@ -473,15 +477,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Withdraw from current logged in user's account.
 		 *
 		 * @api
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param string $address Address to withdraw to.
 		 * @param float $amount Amount to withdraw to.
 		 * @param string $comment Optional comment to attach to the transaction.
 		 * @param string $comment_to Optional comment to attach to the destination address.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 */
-		 public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '' ) {
-			$adapter = $this->get_coin_adapters( $symbol );
+		 public function do_withdraw( $symbol, $address, $amount, $comment = '', $comment_to = '', $check_capabilities = false ) {
+			if (
+				$check_capabilities &&
+				! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
+				current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
+			) ) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+			}
+
+			$adapter = $this->get_coin_adapters( $symbol, $check_capabilities );
 
 			global $wpdb;
 
@@ -545,13 +559,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Move funds from the current logged in user's balance to the specified user.
 		 *
 		 * @api
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param integer $toaccount The WordPress user_ID of the recipient.
 		 * @param float $amount Amount to withdraw to.
 		 * @param string $comment Optional comment to attach to the transaction.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 */
-		public function do_move( $symbol, $toaccount, $amount, $comment) {
+		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false ) {
+			if (
+				$check_capabilities &&
+				! ( current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS ) &&
+				current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::SEND_FUNDS_TO_USER ) )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+			}
+
 			$adapter = $this->get_coin_adapters( $symbol );
 
 			global $wpdb;
@@ -644,11 +668,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * Get a deposit address for the current logged in user's account.
 		 *
 		 * @api
-		 * @since 1.0.0
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return string A deposit address associated with the current logged in user.
 		 */
-		 public function get_new_address( $symbol ) {
+		 public function get_new_address( $symbol, $check_capabilities = false ) {
+			if (
+				$check_capabilities &&
+				! current_user_can( Dashed_Slug_Wallets_Admin_Menu_Capabilities::HAS_WALLETS )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
 
 			$adapter = $this->get_coin_adapters( $symbol );
 
@@ -851,176 +883,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				),
 				array( '%d', '%s', '%s', '%s' )
 			);
-		}
-
-		/** @internal */
-		public function action_withdraw( $row ) {
-			$user = get_userdata( $row['account'] );
-			$row['account'] = $user->user_login;
-
-			$this->notify_user_by_email(
-				$user->user_email,
-				__( 'You have performed a withdrawal.', 'wallets' ),
-				$row
-			);
-		}
-
-		/** @internal */
-		public function action_move_send( $row ) {
-			$sender = get_userdata( $row['account'] );
-			$recipient = get_userdata( $row['other_account'] );
-
-			$row['account'] = $sender->user_login;
-			$row['other_account'] = $recipient->user_login;
-
-			$this->notify_user_by_email(
-				$sender->user_email,
-				__( 'You have sent funds to another user.', 'wallets' ),
-				$row
-			);
-		}
-
-		/** @internal */
-		public function action_move_receive( $row ) {
-			$recipient = get_userdata( $row['account'] );
-			$sender = get_userdata( $row['other_account'] );
-
-			$row['account'] = $recipient->user_login;
-			$row['other_account'] = $sender->user_login;
-			unset( $row['fee'] );
-
-			$this->notify_user_by_email(
-				$recipient->user_email,
-				__( 'You have received funds from another user.', 'wallets' ),
-				$row
-			);
-		}
-
-		/** @internal */
-		public function action_deposit( $row ) {
-			$user = get_userdata( $row['account'] );
-			$row['account'] = $user->user_login;
-
-			$this->notify_user_by_email(
-				$user->user_email,
-				__( 'You have performed a deposit.', 'wallets' ),
-				$row
-			);
-		}
-
-		/** @internal */
-		private function notify_user_by_email( $email, $subject, &$row ) {
-			unset( $row['category'] );
-			unset( $row['updated_time'] );
-
-			$full_message = "$subject\n" . __( 'Transaction details follow', 'wallets' ) . ":\n\n";
-			foreach ( $row as $field => $val ) {
-				$full_message .= "$field : $val\n";
-			}
-
-			try {
-				wp_mail(
-					$email,
-					$subject,
-					$full_message
-				);
-			} catch ( Exception $e ) {
-				$this->_notices->error(
-					__( "The following errors occured while sending notification email to $email: ", 'wallets' ) .
-					$e->getMessage()
-				);
-			}
-		}
-
-		/**
-		 * Register some wp_cron intervals on which we can bind
-		 * action_ensure_transaction_notify .
-		 *
-		 * @internal
-		 */
-		public function filter_cron_schedules( $schedules ) {
-			$schedules['wallets_five_minutes'] = array(
-				'interval' => 5 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every five minutes', 'wallets' ),
-			);
-
-			$schedules['wallets_ten_minutes'] = array(
-				'interval' => 10 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every ten minutes', 'wallets' ),
-			);
-
-			$schedules['wallets_twenty_minutes'] = array(
-				'interval' => 20 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every twenty minutes', 'wallets' ),
-			);
-
-			$schedules['wallets_thirty_minutes'] = array(
-				'interval' => 30 * MINUTE_IN_SECONDS,
-				'display'  => esc_html__( 'Every half an hour', 'wallets' ),
-			);
-
-			$schedules['wallets_one_hour'] = array(
-				'interval' => 1 * HOUR_IN_SECONDS,
-				'display'  => esc_html__( 'Every one hour', 'wallets' ),
-			);
-
-			$schedules['wallets_four_hours'] = array(
-				'interval' => 4 * HOUR_IN_SECONDS,
-				'display'  => esc_html__( 'Every four hours', 'wallets' ),
-			);
-
-			return $schedules;
-		}
-
-		/** @internal */
-		public function filter_update_option_wallets_cron_interval( $new_value, $old_value ) {
-			if ( $new_value != $old_value ) {
-
-				// remove cron
-				$timestamp = wp_next_scheduled( 'wallets_periodic_checks' );
-				if ( false !== $timestamp ) {
-					wp_unschedule_event( $timestamp, 'wallets_periodic_checks' );
-				}
-
-				if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
-					wp_schedule_event( time(), $new_value, 'wallets_periodic_checks' );
-				}
-			}
-			return $new_value;
-		}
-
-		/**
-		 * Trigger the cron function of each adapter.
-		 *
-		 * Deposit addresses and deposits can be overlooked if the RPC callback notification
-		 * mechanism is not correctly setup, or if something else goes wrong.
-		 * Adapters can offer a cron() function that does periodic checks for these things.
-		 * Adapters can discover overlooked addresses and transactions and trigger the actions
-		 * wallets_transaction and wallets_address
-		 *
-		 * For some adapters this will be a failsafe-check and for others it will be the main mechanism
-		 * of polling for deposits. Adapters can also opt to not offer a cron() method.
-		 * @internal
-		 * @since 2.0.0
-		 *
-		 */
-		public function action_wallets_periodic_checks( ) {
-			foreach ( $this->get_coin_adapters() as $adapter ) {
-				if ( method_exists( $adapter, 'cron' ) ) {
-					try {
-						$adapter->cron();
-					} catch ( Exception $e ) {
-						error_log(
-							sprintf( 'Function %s failed to run cron() on adapter %s and coin %s due to: %s',
-								__FUNCTION__,
-								$adapter->get_adapter_name(),
-								$adapter->get_name(),
-								$e->getMessage()
-							)
-						);
-					}
-				}
-			}
 		}
 	}
 }

@@ -1,10 +1,10 @@
 <?php
 
+include_once( 'admin-menu-adapter-list.php' );
+
 /**
  * This is the main "Wallets" admin screen that features the coin adapters list. The list itself is implemented in admin-menu-adapter-list.php .
  */
-
-include_once( 'admin-menu-adapter-list.php' );
 
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
@@ -12,25 +12,17 @@ defined( 'ABSPATH' ) || die( '-1' );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 	class Dashed_Slug_Wallets_Admin_Menu {
 
-		private static $_instance;
 		private static $tx_columns = 'category,account,other_account,address,txid,symbol,amount,fee,comment,created_time,updated_time,confirmations';
 
-		private function __construct() {
+		public function __construct() {
 			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		}
 
-		public static function get_instance() {
-			if ( ! ( self::$_instance instanceof self ) ) {
-				self::$_instance = new self();
-			}
-			return self::$_instance;
-		}
-
 		public function admin_init() {
-			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
-
 			$core = Dashed_Slug_Wallets::get_instance();
+
+			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 			$symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
 			$adapter = $core->get_coin_adapters( $symbol );
 
@@ -126,6 +118,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 					array( &$this, 'wallets_page_cb' ),
 					plugins_url( 'assets/sprites/wallet-icon.png', DSWALLETS_PATH . '/wallets.php' )
 				);
+
+				add_submenu_page(
+					'wallets-menu-wallets',
+					'Bitcoin and Altcoin Wallets',
+					__( 'Wallets' ),
+					'manage_wallets',
+					'wallets-menu-wallets',
+					array( &$this, 'wallets_page_cb' )
+				);
+
+				do_action( 'wallets_admin_menu' );
 			}
 		}
 
@@ -278,4 +281,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			fclose( $fh );
 		} // end function csv_import()
 	}
+	new Dashed_Slug_Wallets_Admin_Menu();
 }
+
+include_once( 'admin-menu-caps.php' );
+include_once( 'admin-menu-cron.php' );
+include_once( 'admin-menu-email.php' );

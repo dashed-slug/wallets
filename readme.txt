@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.3
-Stable tag: 2.0.2
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,7 @@ It enables financial transactions on your site via Bitcoins and other cryptocurr
 
 This is the *core plugin* that takes care of *basic accounting functionality*:
 
+- **Accounting for your users.** Data is held on tables in your MySQL database.
 - **A financial transaction [PHP API](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/php-api/)**:
   Calls that let the logged in user handle their cryptocurrencies.
 - **A [JSON API](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/json-api/)**: JSON requests of the above, for logged in users.
@@ -34,13 +35,14 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
   - withdraw to an external blockchain address,
   - transfer funds to other users (on-site transactions that bypass the blockchain),
   - view a history of past transactions
-- **Accounting for your users.** Data is held on tables in your MySQL database.
-  The Bitcoin core accounting API is not used since [it is being deprecated](https://github.com/bitcoin/bitcoin/issues/3816).
+- **Widgets** the same UI elements available via shortcodes can also be used as widgets in your theme.
+- Configure who has a wallet and who does what using WordPress capabilities.
+- Configure e-mail notifications for users.
 - **Backup and restore transactions**: An **import/export** functionality to backup transactions to and from
   [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 - **Extensible architecture**
   - Easily install coin adapter plugins to use other cryprocurrencies besides Bitcoin.
-  - Easily install extension plugins that talk to the PHP API to provide additional functionality.
+  - Easily install extension plugins that talk to the PHP API to provide additional functionality such as payment gateways.
 
 = Premium plugin extensions available today =
 
@@ -53,6 +55,7 @@ Here are all the currently available extensions to the Bitcoin and Altcoin Walle
 - [Feathercoin adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/feathercoin-adapter-extension/)
 - [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/)
 - [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
+- [Events Manager Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/)
 
 = And here's a preview of what is to come: =
 
@@ -65,10 +68,7 @@ Here are all the currently available extensions to the Bitcoin and Altcoin Walle
 - **Currency exchanges**
 - etc.
 
-If you are a developer you may decide to contribute towards this effort by building one or more of these components yourself.
-Ultimately the Wallets cryptocurrency stack should be a community effort.
-
-Or simply drop some feedback to indicate what you would like to see next.
+**The dashed-slug.net development is driven by your feedback. Send in your feature requests today.**
 
 = follow the slime =
 
@@ -89,7 +89,7 @@ This will typically require SSH access and some basic knowledge of UNIX/Linux.*
 
 = Instructions =
 
-What follows is step-by-step instructions:
+To Install the plugin and connect it to a Bitcoin full node using the built-in Bitcoin adapter:
 
 1. Make sure that you have **the latest WordPress version** installed,
    and that you are running on **at least PHP 5.6.**
@@ -189,7 +189,9 @@ Essentially you just need to copy the API keys into your WordPress admin screens
 
 = How can I integrate the Bitcoin and Altcoin Wallets plugin with my site's frontend? =
 
-Just insert the shortcodes anywhere to create UI elements that will be available to logged in users:
+A number of UI elements are made available for the front-end.
+
+Just use the provided widgets in your theme, or insert the following shortcodes in a post or page:
 
 - deposit funds: `wallets_deposit`,
 - withdraw funds: `wallets_withdraw`,
@@ -198,6 +200,7 @@ Just insert the shortcodes anywhere to create UI elements that will be available
 - view past transactions: `wallets_transactions`.
 
 These shortcodes render [knockout.js](http://knockoutjs.com/)-enabled forms.
+The forms only show to users who have the necessary capabilities assigned.
 
 = I don't like the built-in forms. Can I provide my own? =
 
@@ -253,6 +256,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 2.1.0 =
+- Add: Capabilities feature lets you assign capabilities to user roles
+- Add: E-mail notifications are now admin-configurable
+- Add: Frontend Widgets
+- Change: Settings tab is now cron tab
+- Change: Better code organisation
 
 = 2.0.2 =
 - Add: Link to homepage and settings page from plugin list

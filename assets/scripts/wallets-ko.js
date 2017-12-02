@@ -27,7 +27,9 @@
 			self.withdrawCommentTo = ko.observable();
 
 			var xhrErrorHandler = function( jqXHR, textStatus, errorThrown ) {
-				if ( 401 == jqXHR.status ) {
+				if ( 403 == jqXHR.status ) {
+					return;
+				} else if ( 401 == jqXHR.status ) {
 					$( '.dashed-slug-wallets' ).replaceWith( '<div class="dashed-slug-wallets">' + jqXHR.responseJSON.message + '</div>' );
 				} else {
 					alert( "Could not contact server.\nStatus: " + textStatus + "\nError: " + errorThrown );
@@ -63,7 +65,6 @@
 							self.moveUser( self.users()[ 0 ] );
 						}
 
-						self.getCoinsInfo();
 					},
 					error: xhrErrorHandler
 				});
@@ -228,6 +229,7 @@
 
 		var walletsViewModel = new WalletsViewModel();
 		walletsViewModel.getUsersInfo();
+		walletsViewModel.getCoinsInfo();
 		ko.applyBindings( walletsViewModel );
 		walletsViewModel.currentPage(1);
 	} );
