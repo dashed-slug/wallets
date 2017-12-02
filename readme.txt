@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -180,7 +180,8 @@ At a minimum you should do the following:
 
 1. Install a security plugin such as [Wordfence](https://infinitewp.com/addons/wordfence/?ref=260 "This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.").
 2. Read the Codex resources on [Hardening WordPress](https://codex.wordpress.org/Hardening_WordPress).
-
+3. If you are connecting to an RPC API on a different machine than that of your WordPress server over an untrusted network, make sure to tunnel your connection via `ssh` or `stunnel`. [See here](https://en.bitcoin.it/wiki/Enabling_SSL_on_original_client_daemon).
+  
 = Do I really need to run a full node? bitcoind is too resource-hungry for my server. =
 
 Running a full node requires the full blockchain to be downloaded and is best for people who are able to administer a server.
@@ -251,15 +252,28 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Screenshots ==
 
-1. **Adapters list** - Go to the Wallets menu to see a list of installed coins and some stats about them.
-2. **Bitcoin Adapter settings** - The settings for talking to your bitcoin daemon. If you install other adapters, there will be similar screens to talk to the respective daemons.
-3. **Frontend - deposit** - The \[wallets_deposit\] shortcode displays a UI element that lets your users know which address they can send coins to if they wish to deposit to their account.
-4. **Frontend - move** - The \[wallets_move\] shortcode displays a UI element that lets your users transfer coins to other users on the site.
-5. **Frontend - withdraw** - The \[wallets_withdraw\] shortcode displays a UI element that lets your users withdraw coins from their account to an external address.
-6. **Frontend - balance** - The \[wallets_balance\] shortcode displays your users' account balances.
-7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
+1. **Adapters list** - Go to the Wallets menu to see a list of installed coin adapters and their status.
+2. **Capabilities matrix** - Easily control who can do what by assigning WordPress capabilities to your user roles.
+3. **Confirmation settings** - Decide whether internal and external transfers need to be verified by the user over email, an administrator via the admin panel, or both.
+4.  **Cron** - Control the recurring background tasks to finetune the plugin's performance.
+5. **E-mails** - Use a simple templating format to edit the email notifications that users receive about their transactions.
+6. **QR-Codes** - Turn on or off the display of QR-codes for deposit addresses.
+7. **Bitcoin adapter settings** - Settings for communicating with the Bitcoin RPC API. If you install other coin adapters they will have similar panels with settings.
+8. **Frontend - deposit** - The \[wallets_deposit\] shortcode displays a UI element that lets your users know which address they can send coins to if they wish to deposit to their account.
+9. **Frontend - move** - The \[wallets_move\] shortcode displays a UI element that lets your users transfer coins to other users on the site.
+10. **Frontend - withdraw** - The \[wallets_withdraw\] shortcode displays a UI element that lets your users withdraw coins from their account to an external address.
+11. **Frontend - balance** - The \[wallets_balance\] shortcode displays your users' account balances.
+12. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
+
 
 == Changelog ==
+
+= 2.4.1 =
+
+- Fix: When performing actions in transactions admin panel, redirect to that same panel without the action arguments (allows page refresh).
+- Add: PHPdoc for new helper functions introduced in 2.4.0
+- Add: Text warning about security best practices regarding RPC API communications over untrusted networks.
+
 
 = 2.4.0 =
 - Add: On multisite installs, the plugin can be *network-activated*.
@@ -432,9 +446,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.4.0 introduces network-activation on multisite installs. Upgrade from 2.3.6 if you need this feature.
-
-You will also need to upgrade any extensions that you may have installed to their latest versions.
+Version 2.4.1 introduces minor bug fixes from 2.4.0.
 
 == Donating ==
 

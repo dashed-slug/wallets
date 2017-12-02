@@ -107,7 +107,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets' );
 			?>"><?php esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li>
 			<li><?php esc_html_e( 'Enable SSL on your site, if you have not already done.', 'wallets' );
-			?></li></ol><p><?php
+			?></li><li><?php esc_html_e( 'If you are connecting to an RPC API on a different machine than that ' .
+			'of your WordPress server over an untrusted network, make sure to tunnel your connection via ssh or stunnel.',
+			'wallets' ); ?> <a href="https://en.bitcoin.it/wiki/Enabling_SSL_on_original_client_daemon"><?php
+			esc_html_e( 'See more here', 'wallets' ); ?></a>.</li></ol><p><?php
 			esc_html_e( 'By continuing to use the Bitcoin and Altcoin Wallets plugin, ' .
 			'you indicate that you have understood and agreed to this disclaimer.', 'wallets' );
 			?></p></div>

@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.4.0'
+					'2.4.1'
 				);
 			}
 		}
@@ -426,18 +426,58 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			return $this->_adapters[ $symbol ];
 		}
 
+		/**
+		 * This helper delegates to add_site_option if the plugin is network activated on a multisite install, or to add_option otherwise.
+		 *
+		 * @since 2.4.0 Added
+		 * @link https://developer.wordpress.org/reference/functions/add_site_option/
+		 * @link https://developer.wordpress.org/reference/functions/add_option/
+		 * @param string $option The option name.
+		 * @param mixed $value The option value.
+		 * @return bool The result of the wrapped function.
+		 */
 		public static function add_option( $option, $value ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'add_site_option' : 'add_option', $option, $value );
 		}
 
+		/**
+		 * This helper delegates to update_site_option if the plugin is network activated on a multisite install, or to update_option otherwise.
+		 *
+		 * @since 2.4.0 Added
+		 * @link https://developer.wordpress.org/reference/functions/update_site_option/
+		 * @link https://developer.wordpress.org/reference/functions/update_option/
+		 * @param string $option The option name.
+		 * @param mixed $value The option value.
+		 * @return bool The result of the wrapped function.
+		 */
 		public static function update_option( $option, $value ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'update_site_option' : 'update_option', $option, $value );
 		}
 
+		/**
+		 * This helper delegates to get_site_option if the plugin is network activated on a multisite install, or to get_option otherwise.
+		 *
+		 * @since 2.4.0 Added
+		 * @link https://developer.wordpress.org/reference/functions/get_site_option/
+		 * @link https://developer.wordpress.org/reference/functions/get_option/
+		 * @param string $option The option name.
+		 * @param mixed $value The option value.
+		 * @return bool The result of the wrapped function.
+		 */
 		public static function get_option( $option, $default = false ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_option' : 'get_option', $option, $default );
 		}
 
+		/**
+		 * This helper delegates to delete_site_option if the plugin is network activated on a multisite install, or to delete_option otherwise.
+		 *
+		 * @since 2.4.0 Added
+		 * @link https://developer.wordpress.org/reference/functions/delete_site_option/
+		 * @link https://developer.wordpress.org/reference/functions/delete_option/
+		 * @param string $option The option name.
+		 * @param mixed $value The option value.
+		 * @return bool The result of the wrapped function.
+		 */
 		public static function delete_option( $option ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'delete_site_option' : 'delete_option', $option );
 		}

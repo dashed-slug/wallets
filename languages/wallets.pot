@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.0\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -79,18 +79,18 @@ msgstr ""
 #: src/includes/coin-adapter.php:188 src/includes/coin-adapter.php:241
 #: src/includes/confirmations.php:297 src/includes/cron.php:257
 #: src/includes/email.php:505 src/includes/qrcode.php:65
-#: src/includes/transactions.php:82 src/includes/transactions.php:714
-#: src/includes/transactions.php:895 src/includes/transactions.php:916
-#: src/includes/transactions.php:937 src/includes/transactions.php:957
-#: src/includes/transactions.php:977
+#: src/includes/transactions.php:82 src/includes/transactions.php:719
+#: src/includes/transactions.php:900 src/includes/transactions.php:921
+#: src/includes/transactions.php:942 src/includes/transactions.php:962
+#: src/includes/transactions.php:982
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/admin-menu.php:47 src/includes/caps.php:90
 #: src/includes/json-api.php:230 src/includes/json-api.php:258
-#: src/includes/transactions.php:720 src/includes/transactions.php:899
-#: src/includes/transactions.php:920 src/includes/transactions.php:941
-#: src/includes/transactions.php:961 src/includes/transactions.php:981
+#: src/includes/transactions.php:725 src/includes/transactions.php:904
+#: src/includes/transactions.php:925 src/includes/transactions.php:946
+#: src/includes/transactions.php:966 src/includes/transactions.php:986
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -134,41 +134,52 @@ msgstr ""
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: src/includes/admin-menu.php:111
+#: src/includes/admin-menu.php:110
+msgid ""
+"If you are connecting to an RPC API on a different machine than that of your "
+"WordPress server over an untrusted network, make sure to tunnel your "
+"connection via ssh or stunnel."
+msgstr ""
+
+#: src/includes/admin-menu.php:113
+msgid "See more here"
+msgstr ""
+
+#: src/includes/admin-menu.php:114
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate "
 "that you have understood and agreed to this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:115
+#: src/includes/admin-menu.php:118
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:122
+#: src/includes/admin-menu.php:125
 msgid "Wallet plugin extensions"
 msgstr ""
 
-#: src/includes/admin-menu.php:123
+#: src/includes/admin-menu.php:126
 msgid ""
 "/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
 "functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:124
+#: src/includes/admin-menu.php:127
 msgid "You can install"
 msgstr ""
 
-#: src/includes/admin-menu.php:125
+#: src/includes/admin-menu.php:128
 msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:126
+#: src/includes/admin-menu.php:129
 msgid ""
 "\"app extensions\". App extensions are plugins that utilize the core API to "
 "supply some user functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:129
+#: src/includes/admin-menu.php:132
 msgid "Visit the dashed-slug to see what's available"
 msgstr ""
 
@@ -814,10 +825,10 @@ msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:197 src/includes/json-api.php:224
-#: src/includes/json-api.php:252 src/includes/transactions.php:678
-#: src/includes/wallets-core.php:413 src/includes/wallets-core.php:466
-#: src/includes/wallets-core.php:530 src/includes/wallets-core.php:601
-#: src/includes/wallets-core.php:741 src/includes/wallets-core.php:883
+#: src/includes/json-api.php:252 src/includes/transactions.php:683
+#: src/includes/wallets-core.php:413 src/includes/wallets-core.php:506
+#: src/includes/wallets-core.php:570 src/includes/wallets-core.php:641
+#: src/includes/wallets-core.php:781 src/includes/wallets-core.php:923
 msgid "Not allowed"
 msgstr ""
 
@@ -1009,11 +1020,15 @@ msgstr ""
 msgid "/* @echo name */ Transactions"
 msgstr ""
 
-#: src/includes/transactions.php:94
+#: src/includes/transactions.php:91
+msgid "Transaction updated."
+msgstr ""
+
+#: src/includes/transactions.php:99
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/transactions.php:96
+#: src/includes/transactions.php:101
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Pending transactions will be skipped if they have not been "
@@ -1021,43 +1036,31 @@ msgid ""
 "imported, unless if they already exist in your DB."
 msgstr ""
 
-#: src/includes/transactions.php:101
+#: src/includes/transactions.php:106
 msgid "Import"
 msgstr ""
 
-#: src/includes/transactions.php:359
+#: src/includes/transactions.php:364
 #, php-format
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: src/includes/transactions.php:703
+#: src/includes/transactions.php:708
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:740
+#: src/includes/transactions.php:745
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:748
+#: src/includes/transactions.php:753
 #, php-format
 msgid "Failed to import file : %s"
-msgstr ""
-
-#: src/includes/transactions.php:1005
-msgid "Successfully updated transaction"
-msgstr ""
-
-#: src/includes/transactions.php:1009
-msgid "The transaction to be updated was not found"
-msgstr ""
-
-#: src/includes/transactions.php:1013
-msgid "Failed to update transaction"
 msgstr ""
 
 #: src/includes/views/balance.php:5
@@ -1155,24 +1158,24 @@ msgstr ""
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:637
+#: src/includes/wallets-core.php:677
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:662
+#: src/includes/wallets-core.php:702
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:668 src/includes/wallets-core.php:777
+#: src/includes/wallets-core.php:708 src/includes/wallets-core.php:817
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:745
+#: src/includes/wallets-core.php:785
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:771
+#: src/includes/wallets-core.php:811
 msgid "Cannot move negative amount"
 msgstr ""

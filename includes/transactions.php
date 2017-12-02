@@ -86,6 +86,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Transactions', 'wallets' ); ?></h1>
 
+			<?php if ( isset( $_GET['updated'] ) ):
+			?><div class="updated notice is-dismissible"><p><?php
+				esc_html_e( 'Transaction updated.', 'wallets' );
+			?></p></div><?php endif; ?>
+
 			<div class="wrap"><?php
 				$txs_list->prepare_items();
 				$txs_list->display();
@@ -1001,22 +1006,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 				}
 
-				if ( $affected_rows > 0 ) {
-					Dashed_Slug_Wallets_Admin_Notices::get_instance()->success( __( 'Successfully updated transaction', 'wallets' ) );
+				$redirect_args = array(
+					'page' => 'wallets-menu-transactions',
+					'paged' => filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT ),
+					'order' => filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING ),
+					'orderby' => filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING ),
+				);
+
+				if ( $affected_rows ) {
+					$redirect_args['updated'] = 1;
 				}
 
-				elseif ( $affected_rows === 0 ) {
-					Dashed_Slug_Wallets_Admin_Notices::get_instance()->error( __( 'The transaction to be updated was not found', 'wallets' ) );
-				}
+				wp_redirect(
 
-				elseif ( $affected_rows === false ) {
-					Dashed_Slug_Wallets_Admin_Notices::get_instance()->error( __( 'Failed to update transaction', 'wallets' ) );
-				}
+					add_query_arg(
+						$redirect_args,
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+					)
+				);
 			}
-
 		}
-
-
 	}
 
 	new Dashed_Slug_Wallets_TXs();
