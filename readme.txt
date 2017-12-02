@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,7 @@ What follows is step-by-step instructions:
 
 1. Make sure that you have **at least WordPress version 3.8** installed,
    and that you are running on **at least PHP 5.5.**
+   For security reasons, you are **strongly** recommended to use the latest version of WordPress.
 
 2. **Install a Bitcoin full node** on your server. Detailed instructions
    [are available here](https://bitcoin.org/en/full-node). Read and follow the instructions carefully.
@@ -108,7 +109,7 @@ What follows is step-by-step instructions:
    `rpcallowip=127.0.0.1`
 
    For more information on the bitcoin daemon configuration,
-   consult [the relevan wiki page](https://en.bitcoin.it/wiki/Running_Bitcoin).
+   consult [the relevant wiki page](https://en.bitcoin.it/wiki/Running_Bitcoin).
 
 5. **Install and activate the Wallets plugin.** For general information on installing WordPress plugins, you can consult the
    [relevant WordPress documentation](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
@@ -132,6 +133,7 @@ What follows is step-by-step instructions:
    Check the paths to make sure they match the location of your WordPress installation.
 
 You should now be ready to use *Bitcoin and Altcoin Wallets*.
+On the *Wallets* menu, check the *Adapter Status* for *Bitcoin*. If all is well, it should read *Responding*.
 
 = Disclaimer =
 
@@ -226,6 +228,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 7. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
 
 == Changelog ==
+
+= 1.0.3 =
+* Fixed issue where deactivating any plugin would fail due to nonce error
 
 = 1.0.2 =
 * Clearer disclaimer

@@ -105,7 +105,7 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 
 	public function get_bulk_actions() {
 		$actions = array(
-			// 'deactivate' => esc_html( 'Deactivate', 'wallets' ), // TODO bulk actions
+			// 'deactivate-adapter' => esc_html( 'Deactivate', 'wallets' ), // TODO bulk actions
 		);
 		return $actions;
 	}
@@ -135,13 +135,13 @@ class DSWallets_Admin_Menu_Adapter_List extends WP_List_Table {
 				esc_attr( $item['symbol'] ),
 				wp_create_nonce( 'wallets-export-tx-' . $item['symbol'] ) ),
 
-			'deactivate' => sprintf(
+			'deactivate-adapter' => sprintf(
 				'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
 				esc_attr__( 'Deactivate the plugin that provides this adapter', 'wallets') . '">' .
 				__( 'Deactivate', 'wallets') . '</a>',
 
 				esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
-				'deactivate',
+				'deactivate-adapter',
 				esc_attr( $item['symbol'] ),
 				wp_create_nonce( 'wallets-deactivate-' . $item['symbol'] ) )
 		);

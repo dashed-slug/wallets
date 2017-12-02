@@ -59,7 +59,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu') ) {
 					}
 					break;
 
-				case 'deactivate':
+				case 'deactivate-adapter':
 					if ( ! current_user_can( 'manage_wallets' ) )  {
 						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 					}
