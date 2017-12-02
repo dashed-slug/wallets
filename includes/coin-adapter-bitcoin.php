@@ -62,6 +62,7 @@ CFG;
 					</li><li>
 						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' )?></strong> &mdash;
 						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' )?></p>
+						<p><?php echo __( 'Fees are calculated as: <i>total_fees = fixed_fees + amount * proportional_fees</i>.', 'wallets' ); ?></p>
 						<p class="card"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees use the wallet settings in bitcoin.conf: paytxfee, mintxfee, maxtxfee, etc.', 'wallets' ) ?>
 						<a href="https://en.bitcoin.it/wiki/Running_Bitcoin" target="_blank"><?php esc_html_e( 'Refer to the documentation for details.', 'wallets' )?></a></p>
 					</li>

@@ -81,7 +81,9 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( "{$option_slug}-rpc-password" );
 	wallets_delete_option( "{$option_slug}-rpc-path" );
 	wallets_delete_option( "{$option_slug}-fees-move" );
+	wallets_delete_option( "{$option_slug}-fees-move-proportional" );
 	wallets_delete_option( "{$option_slug}-fees-withdraw" );
+	wallets_delete_option( "{$option_slug}-fees-withdraw-proportional" );
 	wallets_delete_option( "{$option_slug}-other-minconf" );
 
 	// remove qr code settings

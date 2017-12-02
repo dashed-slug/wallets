@@ -81,7 +81,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 				array( &$this, 'settings_checkbox_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-general",
-				array( 'label_for' => "{$this->option_slug}-general-enabled" )
+				array(
+					'label_for' => "{$this->option_slug}-general-enabled",
+					'description' => __( 'Check to enable this adapter.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -100,11 +103,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			add_settings_field(
 				"{$this->option_slug}-fees-move",
-				__( 'Transaction fee between users', 'wallets' ),
+				__( 'Fixed part of transaction fee between users', 'wallets' ),
 				array( &$this, 'settings_currency_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-fees",
-				array( 'label_for' => "{$this->option_slug}-fees-move" )
+				array(
+					'label_for' => "{$this->option_slug}-fees-move",
+					'description' => __( 'Senders of internal transfers will pay the fixed fee to this site per transaction.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -113,18 +119,56 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			);
 
 			add_settings_field(
+				"{$this->option_slug}-fees-move-proportional",
+				__( 'Proportional part of transaction fee between users', 'wallets' ),
+				array( &$this, 'settings_percent_cb'),
+				$this->menu_slug,
+				"{$this->option_slug}-fees",
+				array(
+					'label_for' => "{$this->option_slug}-fees-move-proportional",
+					'description' => __( 'Senders of internal transfers will pay transfer_amount * proportional_fee to this site.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-fees-move-proportional"
+			);
+
+			add_settings_field(
 				"{$this->option_slug}-fees-withdraw",
-				__( 'Withdrawal fee', 'wallets' ),
+				__( 'Fixed part of withdrawal fee', 'wallets' ),
 				array( &$this, 'settings_currency_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-fees",
-				array( 'label_for' => "{$this->option_slug}-fees-withdraw" )
+				array(
+					'label_for' => "{$this->option_slug}-fees-withdraw",
+					'description' => __( 'Users will pay this fixed fee to the site when performing withdrawals.', 'wallets' ),
+				)
 			);
 
 			register_setting(
 				$this->menu_slug,
 				"{$this->option_slug}-fees-withdraw"
 			);
+
+			add_settings_field(
+				"{$this->option_slug}-fees-withdraw-proportional",
+				__( 'Proportional part of withdrawal fee', 'wallets' ),
+				array( &$this, 'settings_percent_cb'),
+				$this->menu_slug,
+				"{$this->option_slug}-fees",
+				array(
+					'label_for' => "{$this->option_slug}-fees-withdraw-proportional",
+					'description' => __( 'Users will pay withdraw_amount * proportional_fee to the site when performing withdrawals.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-fees-withdraw-proportional"
+			);
+
 
 			// Other
 
@@ -141,7 +185,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 				array( &$this, 'settings_int8_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-other",
-				array( 'label_for' => "{$this->option_slug}-other-minconf" )
+				array(
+					'label_for' => "{$this->option_slug}-other-minconf",
+					'description' => __( 'Deposits will count towards user balances after this many blockchain confirmations.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -176,6 +223,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 					</li><li>
 						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' )?></strong> &mdash;
 						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' )?></p>
+						<p><?php echo __( 'Fees are calculated as: <i>total_fees = fixed_fees + amount * proportional_fees</i>.', 'wallets' ); ?></p>
 						<p class="card"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees set the appropriate settings in your wallet\'s .conf file.', 'wallets' ) ?>
 						<?php esc_html_e( 'Refer to the wallet documentation for details.', 'wallets' )?></p>
 					</li>
@@ -197,37 +245,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		public function settings_checkbox_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"checkbox\"";
 			checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' );
-			echo ' />';
+			echo ' /><p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_text_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"text\" value=\"";
 			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '"/>';
+			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_int8_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"256\" step=\"1\" value=\"";
 			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_int16_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"65535\" step=\"1\" value=\"";
 			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_currency_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" step=\"0.00000001\" value=\"";
 			echo esc_attr( sprintf( "%01.8f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
+		}
+
+		/** @internal */
+		public function settings_percent_cb( $arg ) {
+			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" max=\"0.5\" step=\"0.001\" value=\"";
+			echo esc_attr( sprintf( "%01.3f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_pw_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" value=\"";
 			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '"/>';
+			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/**
@@ -277,7 +337,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-enabled", filter_input( INPUT_POST, "{$this->option_slug}-general-enabled", FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move", filter_input( INPUT_POST, "{$this->option_slug}-fees-move", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-move-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-minconf", filter_input( INPUT_POST, "{$this->option_slug}-fees-minconf", FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', $this->menu_slug, network_admin_url( 'admin.php' ) ) );
@@ -432,7 +494,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		}
 
 		/**
-		 * Withdrawal fee.
+		 * Withdrawal fee fixed component.
 		 *
 		 * The amount that will be subtracted from a user's balance every time they do a withdrawal,
 		 * in adition to whatever amount is to be withdrawn.
@@ -441,10 +503,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * paid when performing a transaction is set in your wallet daemon.
 		 *
 		 * @api
-		 * @return number The fee removed from a user's balance when they do a withdrawal.
+		 * @return number The fixed part of the fee removed from a user's balance when they do a withdrawal.
 		 */
 		public function get_withdraw_fee() {
 			return floatval( $this->get_adapter_option( 'fees-withdraw' ) );
+		}
+
+		/**
+		 * Withdraw fee proportional component.
+		 *
+		 * The total fee will be calculated as:
+		 * amount * get_withdraw_fee_proportional() + get_withdraw_fee()
+		 *
+		 *  @api
+		 *  @return number The proportional part of the fee removed from a user's balance when they do a withdrawal.
+		 *
+		 */
+		public function get_withdraw_fee_proportional() {
+			return floatval( $this->get_adapter_option( 'fees-withdraw-proportional' ) );
 		}
 
 		/**
@@ -462,6 +538,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		public function get_move_fee() {
 			return floatval( $this->get_adapter_option( 'fees-move' ) );
 		}
+
+		/**
+		 * Move fee proportional component.
+		 *
+		 * The total fee will be calculated as:
+		 * amount * get_move_fee_proportional() + get_move_fee()
+		 *
+		 *  @api
+		 *  @return number The proportional part of the fee removed from a user's balance when they do a move.
+		 *
+		 */
+		public function get_move_fee_proportional() {
+			return floatval( $this->get_adapter_option( 'fees-move-proportional' ) );
+		}
+
 
 		/**
 		 * Total wallet balance.

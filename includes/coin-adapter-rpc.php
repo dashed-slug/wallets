@@ -109,7 +109,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				array( &$this, 'settings_text_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}_rpc",
-				array( 'label_for' => "{$this->option_slug}-rpc-ip" )
+				array(
+					'label_for' => "{$this->option_slug}-rpc-ip",
+					'description' => __( 'This is the IP of your WordPress installation. Set to 127.0.0.1 if you are running the daemon on the same machine as WordPress.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -123,7 +126,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				array( &$this, 'settings_int16_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}_rpc",
-				array( 'label_for' => "{$this->option_slug}-rpc-port" )
+				array(
+					'label_for' => "{$this->option_slug}-rpc-port",
+					'description' => __( 'This is the TCP port where the daemon listens for JSON-RPC connections. It should match the <code>rpcport</code> setting in your daemon.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -137,7 +143,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				array( &$this, 'settings_text_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}_rpc",
-				array( 'label_for' => "{$this->option_slug}-rpc-user" )
+				array(
+					'label_for' => "{$this->option_slug}-rpc-user",
+					'description' => __( 'This is the username part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcuser</code> setting in your daemon.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -151,7 +160,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				array( &$this, 'settings_pw_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}_rpc",
-				array( 'label_for' => "{$this->option_slug}-rpc-password" )
+				array(
+					'label_for' => "{$this->option_slug}-rpc-password",
+					'description' => __( 'This is the password part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcpassword</code> setting in your daemon.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -165,7 +177,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				array( &$this, 'settings_text_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}_rpc",
-				array( 'label_for' => "{$this->option_slug}-rpc-path" )
+				array(
+					'label_for' => "{$this->option_slug}-rpc-path",
+					'description' => __( 'This is the path location of the JSON-RPC API endpoint. Normally you will want to leave this empty.', 'wallets' ),
+				)
 			);
 
 			register_setting(

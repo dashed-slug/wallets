@@ -544,6 +544,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'retries' => 255
 							);
 
+							if ( isset( $tx->fee ) ) {
+								$new_tx_data['fee'] = $tx->fee;
+							}
+
 							$affected = $wpdb->insert(
 								Dashed_Slug_Wallets::$table_name_txs,
 								$new_tx_data,

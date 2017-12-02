@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.4.4'
+					'2.4.5'
 				);
 			}
 		}
@@ -355,7 +355,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-path', '' );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move-proportional', '0' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00005000' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw-proportional', '0' );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-other-minconf', '6' );
 
@@ -701,19 +703,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			try {
 
 				$balance = $this->get_balance( $symbol, null, $check_capabilities );
-				$fee = $adapter->get_withdraw_fee();
-				$amount_plus_fee = $amount + $fee;
+				$fee = $adapter->get_withdraw_fee() + $amount * $adapter->get_withdraw_fee_proportional();
 
 				if ( $amount < 0 ) {
 					throw new Exception( __( 'Cannot withdraw negative amount', 'wallets' ), self::ERR_DO_WITHDRAW );
 				}
-				if ( $balance < $amount_plus_fee ) {
+				if ( $balance < $amount ) {
 					$format = $adapter->get_sprintf();
 					throw new Exception(
 						sprintf(
-							__( 'Insufficient funds: %s + %s fees > %s', 'wallets' ),
+							__( 'Insufficient funds: %s > %s', 'wallets' ),
 								sprintf( $format, $amount),
-								sprintf( $format, $fee),
 								sprintf( $format, $balance ) ),
 							self::ERR_DO_WITHDRAW );
 				}
@@ -726,7 +726,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'account' => get_current_user_id(),
 					'address' => $address,
 					'symbol' => $symbol,
-					'amount' => -floatval( $amount_plus_fee ),
+					'amount' => -floatval( $amount ),
 					'fee' => $fee,
 					'created_time' => $time,
 					'updated_time' => $time,
@@ -818,19 +818,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			try {
 				$balance = $this->get_balance( $symbol );
-				$fee = $adapter->get_move_fee();
-				$amount_plus_fee = $amount + $fee;
+				$fee = $adapter->get_move_fee() + $amount * $adapter->get_move_fee_proportional();
 
 				if ( $amount < 0 ) {
 					throw new Exception( __( 'Cannot move negative amount', 'wallets' ), self::ERR_DO_MOVE );
 				}
-				if ( $balance < $amount_plus_fee ) {
+				if ( $balance < $amount ) {
 					$format = $adapter->get_sprintf();
 					throw new Exception(
 						sprintf(
-							__( 'Insufficient funds: %s + %s fees > %s', 'wallets' ),
+							__( 'Insufficient funds: %s > %s', 'wallets' ),
 							sprintf( $format, $amount ),
-							sprintf( $format, $fee ),
 							sprintf( $format, $balance ) ),
 						self::ERR_DO_WITHDRAW );
 				}
@@ -853,7 +851,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'other_account' => intval( $toaccount ),
 					'txid' => "$txid-send",
 					'symbol' => $symbol,
-					'amount' => -$amount_plus_fee,
+					'amount' => -$amount,
 					'fee' => $fee,
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,
@@ -871,7 +869,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'other_account' => $fromaccount,
 					'txid' => "$txid-receive",
 					'symbol' => $symbol,
-					'amount' => $amount,
+					'amount' => $amount - $fee,
 					'fee' => 0,
 					'created_time' => $current_time_gmt,
 					'updated_time' => $current_time_gmt,

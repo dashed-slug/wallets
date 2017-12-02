@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.4\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.4.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -70,23 +70,23 @@ msgstr ""
 #: src/includes/adapters-list.php:90 src/includes/adapters-list.php:124
 #: src/includes/admin-menu.php:51 src/includes/caps.php:95
 #: src/includes/caps.php:145 src/includes/coin-adapter-bitcoin.php:54
-#: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
-#: src/includes/coin-adapter.php:159 src/includes/coin-adapter.php:168
-#: src/includes/coin-adapter.php:188 src/includes/coin-adapter.php:241
+#: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:224
+#: src/includes/coin-adapter.php:206 src/includes/coin-adapter.php:215
+#: src/includes/coin-adapter.php:236 src/includes/coin-adapter.php:301
 #: src/includes/confirmations.php:297 src/includes/cron.php:279
 #: src/includes/email.php:505 src/includes/qrcode.php:65
-#: src/includes/transactions.php:82 src/includes/transactions.php:719
-#: src/includes/transactions.php:900 src/includes/transactions.php:921
-#: src/includes/transactions.php:942 src/includes/transactions.php:962
-#: src/includes/transactions.php:982
+#: src/includes/transactions.php:82 src/includes/transactions.php:723
+#: src/includes/transactions.php:904 src/includes/transactions.php:925
+#: src/includes/transactions.php:946 src/includes/transactions.php:966
+#: src/includes/transactions.php:986
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: src/includes/adapters-list.php:96 src/includes/caps.php:90
-#: src/includes/json-api.php:230 src/includes/json-api.php:258
-#: src/includes/transactions.php:725 src/includes/transactions.php:904
-#: src/includes/transactions.php:925 src/includes/transactions.php:946
-#: src/includes/transactions.php:966 src/includes/transactions.php:986
+#: src/includes/json-api.php:231 src/includes/json-api.php:259
+#: src/includes/transactions.php:729 src/includes/transactions.php:908
+#: src/includes/transactions.php:929 src/includes/transactions.php:950
+#: src/includes/transactions.php:970 src/includes/transactions.php:990
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -309,29 +309,35 @@ msgstr ""
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:57 src/includes/coin-adapter.php:171
+#: src/includes/coin-adapter-bitcoin.php:57 src/includes/coin-adapter.php:218
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:60 src/includes/coin-adapter.php:174
+#: src/includes/coin-adapter-bitcoin.php:60 src/includes/coin-adapter.php:221
 msgid "Transaction fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:175
+#: src/includes/coin-adapter-bitcoin.php:61 src/includes/coin-adapter.php:222
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:63 src/includes/coin-adapter.php:177
+#: src/includes/coin-adapter-bitcoin.php:63 src/includes/coin-adapter.php:224
 msgid "Withdrawal fees"
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:178
+#: src/includes/coin-adapter-bitcoin.php:64 src/includes/coin-adapter.php:225
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:65
+#: src/includes/coin-adapter-bitcoin.php:65 src/includes/coin-adapter.php:226
+msgid ""
+"Fees are calculated as: <i>total_fees = fixed_fees + amount * "
+"proportional_fees</i>."
+msgstr ""
+
+#: src/includes/coin-adapter-bitcoin.php:66
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -340,7 +346,7 @@ msgid ""
 "maxtxfee, etc."
 msgstr ""
 
-#: src/includes/coin-adapter-bitcoin.php:66
+#: src/includes/coin-adapter-bitcoin.php:67
 msgid "Refer to the documentation for details."
 msgstr ""
 
@@ -399,38 +405,68 @@ msgstr ""
 msgid "IP"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:122
+#: src/includes/coin-adapter-rpc.php:114
+msgid ""
+"This is the IP of your WordPress installation. Set to 127.0.0.1 if you are "
+"running the daemon on the same machine as WordPress."
+msgstr ""
+
+#: src/includes/coin-adapter-rpc.php:125
 msgid "Port"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:136
+#: src/includes/coin-adapter-rpc.php:131
+msgid ""
+"This is the TCP port where the daemon listens for JSON-RPC connections. It "
+"should match the <code>rpcport</code> setting in your daemon."
+msgstr ""
+
+#: src/includes/coin-adapter-rpc.php:142
 msgid "User"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:150
+#: src/includes/coin-adapter-rpc.php:148
+msgid ""
+"This is the username part of the credentials to connect to the JSON-RPC "
+"port. It should match the <code>rpcuser</code> setting in your daemon."
+msgstr ""
+
+#: src/includes/coin-adapter-rpc.php:159
 msgid "Password"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:164
+#: src/includes/coin-adapter-rpc.php:165
+msgid ""
+"This is the password part of the credentials to connect to the JSON-RPC "
+"port. It should match the <code>rpcpassword</code> setting in your daemon."
+msgstr ""
+
+#: src/includes/coin-adapter-rpc.php:176
 msgid "Path"
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:214
+#: src/includes/coin-adapter-rpc.php:182
+msgid ""
+"This is the path location of the JSON-RPC API endpoint. Normally you will "
+"want to leave this empty."
+msgstr ""
+
+#: src/includes/coin-adapter-rpc.php:229
 #, php-format
 msgid ""
 "The %1$s adapter needs to know the location and credentials to the RPC API "
 "of the %2$s daemon."
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:247 src/includes/coin-adapter-rpc.php:260
-#: src/includes/coin-adapter-rpc.php:279 src/includes/coin-adapter-rpc.php:304
-#: src/includes/coin-adapter-rpc.php:399 src/includes/coin-adapter-rpc.php:412
-#: src/includes/coin-adapter-rpc.php:429
+#: src/includes/coin-adapter-rpc.php:262 src/includes/coin-adapter-rpc.php:275
+#: src/includes/coin-adapter-rpc.php:294 src/includes/coin-adapter-rpc.php:319
+#: src/includes/coin-adapter-rpc.php:414 src/includes/coin-adapter-rpc.php:427
+#: src/includes/coin-adapter-rpc.php:444
 #, php-format
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: src/includes/coin-adapter-rpc.php:353
+#: src/includes/coin-adapter-rpc.php:368
 #, php-format
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
@@ -443,27 +479,67 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: src/includes/coin-adapter.php:96
+#: src/includes/coin-adapter.php:86
+msgid "Check to enable this adapter."
+msgstr ""
+
+#: src/includes/coin-adapter.php:99
 msgid "Adapter fees"
 msgstr ""
 
-#: src/includes/coin-adapter.php:103
-msgid "Transaction fee between users"
+#: src/includes/coin-adapter.php:106
+msgid "Fixed part of transaction fee between users"
 msgstr ""
 
-#: src/includes/coin-adapter.php:117
-msgid "Withdrawal fee"
+#: src/includes/coin-adapter.php:112
+msgid ""
+"Senders of internal transfers will pay the fixed fee to this site per "
+"transaction."
 msgstr ""
 
-#: src/includes/coin-adapter.php:133
-msgid "Other adapter settings"
+#: src/includes/coin-adapter.php:123
+msgid "Proportional part of transaction fee between users"
+msgstr ""
+
+#: src/includes/coin-adapter.php:129
+msgid ""
+"Senders of internal transfers will pay transfer_amount * proportional_fee to "
+"this site."
 msgstr ""
 
 #: src/includes/coin-adapter.php:140
+msgid "Fixed part of withdrawal fee"
+msgstr ""
+
+#: src/includes/coin-adapter.php:146
+msgid "Users will pay this fixed fee to the site when performing withdrawals."
+msgstr ""
+
+#: src/includes/coin-adapter.php:157
+msgid "Proportional part of withdrawal fee"
+msgstr ""
+
+#: src/includes/coin-adapter.php:163
+msgid ""
+"Users will pay withdraw_amount * proportional_fee to the site when "
+"performing withdrawals."
+msgstr ""
+
+#: src/includes/coin-adapter.php:177
+msgid "Other adapter settings"
+msgstr ""
+
+#: src/includes/coin-adapter.php:184
 msgid "Minumum confirmations"
 msgstr ""
 
-#: src/includes/coin-adapter.php:179
+#: src/includes/coin-adapter.php:190
+msgid ""
+"Deposits will count towards user balances after this many blockchain "
+"confirmations."
+msgstr ""
+
+#: src/includes/coin-adapter.php:227
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -471,16 +547,16 @@ msgid ""
 "network fees set the appropriate settings in your wallet's .conf file."
 msgstr ""
 
-#: src/includes/coin-adapter.php:180
+#: src/includes/coin-adapter.php:228
 msgid "Refer to the wallet documentation for details."
 msgstr ""
 
-#: src/includes/coin-adapter.php:245
+#: src/includes/coin-adapter.php:305
 #, php-format
 msgid "Coin adapter settings for %s"
 msgstr ""
 
-#: src/includes/coin-adapter.php:247
+#: src/includes/coin-adapter.php:307
 #, php-format
 msgid "These are the settings for this %s adapter"
 msgstr ""
@@ -915,11 +991,11 @@ msgid "Must be logged in"
 msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
-#: src/includes/json-api.php:197 src/includes/json-api.php:224
-#: src/includes/json-api.php:252 src/includes/transactions.php:683
-#: src/includes/wallets-core.php:415 src/includes/wallets-core.php:508
-#: src/includes/wallets-core.php:576 src/includes/wallets-core.php:647
-#: src/includes/wallets-core.php:791 src/includes/wallets-core.php:938
+#: src/includes/json-api.php:198 src/includes/json-api.php:225
+#: src/includes/json-api.php:253 src/includes/transactions.php:687
+#: src/includes/wallets-core.php:417 src/includes/wallets-core.php:510
+#: src/includes/wallets-core.php:578 src/includes/wallets-core.php:649
+#: src/includes/wallets-core.php:791 src/includes/wallets-core.php:936
 msgid "Not allowed"
 msgstr ""
 
@@ -927,22 +1003,22 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: src/includes/json-api.php:215
+#: src/includes/json-api.php:216
 #, php-format
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: src/includes/json-api.php:242
+#: src/includes/json-api.php:243
 #, php-format
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: src/includes/json-api.php:270
+#: src/includes/json-api.php:271
 #, php-format
 msgid "Could not move %s"
 msgstr ""
 
-#: src/includes/json-api.php:274
+#: src/includes/json-api.php:275
 #, php-format
 msgid "Unknown action %s specified"
 msgstr ""
@@ -1012,8 +1088,7 @@ msgstr ""
 msgid "Amount (+fee)"
 msgstr ""
 
-#: src/includes/transactions-list.php:36 src/includes/views/move.php:8
-#: src/includes/views/transactions.php:15 src/includes/views/withdraw.php:7
+#: src/includes/transactions-list.php:36 src/includes/views/transactions.php:15
 msgid "Fee"
 msgstr ""
 
@@ -1131,19 +1206,19 @@ msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this system."
 msgstr ""
 
-#: src/includes/transactions.php:708
+#: src/includes/transactions.php:712
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/transactions.php:745
+#: src/includes/transactions.php:749
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/transactions.php:753
+#: src/includes/transactions.php:757
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
@@ -1166,6 +1241,10 @@ msgstr ""
 
 #: src/includes/views/move.php:7
 msgid "Transfer comment"
+msgstr ""
+
+#: src/includes/views/move.php:8 src/includes/views/withdraw.php:7
+msgid "Fee (deducted from amount)"
 msgstr ""
 
 #: src/includes/views/move.php:12 src/includes/views/withdraw.php:11
@@ -1242,33 +1321,33 @@ msgid ""
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:422
+#: src/includes/wallets-core.php:424
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:426
+#: src/includes/wallets-core.php:428
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:683
+#: src/includes/wallets-core.php:685
 msgid ""
 "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: src/includes/wallets-core.php:708
+#: src/includes/wallets-core.php:709
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:714 src/includes/wallets-core.php:831
+#: src/includes/wallets-core.php:715 src/includes/wallets-core.php:830
 #, php-format
-msgid "Insufficient funds: %s + %s fees > %s"
+msgid "Insufficient funds: %s > %s"
 msgstr ""
 
 #: src/includes/wallets-core.php:795
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:825
+#: src/includes/wallets-core.php:824
 msgid "Cannot move negative amount"
 msgstr ""
