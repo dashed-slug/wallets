@@ -171,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.6.0',
+					'2.6.1',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.6.0',
+					'2.6.1',
 					true );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.6.0'
+					'2.6.1'
 				);
 			}
 		}
@@ -769,7 +769,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow,
-					array( '%d', '%s', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d', '%s' )
+					array( '%d', '%s', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -911,7 +911,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow1,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d', '%s' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -923,7 +923,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$txrow2,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s', '%s', '%d' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d' )
 				);
 
 				if ( false === $affected ) {
