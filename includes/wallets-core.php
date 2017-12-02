@@ -52,17 +52,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		private $_adapters = array();
 
 		/** @internal */
-		private static $table_name_txs = '';
+		public static $table_name_txs = '';
 
 		/** @internal */
-		private static $table_name_adds = '';
+		public static $table_name_adds = '';
 
 		/** @internal */
 		private function __construct() {
 
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 			register_deactivation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_deactivate' ) );
-
 
 			$this->_notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
@@ -75,6 +74,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
+			add_action( 'delete_blog', array( &$this, 'action_delete_blog' ), 10, 2 );
 			add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'action_plugin_action_links' ) );
 
 			// bind the built-in rpc coin adapter
@@ -84,10 +84,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
 			add_action( 'wallets_address',	array( &$this, 'action_wallets_address' ) );
 
-
 			global $wpdb;
-			self::$table_name_txs = "{$wpdb->prefix}wallets_txs";
-			self::$table_name_adds = "{$wpdb->prefix}wallets_adds";
+			if ( is_multisite() ) {
+				$prefix = $wpdb->base_prefix;
+			} else {
+				// maintain compatibility with table names for existing installs before multisite support
+				$prefix = $wpdb->prefix;
+			}
+
+			self::$table_name_txs = "{$prefix}wallets_txs";
+			self::$table_name_adds = "{$prefix}wallets_adds";
 		}
 
 		/**
@@ -122,45 +128,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_wp_enqueue_scripts() {
-			wp_enqueue_script(
-				'knockout',
-				'https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js',
-				array(),
-				'3.4.0',
-				true );
+			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-			wp_enqueue_script(
-				'momentjs',
-				plugins_url( 'moment.min.js', "wallets/assets/scripts/moment.min.js" ),
-				array(),
-				'2.17.1',
-				true );
+				wp_enqueue_script(
+					'knockout',
+					'https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js',
+					array(),
+					'3.4.0',
+					true );
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko.min.js' ) ) {
-				$ko_script = 'wallets-ko.min.js';
-			} else {
-				$ko_script = 'wallets-ko.js';
+				wp_enqueue_script(
+					'momentjs',
+					plugins_url( 'moment.min.js', "wallets/assets/scripts/moment.min.js" ),
+					array(),
+					'2.17.1',
+					true );
+
+
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko.min.js' ) ) {
+					$ko_script = 'wallets-ko.min.js';
+				} else {
+					$ko_script = 'wallets-ko.js';
+				}
+
+				wp_enqueue_script(
+					'wallets_ko',
+					plugins_url( $ko_script, "wallets/assets/scripts/$ko_script" ),
+					array( 'knockout', 'momentjs' ),
+					false,
+					true );
+
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
+					$front_styles = 'wallets.min.css';
+				} else {
+					$front_styles = 'wallets.css';
+				}
+
+				wp_enqueue_style(
+					'wallets_styles',
+					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
+					array(),
+					'2.2.3'
+				);
 			}
-
-			wp_enqueue_script(
-				'wallets_ko',
-				plugins_url( $ko_script, "wallets/assets/scripts/$ko_script" ),
-				array( 'knockout', 'momentjs' ),
-				false,
-				true );
-
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
-				$front_styles = 'wallets.min.css';
-			} else {
-				$front_styles = 'wallets.css';
-			}
-
-			wp_enqueue_style(
-				'wallets_styles',
-				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
-				array(),
-				'2.2.2'
-			);
 		}
 
 		/** @internal */
@@ -235,12 +245,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// create or update db tables
 			global $wpdb;
+
 			$charset_collate = $wpdb->get_charset_collate();
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( get_option( 'wallets_db_revision' ) );
-			$current_db_revision = 4;
+			$current_db_revision = 5;
 
 			if ( $installed_db_revision <= $current_db_revision ) {
 
@@ -248,6 +259,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				$sql = "CREATE TABLE {$table_name_txs} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
+				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
 				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
@@ -264,13 +276,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				PRIMARY KEY  (id),
 				INDEX account_idx (account),
 				INDEX txid_idx (txid),
-				UNIQUE KEY `uq_tx_idx` (`address`, `txid`)
+				UNIQUE KEY `uq_tx_idx` (`symbol`, `address`, `txid`)
 				) $charset_collate;";
 
 				dbDelta( $sql );
 
 				$sql = "CREATE TABLE {$table_name_adds} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
+				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -323,6 +336,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		public static function flush_rules() {
 			$is_apache = strpos( $_SERVER['SERVER_SOFTWARE'], 'pache' ) !== false;
 			flush_rewrite_rules( $is_apache );
+		}
+
+		/** @internal */
+		public function action_delete_blog( $blog_id, $drop ) {
+			if ( $drop ) {
+				global $wpdb;
+				$wpdb->delete(
+					self::$table_name_txs,
+					array( 'blog_id' => $blog_id ),
+					array( '%d')
+				);
+				$wpdb->delete(
+					self::$table_name_adds,
+					array( 'blog_id' => $blog_id ),
+					array( '%d')
+				);
+			}
 		}
 
 		/**
@@ -391,12 +421,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				FROM
 					$table_name_adds a
 				WHERE
+					blog_id = %d AND
 					symbol = %s AND
 					address = %s
 				ORDER BY
 					created_time DESC
 				LIMIT 1
 				",
+				get_current_blog_id(),
 				$symbol,
 				$address
 			) );
@@ -448,12 +480,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					FROM
 						$table_name_txs
 					WHERE
+						blog_id = %d AND
 						symbol = %s AND
 						account = %s AND (
 							confirmations >= %d OR
 							category != 'deposit'
 						)
 				",
+				get_current_blog_id(),
 				$adapter->get_symbol(),
 				self::get_current_account_id(),
 				intval( $minconf )
@@ -506,6 +540,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						{$wpdb->users} u
 					ON ( u.ID = txs.other_account )
 					WHERE
+						blog_id = %d AND
 						txs.account = %d AND
 						txs.symbol = %s AND
 						( txs.confirmations >= %d OR txs.category = 'move' )
@@ -514,6 +549,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					LIMIT
 						$from, $count
 				",
+				get_current_blog_id(),
 				self::get_current_account_id(),
 				$symbol,
 				intval( $minconf )
@@ -679,6 +715,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$tags = implode( ' ', $tags );
 
 				$row1 = array(
+					'blog_id' => get_current_blog_id(),
 					'category' => 'move',
 					'tags' => trim( "send $tags" ),
 					'account' => self::get_current_account_id(),
@@ -695,7 +732,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$affected = $wpdb->insert(
 					self::$table_name_txs,
 					$row1,
-					array( '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -703,6 +740,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				}
 
 				$row2 = array(
+					'blog_id' => get_current_blog_id(),
 					'category' => 'move',
 					'tags' => trim( "receive $tags" ),
 					'account' => intval( $toaccount ),
@@ -719,7 +757,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$wpdb->insert(
 					self::$table_name_txs,
 					$row2,
-					array( '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
+					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%s' )
 				);
 
 				if ( false === $affected ) {
@@ -766,25 +804,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					FROM
 						$table_name_adds a
 					WHERE
+						blog_id = %d AND
 						account = %d AND
 						symbol = %s
 					ORDER BY
 						created_time DESC
 					LIMIT 1
 				",
+				get_current_blog_id(),
 				self::get_current_account_id(),
 				$symbol
 			) );
 
 			if ( ! is_string( $address ) ) {
 				$address = $adapter->get_new_address();
-				$current_time_gmt = current_time( 'mysql', true );
 
 				$address_row = new stdClass();
 				$address_row->account = self::get_current_account_id();
 				$address_row->symbol = $symbol;
 				$address_row->address = $address;
-				$address_row->created_time = $current_time_gmt;
 
 				// trigger action that inserts user-address mapping to db
 				do_action( 'wallets_address', $address_row );
@@ -811,7 +849,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$adapter = $this->get_coin_adapters( $tx->symbol );
 
 			if ( $adapter ) {
-				$created_time = isset( $tx->created_time ) ? date( DATE_ISO8601, $tx->created_time ) : current_time( 'mysql', true );
+
+				if ( ! isset( $tx->created_time ) ) {
+					$tx->created_time = time();
+				}
+
+				if ( is_numeric( $tx->created_time ) ) {
+					$tx->created_time = date( DATE_ISO8601, $tx->created_time );
+				}
+
 				$current_time_gmt = current_time( 'mysql', true );
 				$table_name_txs = self::$table_name_txs;
 
@@ -830,6 +876,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						$affected = $wpdb->query( $wpdb->prepare(
 							"
 								INSERT INTO $table_name_txs(
+									blog_id,
 									category,
 									account,
 									address,
@@ -839,16 +886,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 									created_time,
 									updated_time,
 									confirmations)
-								VALUES(%s,%d,%s,%s,%s,%20.10f,%s,%s,%d)
+								VALUES(%d,%s,%d,%s,%s,%s,%20.10f,%s,%s,%d)
 								ON DUPLICATE KEY UPDATE updated_time = %s , confirmations = %d
 							",
+							get_current_blog_id(),
 							$tx->category,
 							$account_id,
 							$tx->address,
 							$tx->txid,
 							$tx->symbol,
 							$tx->amount,
-							$created_time,
+							$tx->created_time,
 							$current_time_gmt,
 							$tx->confirmations,
 
@@ -857,13 +905,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						) );
 
 						$row = array(
-							'account'		=>	$account_id,
-							'address'		=>	$tx->address,
-							'txid'			=>	$tx->txid,
-							'symbol'		=>	$tx->symbol,
-							'amount'		=>	$tx->amount,
-							'created_time'	=>	$created_time,
-							'confirmations'	=>	$tx->confirmations
+							'account' => $account_id,
+							'address' => $tx->address,
+							'txid' => $tx->txid,
+							'symbol' => $tx->symbol,
+							'amount' => $tx->amount,
+							'created_time' => $tx->created_time,
+							'confirmations' => $tx->confirmations
 						);
 
 						if ( false === $affected ) {
@@ -887,6 +935,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 							$affected = $wpdb->insert(
 								self::$table_name_txs,
 								array(
+									'blog_id' => get_current_blog_id(),
 									'category' => 'withdraw',
 									'account' => $tx->account,
 									'address' => $tx->address,
@@ -895,10 +944,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 									'amount' => $tx->amount,
 									'fee' => $tx->fee,
 									'comment' => $tx->comment,
-									'created_time' =>	$created_time,
+									'created_time' => $tx->created_time,
 									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0
 								),
-								array( '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%d' )
+								array( '%d', '%s', '%d', '%s', '%s', '%s', '%20.10f', '%20.10f', '%s', '%s', '%d' )
 							);
 						}
 
@@ -913,11 +962,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 									'confirmations'	=> $tx->confirmations,
 								),
 								array(
-									'address'		=> $tx->address,
-									'txid'			=> $tx->txid,
+									'address' => $tx->address,
+									'txid' => $tx->txid,
+									'blog_id' => get_current_blog_id()
 								),
 								array( '%s', '%d' ),
-								array( '%s', '%s' )
+								array( '%s', '%s', '%d' )
 							);
 
 							if ( false === $affected ) {
@@ -947,15 +997,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 			$table_name_adds = self::$table_name_adds;
 
+			if ( ! isset( $address->created_time ) ) {
+				$address->created_time = time();
+			}
+
+			if ( is_numeric( $address->created_time ) ) {
+				$address->created_time = date( DATE_ISO8601, $address->created_time );
+			}
+
 			$wpdb->insert(
 				$table_name_adds,
 				array(
+					'blog_id' => get_current_blog_id(),
 					'account' => $address->account,
 					'symbol' => $address->symbol,
 					'address' => $address->address,
 					'created_time' => $address->created_time
 				),
-				array( '%d', '%s', '%s', '%s' )
+				array( '%d', '%d', '%s', '%s', '%s' )
 			);
 		}
 	}

@@ -284,7 +284,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				}
 
 				// send response
-				if ( Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ) {
+				if ( isset( $response['code'] ) && Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ) {
 					wp_send_json( $response, 403 );
 
 				} else {

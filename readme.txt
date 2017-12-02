@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 3.8
 Tested up to: 4.7.4
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -258,6 +258,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.2.3 =
+- Add: Multisite (aka network) installs now supported
+- Improve: If user does not have wallets capability the frontend is not burdened with wallets scripts or styles
+- Fix: Transactions table has horizontal scrolls (especially useful in the transactions widget)
+- Fix: Added empty `index.php` files in all directories for added security.
+
 = 2.2.2 =
 - Fix: Do not popup error to users who are not logged in
 
@@ -362,8 +368,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-2.2.2 is a patch release. Users who are not logged in will not be nagged with an error.
-This issue was squashed in 1.1.0 and reintroduced in 2.1.2 due to other changes. Please upgrade.
+Version 2.2.3 introduces compatibility with multisite (aka network installs).
 
 == Donating ==
 

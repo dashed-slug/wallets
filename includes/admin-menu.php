@@ -12,11 +12,18 @@ defined( 'ABSPATH' ) || die( '-1' );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 	class Dashed_Slug_Wallets_Admin_Menu {
 
-		private static $tx_columns = 'category,account,other_account,address,txid,symbol,amount,fee,comment,created_time,updated_time,confirmations,tags';
+		private static $tx_columns = 'category,account,other_account,address,txid,symbol,amount,fee,comment,created_time,updated_time,confirmations,tags,blog_id';
 
 		public function __construct() {
 			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'admin_init' ) );
+
+			add_filter( 'upload_mimes', array( &$this, 'custom_upload_mimes' ) );
+		}
+
+		function custom_upload_mimes( $existing_mimes=array() ) {
+			$existing_mimes['csv'] = 'text/csv';
+			return $existing_mimes;
 		}
 
 		public function admin_init() {
@@ -184,7 +191,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			header( "Content-Disposition: attachment; filename=\"$filename\";" );
 
 			global $wpdb;
-			$table_name_txs = "{$wpdb->prefix}wallets_txs";
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 			$fh = fopen('php://output', 'w');
 
 			$symbols_set = array();
@@ -192,6 +199,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				$symbols_set[] = "'$symbol'";
 			}
 			$symbols_set = implode(',', $symbols_set );
+			$blog_id = get_current_blog_id();
 
 			$tx_columns = self::$tx_columns;
 
@@ -202,7 +210,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 					FROM
 						$table_name_txs
 					WHERE
-						symbol IN ( $symbols_set )
+						symbol IN ( $symbols_set ) AND
+						blog_id = $blog_id
 				", ARRAY_N
 			);
 
@@ -227,7 +236,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				// read file
 				if ( ( $fh = fopen( $filename, 'r' ) ) !== false ) {
 					global $wpdb;
-					$table_name_txs = "{$wpdb->prefix}wallets_txs";
+					$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 					$headers = fgetcsv( $fh, $len );
 
 					while (( $data = fgetcsv( $fh, $len )) !== false ) {
@@ -238,7 +247,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 								INSERT INTO
 									$table_name_txs(" . self::$tx_columns . ")
 								VALUES
-									( %s, %d, NULLIF(%d, ''), %s, %s, %s, %20.10f, %20.10f, NULLIF(%s, ''), %s, %s, %d, %s )
+									( %s, %d, NULLIF(%d, ''), %s, %s, %s, %20.10f, %20.10f, NULLIF(%s, ''), %s, %s, %d, %s, %d )
 							",
 							$data[0],
 							$data[1],
@@ -252,7 +261,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 							$data[9],
 							$data[10],
 							$data[11],
-							$data[12]
+							$data[12],
+							$data[13]
 						) );
 
 						if ( false !== $rows_affected ) {

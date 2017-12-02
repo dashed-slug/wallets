@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.2\n"
+"Project-Id-Version: Bitcoin_and_Altcoin_Wallets 2.2.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-02 19:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -60,7 +60,7 @@ msgid "Settings specific to this adapter"
 msgstr ""
 
 #: src/includes/admin-menu-adapter-list.php:118
-#: src/includes/wallets-core.php:174
+#: src/includes/wallets-core.php:184
 msgid "Settings"
 msgstr ""
 
@@ -72,8 +72,8 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: src/includes/admin-menu.php:33 src/includes/admin-menu.php:53
-#: src/includes/admin-menu.php:123 src/includes/caps.php:95
+#: src/includes/admin-menu.php:40 src/includes/admin-menu.php:60
+#: src/includes/admin-menu.php:130 src/includes/caps.php:95
 #: src/includes/caps.php:143 src/includes/coin-adapter-bitcoin.php:54
 #: src/includes/coin-adapter-json.php:69 src/includes/coin-adapter-rpc.php:209
 #: src/includes/coin-adapter.php:156 src/includes/coin-adapter.php:165
@@ -83,33 +83,33 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/includes/admin-menu.php:39 src/includes/admin-menu.php:59
+#: src/includes/admin-menu.php:46 src/includes/admin-menu.php:66
 #: src/includes/caps.php:90 src/includes/json-api.php:230
 #: src/includes/json-api.php:258
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: src/includes/admin-menu.php:79
+#: src/includes/admin-menu.php:86
 #, php-format
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</"
 "code> were imported successfully."
 msgstr ""
 
-#: src/includes/admin-menu.php:87
+#: src/includes/admin-menu.php:94
 #, php-format
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: src/includes/admin-menu.php:101 src/includes/admin-menu.php:111
+#: src/includes/admin-menu.php:108 src/includes/admin-menu.php:118
 msgid "Wallets"
 msgstr ""
 
-#: src/includes/admin-menu.php:131
+#: src/includes/admin-menu.php:138
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: src/includes/admin-menu.php:133
+#: src/includes/admin-menu.php:140
 msgid ""
 "By using this free plugin you accept all responsibility for handling the "
 "account balances for all your users. Under no circumstances is dashed-slug."
@@ -122,73 +122,73 @@ msgid ""
 "a minimum):"
 msgstr ""
 
-#: src/includes/admin-menu.php:142
+#: src/includes/admin-menu.php:149
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: src/includes/admin-menu.php:144
+#: src/includes/admin-menu.php:151
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
 msgstr ""
 
-#: src/includes/admin-menu.php:145
+#: src/includes/admin-menu.php:152
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: src/includes/admin-menu.php:146
+#: src/includes/admin-menu.php:153
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: src/includes/admin-menu.php:148
+#: src/includes/admin-menu.php:155
 msgid ""
 "By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate "
 "that you have understood and agreed to this disclaimer."
 msgstr ""
 
-#: src/includes/admin-menu.php:152
+#: src/includes/admin-menu.php:159
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: src/includes/admin-menu.php:158
+#: src/includes/admin-menu.php:165
 msgid "Import transactions from csv"
 msgstr ""
 
-#: src/includes/admin-menu.php:160
+#: src/includes/admin-menu.php:167
 msgid ""
 "You can use this form to upload transactions that you have exported "
 "previously. Existing transactions will be skipped."
 msgstr ""
 
-#: src/includes/admin-menu.php:163
+#: src/includes/admin-menu.php:170
 msgid "Import"
 msgstr ""
 
-#: src/includes/admin-menu.php:168
+#: src/includes/admin-menu.php:175
 msgid "Wallet plugin extensions"
 msgstr ""
 
-#: src/includes/admin-menu.php:169
+#: src/includes/admin-menu.php:176
 msgid ""
 "/* @echo name */ is a plugin that offers basic deposit-transfer-withdraw "
 "functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:170
+#: src/includes/admin-menu.php:177
 msgid "You can install"
 msgstr ""
 
-#: src/includes/admin-menu.php:171
+#: src/includes/admin-menu.php:178
 msgid "\"coin adapters\" to make the plugin talk with other cryptocurrencies. "
 msgstr ""
 
-#: src/includes/admin-menu.php:172
+#: src/includes/admin-menu.php:179
 msgid ""
 "\"app extensions\". App extensions are plugins that utilize the core API to "
 "supply some user functionality. "
 msgstr ""
 
-#: src/includes/admin-menu.php:175
+#: src/includes/admin-menu.php:182
 msgid "Visit the dashed-slug to see what's available"
 msgstr ""
 
@@ -613,10 +613,10 @@ msgstr ""
 
 #: src/includes/json-api.php:125 src/includes/json-api.php:148
 #: src/includes/json-api.php:197 src/includes/json-api.php:224
-#: src/includes/json-api.php:252 src/includes/wallets-core.php:346
-#: src/includes/wallets-core.php:383 src/includes/wallets-core.php:433
-#: src/includes/wallets-core.php:487 src/includes/wallets-core.php:551
-#: src/includes/wallets-core.php:635 src/includes/wallets-core.php:755
+#: src/includes/json-api.php:252 src/includes/wallets-core.php:376
+#: src/includes/wallets-core.php:413 src/includes/wallets-core.php:465
+#: src/includes/wallets-core.php:521 src/includes/wallets-core.php:587
+#: src/includes/wallets-core.php:671 src/includes/wallets-core.php:793
 msgid "Not allowed"
 msgstr ""
 
@@ -794,7 +794,7 @@ msgstr ""
 msgid "Address label"
 msgstr ""
 
-#: src/includes/wallets-core.php:198
+#: src/includes/wallets-core.php:208
 #, php-format
 msgid ""
 "The \"%1$s\" coin adapter can conflict with another adapter \"%2$s\" that is "
@@ -802,44 +802,44 @@ msgid ""
 "one adapter is enabled at any time."
 msgstr ""
 
-#: src/includes/wallets-core.php:221
+#: src/includes/wallets-core.php:231
 #, php-format
 msgid ""
 "/* @echo name */ could NOT create a transactions table \"%s\" in the "
 "database. The plugin may not function properly."
 msgstr ""
 
-#: src/includes/wallets-core.php:353
+#: src/includes/wallets-core.php:383
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: src/includes/wallets-core.php:357
+#: src/includes/wallets-core.php:387
 #, php-format
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: src/includes/wallets-core.php:405
+#: src/includes/wallets-core.php:437
 #, php-format
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:570
+#: src/includes/wallets-core.php:606
 msgid "Cannot withdraw negative amount"
 msgstr ""
 
-#: src/includes/wallets-core.php:576 src/includes/wallets-core.php:664
+#: src/includes/wallets-core.php:612 src/includes/wallets-core.php:700
 #, php-format
 msgid "Insufficient funds: %s + %s fees > %s"
 msgstr ""
 
-#: src/includes/wallets-core.php:586
+#: src/includes/wallets-core.php:622
 msgid "Adapter did not return TXID for withdrawal"
 msgstr ""
 
-#: src/includes/wallets-core.php:639
+#: src/includes/wallets-core.php:675
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: src/includes/wallets-core.php:658
+#: src/includes/wallets-core.php:694
 msgid "Cannot move negative amount"
 msgstr ""
