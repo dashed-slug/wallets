@@ -574,14 +574,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$where['blog_id'] = get_current_blog_id();
 						}
 
+						$new_tx_data = array(
+							'updated_time'	=> $current_time_gmt,
+							'confirmations'	=> $tx->confirmations,
+						);
+
+						if ( isset( $tx->status ) ) {
+							$new_tx_data['status'] = $tx->status;
+						}
+
 						$affected = $wpdb->update(
 							Dashed_Slug_Wallets::$table_name_txs,
-							array(
-								'updated_time'	=> $current_time_gmt,
-								'confirmations'	=> $tx->confirmations,
-							),
+							$new_tx_data,
 							$where,
-							array( '%s', '%d' ),
+							array( '%s', '%d', '%s' ),
 							array( '%s', '%s', '%d' )
 						);
 

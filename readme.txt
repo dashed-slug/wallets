@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 2.6.2
+Stable tag: 2.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -329,6 +329,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.6.3 =
+- Add: When coin adapters report a new status for an existing transaction, the plugin can now update the status of the transaction.
+
 = 2.6.2 =
 - Fix: SQL formatting issue.
 - Add: Text descriptions for adapter HTTP settings.
@@ -570,7 +573,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.6.2 is a bugfix release. Please upgrade.
+Version 2.6.3 is a bugfix release. Please upgrade.
 
 == Donating ==
 
