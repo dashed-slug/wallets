@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 2.10.4
+Stable tag: 2.10.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,6 +95,7 @@ The dashed-slug is a social slug:
 - RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
 - SteemIt: [https://steemit.com/@dashed-slug.net](https://steemit.com/@dashed-slug.net)
 - Youtube channel: [https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA](https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA)
+- GitHub: [https://github.com/dashed-slug](https://github.com/dashed-slug)
 
 == Installation ==
 
@@ -346,6 +347,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.10.5 =
+- Fix: Plugin now works even if theme causes the frontend `wp` JavaScript object to not exist.
+- Fix: String localization is now working.
+- Add: String localization now split into frontend and backend. See documentation for details.
+- Add: Greek language translations for frontend.
 
 = 2.10.4 =
 - Fix: Setting capabilities in network-activated multisite installs now modifies capabilities accross the network.
@@ -673,7 +680,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.10.4 introduces an important bugfix for network-activated multisite.
+Version 2.10.5 introduces localization.
 
 == Donating ==
 

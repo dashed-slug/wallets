@@ -71,6 +71,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// wp actions
 			add_action( 'plugins_loaded', array( &$this, 'action_plugins_loaded' ) );
+			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
@@ -110,6 +111,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				self::$_instance = new self();
 			};
 			return self::$_instance;
+		}
+
+		public function load_textdomain() {
+			$loaded = load_plugin_textdomain( 'wallets', false, '/wallets/languages' );
+			$loaded = load_plugin_textdomain( 'wallets-front', false, '/wallets/languages' );
 		}
 
 		/**
@@ -171,13 +177,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					$script = 'wallets-ko.js';
 				}
 
-				wp_enqueue_script(
+				wp_register_script(
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.10.4',
+					'2.10.5',
 					true
 				);
+
+				include __DIR__ . '/wallets-ko-i18n.php';
+
+				wp_enqueue_script( 'wallets_ko' );
 
 				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
 					$script = 'wallets-bitcoin-validator.min.js';
@@ -189,7 +199,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.10.4',
+					'2.10.5',
 					true
 				);
 
@@ -203,7 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.10.4'
+					'2.10.5'
 				);
 			}
 		}
@@ -579,8 +589,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.4';
-			$data[ __( 'Git SHA', 'wallets' ) ] = 'cb71588';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.5';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '4e80692';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );

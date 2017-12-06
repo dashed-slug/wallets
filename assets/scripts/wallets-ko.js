@@ -14,16 +14,16 @@
 			} else if ( 401 == jqXHR.status ) {
 				$( '.dashed-slug-wallets' ).replaceWith( '<div class="dashed-slug-wallets">' + jqXHR.responseJSON.message + '</div>' );
 			} else {
-				alert( "Could not contact server.\nStatus: " + textStatus + "\nError: " + errorThrown );
+				alert( sprintf( wallets_ko_i18n.contact_fail, textStatus, errorThrown ) );
 			}
 		};
 
 		var serverErrorHandler = function( response ) {
 			if ( typeof(response.result) == 'string') {
 				if ( response.result == 'error' ) {
-					alert( "Wallet operation failed: \n" + response.message );
+					alert( sprintf( wallets_ko_i18n.op_failed_msg, response.message ) );
 				} else {
-					alert( "Wallet operation failed due to unexpected error." );
+					alert( wallets_ko_i18n.op_failed );
 				}
 			}
 		};
@@ -247,7 +247,7 @@
 							}
 							return true;
 						},
-						message: 'Check to see if you have typed the address correctly!'
+						message: wallets_ko_i18n.invalid_add
 				}]
 			});
 
@@ -360,8 +360,10 @@
 
 		// init the viewmodel
 		var walletsViewModel = new WalletsViewModel();
-
 		// let's pollute the global wp object a bit!!1
+		if ( 'undefined' == typeof wp ) {
+			window.wp = {};
+		}
 		wp.wallets = {
 			viewModels: {
 				wallets: walletsViewModel
@@ -395,14 +397,14 @@
 		$('html').on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
 			if ( response.result == 'success' ) {
 				walletsViewModel.resetMove();
-				alert( 'Successfully submitted a transaction request of ' + amount + ' ' + symbol );
+				alert( sprintf( wallets_ko_i18n.submit_tx, amount, symbol ) );
 			}
 		});
 
 		$('html').on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
 			if ( response.result == 'success' ) {
 				walletsViewModel.resetWithdraw();
-				alert( 'Successfully submitted a withdrawal request of ' + amount + ' ' + symbol + ' to ' + address );
+				alert( sprintf( wallets_ko_i18n.submit_wd, amount, symbol, address ) );
 			}
 		});
 

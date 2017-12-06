@@ -1,0 +1,180 @@
+# Copyright (C) 2017 dashed-slug <info@dashed-slug.net>
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.10.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
+"POT-Creation-Date: 2017-12-06 13:48+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-12-06 13:54+0200\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.9\n"
+"Last-Translator: Alexandros Georgiou <alex.georgiou@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: el\n"
+
+#: includes/views/balance.php:4 includes/views/deposit.php:4
+#: includes/views/move.php:4 includes/views/transactions.php:4
+#: includes/views/withdraw.php:4
+msgid "Coin"
+msgstr "Νόμισμα"
+
+#: includes/views/balance.php:5
+msgid "Balance"
+msgstr "Υπόλοιπο"
+
+#: includes/views/deposit.php:6
+msgid "Deposit address"
+msgstr "Διεύθυνση κατάθεσης"
+
+#: includes/views/move.php:5
+msgid "Recipient user"
+msgstr "Αποδέκτης"
+
+#: includes/views/move.php:6 includes/views/withdraw.php:6
+msgid "Amount"
+msgstr "Ποσό"
+
+#: includes/views/move.php:7
+msgid "Transfer comment"
+msgstr "Σχόλιο μεταβίβασης"
+
+#: includes/views/move.php:8 includes/views/withdraw.php:7
+msgid "Fee (deducted from amount)"
+msgstr "Τέλη (αφαιρούνται από το ποσό)"
+
+#: includes/views/move.php:12 includes/views/withdraw.php:11
+msgid "Send"
+msgstr "Αποστολή"
+
+#: includes/views/move.php:13 includes/views/withdraw.php:12
+msgid "Reset form"
+msgstr "Επαναφορά φόρμας"
+
+#: includes/views/transactions.php:5
+msgid "Rows per page"
+msgstr "Σειρές ανά σελίδα"
+
+#: includes/views/transactions.php:6
+msgid "Page"
+msgstr "Σελίδα"
+
+#: includes/views/transactions.php:10
+msgid "Type"
+msgstr "Τύπος"
+
+#: includes/views/transactions.php:11
+msgid "Tags"
+msgstr "Ετικέτες"
+
+#: includes/views/transactions.php:12
+msgid "Time"
+msgstr "Ώρα"
+
+#: includes/views/transactions.php:13
+msgid "Amount (+fee)"
+msgstr "Ποσό (+τέλη)"
+
+#: includes/views/transactions.php:14
+msgid "Fee"
+msgstr "Τέλος"
+
+#: includes/views/transactions.php:15
+msgid "From"
+msgstr "Από"
+
+#: includes/views/transactions.php:16
+msgid "To"
+msgstr "Προς"
+
+#: includes/views/transactions.php:17
+msgid "Tx ID"
+msgstr "Κωδικός συναλλαγής"
+
+#: includes/views/transactions.php:18
+msgid "Comment"
+msgstr "Σχόλιο"
+
+#: includes/views/transactions.php:19
+msgid "Confirmations"
+msgstr "Επιβεβαιώσεις"
+
+#: includes/views/transactions.php:20
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: includes/views/transactions.php:21
+msgid "Retries&nbsp;left"
+msgstr "Υπολειπόμενες&nbsp;προσπάθειες"
+
+#: includes/views/transactions.php:24
+msgid "Admin&nbsp;confirm"
+msgstr "Επιβεβαίωση&nbsp;Διαχεριριστή"
+
+#: includes/views/transactions.php:27
+msgid "User&nbsp;confirm"
+msgstr "Επιβεβαίωση&nbsp;χρήστη"
+
+#: includes/views/transactions.php:38 includes/views/transactions.php:61
+#: includes/views/transactions.php:82 includes/views/transactions.php:83
+msgid "me"
+msgstr "εγώ"
+
+#: includes/views/withdraw.php:5
+msgid "Withdraw to address"
+msgstr "Ανάληψη προς διεύθυνση"
+
+#: includes/views/withdraw.php:8
+msgid "Transaction comment"
+msgstr "Σχόλιο συναλλαγής"
+
+#: includes/wallets-ko-i18n.php:5
+msgid "Successfully submitted a transaction request of %s %s"
+msgstr "Επιτυχής καταχώρηση αιτήματος μεταβίβασης για %s %s"
+
+#: includes/wallets-ko-i18n.php:6
+msgid "Successfully submitted a withdrawal request of %s %s to %s"
+msgstr "Επιτυχής καταχώρηση αιτήματος ανάληψης για %s %s προς %s"
+
+#: includes/wallets-ko-i18n.php:7
+msgid "Wallet operation failed due to an unexpected error"
+msgstr "Απρόσμενο σφάλμα λειτουργίας πορτοφολιού"
+
+#: includes/wallets-ko-i18n.php:8
+msgid "Wallet operation failed: %s"
+msgstr "Σφάλμα λειτουργίας πορτοφολιού: %s"
+
+#: includes/wallets-ko-i18n.php:9
+msgid "Could not contact server. Status: %s Error: %s"
+msgstr "Αποτυχία επικοινωνίας με το διακομιστή. Κατάσταση: %s Σφάλμα: %s"
+
+#: includes/wallets-ko-i18n.php:10
+msgid "Check to see if you have typed the address correctly!"
+msgstr "Ελέγξτε εάν έχετε πληκτρολογήσει σωστά τη διεύθυνση!"
+
+#. Plugin Name of the plugin/theme
+msgid "Bitcoin and Altcoin Wallets"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Turn your blog into a bank: Let your users deposit, withdraw, and transfer "
+"bitcoins and altcoins on your site."
+msgstr ""
+"Κάντε το ιστολόγιό σας τράπεζα: Επιτρέψτε στους χρήστες σας να καταθέσουν, "
+"αναλήψουν, και να μεταφέρουν bitcoins και άλλα κρυπτονομίσματα στη σελίδα "
+"σας."
+
+#. Author of the plugin/theme
+msgid "dashed-slug <info@dashed-slug.net>"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://dashed-slug.net"
+msgstr ""

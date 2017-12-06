@@ -504,7 +504,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * (`comment_to` field in Bitcoin.)
 		 */
 		public function get_extra_field_description() {
-			return __( 'Destination address label (optional)', 'wallets' );
+			return __( 'Destination address label (optional)', 'wallets-front' );
 		}
 
 		/**

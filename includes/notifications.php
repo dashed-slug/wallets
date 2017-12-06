@@ -88,7 +88,7 @@ NOTIFICATION
 				, 'wallets' ) );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_subject', __( 'You request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_subject', __( 'Your request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
