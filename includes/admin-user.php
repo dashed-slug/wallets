@@ -23,39 +23,43 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 			<table class="form-table">
 				<tbody><?php
 					foreach ( $dsw->get_coin_adapters() as $adapter ):
-						$symbol = $adapter->get_symbol();
-						$balance = $dsw->get_balance( $symbol, null, false, $profileuser->ID );
-						$balance_str = sprintf( $adapter->get_sprintf(), $balance );
-						$deposit_address = $dsw->get_deposit_address( $symbol, $profileuser->ID ); ?>
-					<tr>
-						<th>
-							<label
-								for="wallets_<?php echo esc_attr( $symbol ); ?>"><?php echo esc_html( $adapter->get_name() ); ?></label>
-						</th>
-						<td>
-							<div
-								id="wallets_<?php echo esc_attr( $symbol ); ?>">
+						try {
+							$symbol = $adapter->get_symbol();
+							$balance = $dsw->get_balance( $symbol, null, false, $profileuser->ID );
+							$balance_str = sprintf( $adapter->get_sprintf(), $balance );
+							$deposit_address = $dsw->get_deposit_address( $symbol, $profileuser->ID ); ?>
+						<tr>
+							<th>
+								<label
+									for="wallets_<?php echo esc_attr( $symbol ); ?>"><?php echo esc_html( $adapter->get_name() ); ?></label>
+							</th>
+							<td>
+								<div
+									id="wallets_<?php echo esc_attr( $symbol ); ?>">
 
-								<?php echo esc_html( 'Balance:', 'wallets' ); ?>
+									<?php echo esc_html( 'Balance:', 'wallets' ); ?>
 
-								<input
-									type="text"
-									disabled="disabled"
-									value="<?php echo esc_attr( $balance_str ); ?>" />
+									<input
+										type="text"
+										disabled="disabled"
+										value="<?php echo esc_attr( $balance_str ); ?>" />
 
-								<?php echo esc_html( 'Deposit address:', 'wallets' ); ?>
+									<?php echo esc_html( 'Deposit address:', 'wallets' ); ?>
 
-								<input
-									type="text"
-									disabled="disabled"
-									value="<?php echo esc_attr( $deposit_address ); ?>" />
+									<input
+										type="text"
+										disabled="disabled"
+										value="<?php echo esc_attr( $deposit_address ); ?>" />
 
-							</div>
-						</td>
-						<td>
-						</td>
-					</tr>
-					<?php endforeach; ?>
+								</div>
+							</td>
+							<td>
+							</td>
+						</tr><?php
+					} catch ( Exception $e ) {
+						// Coin might have been taken offline. Continue silently to the next one.
+					}
+					endforeach; ?>
 				</tbody>
 			</table>
 		<?php

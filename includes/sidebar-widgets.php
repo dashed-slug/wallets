@@ -28,11 +28,35 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 				'description' => $desc,
 			);
 
+			$verb = preg_replace( '/.*_(\w+)$/', '${1}', $classname );
+
+			switch ( $verb ) {
+				case 'Deposit':
+					$title = __( 'Deposit to wallet', 'wallets-front' );
+					break;
+
+				case 'Withdraw':
+					$title = __( 'Withdraw from wallet', 'wallets-front' );
+					break;
+
+				case 'Move':
+					$title = __( 'Transfer to user wallet', 'wallets-front' );
+					break;
+
+				case 'Balance':
+					$title = __( 'Wallet balance', 'wallets-front' );
+					break;
+
+				case 'Transactions':
+					$title = __( 'Wallet transactions', 'wallets-front' );
+					break;
+			}
+
 			parent::__construct(
 				strtolower( $classname ),
-				__( 'Wallets ' . preg_replace( '/.*_(\w+)$/', '${1}', $classname ), 'wallets'),
-				$widget_ops );
-
+				$title,
+				$widget_ops
+			);
 		}
 
 		/**
@@ -81,7 +105,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		public function __construct( ) {
 			parent::__construct(
 				'wallets_deposit',
-				__( 'A form that will let the user know which address they can send coins to if they wish to make a deposit.'),
+				__( 'A form that will let the user know which address they can send coins to if they wish to make a deposit.', 'wallets' ),
 				array( 'has_wallets' ),
 				__CLASS__
 			);

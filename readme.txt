@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 2.10.5
+Tested up to: 4.9.1
+Stable tag: 2.10.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -348,6 +348,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 2.10.6 =
+- Fix: Widget titles are now translatable.
+- Fix: Exceptions thrown by coin adapters no longer break user profile rendering.
+- Add: German translations for frontend contributed by eMark Team <kontakt@deutsche-emark.de>.
+
 = 2.10.5 =
 - Fix: Plugin now works even if theme causes the frontend `wp` JavaScript object to not exist.
 - Fix: String localization is now working.
@@ -680,20 +685,21 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.10.5 introduces localization.
+Version 2.10.6 fixes some minor defects noted by users.
 
 == Donating ==
 
 This is a free plugin.
 
-The dashed-slug is a [heroic one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against seemingly insurmountable coding complexities :-)
+The dashed-slug is a [heroic (or maybe foolish?) one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against seemingly insurmountable coding complexities :-)
 
 Showing your support helps the dashed-slug purchase the necessary coffee for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
 
 These are all the ways you can show your support, if you so choose:
 
 1. **Become a registered [dashed-slug.net](https://www.dashed-slug.net) member**, and enjoy unlimited access to all the premium plugin extensions available, and priority support with any issues.
-2. **Report bugs and suggest features.** Please try to use the appropriate support forum depending on whether your issue is with the main plugin or its extensions.
+2. **Translate the plugin** and donate your translation. Your contribution will be mentioned in the changelog. See the manual entry on *Localization* for instructions.
+2. **Report bugs and suggest features.**
 3. **Spread the word** to your friends.
-4. **If you wish, you may donate** any amount [via flattr](https://flattr.com/profile/dashed-slug) or via Bitcoin at `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`.
+4. **If you wish, you may donate** any amount [via flattr](https://flattr.com/profile/dashed-slug) or via Bitcoin at `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy` or via DogeCoin at `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`.
 

@@ -4,199 +4,155 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Bitcoin and Altcoin Wallets 2.10.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2017-12-11 13:30+0200\n"
+"POT-Creation-Date: 2017-12-06 14:03:13+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-12-11 13:37+0200\n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.9\n"
-"Last-Translator: Alexandros Georgiou <alex.georgiou@gmail.com>\n"
+"PO-Revision-Date: 2017-12-07 08:39+0100\n"
+"X-Generator: Poedit 1.7.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: el\n"
-
-#: includes/sidebar-widgets.php:35
-msgid "Deposit to wallet"
-msgstr "Κατάθεση σε πορτοφόλι"
-
-#: includes/sidebar-widgets.php:39
-msgid "Withdraw from wallet"
-msgstr "Ανάληψη από πορτοφόλι"
-
-#: includes/sidebar-widgets.php:43
-msgid "Transfer to user wallet"
-msgstr "Μεταφορά προς πορτοφόλι χρήστη"
-
-#: includes/sidebar-widgets.php:47
-msgid "Wallet balance"
-msgstr "Υπόλοιπο πορτοφολιού"
-
-#: includes/sidebar-widgets.php:51
-msgid "Wallet transactions"
-msgstr "Συναλλαγές πορτοφολιού"
-
-#: includes/sidebar-widgets.php:108
-msgid ""
-"A form that will let the user know which address they can send coins to if "
-"they wish to make a deposit."
-msgstr ""
-
-#: includes/sidebar-widgets.php:119
-msgid "A form that will let the user withdraw funds."
-msgstr ""
-
-#: includes/sidebar-widgets.php:130
-msgid "A form that lets the user transfer coins to other users on your site."
-msgstr ""
-
-#: includes/sidebar-widgets.php:141
-msgid "The current user's balances in all enabled coins."
-msgstr ""
-
-#: includes/sidebar-widgets.php:152
-msgid ""
-"An interactive table that shows past deposits, withdrawals and transfers for "
-"the user."
-msgstr ""
+"Last-Translator: \n"
+"Language-Team: eMark Team <kontakt@deutsche-emark.de>\n"
+"Language: de_DE\n"
 
 #: includes/views/balance.php:4 includes/views/deposit.php:4
 #: includes/views/move.php:4 includes/views/transactions.php:4
 #: includes/views/withdraw.php:4
 msgid "Coin"
-msgstr "Νόμισμα"
+msgstr "Coin"
 
 #: includes/views/balance.php:5
 msgid "Balance"
-msgstr "Υπόλοιπο"
+msgstr "Kontostand"
 
 #: includes/views/deposit.php:6
 msgid "Deposit address"
-msgstr "Διεύθυνση κατάθεσης"
+msgstr "Einzahlungsadresse"
 
 #: includes/views/move.php:5
 msgid "Recipient user"
-msgstr "Αποδέκτης"
+msgstr "Empfänger - Benutzername"
 
 #: includes/views/move.php:6 includes/views/withdraw.php:6
 msgid "Amount"
-msgstr "Ποσό"
+msgstr "Betrag"
 
 #: includes/views/move.php:7
 msgid "Transfer comment"
-msgstr "Σχόλιο μεταβίβασης"
+msgstr "Kommentar"
 
 #: includes/views/move.php:8 includes/views/withdraw.php:7
 msgid "Fee (deducted from amount)"
-msgstr "Τέλη (αφαιρούνται από το ποσό)"
+msgstr "Überweisungsgebühr"
 
 #: includes/views/move.php:12 includes/views/withdraw.php:11
 msgid "Send"
-msgstr "Αποστολή"
+msgstr "Senden"
 
 #: includes/views/move.php:13 includes/views/withdraw.php:12
 msgid "Reset form"
-msgstr "Επαναφορά φόρμας"
+msgstr "Formular zurücksetzen"
 
 #: includes/views/transactions.php:5
 msgid "Rows per page"
-msgstr "Σειρές ανά σελίδα"
+msgstr "Zeilen pro Seite"
 
 #: includes/views/transactions.php:6
 msgid "Page"
-msgstr "Σελίδα"
+msgstr "Seite"
 
 #: includes/views/transactions.php:10
 msgid "Type"
-msgstr "Τύπος"
+msgstr "Typ"
 
 #: includes/views/transactions.php:11
 msgid "Tags"
-msgstr "Ετικέτες"
+msgstr "Schlagwörter"
 
 #: includes/views/transactions.php:12
 msgid "Time"
-msgstr "Ώρα"
+msgstr "Zeit"
 
 #: includes/views/transactions.php:13
 msgid "Amount (+fee)"
-msgstr "Ποσό (+τέλη)"
+msgstr "Betrag (+Gebühr)"
 
 #: includes/views/transactions.php:14
 msgid "Fee"
-msgstr "Τέλος"
+msgstr "Gebühr"
 
 #: includes/views/transactions.php:15
 msgid "From"
-msgstr "Από"
+msgstr "Von"
 
 #: includes/views/transactions.php:16
 msgid "To"
-msgstr "Προς"
+msgstr "Nach"
 
 #: includes/views/transactions.php:17
 msgid "Tx ID"
-msgstr "Κωδικός συναλλαγής"
+msgstr "Tx ID"
 
 #: includes/views/transactions.php:18
 msgid "Comment"
-msgstr "Σχόλιο"
+msgstr "Kommentar"
 
 #: includes/views/transactions.php:19
 msgid "Confirmations"
-msgstr "Επιβεβαιώσεις"
+msgstr "Bestätigungen"
 
 #: includes/views/transactions.php:20
 msgid "Status"
-msgstr "Κατάσταση"
+msgstr "Adapterstatus"
 
 #: includes/views/transactions.php:21
 msgid "Retries&nbsp;left"
-msgstr "Υπολειπόμενες&nbsp;προσπάθειες"
+msgstr "Wiederholungen"
 
 #: includes/views/transactions.php:24
 msgid "Admin&nbsp;confirm"
-msgstr "Επιβεβαίωση&nbsp;Διαχειριστή"
+msgstr "Admin&nbsp;Freigabe"
 
 #: includes/views/transactions.php:27
 msgid "User&nbsp;confirm"
-msgstr "Επιβεβαίωση&nbsp;χρήστη"
+msgstr "Benutzer&nbsp;Freigabe"
 
 #: includes/views/transactions.php:38 includes/views/transactions.php:61
 #: includes/views/transactions.php:82 includes/views/transactions.php:83
 msgid "me"
-msgstr "εγώ"
+msgstr "mir"
 
 #: includes/views/withdraw.php:5
 msgid "Withdraw to address"
-msgstr "Ανάληψη προς διεύθυνση"
+msgstr "An diese Adresse senden"
 
 #: includes/views/withdraw.php:8
 msgid "Transaction comment"
-msgstr "Σχόλιο συναλλαγής"
+msgstr "Verwendungszweck"
 
 #: includes/wallets-ko-i18n.php:5
 msgid "Successfully submitted a transaction request of %s %s"
-msgstr "Επιτυχής καταχώρηση αιτήματος μεταβίβασης για %s %s"
+msgstr "Erfolgreich eingereichte Transaktion von %s %s"
 
 #: includes/wallets-ko-i18n.php:6
 msgid "Successfully submitted a withdrawal request of %s %s to %s"
-msgstr "Επιτυχής καταχώρηση αιτήματος ανάληψης για %s %s προς %s"
+msgstr "Erfolgreich eingereichte Auszahlung von %s %s an %s"
 
 #: includes/wallets-ko-i18n.php:7
 msgid "Wallet operation failed due to an unexpected error"
-msgstr "Απρόσμενο σφάλμα λειτουργίας πορτοφολιού"
+msgstr "Der Vorgang ist aufgrund eines unerwarteten Fehlers fehlgeschlagen"
 
 #: includes/wallets-ko-i18n.php:8
 msgid "Wallet operation failed: %s"
-msgstr "Σφάλμα λειτουργίας πορτοφολιού: %s"
+msgstr "Wallet Vorgang fehlgeschlagen: %s"
 
 #: includes/wallets-ko-i18n.php:9
 msgid "Could not contact server. Status: %s Error: %s"
-msgstr "Αποτυχία επικοινωνίας με το διακομιστή. Κατάσταση: %s Σφάλμα: %s"
+msgstr "Keine Verbindung zum Server. Status: %s Fehler: %s"
 
 #: includes/wallets-ko-i18n.php:10
 msgid "Check to see if you have typed the address correctly!"
-msgstr "Ελέγξτε εάν έχετε πληκτρολογήσει σωστά τη διεύθυνση!"
+msgstr "Um zu sehen ob die Adresse richtig eingegeben wurde, hier anklicken"
 
 #. Plugin Name of the plugin/theme
 msgid "Bitcoin and Altcoin Wallets"
@@ -211,9 +167,6 @@ msgid ""
 "Turn your blog into a bank: Let your users deposit, withdraw, and transfer "
 "bitcoins and altcoins on your site."
 msgstr ""
-"Κάντε το ιστολόγιό σας τράπεζα: Επιτρέψτε στους χρήστες σας να καταθέσουν, "
-"αναλήψουν, και να μεταφέρουν bitcoins και άλλα κρυπτονομίσματα στη σελίδα "
-"σας."
 
 #. Author of the plugin/theme
 msgid "dashed-slug <info@dashed-slug.net>"

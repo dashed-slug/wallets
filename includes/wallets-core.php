@@ -114,8 +114,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		public function load_textdomain() {
-			$loaded = load_plugin_textdomain( 'wallets', false, '/wallets/languages' );
-			$loaded = load_plugin_textdomain( 'wallets-front', false, '/wallets/languages' );
+			load_plugin_textdomain( 'wallets', false, '/wallets/languages' );
+			load_plugin_textdomain( 'wallets-front', false, '/wallets/languages' );
 		}
 
 		/**
@@ -181,7 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.10.5',
+					'2.10.6',
 					true
 				);
 
@@ -199,7 +199,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.10.5',
+					'2.10.6',
 					true
 				);
 
@@ -213,7 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.10.5'
+					'2.10.6'
 				);
 			}
 		}
@@ -493,12 +493,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '4.9' ) < 0 ) {
+			if ( version_compare( $wp_version, '4.9.1' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %s. This plugin has been tested with %s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'4.9' ),
+						'4.9.1' ),
 					'old-wp-ver' );
 			}
 
@@ -589,8 +589,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.5';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '4e80692';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.10.6';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'fa7d11e';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
