@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.10.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.11.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2017-12-11 14:02:49+00:00\n"
+"POT-Creation-Date: 2017-12-18 14:28:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -79,12 +79,12 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: includes/views/move.php:7
-msgid "Transfer comment"
+#: includes/views/move.php:7 includes/views/withdraw.php:7
+msgid "Fee (deducted from amount)"
 msgstr ""
 
-#: includes/views/move.php:8 includes/views/withdraw.php:7
-msgid "Fee (deducted from amount)"
+#: includes/views/move.php:8
+msgid "Transfer comment"
 msgstr ""
 
 #: includes/views/move.php:12 includes/views/withdraw.php:11
@@ -159,8 +159,8 @@ msgstr ""
 msgid "User&nbsp;confirm"
 msgstr ""
 
-#: includes/views/transactions.php:38 includes/views/transactions.php:61
-#: includes/views/transactions.php:82 includes/views/transactions.php:83
+#: includes/views/transactions.php:38 includes/views/transactions.php:67
+#: includes/views/transactions.php:90 includes/views/transactions.php:91
 msgid "me"
 msgstr ""
 

@@ -180,7 +180,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->sprintf = $adapter->get_sprintf();
 								$coin_info->extra_desc = $adapter->get_extra_field_description();
 
+								$coin_info->explorer_uri_address = apply_filters( 'wallets_explorer_uri_add_' . $coin_info->symbol, '' );
+								$coin_info->explorer_uri_tx = apply_filters( 'wallets_explorer_uri_tx_' . $coin_info->symbol, '' );
+
 								$coin_info->balance = $core->get_balance( $symbol );
+
+								$base_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
+								if ( !$base_symbol ) {
+									$base_symbol = 'USD';
+								}
+
+								$coin_info->rate = false;
+								if ( 'none' != Dashed_Slug_Wallets::get_option( 'wallets_rates_provider', 'none' ) ) {
+									try {
+										$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
+											$base_symbol,
+											$coin_info->symbol
+										);
+									} catch ( Exception $e ) {
+									}
+								}
 
 								$coin_info->move_fee = $adapter->get_move_fee();
 								$coin_info->move_fee_proportional = $adapter->get_move_fee_proportional();

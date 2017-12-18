@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 2.10.6
+Stable tag: 2.11.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -296,9 +296,9 @@ Suppose you wish to replace the internal *Bitcoin core adapter* with the *block.
 
 = Can you add XYZ coin for me? =
 
-Yes and no. I have received a large amount of requests from small coins and cannot cater for them all. I do try to implement some of the requests I receive.
+Unfortunately no. I can no longer cater to requests to add new coin adapters. I can only provide assistance by answering specific questions to coin adapter developers.
 
-If your coin's wallet has a standard RPC API that is a direct fork of Bitcoin core, then you should be able to modify the [Litecoin adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) to suite your needs. Feel free to republish it after modifying the code. There are some instructions on how to do this [here](https://www.dashed-slug.net/developers-coin-adapters-api/).
+If your coin's wallet has a standard RPC API that is a direct fork of Bitcoin core, then you should be able to modify the [Litecoin adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) to suite your needs. Feel free to republish it after modifying the code. There are some instructions on how to do this [here](https://www.dashed-slug.net/developers-coin-adapters-api/). More detailed instructions are in the PDF documentation, under the section *Coin Adapter development*.
 
 If your coin is an ERC-20 token then there is no support for that at the moment. Ideally this is something that will be implemented in the future.
 
@@ -347,6 +347,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.11.0 =
+- Add: Addresses and TXIDs are now links to blockexplorer sites.
+- Add: Cryptocurrency amounts are also shown in a user-selected fiat currency, default: USD.
+- Improve: Comment fields are now multi-line, allow for more info.
+- Add: All RPC adapters can now connect to wallets that are encrypted with a passphrase.
+- Add: All RPC adapters can now connect to wallets via SSL RPC.
+- Fix: Exchange rates caching mechanism would some times report stale data, is now fixed.
 
 = 2.10.6 =
 - Fix: Widget titles are now translatable.
@@ -685,7 +693,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.10.6 fixes some minor defects noted by users.
+Version 2.11.0 introduces new improvements: Blockexplorer links, amounts now displayed in fiat, currencies, better RPC adapters.
 
 == Donating ==
 

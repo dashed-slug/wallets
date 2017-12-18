@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.10.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.11.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2017-12-11 14:02:49+00:00\n"
+"POT-Creation-Date: 2017-12-18 14:28:08+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -60,9 +60,9 @@ msgstr ""
 #: includes/adapters-list.php:90 includes/adapters-list.php:124
 #: includes/admin-menu.php:59 includes/caps.php:95 includes/caps.php:162
 #: includes/coin-adapter-bitcoin.php:58 includes/coin-adapter-json.php:75
-#: includes/coin-adapter-rpc.php:211 includes/coin-adapter.php:206
-#: includes/coin-adapter.php:215 includes/coin-adapter.php:236
-#: includes/coin-adapter.php:301 includes/cold-storage.php:135
+#: includes/coin-adapter-rpc.php:251 includes/coin-adapter.php:212
+#: includes/coin-adapter.php:221 includes/coin-adapter.php:242
+#: includes/coin-adapter.php:307 includes/cold-storage.php:135
 #: includes/confirmations.php:298 includes/cron.php:282
 #: includes/notifications.php:561 includes/qrcode.php:65 includes/rates.php:246
 #: includes/transactions.php:92 includes/transactions.php:794
@@ -73,8 +73,8 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:96 includes/caps.php:90
-#: includes/cold-storage.php:114 includes/json-api.php:286
-#: includes/json-api.php:320 includes/transactions.php:800
+#: includes/cold-storage.php:114 includes/json-api.php:305
+#: includes/json-api.php:339 includes/transactions.php:800
 #: includes/transactions.php:979 includes/transactions.php:999
 #: includes/transactions.php:1019 includes/transactions.php:1038
 #: includes/transactions.php:1058 includes/transactions.php:1080
@@ -96,8 +96,8 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: includes/admin-menu.php:37 includes/wallets-core.php:229
-#: includes/wallets-core.php:239
+#: includes/admin-menu.php:37 includes/wallets-core.php:240
+#: includes/wallets-core.php:250
 msgid "Wallets"
 msgstr ""
 
@@ -235,6 +235,10 @@ msgstr ""
 msgid "Installed"
 msgstr ""
 
+#: includes/admin-user.php:35
+msgid "Base currency"
+msgstr ""
+
 #: includes/caps.php:25
 msgid ""
 "Can configure all settings related to wallets. This is for administrators "
@@ -277,29 +281,29 @@ msgstr ""
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:61 includes/coin-adapter.php:218
+#: includes/coin-adapter-bitcoin.php:61 includes/coin-adapter.php:224
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:64 includes/coin-adapter.php:221
+#: includes/coin-adapter-bitcoin.php:64 includes/coin-adapter.php:227
 msgid "Transaction fees"
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:65 includes/coin-adapter.php:222
+#: includes/coin-adapter-bitcoin.php:65 includes/coin-adapter.php:228
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:67 includes/coin-adapter.php:224
+#: includes/coin-adapter-bitcoin.php:67 includes/coin-adapter.php:230
 msgid "Withdrawal fees"
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:68 includes/coin-adapter.php:225
+#: includes/coin-adapter-bitcoin.php:68 includes/coin-adapter.php:231
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:69 includes/coin-adapter.php:226
+#: includes/coin-adapter-bitcoin.php:69 includes/coin-adapter.php:232
 msgid ""
 "Fees are calculated as: <i>total_fees = fixed_fees + amount * "
 "proportional_fees</i>."
@@ -342,164 +346,195 @@ msgid ""
 "fetched from the remote API (in seconds)."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:55
+#: includes/coin-adapter-rpc.php:59
 msgid "The %s RPC API cannot be contacted."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:58
+#: includes/coin-adapter-rpc.php:62
 msgid ""
 "You need to make sure that your <a href=\"%1$s\">%2$s RPC settings</a> are "
 "correctly configured. "
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:63
+#: includes/coin-adapter-rpc.php:67
 msgid "Then edit your <code>.conf</code> file and append the following:"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:69
+#: includes/coin-adapter-rpc.php:73
 msgid "Finally, start the daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:88
+#: includes/coin-adapter-rpc.php:92
 msgid "Daemon RPC API"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:95
+#: includes/coin-adapter-rpc.php:99
 msgid "IP"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:101
+#: includes/coin-adapter-rpc.php:105
 msgid ""
-"This is the IP of the machine running your wallet daemon. Set to 127.0.0.1 "
-"if you are running the daemon on the same machine as WordPress."
+"The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you "
+"are running the daemon on the same machine as WordPress."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:112
+#: includes/coin-adapter-rpc.php:116
 msgid "Port"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:118
+#: includes/coin-adapter-rpc.php:122
 msgid ""
-"This is the TCP port where the daemon listens for JSON-RPC connections. It "
-"should match the <code>rpcport</code> setting in your daemon."
+"The TCP port where the daemon listens for JSON-RPC connections. It should "
+"match the <code>rpcport</code> setting in your daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:129
+#: includes/coin-adapter-rpc.php:133
 msgid "User"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:135
+#: includes/coin-adapter-rpc.php:139
 msgid ""
-"This is the username part of the credentials to connect to the JSON-RPC "
-"port. It should match the <code>rpcuser</code> setting in your daemon."
+"The username part of the credentials to connect to the JSON-RPC port. It "
+"should match the <code>rpcuser</code> setting in your daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:146
+#: includes/coin-adapter-rpc.php:150
 msgid "Password"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:152
+#: includes/coin-adapter-rpc.php:156
 msgid ""
-"This is the password part of the credentials to connect to the JSON-RPC "
-"port. It should match the <code>rpcpassword</code> setting in your daemon."
+"The password part of the credentials to connect to the JSON-RPC port. It "
+"should match the <code>rpcpassword</code> setting in your daemon. Note that "
+"this password will be stored on your MySQL DB."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:163
+#: includes/coin-adapter-rpc.php:167
+msgid "Wallet passphrase"
+msgstr ""
+
+#: includes/coin-adapter-rpc.php:173
+msgid ""
+"The passphrase used to unlock your wallet. Only needed for withdrawals. "
+"Leave empty if withdrawals are not needed or if the wallet is not encrypted "
+"with a passphrase. Note that this passphrase will be stored on your MySQL "
+"DB."
+msgstr ""
+
+#: includes/coin-adapter-rpc.php:184
 msgid "Path"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:169
+#: includes/coin-adapter-rpc.php:190
 msgid ""
-"This is the path location of the JSON-RPC API endpoint. Normally you will "
-"want to leave this empty."
+"The path location of the JSON-RPC API endpoint. Normally you will want to "
+"leave this empty."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:216
+#: includes/coin-adapter-rpc.php:201
+msgid "SSL enabled"
+msgstr ""
+
+#: includes/coin-adapter-rpc.php:207
+msgid ""
+"Check to enable RPC communication over SSL. This is deprecated in Bitcoin "
+"core but other coins may use it. Only use it if you have specified "
+"<code>rpcssl=1</code> in your configuration."
+msgstr ""
+
+#: includes/coin-adapter-rpc.php:256
 msgid ""
 "The %1$s adapter needs to know the location and credentials to the RPC API "
 "of the %2$s daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:249 includes/coin-adapter-rpc.php:262
-#: includes/coin-adapter-rpc.php:281 includes/coin-adapter-rpc.php:306
-#: includes/coin-adapter-rpc.php:401 includes/coin-adapter-rpc.php:414
-#: includes/coin-adapter-rpc.php:431
+#: includes/coin-adapter-rpc.php:291 includes/coin-adapter-rpc.php:304
+#: includes/coin-adapter-rpc.php:359 includes/coin-adapter-rpc.php:454
+#: includes/coin-adapter-rpc.php:467 includes/coin-adapter-rpc.php:484
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:355
+#: includes/coin-adapter-rpc.php:320
+msgid "%s->%s() failed to unlock with status=\"%s\" and error=\"%s\""
+msgstr ""
+
+#: includes/coin-adapter-rpc.php:334
+msgid "%s->%s() failed to send with status=\"%s\" and error=\"%s\""
+msgstr ""
+
+#: includes/coin-adapter-rpc.php:408
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: includes/coin-adapter.php:73
+#: includes/coin-adapter.php:79
 msgid "General adapter settings"
 msgstr ""
 
-#: includes/coin-adapter.php:80
+#: includes/coin-adapter.php:86
 msgid "Enabled"
 msgstr ""
 
-#: includes/coin-adapter.php:86
+#: includes/coin-adapter.php:92
 msgid "Check to enable this adapter."
 msgstr ""
 
-#: includes/coin-adapter.php:99
+#: includes/coin-adapter.php:105
 msgid "Adapter fees"
 msgstr ""
 
-#: includes/coin-adapter.php:106
+#: includes/coin-adapter.php:112
 msgid "Fixed part of transaction fee between users"
 msgstr ""
 
-#: includes/coin-adapter.php:112
+#: includes/coin-adapter.php:118
 msgid ""
 "Senders of internal transfers will pay the fixed fee to this site per "
 "transaction."
 msgstr ""
 
-#: includes/coin-adapter.php:123
+#: includes/coin-adapter.php:129
 msgid "Proportional part of transaction fee between users"
 msgstr ""
 
-#: includes/coin-adapter.php:129
+#: includes/coin-adapter.php:135
 msgid ""
 "Senders of internal transfers will pay transfer_amount * proportional_fee "
 "to this site."
 msgstr ""
 
-#: includes/coin-adapter.php:140
+#: includes/coin-adapter.php:146
 msgid "Fixed part of withdrawal fee"
 msgstr ""
 
-#: includes/coin-adapter.php:146
+#: includes/coin-adapter.php:152
 msgid "Users will pay this fixed fee to the site when performing withdrawals."
 msgstr ""
 
-#: includes/coin-adapter.php:157
+#: includes/coin-adapter.php:163
 msgid "Proportional part of withdrawal fee"
 msgstr ""
 
-#: includes/coin-adapter.php:163
+#: includes/coin-adapter.php:169
 msgid ""
 "Users will pay withdraw_amount * proportional_fee to the site when "
 "performing withdrawals."
 msgstr ""
 
-#: includes/coin-adapter.php:177
+#: includes/coin-adapter.php:183
 msgid "Other adapter settings"
 msgstr ""
 
-#: includes/coin-adapter.php:184
+#: includes/coin-adapter.php:190
 msgid "Minumum confirmations"
 msgstr ""
 
-#: includes/coin-adapter.php:190
+#: includes/coin-adapter.php:196
 msgid ""
 "Deposits will count towards user balances after this many blockchain "
 "confirmations."
 msgstr ""
 
-#: includes/coin-adapter.php:227
+#: includes/coin-adapter.php:233
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -507,19 +542,19 @@ msgid ""
 "network fees set the appropriate settings in your wallet's .conf file."
 msgstr ""
 
-#: includes/coin-adapter.php:228
+#: includes/coin-adapter.php:234
 msgid "Refer to the wallet documentation for details."
 msgstr ""
 
-#: includes/coin-adapter.php:305
+#: includes/coin-adapter.php:311
 msgid "Coin adapter settings for %s"
 msgstr ""
 
-#: includes/coin-adapter.php:307
+#: includes/coin-adapter.php:313
 msgid "These are the settings for this %s adapter"
 msgstr ""
 
-#: includes/coin-adapter.php:507
+#: includes/coin-adapter.php:513
 msgid "Destination address label (optional)"
 msgstr ""
 
@@ -874,12 +909,12 @@ msgid "Must be logged in"
 msgstr ""
 
 #: includes/json-api.php:131 includes/json-api.php:161
-#: includes/json-api.php:221 includes/json-api.php:254
-#: includes/json-api.php:280 includes/json-api.php:314
-#: includes/transactions.php:754 includes/wallets-core.php:651
-#: includes/wallets-core.php:745 includes/wallets-core.php:799
-#: includes/wallets-core.php:855 includes/wallets-core.php:928
-#: includes/wallets-core.php:1073 includes/wallets-core.php:1219
+#: includes/json-api.php:240 includes/json-api.php:273
+#: includes/json-api.php:299 includes/json-api.php:333
+#: includes/transactions.php:754 includes/wallets-core.php:662
+#: includes/wallets-core.php:756 includes/wallets-core.php:810
+#: includes/wallets-core.php:866 includes/wallets-core.php:939
+#: includes/wallets-core.php:1084 includes/wallets-core.php:1230
 msgid "Not allowed"
 msgstr ""
 
@@ -887,19 +922,19 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:239
+#: includes/json-api.php:258
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: includes/json-api.php:298
+#: includes/json-api.php:317
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:332
+#: includes/json-api.php:351
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:336
+#: includes/json-api.php:355
 msgid "Unknown action %s specified"
 msgstr ""
 
@@ -1264,55 +1299,55 @@ msgstr ""
 msgid "Verified by user"
 msgstr ""
 
-#: includes/transactions-list.php:237
+#: includes/transactions-list.php:265
 msgid "Transaction will be CANCELLED."
 msgstr ""
 
-#: includes/transactions-list.php:238
+#: includes/transactions-list.php:266
 msgid "&#x1F5D9; Cancel"
 msgstr ""
 
-#: includes/transactions-list.php:254
+#: includes/transactions-list.php:282
 msgid "Transaction will be RETRIED."
 msgstr ""
 
-#: includes/transactions-list.php:255
+#: includes/transactions-list.php:283
 msgid "&#8635; Retry"
 msgstr ""
 
-#: includes/transactions-list.php:286
+#: includes/transactions-list.php:314
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: includes/transactions-list.php:287
+#: includes/transactions-list.php:315
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:303
+#: includes/transactions-list.php:331
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: includes/transactions-list.php:304
+#: includes/transactions-list.php:332
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: includes/transactions-list.php:339
+#: includes/transactions-list.php:367
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: includes/transactions-list.php:340
+#: includes/transactions-list.php:368
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:356
+#: includes/transactions-list.php:384
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: includes/transactions-list.php:357
+#: includes/transactions-list.php:385
 msgid "&#x2713; User accept"
 msgstr ""
 
@@ -1352,104 +1387,104 @@ msgstr ""
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:230 includes/wallets-core.php:240
+#: includes/wallets-core.php:241 includes/wallets-core.php:251
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:231 includes/wallets-core.php:241
+#: includes/wallets-core.php:242 includes/wallets-core.php:252
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:414
+#: includes/wallets-core.php:425
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:420
+#: includes/wallets-core.php:431
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:499
+#: includes/wallets-core.php:510
 msgid ""
 "You are using WordPress %s. This plugin has been tested with %s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:592
+#: includes/wallets-core.php:603
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:593
+#: includes/wallets-core.php:604
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:594
+#: includes/wallets-core.php:605
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:595
+#: includes/wallets-core.php:606
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:596
+#: includes/wallets-core.php:607
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:597
+#: includes/wallets-core.php:608
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:598
+#: includes/wallets-core.php:609
 msgid "Supports cURL"
 msgstr ""
 
-#: includes/wallets-core.php:599
+#: includes/wallets-core.php:610
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:600
+#: includes/wallets-core.php:611
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:601
+#: includes/wallets-core.php:612
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:613
+#: includes/wallets-core.php:624
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:658
+#: includes/wallets-core.php:669
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:662
+#: includes/wallets-core.php:673
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: includes/wallets-core.php:966
+#: includes/wallets-core.php:977
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/wallets-core.php:990
+#: includes/wallets-core.php:1001
 msgid "Must withdraw positive amount"
 msgstr ""
 
-#: includes/wallets-core.php:996 includes/wallets-core.php:1112
+#: includes/wallets-core.php:1007 includes/wallets-core.php:1123
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: includes/wallets-core.php:1077
+#: includes/wallets-core.php:1088
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/wallets-core.php:1106
+#: includes/wallets-core.php:1117
 msgid "Must move positive amount"
 msgstr ""
 

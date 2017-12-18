@@ -46,11 +46,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			if ( $this->is_enabled() ) {
 
+				$symbol = $this->get_symbol();
+
 				// listen for notifications from the daemon (through the JSON API)
 				add_action( 'wallets_notify', array( &$this, 'action_wallets_notify' ) );
-				add_action( 'wallets_notify_wallet_' . $this->get_symbol(), array( &$this, 'action_wallets_notify_wallet' ) );
-				add_action( 'wallets_notify_block_' . $this->get_symbol(), array( &$this, 'action_wallets_notify_block' ) );
-				add_action( 'wallets_notify_alert_' . $this->get_symbol(), array( &$this, 'action_wallets_notify_alert' ) );
+				add_action( "wallets_notify_wallet_$symbol", array( &$this, 'action_wallets_notify_wallet' ) );
+				add_action( "wallets_notify_block_$symbol", array( &$this, 'action_wallets_notify_block' ) );
+				add_action( "wallets_notify_alert_$symbol", array( &$this, 'action_wallets_notify_alert' ) );
+
+				// these filters specify block explorer url patterns for various coins. concrete implementations can override the functions
+				add_filter( "wallets_explorer_uri_tx_$symbol", array( &$this, 'explorer_uri_transaction' ), 9, 1 );
+				add_filter( "wallets_explorer_uri_add_$symbol", array( &$this, 'explorer_uri_address' ), 9, 1 );
 			}
 		}
 
@@ -640,6 +646,74 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return string A transaction ID that uniquely identifies the withdrawal to this adapter.
 		 */
 		public abstract function do_withdraw( $address, $amount, $comment = '', $extra = null );
+
+		/**
+		 * Provides a URI pattern that will let the plugin render links to blockexplorers for looking up transactions.
+		 *
+		 * Sane defaults are provided for a number of coins here.
+		 * Site owners can override this by binding to the filter: wallets_explorer_uri_tx_XXX where XXX is a coin symbol.
+		 * Coin adapter developers can override this function in concrete implementations of the adapter class.
+		 *
+		 * @param string $uri Filter input
+		 * @return string A URI pattern pointing to a blockexplorer for this coin, where the string '%s' will be replaced by the transaction ID.
+		 */
+		public function explorer_uri_transaction( $uri ) {
+			$symbol = $this->get_symbol();
+
+			switch ( $symbol ) {
+				case 'BTC':
+					return 'https://blockchain.info/tx/%s';
+
+				case 'DOGE':
+					return 'https://dogechain.info/tx/%s';
+
+				case 'FTC':
+					return 'http://explorer.feathercoin.com/tx/%s';
+
+				case 'LTCT':
+					return 'http://explorer.litecointools.com/tx/%s';
+
+				case 'ETH':
+					return 'https://ethplorer.io/tx/%s';
+
+				default:
+					return 'https://chainz.cryptoid.info/' . strtolower( $symbol) . '/tx.dws?%s.htm';
+			}
+		}
+
+		/**
+		 * Provides a URI pattern that will let the plugin render links to blockexplorers for looking up addresses.
+		 *
+		 * Sane defaults are provided for a number of coins here.
+		 * Site owners can override this by binding to the filter: wallets_explorer_uri_add_XXX where XXX is a coin symbol.
+		 * Coin adapter developers can override this function in concrete implementations of the adapter class.
+		 *
+		 * @param string $uri Filter input
+		 * @return string A URI pattern pointing to a blockexplorer for this coin, where the string '%s' will be replaced by the address.
+		 */
+		public function explorer_uri_address( $uri ) {
+			$symbol = $this->get_symbol();
+
+			switch( $symbol ) {
+				case 'BTC':
+					return 'https://blockchain.info/address/%s';
+
+				case 'DOGE':
+					return "https://dogechain.info/address/%s";
+
+				case 'FTC':
+					return 'http://explorer.feathercoin.com/address/%s';
+
+				case 'LTCT':
+					return 'http://explorer.litecointools.com/address/%s';
+
+				case 'ETH':
+					return 'https://ethplorer.io/address/%s';
+
+				default:
+					return 'https://chainz.cryptoid.info/' . strtolower( $symbol) . '/address.dws?%s.htm';
+			}
+		}
 
 		/**
 		 * Handles a notification about a transaction ID.

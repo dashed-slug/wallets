@@ -35,6 +35,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 					intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) ),
 					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-path" )
 				);
+
+				if ( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-ssl-enabled" ) ) {
+					$this->rpc->setSSL();
+				}
 			}
 		}
 
@@ -84,7 +88,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			// RPC API
 
 			add_settings_section(
-				"{$this->option_slug}_rpc",
+				"{$this->option_slug}-rpc",
 				__( 'Daemon RPC API', 'wallets' ),
 				array( &$this, 'settings_rpc_cb' ),
 				$this->menu_slug
@@ -95,10 +99,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				__( 'IP', 'wallets' ),
 				array( &$this, 'settings_text_cb'),
 				$this->menu_slug,
-				"{$this->option_slug}_rpc",
+				"{$this->option_slug}-rpc",
 				array(
 					'label_for' => "{$this->option_slug}-rpc-ip",
-					'description' => __( 'This is the IP of the machine running your wallet daemon. Set to 127.0.0.1 if you are running the daemon on the same machine as WordPress.', 'wallets' ),
+					'description' => __( 'The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you are running the daemon on the same machine as WordPress.', 'wallets' ),
 				)
 			);
 
@@ -112,10 +116,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				__( 'Port', 'wallets' ),
 				array( &$this, 'settings_int16_cb'),
 				$this->menu_slug,
-				"{$this->option_slug}_rpc",
+				"{$this->option_slug}-rpc",
 				array(
 					'label_for' => "{$this->option_slug}-rpc-port",
-					'description' => __( 'This is the TCP port where the daemon listens for JSON-RPC connections. It should match the <code>rpcport</code> setting in your daemon.', 'wallets' ),
+					'description' => __( 'The TCP port where the daemon listens for JSON-RPC connections. It should match the <code>rpcport</code> setting in your daemon.', 'wallets' ),
 				)
 			);
 
@@ -129,10 +133,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				__( 'User', 'wallets' ),
 				array( &$this, 'settings_text_cb'),
 				$this->menu_slug,
-				"{$this->option_slug}_rpc",
+				"{$this->option_slug}-rpc",
 				array(
 					'label_for' => "{$this->option_slug}-rpc-user",
-					'description' => __( 'This is the username part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcuser</code> setting in your daemon.', 'wallets' ),
+					'description' => __( 'The username part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcuser</code> setting in your daemon.', 'wallets' ),
 				)
 			);
 
@@ -146,10 +150,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				__( 'Password', 'wallets' ),
 				array( &$this, 'settings_pw_cb'),
 				$this->menu_slug,
-				"{$this->option_slug}_rpc",
+				"{$this->option_slug}-rpc",
 				array(
 					'label_for' => "{$this->option_slug}-rpc-password",
-					'description' => __( 'This is the password part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcpassword</code> setting in your daemon.', 'wallets' ),
+					'description' => __( 'The password part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcpassword</code> setting in your daemon. Note that this password will be stored on your MySQL DB.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-rpc-passphrase"
+			);
+
+			add_settings_field(
+				"{$this->option_slug}-rpc-passphrase",
+				__( 'Wallet passphrase', 'wallets' ),
+				array( &$this, 'settings_pw_cb'),
+				$this->menu_slug,
+				"{$this->option_slug}-rpc",
+				array(
+					'label_for' => "{$this->option_slug}-rpc-passphrase",
+					'description' => __( 'The passphrase used to unlock your wallet. Only needed for withdrawals. Leave empty if withdrawals are not needed or if the wallet is not encrypted with a passphrase. Note that this passphrase will be stored on your MySQL DB.', 'wallets' ),
 				)
 			);
 
@@ -159,14 +180,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			);
 
 			add_settings_field(
-				"{$this->option_slug}_rpc_path",
+				"{$this->option_slug}-rpc-path",
 				__( 'Path', 'wallets' ),
 				array( &$this, 'settings_text_cb'),
 				$this->menu_slug,
-				"{$this->option_slug}_rpc",
+				"{$this->option_slug}-rpc",
 				array(
 					'label_for' => "{$this->option_slug}-rpc-path",
-					'description' => __( 'This is the path location of the JSON-RPC API endpoint. Normally you will want to leave this empty.', 'wallets' ),
+					'description' => __( 'The path location of the JSON-RPC API endpoint. Normally you will want to leave this empty.', 'wallets' ),
 				)
 			);
 
@@ -174,7 +195,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				$this->menu_slug,
 				"{$this->option_slug}-rpc-path"
 			);
+
+			add_settings_field(
+				"{$this->option_slug}-rpc-ssl-enabled",
+				__( 'SSL enabled', 'wallets' ),
+				array( &$this, 'settings_checkbox_cb'),
+				$this->menu_slug,
+				"{$this->option_slug}-rpc",
+				array(
+					'label_for' => "{$this->option_slug}-rpc-ssl-enabled",
+					'description' => __( 'Check to enable RPC communication over SSL. This is deprecated in Bitcoin core but other coins may use it. Only use it if you have specified <code>rpcssl=1</code> in your configuration.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-rpc-ssl-enabled"
+			);
+
 		}
+
 
 		// helpers
 
@@ -183,8 +223,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			$block_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/block/%s' );
 			$alert_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/alert/%s' );
 			$wp_ip = self::server_ip();
-			$user = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
-			$port = intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) );
+			$user = $this->get_adapter_option( 'rpc-user');
+			$port = intval( $this->get_adapter_option( 'rpc-port') );
 
 			return <<<CFG
 server=1
@@ -230,7 +270,9 @@ CFG;
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-port", filter_input( INPUT_POST, "{$this->option_slug}-rpc-port", FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-user", filter_input( INPUT_POST, "{$this->option_slug}-rpc-user", FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-password", filter_input( INPUT_POST, "{$this->option_slug}-rpc-password", FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-passphrase", filter_input( INPUT_POST, "{$this->option_slug}-rpc-passphrase", FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-path", filter_input( INPUT_POST, "{$this->option_slug}-rpc-path", FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ssl-enabled", filter_input( INPUT_POST, "{$this->option_slug}-rpc-ssl-enabled", FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			parent::update_network_options();
 		}
@@ -270,15 +312,26 @@ CFG;
 				throw new Exception( 'Adapter is disabled' );
 			}
 
+			$passphrase = $this->get_adapter_option( 'rpc-passphrase' );
+
+			if ( $passphrase ) {
+				$result = $this->rpc->walletpassphrase( $passphrase, 5 );
+				if ( false === $result ) {
+					throw new Exception( sprintf( __( '%s->%s() failed to unlock with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				}
+			}
+
 			$result = $this->rpc->sendtoaddress(
 				"$address",
 				floatval( $amount ),
 				"$comment",
 				"$comment_to"
-				);
+			);
+
+			$this->rpc->walletlock();
 
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%s->%s() failed to send with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 			return $result;
 		}

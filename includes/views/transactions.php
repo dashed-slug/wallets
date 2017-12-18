@@ -33,11 +33,15 @@
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string"></td>
-					<td class="fee" data-bind="text: fee_string"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
 					<td class="from user" data-bind="text: '<?php esc_attr_e( 'me', 'wallets-front' ); ?>'"></td>
-					<td class="to user" data-bind="text: extra ? address + ' (' + extra + ')' : address"></td>
-					<td class="txid" data-bind="text: txid"></td>
+					<td class="to user">
+						<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+					</td>
+					<td class="txid">
+						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
 					<td class="status" data-bind="text: status"></td>
@@ -55,11 +59,15 @@
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string"></td>
-					<td class="fee" data-bind="text: fee_string"></td>
-					<td class="from user" data-bind="text: extra ? address + ' (' + extra + ')' : address"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
+					<td class="from user">
+						<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+					</td>
 					<td class="to user" data-bind="text: '<?php esc_attr_e( 'me', 'wallets-front' ); ?>'"></td>
-					<td class="txid" data-bind="text: txid"></td>
+					<td class="txid">
+						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
 					<td class="status" data-bind="text: status"></td>
@@ -77,11 +85,13 @@
 					<td class="type" data-bind="text: category"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string"></td>
-					<td class="fee" data-bind="text: fee_string"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
 					<td class="from user" data-bind="text: (amount>= 0 ? other_account_name : '<?php esc_attr_e( 'me', 'wallets-front' ); ?>')"></td>
 					<td class="to user" data-bind="text: (amount < 0 ? other_account_name : '<?php esc_attr_e( 'me', 'wallets-front' ); ?>')"></td>
-					<td class="txid" data-bind="text: txid"></td>
+					<td class="txid">
+						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations"></td>
 					<td class="status" data-bind="text: status"></td>

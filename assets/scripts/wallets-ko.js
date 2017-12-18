@@ -61,11 +61,25 @@
 			self.currentCoinBalance = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
-					if ( coins[coin].symbol == self.selectedCoin() ) {
-						return sprintf( coins[coin].sprintf, coins[coin].balance );
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						return sprintf( coins[ coin ].sprintf, coins[ coin ].balance );
 					}
 				}
-				return '-';
+				return '';
+			});
+
+			self.currentCoinBaseBalance = ko.computed( function() {
+				if ( walletsUserData.baseSymbol ) {
+					var coins = self.coins();
+					for ( var coin in coins ) {
+						if ( coins[ coin ].symbol == self.selectedCoin() ) {
+							if ( coins[ coin ].rate ) {
+								return sprintf( walletsUserData.baseSymbol + ' %01.2f', coins[ coin ].balance * coins[ coin ].rate );
+							}
+						}
+					}
+				}
+				return '';
 			});
 
 			self.nonces = ko.computed( function() {
@@ -96,11 +110,11 @@
 
 						var coins = self.coins();
 						for ( var coin in coins ) {
-							if ( coins[coin].symbol == self.selectedCoin() ) {
+							if ( coins[ coin ].symbol == self.selectedCoin() ) {
 
-								if ( coins[coin].deposit_address_qrcode_uri ) {
+								if ( coins[ coin ].deposit_address_qrcode_uri ) {
 									$qrnode.qrcode( {
-										text: coins[coin].deposit_address_qrcode_uri
+										text: coins[ coin ].deposit_address_qrcode_uri
 									} );
 								}
 								return;
@@ -113,19 +127,19 @@
 			self.currentCoinDepositAddress = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
-					if ( coins[coin].symbol == self.selectedCoin() ) {
-						return coins[coin].deposit_address;
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						return coins[ coin ].deposit_address;
 					}
 				}
-				return '-';
+				return '';
 			});
 
 			self.currentCoinDepositExtra = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
-					if ( coins[coin].symbol == self.selectedCoin() ) {
-						if ( typeof coins[coin].deposit_extra !== 'undefined' ) {
-							return coins[coin].deposit_extra;
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						if ( typeof coins[ coin ].deposit_extra !== 'undefined' ) {
+							return coins[ coin ].deposit_extra;
 						} else {
 							return '';
 						}
@@ -137,8 +151,8 @@
 			self.withdrawExtraDesc = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
-					if ( coins[coin].symbol == self.selectedCoin() ) {
-						return coins[coin].extra_desc;
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						return coins[ coin ].extra_desc;
 					}
 				}
 				return false; // use default
@@ -147,17 +161,38 @@
 			// [wallets_move] shortcode
 			self.moveUser = ko.observable();
 			self.moveAmount = ko.observable();
+			self.moveBaseAmount = ko.computed( function( ) {
+				if ( walletsUserData.baseSymbol ) {
+					var coins = self.coins();
+					for ( var coin in coins ) {
+						if ( coins[ coin ].symbol == self.selectedCoin() ) {
+							if ( coins[ coin ].rate ) {
+								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.moveAmount() ) * coins[ coin ].rate );
+							}
+						}
+					}
+				}
+				return '';
+			});
 			self.moveComment = ko.observable();
 			self.moveFee = ko.computed( function( ) {
 				var coins = self.coins();
 				for ( var coin in coins ) {
-					if ( coins[coin].symbol == self.selectedCoin() ) {
-						var fee = parseFloat( coins[coin].move_fee );
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						var fee = parseFloat( coins[ coin ].move_fee );
 						fee += parseFloat( coins[ coin ].move_fee_proportional ) * parseFloat( self.moveAmount() );
-						return sprintf( coins[coin].sprintf, fee );
+
+						var feeString = sprintf( coins[ coin ].sprintf, fee );
+						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+
+						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+							return [ feeString, feeBaseString ];
+						} else {
+							return [ feeString, '' ];
+						}
 					}
 				}
-				return '-';
+				return ['',''];
 			});
 			self.move_fee = self.moveFee; // backwards compatibility
 
@@ -252,19 +287,40 @@
 			});
 
 			self.withdrawAmount = ko.observable();
+			self.withdrawBaseAmount = ko.computed( function( ) {
+				if ( walletsUserData.baseSymbol ) {
+					var coins = self.coins();
+					for ( var coin in coins ) {
+						if ( coins[ coin ].symbol == self.selectedCoin() ) {
+							if ( coins[ coin ].rate ) {
+								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
+							}
+						}
+					}
+				}
+				return '';
+			});
 			self.withdrawComment = ko.observable();
 			self.withdrawExtra = ko.observable();
 
 			self.withdrawFee = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
-					if ( coins[coin].symbol == self.selectedCoin() ) {
-						var fee = parseFloat( coins[coin].withdraw_fee );
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						var fee = parseFloat( coins[ coin ].withdraw_fee );
 						fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
-						return sprintf( coins[coin].sprintf, fee );
+
+						var feeString = sprintf( coins[ coin ].sprintf, fee );
+						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+
+						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+							return [ feeString, feeBaseString ];
+						} else {
+							return [ feeString, '' ];
+						}
 					}
 				}
-				return '-';
+				return '';
 			});
 			self.withdraw_fee = self.withdrawFee;
 
@@ -348,7 +404,36 @@
 						if ( ! response.transactions.length && page > 1 ) {
 							self.currentPage( page - 1 );
 						} else {
+
 							transactions = response.transactions;
+
+							var coins = self.coins();
+							var baseSprintf = walletsUserData.baseSymbol + ' %01.2f';
+
+							for ( var t in transactions ) {
+
+								transactions[ t ].tx_uri = '';
+								transactions[ t ].address_uri = '';
+
+								for ( var c in coins ) {
+									if ( coins[ c ].symbol == transactions[ t ].symbol ) {
+										if ( walletsUserData.baseSymbol && coins[ c ].rate ) {
+											transactions[ t ].amount_base = sprintf( baseSprintf, transactions[ t ].amount * coins[ c ].rate );
+											transactions[ t ].fee_base = sprintf( baseSprintf, transactions[ t ].fee * coins[ c ].rate );
+										} else {
+											transactions[ t ].amount_base = transactions[ t ].fee_base = '';
+										}
+
+										if ( 'string' === typeof ( transactions[ t ].txid ) ) {
+											transactions[ t ].tx_uri = sprintf( coins[ c ].explorer_uri_tx, transactions[ t ].txid );
+										}
+
+										if ( 'string' === typeof ( transactions[t].address ) ) {
+											transactions[ t ].address_uri = sprintf( coins[ c ].explorer_uri_address, transactions[ t ].address );
+										}
+									}
+								}
+							}
 						}
 					},
 					error: xhrErrorHandler

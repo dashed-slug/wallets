@@ -153,7 +153,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		switch( $column_name ) {
 
-			case 'txid':
 			case 'category':
 			case 'symbol':
 			case 'comment':
@@ -162,13 +161,32 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			case 'created_time':
 				return esc_html( $item[ $column_name ] );
 
+			case 'txid':
+				$uri_pattern = apply_filters( 'wallets_explorer_uri_tx_' . $item['symbol'], '' );
+				if ( $uri_pattern ) {
+					$uri = sprintf( $uri_pattern, $item[ 'txid' ] );
+					return '<a href ="' . esc_attr( $uri ) . '">' . $item['txid'] . '</a>';
+				} else {
+					return $item['txid'];
+				}
+
 			case 'admin_confirm':
 			case 'user_confirm':
 				return $item[ $column_name ] ? '&#x2611;' : '&#x2610;';
 
 			case 'from':
 				if ( 'deposit' == $item['category'] ) {
-					return  esc_html( $item['extra'] ? "{$item['address']} ({$item['extra']})"  : $item['address'] );
+					$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
+					if ( $uri_pattern ) {
+						$uri = sprintf( $uri_pattern, $item[ 'address' ] );
+						$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
+					} else {
+						$address_html = $item['address'];
+					}
+					if ( $item['extra'] ) {
+						$address_html .= " ({$item['extra']})";
+					}
+					return $address_html;
 				} elseif ( 'withdraw' == $item['category'] ) {
 					return $this->user_link( $item['account_name'] );
 				} elseif ( 'move' == $item['category'] ) {
@@ -180,7 +198,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				if ( 'deposit' == $item['category'] ) {
 					return  $this->user_link( $item['account_name'] );
 				} elseif ( 'withdraw' == $item['category'] ) {
-					return esc_html( $item['extra'] ? "{$item['address']} ({$item['extra']})"  : $item['address'] );
+					$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
+					if ( $uri_pattern ) {
+						$uri = sprintf( $uri_pattern, $item[ 'address' ] );
+						$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
+					} else {
+						$address_html = $item['address'];
+					}
+					if ( $item['extra'] ) {
+						$address_html .= " ({$item['extra']})";
+					}
+					return $address_html;
 				} elseif ( 'move' == $item['category'] ) {
 					return $this->user_link( $item['other_account_name'] );
 				}

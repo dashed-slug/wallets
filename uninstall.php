@@ -99,7 +99,9 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( "{$option_slug}-rpc-port" );
 	wallets_delete_option( "{$option_slug}-rpc-user" );
 	wallets_delete_option( "{$option_slug}-rpc-password" );
+	wallets_delete_option( "{$option_slug}-rpc-passphrase" );
 	wallets_delete_option( "{$option_slug}-rpc-path" );
+	wallets_delete_option( "{$option_slug}-rpc-ssl-enabled" );
 	wallets_delete_option( "{$option_slug}-fees-move" );
 	wallets_delete_option( "{$option_slug}-fees-move-proportional" );
 	wallets_delete_option( "{$option_slug}-fees-withdraw" );
