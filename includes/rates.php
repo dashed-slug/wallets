@@ -431,8 +431,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			// if provider changed
 			if ( $new != $old ) {
 				// trigger data refresh on next shutdown
-				delete_transient( 'wallets_rates' );
-				delete_transient( 'wallets_rates_cryptos' );
+				Dashed_Slug_Wallets::delete_transient( 'wallets_rates' );
+				Dashed_Slug_Wallets::delete_transient( 'wallets_rates_cryptos' );
 			}
 			return $new;
 		}
@@ -457,12 +457,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			}
 
 			// determine fiat currencies
-			if ( false === get_transient( 'wallets_rates_fiats' ) ) {
+			if ( false === Dashed_Slug_Wallets::get_transient( 'wallets_rates_fiats' ) ) {
 				self::$fiats = array_unique( apply_filters( 'wallets_rates_fiats', array( 'USD' ), 'fixer' ) );
 
 				if ( is_array( self::$fiats ) && count( self::$fiats ) > 2 ) {
 					Dashed_Slug_Wallets::update_option( 'wallets_rates_fiats', self::$fiats );
-					set_transient( 'wallets_rates_fiats', true, 1 * HOUR_IN_SECONDS );
+					Dashed_Slug_Wallets::set_transient( 'wallets_rates_fiats', true, 1 * HOUR_IN_SECONDS );
 				}
 				return;
 			}
@@ -470,19 +470,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			if ( false !== array_search( $provider, self::$providers ) ) {
 				// determine cryptocurrencies
-				if ( false === get_transient( 'wallets_rates_cryptos' ) ) {
+				if ( false === Dashed_Slug_Wallets::get_transient( 'wallets_rates_cryptos' ) ) {
 					self::$cryptos = array_unique( apply_filters( 'wallets_rates_cryptos', array( 'BTC' ), $provider ) );
 
 					if ( self::$cryptos && count( self::$cryptos ) > 2 ) {
 						Dashed_Slug_Wallets::update_option( 'wallets_rates_cryptos', self::$cryptos );
 						$expiry = HOUR_IN_SECONDS;
-						set_transient( 'wallets_rates_cryptos', true, $expiry );
+						Dashed_Slug_Wallets::set_transient( 'wallets_rates_cryptos', true, $expiry );
 					}
 					return;
 				}
 
 				// pull exchange rates
-				if ( false === get_transient( 'wallets_rates' ) ) {
+				if ( false === Dashed_Slug_Wallets::get_transient( 'wallets_rates' ) ) {
 					self::$rates = apply_filters( 'wallets_rates', array(), $provider );
 
 					if ( self::$rates && count( self::$rates) > 2 ) {
@@ -491,7 +491,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						}
 						Dashed_Slug_Wallets::update_option( 'wallets_rates', self::$rates );
 						$expiry = Dashed_Slug_Wallets::get_option( 'wallets_rates_cache_expiry', 5 ) * MINUTE_IN_SECONDS;
-						set_transient( 'wallets_rates', true, $expiry );
+						Dashed_Slug_Wallets::set_transient( 'wallets_rates', true, $expiry );
 					}
 					return;
 				}

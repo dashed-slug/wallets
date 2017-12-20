@@ -570,6 +570,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'txid' => $tx->txid,
 									'symbol' => $tx->symbol,
 									'amount' => number_format( $tx->amount, 10, '.', '' ),
+									'fee' => isset( $tx->fee ) ? $tx->fee : 0,
 									'created_time' => $tx->created_time,
 									'updated_time' => $current_time_gmt,
 									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
@@ -577,15 +578,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'retries' => 255
 								);
 
-								if ( isset( $tx->fee ) ) {
-									$new_tx_data['fee'] = $tx->fee;
-								}
-
 								$affected = $wpdb->insert(
 									$table_name_txs,
 									$new_tx_data,
 									array(
-										'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d'
+										'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d',
 									)
 								);
 

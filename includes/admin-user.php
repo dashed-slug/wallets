@@ -22,7 +22,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 		public function action_user_profile( $profileuser ) {
 			$dsw = Dashed_Slug_Wallets::get_instance();
 
-			$base_currency = get_the_author_meta( 'wallets_base_symbol', $profileuser->ID );
+			$base_symbol = get_the_author_meta( 'wallets_base_symbol', $profileuser->ID, true );
+			if ( ! $base_symbol ) {
+				$base_symbol = 'USD';
+			}
 			$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array() );
 
 			?><h2><?php echo esc_html( 'Bitcoin and Altcoin Wallets', 'wallets' ); ?></h2>
@@ -41,7 +44,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 								name="wallets_base_symbol">
 								<?php foreach ( $fiats as $fiat ): ?>
 									<option
-										<?php if ( $fiat == $base_currency): ?> selected="selected"<?php endif; ?>
+										<?php if ( $fiat == $base_symbol): ?> selected="selected"<?php endif; ?>
 										value="<?php echo esc_attr( $fiat ); ?>">
 										<?php echo esc_html( $fiat ); ?>
 									</option>
@@ -57,7 +60,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 			<table class="form-table">
 				<tbody><?php
-					foreach ( $dsw->get_coin_adapters() as $adapter ):
+				$adapters = $dsw->get_coin_adapters();
+					foreach ( $adapters as $adapter ):
 						try {
 							$symbol = $adapter->get_symbol();
 							$balance = $dsw->get_balance( $symbol, null, false, $profileuser->ID );
@@ -80,12 +84,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 										disabled="disabled"
 										value="<?php echo esc_attr( $balance_str ); ?>" />
 
-									<?php echo esc_html( 'Deposit address:', 'wallets' ); ?>
+									<?php echo esc_html( 'Deposit address:', 'wallets' );
+
+									if ( is_string( $deposit_address ) ) : ?>
 
 									<a
 										href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address ) ); ?>">
 										<?php echo esc_html( $deposit_address ); ?>
 									</a>
+
+									<?php elseif ( is_array( $deposit_address ) ): ?>
+
+									<a
+										href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address[0] ) ); ?>">
+										<?php echo esc_html( $deposit_address[0] ); ?>
+									</a>
+
+									<?php endif; ?>
 
 								</div>
 							</td>

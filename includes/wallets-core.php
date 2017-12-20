@@ -181,7 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.11.0',
+					'2.11.1',
 					true
 				);
 
@@ -193,6 +193,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					$base_symbol = false;
 				} else {
 					$base_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
+				}
+				if ( ! $base_symbol ) {
+					$base_symbol = 'USD';
 				}
 				wp_localize_script( 'wallets_ko', 'walletsUserData', array(
 						'baseSymbol' => $base_symbol,
@@ -210,7 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.11.0',
+					'2.11.1',
 					true
 				);
 
@@ -224,7 +227,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.11.0'
+					'2.11.1'
 				);
 			}
 		}
@@ -546,7 +549,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move-proportional', '0' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00005000' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00100000' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw-proportional', '0' );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-other-minconf', '6' );
@@ -600,8 +603,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.11.0';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '3fa3c9e';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.11.1';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '8467472';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
@@ -729,6 +732,47 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 */
 		public static function delete_option( $option ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'delete_site_option' : 'delete_option', $option );
+		}
+
+		/**
+		 * This helper delegates to set_site_transient if the plugin is network activated on a multisite install, or to set_transient otherwise.
+		 *
+		 * @since 2.11.1 Added
+		 * @link https://codex.wordpress.org/Function_Reference/set_site_transient
+		 * @link https://codex.wordpress.org/Function_Reference/set_transient
+		 * @param string $option The transient name.
+		 * @param mixed $value The transient value.
+		 * @param int $expiration Time until expiration in seconds from now, or 0 for never expires.
+		 * @return bool The result of the wrapped function.
+		 */
+		public static function set_transient( $transient, $value, $expiration ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'set_site_transient' : 'set_transient', $transient, $value, $expiration );
+		}
+
+		/**
+		 * This helper delegates to delete_site_transient if the plugin is network activated on a multisite install, or to delete_transient otherwise.
+		 *
+		 * @since 2.11.1 Added
+		 * @link https://codex.wordpress.org/Function_Reference/delete_site_transient
+		 * @link https://codex.wordpress.org/Function_Reference/delete_transient
+		 * @param string $option The transient name.
+		 * @return bool True if successful, false otherwise.
+		 */
+		public static function delete_transient( $transient ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'delete_site_transient' : 'delete_transient', $transient );
+		}
+
+		/**
+		 * This helper delegates to get_site_transient if the plugin is network activated on a multisite install, or to get_transient otherwise.
+		 *
+		 * @since 2.11.1 Added
+		 * @link https://codex.wordpress.org/Function_Reference/get_site_transient
+		 * @link https://codex.wordpress.org/Function_Reference/get_transient
+		 * @param string $option The transient name.
+		 * @return bool The result of the wrapped function.
+		 */
+		public static function get_transient( $transient ) {
+			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_transient' : 'get_transient', $transient );
 		}
 
 		/**

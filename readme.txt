@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 2.11.0
+Stable tag: 2.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.11.1 =
+- Fix: Deposit fees were not being inserted to the DB (would affect the CoinPayments adapter).
+- Improve: In network-activated multisite, exchange rates are now shared accross sites. Improves performance.
+- Fix: When user has not selected a base currency in their profile, the default is now USD. Previously was undefined, which caused fiat amounts to not be displayed.
+- Fix: When user profile displays deposit addresses, it can now also handle currencies with an extra payment id field in their deposit address. (affects Monero, Ripple, Steem, etc).
+- Fix: The default withdraw fees for Bitcoin core are now set to 0.001 when first installing the plugin.
 
 = 2.11.0 =
 - Add: Addresses and TXIDs are now links to blockexplorer sites.
@@ -693,13 +700,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.11.0 introduces new improvements: Blockexplorer links, amounts now displayed in fiat, currencies, better RPC adapters.
+Version 2.11.1 is a bug-fix release. Additionally, the troubleshooting section of the accompanying PDF documentation has been expanded.
 
 == Donating ==
 
 This is a free plugin.
 
-The dashed-slug is a [heroic (or maybe foolish?) one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against seemingly insurmountable coding complexities :-)
+The dashed-slug is a [heroic (or maybe foolish?) one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against the odds :-)
 
 Showing your support helps the dashed-slug purchase the necessary coffee for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
 

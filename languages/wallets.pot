@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.11.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.11.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2017-12-18 14:28:08+00:00\n"
+"POT-Creation-Date: 2017-12-20 15:46:06+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -65,19 +65,19 @@ msgstr ""
 #: includes/coin-adapter.php:307 includes/cold-storage.php:135
 #: includes/confirmations.php:298 includes/cron.php:282
 #: includes/notifications.php:561 includes/qrcode.php:65 includes/rates.php:246
-#: includes/transactions.php:92 includes/transactions.php:794
-#: includes/transactions.php:975 includes/transactions.php:995
-#: includes/transactions.php:1015 includes/transactions.php:1034
-#: includes/transactions.php:1054 includes/transactions.php:1076
+#: includes/transactions.php:92 includes/transactions.php:791
+#: includes/transactions.php:972 includes/transactions.php:992
+#: includes/transactions.php:1012 includes/transactions.php:1031
+#: includes/transactions.php:1051 includes/transactions.php:1073
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:96 includes/caps.php:90
 #: includes/cold-storage.php:114 includes/json-api.php:305
-#: includes/json-api.php:339 includes/transactions.php:800
-#: includes/transactions.php:979 includes/transactions.php:999
-#: includes/transactions.php:1019 includes/transactions.php:1038
-#: includes/transactions.php:1058 includes/transactions.php:1080
+#: includes/json-api.php:339 includes/transactions.php:797
+#: includes/transactions.php:976 includes/transactions.php:996
+#: includes/transactions.php:1016 includes/transactions.php:1035
+#: includes/transactions.php:1055 includes/transactions.php:1077
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -96,8 +96,8 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: includes/admin-menu.php:37 includes/wallets-core.php:240
-#: includes/wallets-core.php:250
+#: includes/admin-menu.php:37 includes/wallets-core.php:243
+#: includes/wallets-core.php:253
 msgid "Wallets"
 msgstr ""
 
@@ -235,7 +235,7 @@ msgstr ""
 msgid "Installed"
 msgstr ""
 
-#: includes/admin-user.php:35
+#: includes/admin-user.php:38
 msgid "Base currency"
 msgstr ""
 
@@ -911,10 +911,10 @@ msgstr ""
 #: includes/json-api.php:131 includes/json-api.php:161
 #: includes/json-api.php:240 includes/json-api.php:273
 #: includes/json-api.php:299 includes/json-api.php:333
-#: includes/transactions.php:754 includes/wallets-core.php:662
-#: includes/wallets-core.php:756 includes/wallets-core.php:810
-#: includes/wallets-core.php:866 includes/wallets-core.php:939
-#: includes/wallets-core.php:1084 includes/wallets-core.php:1230
+#: includes/transactions.php:751 includes/wallets-core.php:665
+#: includes/wallets-core.php:800 includes/wallets-core.php:854
+#: includes/wallets-core.php:910 includes/wallets-core.php:983
+#: includes/wallets-core.php:1128 includes/wallets-core.php:1274
 msgid "Not allowed"
 msgstr ""
 
@@ -1373,118 +1373,118 @@ msgid ""
 "system."
 msgstr ""
 
-#: includes/transactions.php:783
+#: includes/transactions.php:780
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: includes/transactions.php:820
+#: includes/transactions.php:817
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:828
+#: includes/transactions.php:825
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:241 includes/wallets-core.php:251
+#: includes/wallets-core.php:244 includes/wallets-core.php:254
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:242 includes/wallets-core.php:252
+#: includes/wallets-core.php:245 includes/wallets-core.php:255
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:425
+#: includes/wallets-core.php:428
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:431
+#: includes/wallets-core.php:434
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:510
+#: includes/wallets-core.php:513
 msgid ""
 "You are using WordPress %s. This plugin has been tested with %s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:603
+#: includes/wallets-core.php:606
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:604
+#: includes/wallets-core.php:607
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:605
+#: includes/wallets-core.php:608
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:606
+#: includes/wallets-core.php:609
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:607
+#: includes/wallets-core.php:610
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:608
+#: includes/wallets-core.php:611
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:609
+#: includes/wallets-core.php:612
 msgid "Supports cURL"
 msgstr ""
 
-#: includes/wallets-core.php:610
+#: includes/wallets-core.php:613
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:611
+#: includes/wallets-core.php:614
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:612
+#: includes/wallets-core.php:615
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:624
+#: includes/wallets-core.php:627
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:669
+#: includes/wallets-core.php:672
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:673
+#: includes/wallets-core.php:676
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
-#: includes/wallets-core.php:977
+#: includes/wallets-core.php:1021
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/wallets-core.php:1001
+#: includes/wallets-core.php:1045
 msgid "Must withdraw positive amount"
 msgstr ""
 
-#: includes/wallets-core.php:1007 includes/wallets-core.php:1123
+#: includes/wallets-core.php:1051 includes/wallets-core.php:1167
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: includes/wallets-core.php:1088
+#: includes/wallets-core.php:1132
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/wallets-core.php:1117
+#: includes/wallets-core.php:1161
 msgid "Must move positive amount"
 msgstr ""
 
