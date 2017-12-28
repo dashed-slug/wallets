@@ -584,7 +584,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					if ( isset( $obj->success ) && $obj->success ) {
 						if ( isset( $obj->result ) && is_array( $obj->result ) ) {
 							foreach ( $obj->result as $market ) {
-								$cryptos[] = $market->MarketCurrency;
+								$s = $market->MarketCurrency;
+								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
 							}
 						}
 					}
@@ -601,7 +602,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					foreach ( $obj as $marketname => $market ) {
 						foreach ( explode( '_', $marketname ) as $s ) {
 							if ( 'USDT' != $s ) {
-								$cryptos[] = $s;
+								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
 							}
 						}
 					}
@@ -638,7 +639,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						foreach ( $obj->pairs as $marketname => $market ) {
 							foreach ( explode( '_', strtoupper( $marketname ) ) as $s ) {
 								if ( 'RUR' !== $s && 'USD' !== $s ) {
-									$cryptos[] = $s;
+									$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
 								}
 							}
 						}
@@ -714,6 +715,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						foreach ( $obj->result as $market ) {
 							$m = str_replace( '-', '_', $market->MarketName );
 							$m = str_replace( 'USDT', 'USD', $m );
+							$m = str_replace( 'BCC', 'BCH', $m );
 							$rates[ $m ] = $market->Last;
 						}
 					}
@@ -746,7 +748,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( false !== $json ) {
 					$obj = json_decode( $json );
 					foreach ( $obj as $market_name => $market ) {
-						$rates[ $market_name ] = $market->last;
+						$m = str_replace( 'BCC', 'BCH', $market_name );
+						$rates[ $m ] = $market->last;
 					}
 				}
 			}
@@ -774,7 +777,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( 'yobit' == $provider ) {
 				$market_names = array();
 				foreach ( array_keys( Dashed_Slug_Wallets::get_instance()->get_coin_adapters() ) as $symbol ) {
-					if ( 'BTC' != $symbol ) {
+					if ( 'BCH' == $symbol ) {
+						$market_names[] = 'bcc_btc';
+					} elseif ( 'BTC' != $symbol ) {
 						$market_names[] = strtolower( "{$symbol}_btc" );
 					}
 				}
@@ -787,6 +792,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						foreach ( $obj as $market_name => $market ) {
 							if ( preg_match( '/^([^_]+)_([^_]+)$/', $market_name, $matches ) ) {
 								$m = strtoupper( $matches[2] . '_' . $matches[1] );
+								$m = str_replace( 'BCC', 'BCH', $m );
 								$rates[ $m ] = $market->last;
 							}
 						}

@@ -630,7 +630,9 @@ NOTIFICATION
 				'wallets_email_move_send_enabled',
 				'wallets_email_move_send_failed_enabled',
 				'wallets_email_move_receive_enabled',
-				'wallets_email_deposit_enabled'
+				'wallets_email_deposit_enabled',
+				'wallets_email_enabled',
+				'wallets_buddypress_enabled',
 			) as $checkbox_option_slug ) {
 				Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			}

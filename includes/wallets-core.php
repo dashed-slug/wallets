@@ -114,8 +114,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		public function load_textdomain() {
-			load_plugin_textdomain( 'wallets', false, '/wallets/languages' );
-			load_plugin_textdomain( 'wallets-front', false, '/wallets/languages' );
+			load_plugin_textdomain( 'wallets', false, 'wallets/languages' );
+			load_plugin_textdomain( 'wallets-front', false, 'wallets/languages' );
 		}
 
 		/**
@@ -181,7 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.11.1',
+					'2.11.2',
 					true
 				);
 
@@ -213,7 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.11.1',
+					'2.11.2',
 					true
 				);
 
@@ -227,7 +227,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.11.1'
+					'2.11.2'
 				);
 			}
 		}
@@ -603,8 +603,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.11.1';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '8467472';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.11.2';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '09a636c';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );

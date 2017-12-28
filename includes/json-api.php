@@ -352,7 +352,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						}
 						$response['result'] = 'success';
 					} else {
-						throw new Exception( sprintf( __( 'Unknown action %s specified', 'wallets' ), $action) );
+						// unknown action. maybe some extension will handle it?
+						return;
 					}
 
 				} catch ( Exception $e ) {

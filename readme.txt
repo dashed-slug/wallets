@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 2.11.1
+Stable tag: 2.11.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.11.2 =
+- Fix: Prices for Bitcoin cash reported by some exchanges as "BCC" are now changed to "BCH" to avoid confusion with BitConnect.
+- Fix: Bug when saving buddypress notifications in multisite.
+- Change: JSON API now does not throw when encountering an unknown action. Allows for extensions to define their own actions.
 
 = 2.11.1 =
 - Fix: Deposit fees were not being inserted to the DB (would affect the CoinPayments adapter).
@@ -700,7 +705,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.11.1 is a bug-fix release. Additionally, the troubleshooting section of the accompanying PDF documentation has been expanded.
+Version 2.11.2 is a bug-fix release.
 
 == Donating ==
 
