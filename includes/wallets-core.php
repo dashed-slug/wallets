@@ -181,7 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.11.2',
+					'2.12.0',
 					true
 				);
 
@@ -195,11 +195,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					$base_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
 				}
 				if ( ! $base_symbol ) {
-					$base_symbol = 'USD';
+					$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 				}
 				wp_localize_script( 'wallets_ko', 'walletsUserData', array(
-						'baseSymbol' => $base_symbol,
-					) );
+					'baseSymbol' => $base_symbol,
+					'pollIntervalCoinInfo' => Dashed_Slug_wallets::get_option( 'wallets_poll_interval_coin_info', 5 ),
+					'pollIntervalTransactions' => Dashed_Slug_wallets::get_option( 'wallets_poll_interval_transactions', 5 ),
+				) );
 
 				wp_enqueue_script( 'wallets_ko' );
 
@@ -213,7 +215,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.11.2',
+					'2.12.0',
 					true
 				);
 
@@ -227,7 +229,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.11.2'
+					'2.12.0'
 				);
 			}
 		}
@@ -603,8 +605,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.11.2';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '09a636c';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.12.0';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '6b859d7';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );

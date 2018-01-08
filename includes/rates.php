@@ -112,6 +112,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			);
 
 			add_settings_field(
+				'wallets_default_base_symbol',
+				__( 'Default fiat currency', 'wallets' ),
+				array( &$this, 'fiat_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'label_for' => 'wallets_default_base_symbol',
+					'description' => __( 'Users will be shown all cryptocurrency amounts in a fiat currency too for convenience. ' .
+						'Here you can change the default fiat currency. ' .
+						'Users can override this setting in their WordPress profile pages.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_default_base_symbol'
+			);
+
+			add_settings_field(
 				'wallets_rates_tor_enabled',
 				__( 'Use tor to pull exchange rates', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
@@ -277,6 +296,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			Dashed_Slug_Wallets::update_option( 'wallets_rates_provider', filter_input( INPUT_POST, 'wallets_rates_provider', FILTER_SANITIZE_STRING )  );
 			Dashed_Slug_Wallets::update_option( 'wallets_rates_cache_expiry', filter_input( INPUT_POST, 'wallets_rates_cache_expiry', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_default_base_symbol', filter_input( INPUT_POST, 'wallets_default_base_symbol', FILTER_SANITIZE_STRING ) );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-rates', network_admin_url( 'admin.php' ) ) );
 			exit;
@@ -413,6 +433,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			<?php
 		}
 
+		public function fiat_cb( $arg ) {
+			$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+			$fiats = array_unique( Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array( 'USD' ) ) ); ?>
+
+			<select
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>">
+
+				<?php foreach ( $fiats as $fiat ): ?>
+				<option
+					<?php if ( $fiat == $base_symbol): ?> selected="selected"<?php endif; ?>
+					value="<?php echo esc_attr( $fiat ); ?>">
+					<?php echo esc_html( $fiat ); ?>
+				</option>
+				<?php endforeach; ?>
+			</select>
+
+			<p
+				class="description"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
+				<?php echo $arg['description']; ?></p>
+			<?php
+
+		}
+
 		public function wallets_rates_section_cb() {
 			?><p><?php echo sprintf(
 					__( 'App extensions, such as the <a href="%s">WooCommerce</a> and <a href="%s">Events Manager</a> payment gateways, use exchange rates for price calculation. ' .
@@ -447,6 +492,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled', '' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip', '127.0.0.1' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_port', 9050 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_default_base_symbol', 'USD' );
 		}
 
 		public static function action_shutdown() {

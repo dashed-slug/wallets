@@ -1,204 +1,161 @@
-# Copyright (C) 2018 dashed-slug <info@dashed-slug.net>
+# Copyright (C) 2017 dashed-slug <info@dashed-slug.net>
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.12.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.10.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-01-08 11:58:33+00:00\n"
+"POT-Creation-Date: 2017-12-06 14:03:13+00:00\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n1.0.1\n"
-
-#: includes/sidebar-widgets.php:35
-msgid "Deposit to wallet"
-msgstr ""
-
-#: includes/sidebar-widgets.php:39
-msgid "Withdraw from wallet"
-msgstr ""
-
-#: includes/sidebar-widgets.php:43
-msgid "Transfer to user wallet"
-msgstr ""
-
-#: includes/sidebar-widgets.php:47
-msgid "Wallet balance"
-msgstr ""
-
-#: includes/sidebar-widgets.php:51
-msgid "Wallet transactions"
-msgstr ""
-
-#: includes/sidebar-widgets.php:108
-msgid ""
-"A form that will let the user know which address they can send coins to if "
-"they wish to make a deposit."
-msgstr ""
-
-#: includes/sidebar-widgets.php:119
-msgid "A form that will let the user withdraw funds."
-msgstr ""
-
-#: includes/sidebar-widgets.php:130
-msgid "A form that lets the user transfer coins to other users on your site."
-msgstr ""
-
-#: includes/sidebar-widgets.php:141
-msgid "The current user's balances in all enabled coins."
-msgstr ""
-
-#: includes/sidebar-widgets.php:152
-msgid ""
-"An interactive table that shows past deposits, withdrawals and transfers "
-"for the user."
-msgstr ""
+"PO-Revision-Date: 2018-01-03 13:07+0200\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.9\n"
+"Last-Translator: Ed <support@2gogifts.com>\n"
+"Language: ar\n"
 
 #: includes/views/balance.php:4 includes/views/deposit.php:4
 #: includes/views/move.php:4 includes/views/transactions.php:4
 #: includes/views/withdraw.php:4
 msgid "Coin"
-msgstr ""
+msgstr "عملة"
 
 #: includes/views/balance.php:5
 msgid "Balance"
-msgstr ""
+msgstr "الرصيد"
 
 #: includes/views/deposit.php:6
 msgid "Deposit address"
-msgstr ""
+msgstr "عنوان الايداع"
 
 #: includes/views/move.php:5
 msgid "Recipient user"
-msgstr ""
+msgstr "المتلقي"
 
 #: includes/views/move.php:6 includes/views/withdraw.php:6
 msgid "Amount"
-msgstr ""
+msgstr "المبلغ"
 
-#: includes/views/move.php:7 includes/views/withdraw.php:7
-msgid "Fee (deducted from amount)"
-msgstr ""
-
-#: includes/views/move.php:8
+#: includes/views/move.php:7
 msgid "Transfer comment"
-msgstr ""
+msgstr "تقييم"
+
+#: includes/views/move.php:8 includes/views/withdraw.php:7
+msgid "Fee (deducted from amount)"
+msgstr "رسوم (يخصم من المبلغ)"
 
 #: includes/views/move.php:12 includes/views/withdraw.php:11
 msgid "Send"
-msgstr ""
+msgstr "ارسل"
 
 #: includes/views/move.php:13 includes/views/withdraw.php:12
 msgid "Reset form"
-msgstr ""
+msgstr "مسح الحقول"
 
 #: includes/views/transactions.php:5
 msgid "Rows per page"
-msgstr ""
+msgstr "الصفوف في الصفحة"
 
 #: includes/views/transactions.php:6
 msgid "Page"
-msgstr ""
+msgstr "صفحة"
 
 #: includes/views/transactions.php:10
 msgid "Type"
-msgstr ""
+msgstr "اكتب"
 
 #: includes/views/transactions.php:11
 msgid "Tags"
-msgstr ""
+msgstr "الكلمات"
 
 #: includes/views/transactions.php:12
 msgid "Time"
-msgstr ""
+msgstr "الوقت"
 
 #: includes/views/transactions.php:13
 msgid "Amount (+fee)"
-msgstr ""
+msgstr "المبلغ (+ الرسوم)."
 
 #: includes/views/transactions.php:14
 msgid "Fee"
-msgstr ""
+msgstr "رسوم"
 
 #: includes/views/transactions.php:15
 msgid "From"
-msgstr ""
+msgstr "من"
 
 #: includes/views/transactions.php:16
 msgid "To"
-msgstr ""
+msgstr "إلى"
 
 #: includes/views/transactions.php:17
 msgid "Tx ID"
-msgstr ""
+msgstr "معرف Tx"
 
 #: includes/views/transactions.php:18
 msgid "Comment"
-msgstr ""
+msgstr "تعليق"
 
 #: includes/views/transactions.php:19
 msgid "Confirmations"
-msgstr ""
+msgstr "تأكيدات"
 
 #: includes/views/transactions.php:20
 msgid "Status"
-msgstr ""
+msgstr "الحالة"
 
 #: includes/views/transactions.php:21
 msgid "Retries&nbsp;left"
-msgstr ""
+msgstr "اعادة&nbsp;باقية"
 
 #: includes/views/transactions.php:24
 msgid "Admin&nbsp;confirm"
-msgstr ""
+msgstr "المشرف&nbsp;للتفعيل"
 
 #: includes/views/transactions.php:27
 msgid "User&nbsp;confirm"
-msgstr ""
+msgstr "الزبون&nbsp;للتفعيل"
 
-#: includes/views/transactions.php:38 includes/views/transactions.php:67
-#: includes/views/transactions.php:90 includes/views/transactions.php:91
+#: includes/views/transactions.php:38 includes/views/transactions.php:61
+#: includes/views/transactions.php:82 includes/views/transactions.php:83
 msgid "me"
-msgstr ""
+msgstr "انا"
 
 #: includes/views/withdraw.php:5
 msgid "Withdraw to address"
-msgstr ""
+msgstr "عنوان الايداع"
 
 #: includes/views/withdraw.php:8
 msgid "Transaction comment"
-msgstr ""
+msgstr "تقييم المعاملة "
 
 #: includes/wallets-ko-i18n.php:5
 msgid "Successfully submitted a transaction request of %s %s"
-msgstr ""
+msgstr "تم تحويل دفعة من المطلوب %s %s"
 
 #: includes/wallets-ko-i18n.php:6
 msgid "Successfully submitted a withdrawal request of %s %s to %s"
-msgstr ""
+msgstr "تم تحويل دفعة من المسحوبات %s %s to %s"
 
 #: includes/wallets-ko-i18n.php:7
 msgid "Wallet operation failed due to an unexpected error"
-msgstr ""
+msgstr "لم تتم العملية بسبب خطاء غير معروف "
 
 #: includes/wallets-ko-i18n.php:8
 msgid "Wallet operation failed: %s"
-msgstr ""
+msgstr "عدم اتمام  عملية المحفظة : %s"
 
 #: includes/wallets-ko-i18n.php:9
 msgid "Could not contact server. Status: %s Error: %s"
-msgstr ""
+msgstr "عدم امكانية الاتصال بالخادم . الحالة: %s  الخطاء : %s"
 
 #: includes/wallets-ko-i18n.php:10
 msgid "Check to see if you have typed the address correctly!"
-msgstr ""
+msgstr "دقق العنوان ان كان مكتوباً بشكل صحيح!"
 
 #. Plugin Name of the plugin/theme
 msgid "Bitcoin and Altcoin Wallets"
-msgstr ""
+msgstr "محفظات البيتكوين و العملات الالكترونية الاخرى"
 
 #. Plugin URI of the plugin/theme
 msgid "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin"
@@ -209,6 +166,8 @@ msgid ""
 "Turn your blog into a bank: Let your users deposit, withdraw, and transfer "
 "bitcoins and altcoins on your site."
 msgstr ""
+"تحويل مدونتك إلى مصرف: السماح للمستخدمين بإيداع وسحب ونقل بيتكوينز و "
+"ألتسوانز على موقعك."
 
 #. Author of the plugin/theme
 msgid "dashed-slug <info@dashed-slug.net>"

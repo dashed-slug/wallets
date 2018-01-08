@@ -1,5 +1,13 @@
 [
 	{
+		"name": "ShapeShift Exchange extension",
+		"description": "Lets your users exchange cryptocurrencies using ShapeShift.io from within your website.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/shapeshift-extension-support",
+		"slug": "wallets-shapeshift"
+	},
+
+	{
 		"name": "Author Payroll extension",
 		"description": "Pay your article authors with cryptocurrencies based on Google Analytics metrics.",
 		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension",

@@ -328,7 +328,9 @@ CFG;
 				"$comment_to"
 			);
 
-			$this->rpc->walletlock();
+			if ( $passphrase ) {
+				$this->rpc->walletlock();
+			}
 
 			if ( false === $result ) {
 				throw new Exception( sprintf( __( '%s->%s() failed to send with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );

@@ -186,8 +186,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->balance = $core->get_balance( $symbol );
 
 								$base_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
-								if ( !$base_symbol ) {
-									$base_symbol = 'USD';
+								if ( ! $base_symbol ) {
+									$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 								}
 
 								$coin_info->rate = false;
@@ -273,15 +273,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
 							}
 
-						$response['nonces'] = new stdClass();
+						$nonces = new stdClass();
 
 						if ( current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET ) ) {
-							$response['nonces']->do_withdraw = wp_create_nonce( 'wallets-do-withdraw' );
+							$nonces->do_withdraw = wp_create_nonce( 'wallets-do-withdraw' );
 						}
 
 						if ( current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER ) ) {
-							$response['nonces']->do_move = wp_create_nonce( 'wallets-do-move' );
+							$nonces->do_move = wp_create_nonce( 'wallets-do-move' );
 						}
+
+						$response['nonces'] = apply_filters( 'wallets_api_nonces', $nonces );
 						$response['result'] = 'success';
 
 					} elseif ( 'do_withdraw' == $action ) {

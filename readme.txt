@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 2.11.2
+Stable tag: 2.12.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,7 @@ this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wo
 
 Here are all the currently available premium app extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
 
+- [ShapeShift Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/)
 - [Author Payroll extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension/)
 - [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/)
 - [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
@@ -77,7 +78,6 @@ Premium members also get auto-updates for any installed extensions. [Instruction
 
 = And here's a preview of what is to come: =
 
-- A way to exchange between various currencies using the CoinPayments API.
 - An interest-paying plugin for investment-type sites.
 - Plugins that **[reward user engagement](https://en.wikipedia.org/wiki/Gamification)**.
 - An **[ad exchange](https://en.wikipedia.org/wiki/Ad_exchange)** plugin to enable administrators to sell ad spaces and
@@ -347,6 +347,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.12.0 =
+- Add: Frontend now displays up-to-date information via polling. Polling intervals are controlled by the admin.
+- Change: The QR-code on/off switch is now found in the new *Frontend Settings* admin screen.
+- Add: Admin can now choose a default fiat currency for users who have not made a selection in their WordPress profile screens.
+- Fix: Error when withdrawing from unlocked RPC wallets (i.e. without a passphrase)
+- Add: Arabic language translation for frontend contributed by Ed <support@2gogifts.com>
+- Improve: Nonces API is now filterable by extensions. Filter name is: `wallets_api_nonces`.
 
 = 2.11.2 =
 - Fix: Prices for Bitcoin cash reported by some exchanges as "BCC" are now changed to "BCH" to avoid confusion with BitConnect.
@@ -705,7 +713,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.11.2 is a bug-fix release.
+Version 2.12.0 introduces live updating in the frontend and also includes some bug fixes.
 
 == Donating ==
 

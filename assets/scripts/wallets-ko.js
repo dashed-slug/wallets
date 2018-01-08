@@ -19,7 +19,7 @@
 		};
 
 		var serverErrorHandler = function( response ) {
-			if ( typeof(response.result) == 'string') {
+			if ( typeof(response.result) == 'string' ) {
 				if ( response.result == 'error' ) {
 					alert( sprintf( wallets_ko_i18n.op_failed_msg, response.message ) );
 				} else {
@@ -29,14 +29,16 @@
 		};
 
 		// the knockout viewmodel
-
 		function WalletsViewModel() {
 			var self = this;
 
 			// currently selected coin. all views are synchronized to show this coin.
 			self.selectedCoin = ko.observable();
 
-			self.coins = ko.computed( function() {
+			// the structure that describes online coins and the user balance for those coins
+			self.coins = ko.observable( [] );
+
+			self.loadCoins = function() {
 				var coins = [];
 				$.ajax({
 					dataType: 'json',
@@ -55,9 +57,10 @@
 					error: xhrErrorHandler
 				});
 
-				return coins;
-			});
+				self.coins( coins );
+			};
 
+			// balance of the currently selected coin, string-formatted for that coin
 			self.currentCoinBalance = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
@@ -68,6 +71,7 @@
 				return '';
 			});
 
+			// balance of the currently selected coin, in a fiat currency, string-formatted for that currency
 			self.currentCoinBaseBalance = ko.computed( function() {
 				if ( walletsUserData.baseSymbol ) {
 					var coins = self.coins();
@@ -82,6 +86,7 @@
 				return '';
 			});
 
+			// the nonces necessary to perform actions over the JSON API
 			self.nonces = ko.computed( function() {
 				var nonces = [];
 				$.ajax({
@@ -101,7 +106,7 @@
 				return nonces;
 			});
 
-			// [wallets_deposit] shortcode
+			// draws the qr code on the [wallets_deposit] shortcode
 			if ( 'function' === typeof ( jQuery.fn.qrcode ) ) {
 				self.selectedCoin.subscribe( function() {
 					if ( 'undefined' !== typeof( self.coins ) ) {
@@ -124,6 +129,7 @@
 				} );
 			}
 
+			// the deposit address for the currently selected coin
 			self.currentCoinDepositAddress = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
@@ -134,6 +140,7 @@
 				return '';
 			});
 
+			// the deposit address extra field (e.g. payment id for XMR or XRP), for the currently selected coin, or empty if n/a
 			self.currentCoinDepositExtra = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
@@ -148,19 +155,13 @@
 				return '';
 			});
 
-			self.withdrawExtraDesc = ko.computed( function() {
-				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						return coins[ coin ].extra_desc;
-					}
-				}
-				return false; // use default
-			});
-
-			// [wallets_move] shortcode
+			// destination user id, for the move form
 			self.moveUser = ko.observable();
+
+			// amount to transact, for the move form
 			self.moveAmount = ko.observable();
+
+			// amount to transact, string-formatted in the user's choice of fiat currency
 			self.moveBaseAmount = ko.computed( function( ) {
 				if ( walletsUserData.baseSymbol ) {
 					var coins = self.coins();
@@ -174,7 +175,12 @@
 				}
 				return '';
 			});
+
+			// comment to attach to internal transfer, used in the [wallets_move] form
 			self.moveComment = ko.observable();
+
+			// fee to pay for the internal transaction, used in the [wallets_move] form.
+			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
 			self.moveFee = ko.computed( function( ) {
 				var coins = self.coins();
 				for ( var coin in coins ) {
@@ -194,8 +200,8 @@
 				}
 				return ['',''];
 			});
-			self.move_fee = self.moveFee; // backwards compatibility
 
+			// list of users, used in the [wallets_move] form.
 			self.users = ko.computed( function() {
 				var users = [];
 				$.ajax({
@@ -222,6 +228,7 @@
 				return users;
 			} );
 
+			// the move action that performs internal transfer requests. runs when the button is hit in the [wallets_move] form
 			self.doMove = function( form ) {
 				var user = self.moveUser().id,
 					amount = self.moveAmount(),
@@ -250,6 +257,8 @@
 							user,
 							comment
 						] );
+
+						self.loadTransactions();
 					},
 					error: xhrErrorHandler
 				});
@@ -269,6 +278,7 @@
 				} );
 			};
 
+			// withdraw address, used in the [wallets_withdraw] form
 			self.withdrawAddress = ko.observable().extend({
 				validation: [{
 						validator: function( val ) {
@@ -286,7 +296,10 @@
 				}]
 			});
 
+			// withdraw amount, used in the [wallets_withdraw] form
 			self.withdrawAmount = ko.observable();
+
+			// withdraw amount in user's choice of fiat currency, string-formatted. used in the [wallets_withdraw] form
 			self.withdrawBaseAmount = ko.computed( function( ) {
 				if ( walletsUserData.baseSymbol ) {
 					var coins = self.coins();
@@ -300,9 +313,26 @@
 				}
 				return '';
 			});
+
+			// comment to attach to a withdrawal, used in the [wallets_withdraw] form
 			self.withdrawComment = ko.observable();
+
+			// withdraw address extra field (e.g. payment id for XMR or XRP), for the currently selected coin, or empty if n/a, used in the [wallets_withdraw] form
 			self.withdrawExtra = ko.observable();
 
+			// the label text describing what the "payment id" extra field is, used in the [wallets_withdraw] form
+			self.withdrawExtraDesc = ko.computed( function() {
+				var coins = self.coins();
+				for ( var coin in coins ) {
+					if ( coins[ coin ].symbol == self.selectedCoin() ) {
+						return coins[ coin ].extra_desc;
+					}
+				}
+				return false; // use default
+			});
+
+
+			// fee to be paid in a withdrawal, used in the [wallets_withdraw] form
 			self.withdrawFee = ko.computed( function() {
 				var coins = self.coins();
 				for ( var coin in coins ) {
@@ -322,8 +352,8 @@
 				}
 				return '';
 			});
-			self.withdraw_fee = self.withdrawFee;
 
+			// the withdraw action. activated when the button is clicked
 			self.doWithdraw = function( form ) {
 				var address = self.withdrawAddress(),
 					symbol = self.selectedCoin(),
@@ -353,6 +383,8 @@
 							comment,
 							extra
 						] );
+
+						self.loadTransactions();
 					},
 					error: xhrErrorHandler
 				});
@@ -365,12 +397,18 @@
 				self.withdrawExtra( '' );
 			};
 
-			// [wallets_transactions] shortcode
 
+			// current page number in the [wallets_transactions] view
 			self.currentPage = ko.observable().extend({ throttle: 500, notify: 'always' });
+
+			// how many rows to show per page, in the [wallets_transactions] view
 			self.rowsPerPage = ko.observable(10).extend({ throttle: 500 });
 
-			self.transactions = ko.computed( function() {
+			// a page of transactions to show in the [wallets_transactions] view
+			self.transactions = ko.observable( [] );
+
+			// action that loads a page of transactions for the [wallets_transactions] view
+			self.loadTransactions = function() {
 				var page = parseInt( self.currentPage() );
 				var count = self.rowsPerPage();
 				var from = ( page -1) * count;
@@ -439,8 +477,12 @@
 					error: xhrErrorHandler
 				});
 
-				return transactions;
-			});
+				self.transactions( transactions );
+			};
+
+			self.selectedCoin.subscribe( self.loadTransactions );
+			self.currentPage.subscribe( self.loadTransactions );
+			self.rowsPerPage.subscribe( self.loadTransactions );
 		}
 
 		// init the viewmodel
@@ -456,7 +498,7 @@
 		};
 
 		// bind the viewmodel
-		$('.dashed-slug-wallets').filter( '.deposit,.withdraw,.move,.balance,.transactions' ).each( function( i, el ) {
+		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions' ).each( function( i, el ) {
 			ko.applyBindings( walletsViewModel, el );
 		} );
 
@@ -468,7 +510,7 @@
 
 		// handle the bubbling events on move or withdraw response from server
 
-		$('html').on( 'wallets_do_move wallets_do_withdraw', function( event, response ) {
+		$( 'html' ).on( 'wallets_do_move wallets_do_withdraw', function( event, response ) {
 			if ( response.result != 'success' ) {
 				// on error show the message and stop event propagation
 				serverErrorHandler( response );
@@ -479,20 +521,50 @@
 			}
 		});
 
-		$('html').on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
+		$( 'html' ).on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
 			if ( response.result == 'success' ) {
 				walletsViewModel.resetMove();
 				alert( sprintf( wallets_ko_i18n.submit_tx, amount, symbol ) );
 			}
 		});
 
-		$('html').on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
+		$( 'html' ).on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
 			if ( response.result == 'success' ) {
 				walletsViewModel.resetWithdraw();
 				alert( sprintf( wallets_ko_i18n.submit_wd, amount, symbol, address ) );
 			}
 		});
 
+		// one second after doc ready, load coins and start interval
+		setTimeout( function() {
+			walletsViewModel.loadCoins();
+
+			setInterval( function() {
+				if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
+					return;
+				}
+				walletsViewModel.loadCoins();
+			}, walletsUserData.pollIntervalCoinInfo * 60 * 1000 );
+		}, 1000 );
+
+		// two seconds after doc ready, load coins and start interval
+		setTimeout( function() {
+			walletsViewModel.loadTransactions();
+
+			setInterval( function() {
+				if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
+					return;
+				}
+				walletsViewModel.loadTransactions();
+			}, walletsUserData.pollIntervalTransactions * 60 * 1000 );
+		}, 2000 );
+
+		// load coin data again when gaining visibility
+		window.document.addEventListener( 'visibilitychange', function() {
+			if ( ! window.document.hidden ) {
+				walletsViewModel.loadCoins();
+			}
+		});
 
 	} );
 })( jQuery );

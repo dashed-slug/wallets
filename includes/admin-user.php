@@ -24,7 +24,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 			$base_symbol = get_the_author_meta( 'wallets_base_symbol', $profileuser->ID, true );
 			if ( ! $base_symbol ) {
-				$base_symbol = 'USD';
+				$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			}
 			$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array() );
 
@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 									</option>
 								<?php endforeach; ?>
 							</select>
-							<p class="description"><?php esc_html_e( 'Cryptocurrency amounts will display equivalent amounts ' .
-								'in this currency on mouse hover.', 'wallets' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Cryptocurrency amounts will also be displayed as the ' .
+								'equivalent amount in this currency.', 'wallets' ); ?></p>
 
 						</td>
 					</tr>

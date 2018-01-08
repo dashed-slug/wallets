@@ -83,6 +83,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_rates_tor_enabled' );
 	wallets_delete_option( 'wallets_rates_tor_ip' );
 	wallets_delete_option( 'wallets_rates_tor_port' );
+	wallets_delete_option( 'wallets_default_base_symbol' );
 
 	// remove exchange rate data
 	wallets_delete_option( 'wallets_rates' );
@@ -108,8 +109,10 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( "{$option_slug}-fees-withdraw-proportional" );
 	wallets_delete_option( "{$option_slug}-other-minconf" );
 
-	// remove qr code settings
+	// remove frontend settings
 	wallets_delete_option( 'wallets_qrcode_enabled' );
+	wallets_delete_option( 'wallets_poll_interval_transactions' );
+	wallets_delete_option( 'wallets_poll_interval_coin_info' );
 
 	// remove db schema revision
 	wallets_delete_option( 'wallets_db_revision' );
