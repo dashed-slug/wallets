@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.12.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.12.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-01-08 11:58:33+00:00\n"
+"POT-Creation-Date: 2018-01-18 13:35:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,7 +115,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:78 includes/cold-storage.php:309
-#: includes/cold-storage.php:322 includes/rates.php:354
+#: includes/cold-storage.php:322 includes/rates.php:356
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -1204,17 +1204,17 @@ msgstr ""
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/rates.php:268
+#: includes/rates.php:270
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: includes/rates.php:317
+#: includes/rates.php:319
 msgid ""
 "Disabled. (New exchange rate data will not be downloaded. Some plugin "
 "extensions may not work as expected.)"
 msgstr ""
 
-#: includes/rates.php:472
+#: includes/rates.php:474
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."

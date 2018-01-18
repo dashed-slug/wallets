@@ -43,14 +43,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			add_filter( 'pre_update_option_wallets_rates', array( $this, 'filter_pre_update_option_if_data' ), 10, 2 );
 			add_filter( 'pre_update_option_wallets_rates_cryptos', array( $this, 'filter_pre_update_option_if_data' ), 10, 2 );
 			add_filter( 'pre_update_option_wallets_rates_fiats', array( $this, 'filter_pre_update_option_if_data' ), 10, 2 );
+
 		}
 
 		// Admin UI
 
 		public static function load_data() {
-			if ( ! self::$providers ) {
-				self::$providers = apply_filters( 'wallets_rates_providers', array() );
-			}
+			self::$providers = apply_filters( 'wallets_rates_providers', self::$providers );
+
 			if ( ! self::$rates ) {
 				self::$rates = Dashed_Slug_Wallets::get_option( 'wallets_rates', array() );
 			}
@@ -264,6 +264,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
+
+			self::load_data();
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Exchange Rates settings', 'wallets' ); ?></h1>
 

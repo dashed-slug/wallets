@@ -58,6 +58,7 @@
 				});
 
 				self.coins( coins );
+				self.updateQrCode();
 			};
 
 			// balance of the currently selected coin, string-formatted for that coin
@@ -106,27 +107,29 @@
 				return nonces;
 			});
 
-			// draws the qr code on the [wallets_deposit] shortcode
-			if ( 'function' === typeof ( jQuery.fn.qrcode ) ) {
-				self.selectedCoin.subscribe( function() {
-					if ( 'undefined' !== typeof( self.coins ) ) {
-						var $qrnode = $( '.dashed-slug-wallets.deposit .qrcode' );
-						$qrnode.empty();
+			self.updateQrCode = function() {
+				if ( 'undefined' !== typeof( self.coins ) ) {
+					var $qrnode = $( '.dashed-slug-wallets.deposit .qrcode' );
+					$qrnode.empty();
 
-						var coins = self.coins();
-						for ( var coin in coins ) {
-							if ( coins[ coin ].symbol == self.selectedCoin() ) {
+					var coins = self.coins();
+					for ( var coin in coins ) {
+						if ( coins[ coin ].symbol == self.selectedCoin() ) {
 
-								if ( coins[ coin ].deposit_address_qrcode_uri ) {
-									$qrnode.qrcode( {
-										text: coins[ coin ].deposit_address_qrcode_uri
-									} );
-								}
-								return;
+							if ( coins[ coin ].deposit_address_qrcode_uri ) {
+								$qrnode.qrcode( {
+									text: coins[ coin ].deposit_address_qrcode_uri
+								} );
 							}
+							return;
 						}
 					}
-				} );
+				}
+			};
+
+			// draws the qr code on the [wallets_deposit] shortcode
+			if ( 'function' === typeof ( jQuery.fn.qrcode ) ) {
+				self.selectedCoin.subscribe( self.updateQrCode );
 			}
 
 			// the deposit address for the currently selected coin
@@ -163,12 +166,16 @@
 
 			// amount to transact, string-formatted in the user's choice of fiat currency
 			self.moveBaseAmount = ko.computed( function( ) {
-				if ( walletsUserData.baseSymbol ) {
-					var coins = self.coins();
-					for ( var coin in coins ) {
-						if ( coins[ coin ].symbol == self.selectedCoin() ) {
-							if ( coins[ coin ].rate ) {
-								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.moveAmount() ) * coins[ coin ].rate );
+				var amount = parseFloat( self.moveAmount() );
+
+				if ( ! isNaN( amount ) ) {
+					if ( walletsUserData.baseSymbol ) {
+						var coins = self.coins();
+						for ( var coin in coins ) {
+							if ( coins[ coin ].symbol == self.selectedCoin() ) {
+								if ( coins[ coin ].rate ) {
+									return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( amount ) * coins[ coin ].rate );
+								}
 							}
 						}
 					}
@@ -188,13 +195,15 @@
 						var fee = parseFloat( coins[ coin ].move_fee );
 						fee += parseFloat( coins[ coin ].move_fee_proportional ) * parseFloat( self.moveAmount() );
 
-						var feeString = sprintf( coins[ coin ].sprintf, fee );
-						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+						if ( ! isNaN( fee ) ) {
+							var feeString = sprintf( coins[ coin ].sprintf, fee );
+							var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
 
-						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-							return [ feeString, feeBaseString ];
-						} else {
-							return [ feeString, '' ];
+							if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+								return [ feeString, feeBaseString ];
+							} else {
+								return [ feeString, '' ];
+							}
 						}
 					}
 				}
@@ -301,12 +310,16 @@
 
 			// withdraw amount in user's choice of fiat currency, string-formatted. used in the [wallets_withdraw] form
 			self.withdrawBaseAmount = ko.computed( function( ) {
-				if ( walletsUserData.baseSymbol ) {
-					var coins = self.coins();
-					for ( var coin in coins ) {
-						if ( coins[ coin ].symbol == self.selectedCoin() ) {
-							if ( coins[ coin ].rate ) {
-								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
+				var amount = parseFloat( self.withdrawAmount() );
+
+				if ( ! isNaN( amount ) ) {
+					if ( walletsUserData.baseSymbol ) {
+						var coins = self.coins();
+						for ( var coin in coins ) {
+							if ( coins[ coin ].symbol == self.selectedCoin() ) {
+								if ( coins[ coin ].rate ) {
+									return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
+								}
 							}
 						}
 					}
@@ -340,13 +353,15 @@
 						var fee = parseFloat( coins[ coin ].withdraw_fee );
 						fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
 
-						var feeString = sprintf( coins[ coin ].sprintf, fee );
-						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+						if ( ! isNaN( fee ) ) {
+							var feeString = sprintf( coins[ coin ].sprintf, fee );
+							var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
 
-						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-							return [ feeString, feeBaseString ];
-						} else {
-							return [ feeString, '' ];
+							if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+								return [ feeString, feeBaseString ];
+							} else {
+								return [ feeString, '' ];
+							}
 						}
 					}
 				}

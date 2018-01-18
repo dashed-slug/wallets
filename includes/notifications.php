@@ -44,7 +44,7 @@ You have withdrawn ###AMOUNT### ###SYMBOL### to address ###ADDRESS###.
 
 Fees paid: ###FEE###
 Transaction ID: ###TXID###
-Transacton created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
@@ -62,7 +62,7 @@ You have attempted to withdraw ###AMOUNT### ###SYMBOL### to address ###ADDRESS##
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Last error message: ###LAST_ERROR###
-Transacton created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
@@ -80,7 +80,7 @@ You have sent ###AMOUNT### ###SYMBOL### from your account to the ###OTHER_ACCOUN
 
 Fees paid: ###FEE###
 Transaction ID: ###TXID###
-Transacton created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -98,7 +98,7 @@ You have attempted to send ###AMOUNT### ###SYMBOL### from your account to the ##
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Transaction ID: ###TXID###
-Transacton created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -115,7 +115,7 @@ NOTIFICATION
 You have received ###AMOUNT### ###SYMBOL### from ###OTHER_ACCOUNT###.
 
 Transaction ID: ###TXID###
-Transacton created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -133,7 +133,7 @@ You have deposited ###AMOUNT### ###SYMBOL### from address ###ADDRESS###.
 Please note that the funds may not be yet available to you before the required amount of network confirmations is reached.
 
 Transaction ID: ###TXID###
-Transacton seen at: ###CREATED_TIME###
+Transaction seen at: ###CREATED_TIME###
 Extra transaction info (optional): ###EXTRA###
 
 NOTIFICATION

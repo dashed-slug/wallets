@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 2.12.0
+Stable tag: 2.12.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.12.1 =
+- Improve: The `[wallets_balance]` shortcode shows fiat amounts below the actual crypto amount, not on mouse hover.
+- Improve: The `[wallets_move]` and `[wallets_withdraw]` shortcodes do not show ugly NaN (Not a Number) values on insufficient data.
+- Fix: The `[wallets_deposit]` shortcode would not show the QR-Code on first page load, before the current coin was changed. Now fixed.
+- Fix: The exchange rates API is now extendable. For sample code see http://adbilty.me/HBVX5tx
 
 = 2.12.0 =
 - Add: Frontend now displays up-to-date information via polling. Polling intervals are controlled by the admin.
@@ -713,7 +719,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.12.0 introduces live updating in the frontend and also includes some bug fixes.
+Version 2.12.1 has some non-critical bug fixes and minor improvements.
 
 == Donating ==
 
