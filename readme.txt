@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 2.12.1
+Stable tag: 2.12.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,6 +347,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.12.2 =
+- Fix: Disallow internal transactions and withdrawals if amount - fees is negative.
+- Fix: 'Invalid amount' error when withdrawing invalid amount to RPC adapters - contributed by https://github.com/itpao25
+- Fix: Better CSS selector specificity in `[wallets_transactions]` rows. Solves issues with some themes.
 
 = 2.12.1 =
 - Improve: The `[wallets_balance]` shortcode shows fiat amounts below the actual crypto amount, not on mouse hover.
@@ -719,7 +724,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.12.1 has some non-critical bug fixes and minor improvements.
+Version 2.12.2 contains bugfixes.
 
 == Donating ==
 

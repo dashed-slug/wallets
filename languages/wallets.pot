@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.12.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.12.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-01-18 13:35:03+00:00\n"
+"POT-Creation-Date: 2018-01-23 11:24:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -450,8 +450,8 @@ msgid ""
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:291 includes/coin-adapter-rpc.php:304
-#: includes/coin-adapter-rpc.php:361 includes/coin-adapter-rpc.php:456
-#: includes/coin-adapter-rpc.php:469 includes/coin-adapter-rpc.php:486
+#: includes/coin-adapter-rpc.php:363 includes/coin-adapter-rpc.php:458
+#: includes/coin-adapter-rpc.php:471 includes/coin-adapter-rpc.php:488
 msgid "%s->%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
@@ -459,11 +459,11 @@ msgstr ""
 msgid "%s->%s() failed to unlock with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:336
+#: includes/coin-adapter-rpc.php:338
 msgid "%s->%s() failed to send with status=\"%s\" and error=\"%s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:410
+#: includes/coin-adapter-rpc.php:412
 msgid "%s::%s() failed with status=\"%s\" and error=\"%s\""
 msgstr ""
 
@@ -1493,8 +1493,8 @@ msgstr ""
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/wallets-core.php:1047
-msgid "Must withdraw positive amount"
+#: includes/wallets-core.php:1047 includes/wallets-core.php:1163
+msgid "Amount after deducting fees must be positive"
 msgstr ""
 
 #: includes/wallets-core.php:1053 includes/wallets-core.php:1169
@@ -1503,10 +1503,6 @@ msgstr ""
 
 #: includes/wallets-core.php:1134
 msgid "Cannot send funds to self"
-msgstr ""
-
-#: includes/wallets-core.php:1163
-msgid "Must move positive amount"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

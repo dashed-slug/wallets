@@ -181,7 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.12.1',
+					'2.12.2',
 					true
 				);
 
@@ -215,7 +215,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.12.1',
+					'2.12.2',
 					true
 				);
 
@@ -229,7 +229,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.12.1'
+					'2.12.2'
 				);
 			}
 		}
@@ -605,8 +605,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.12.1';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '895c54c';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.12.2';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '0a63e74';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
@@ -1043,8 +1043,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$balance = $this->get_balance( $symbol, null, $check_capabilities );
 				$fee = $adapter->get_withdraw_fee() + $amount * $adapter->get_withdraw_fee_proportional();
 
-				if ( $amount <= 0 ) {
-					throw new Exception( __( 'Must withdraw positive amount', 'wallets' ), self::ERR_DO_WITHDRAW );
+				if ( $amount <= $fee ) {
+					throw new Exception( __( 'Amount after deducting fees must be positive', 'wallets' ), self::ERR_DO_WITHDRAW );
 				}
 				if ( $balance < $amount ) {
 					$format = $adapter->get_sprintf();
@@ -1159,8 +1159,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$balance = $this->get_balance( $symbol, null, $check_capabilities, $fromaccount );
 				$fee = $adapter->get_move_fee() + $amount * $adapter->get_move_fee_proportional();
 
-				if ( $amount <= 0 ) {
-					throw new Exception( __( 'Must move positive amount', 'wallets' ), self::ERR_DO_MOVE );
+				if ( $amount <= $fee ) {
+					throw new Exception( __( 'Amount after deducting fees must be positive', 'wallets' ), self::ERR_DO_MOVE );
 				}
 				if ( $balance < $amount ) {
 					$format = $adapter->get_sprintf();

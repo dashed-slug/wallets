@@ -320,8 +320,9 @@ CFG;
 					throw new Exception( sprintf( __( '%s->%s() failed to unlock with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 				}
 			}
-			
-			$amount = number_format((float) $amount, 8, '.', '');
+
+			$amount = number_format( (float) $amount, 8, '.', '' );
+
 			$result = $this->rpc->sendtoaddress(
 				"$address",
 				floatval( $amount ),
