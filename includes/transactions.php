@@ -317,6 +317,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
+			$dsw = Dashed_Slug_Wallets::get_instance();
+
+			$withdrawal_symbols = array();
+			$adapters = $dsw->get_coin_adapters();
+			foreach ( $adapters as $a ) {
+				if ( $a->is_enabled() && $a->is_unlocked() ) {
+					$withdrawal_symbols[] = $a->get_symbol();
+				}
+			}
+
+			if ( ! $withdrawal_symbols ) {
+				return;
+			}
+
+			$in_symbols = "'" . implode( "','", $withdrawal_symbols ) ."'";
+
 			$wd_txs_query = $wpdb->prepare(
 				"
 				SELECT
@@ -327,7 +343,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					( blog_id = %d || %d ) AND
 					category = 'withdraw' AND
 					status = 'pending' AND
-					retries > 0
+					retries > 0 AND
+					symbol IN ( $in_symbols )
 				ORDER BY
 					created_time ASC
 				LIMIT
@@ -410,7 +427,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						throw new Exception( 'Insufficient balance' );
 					}
 
-					$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $wd_tx->symbol );
+					$adapter = $dsw->get_coin_adapters( $wd_tx->symbol );
+
+					// adapter could have locked since we last checked. check again.
+					if ( ! $adapter->is_unlocked() ) {
+						continue;
+					}
 
 					$txid = $adapter->do_withdraw(
 						$wd_tx->address,
@@ -493,7 +515,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 */
 		public function action_wallets_transaction( $tx ) {
 			try {
-				$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $tx->symbol, false );
+				$dsw = Dashed_Slug_Wallets::get_instance();
+				$adapter = $dsw->get_coin_adapters( $tx->symbol, false );
 			} catch ( Exception $e ) {
 				error_log( __FUNCTION__ . ": Adapter for {$tx->symbol} transaction {$tx->txid} is not online" );
 				return;

@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.12.2',
+				'2.13.0',
 				true
 			);
 		}
@@ -133,7 +133,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				ob_start();
 				?><a href="#"><?php echo esc_html( $item->title ); ?></a>
 				<ul class="sub-menu"><?php
-					$adapters = Dashed_Slug_Wallets::get_instance()->get_coin_adapters();
+					$adapters = $dsw->get_coin_adapters();
 					foreach ( $adapters as $symbol => &$adapter ):
 						try {
 							$balance = $dsw->get_balance( $adapter->get_symbol(), null, true, get_current_user_id() );

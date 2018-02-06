@@ -21,6 +21,8 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			'balance' => esc_html__( 'Wallet Balance', 'wallets' ),
 			'balances' => esc_html__( 'Sum of User Balances', 'wallets' ),
 			'status' => esc_html__( 'Adapter Status', 'wallets' ),
+			'locked' => esc_html__( 'Withdrawals lock', 'wallets' ),
+			'pending_wds' => esc_html__( 'Pending withdrawals', 'wallets' ),
 		);
 	}
 
@@ -31,9 +33,10 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 	public function get_sortable_columns() {
         return array(
 			'adapter_name' => array( 'name', true ),
-			'coin' => array( 'name', false),
-			'balance' => array( 'balance', false),
-			'balances' => array( 'balances', false),
+			'coin' => array( 'name', false ),
+			'balance' => array( 'balance', false ),
+			'balances' => array( 'balances', false ),
+			'pending_wds' => array( 'pending_wds', false ),
         );
     }
 
@@ -59,6 +62,29 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 		$balances = $dsw->get_balance_totals_per_coin();
 
+		global $wpdb;
+		$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+		$pending_withdrawal_counts = $wpdb->get_results(
+			$wpdb->prepare(
+				"
+				SELECT
+					symbol,
+					COUNT(*) as c
+				FROM
+					{$table_name_txs}
+				WHERE
+					category = 'withdraw' AND
+					status = 'pending' AND
+					( blog_id = %d || %d )
+				GROUP BY
+					symbol
+				",
+				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+			),
+			OBJECT_K
+		);
+
 		foreach ( $adapters as $symbol => &$adapter ) {
 
 			try {
@@ -80,42 +106,38 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 				'balance' => $balance,
 				'status' => $status,
 				'settings_url' => $adapter->get_settings_url(),
+				'unlocked' => $adapter->is_unlocked(),
 			);
 
 			if ( isset( $balances[ $symbol ] ) ) {
 				$new_row['balances'] = $balances[ $symbol ];
-			} else {
-				$new_row['balances'] = 0;
+			}
+
+			if ( isset( $pending_withdrawal_counts[ $symbol  ] ) ) {
+				$new_row['pending_wds'] = $pending_withdrawal_counts[ $symbol ]->c;
 			}
 
 			$this->items[] = $new_row;
 		};
 
+
 		usort( $this->items, array( &$this, 'usort_reorder' ) );
 	}
 
 	public function column_default( $item, $column_name ) {
+		if ( ! isset( $item[ $column_name ] ) ) {
+			return '&mdash;';
+		}
+
 		switch( $column_name ) {
 			case 'adapter_name':
 			case 'status':
+			case 'pending_wds':
 				return esc_html( $item[ $column_name ] );
 			case 'balance':
-				return
-					( $item[ 'balance' ] < $item['balances'] ? '<span style="color:red;">' : '<span>' ) .
-					sprintf( $item['sprintf'], $item[ $column_name ] ) .
-					'</span>';
 			case 'balances':
 				return
 					sprintf( $item['sprintf'], $item[ $column_name ] );
-			case 'coin':
-				return
-					sprintf(
-						'<img src="%s" /> ' .
-						'<span> %s (%s)</span>',
-						esc_attr( $item['icon'] ),
-						esc_attr( $item['name'] ),
-						esc_attr( $item['symbol'] )
-					);
 			default:
 				return '';
 		}
@@ -126,6 +148,35 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			// TODO bulk actions
 		);
 		return $actions;
+	}
+
+	public function column_balances( $item ) {
+		if ( ! isset( $item[ 'balances' ] ) ) {
+			return '&mdash;';
+		}
+
+		return
+			( $item[ 'balance' ] < $item['balances'] ? '<span style="color:red;">' : '<span>' ) .
+			sprintf( $item['sprintf'], $item[ 'balances' ] ) .
+			'</span>';
+	}
+
+	public function column_coin( $item ) {
+		return
+			sprintf(
+				'<img src="%s" /> <span> %s (%s)</span>',
+				esc_attr( $item['icon'] ),
+				esc_attr( $item['name'] ),
+				esc_attr( $item['symbol'] )
+			);
+	}
+
+	public function column_locked( $item ) {
+		if ( $item['unlocked'] ) {
+			return '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f513;', 'UTF-8', 'HTML-ENTITIES' ) . ' ' . __( 'Unlocked', 'wallets' ) . '</span>';
+		} else {
+			return '<span title="' . esc_attr__( 'Wallet locked. Withdrawals will NOT be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f512;', 'UTF-8', 'HTML-ENTITIES' ) . ' ' .__( 'Locked', 'wallets' ) . '</span>';
+		}
 	}
 
 	public function column_cb( $item ) {

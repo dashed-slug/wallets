@@ -694,7 +694,9 @@ NOTIFICATION
 				'You can use the available variable substitutions in both the subject line and the message body.', 'wallets' ); ?></p><?php
 		}
 
-		public function action_withdraw( $msg_data ) {
+		public function action_withdraw( $data ) {
+			$msg_data = clone $data;
+
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_enabled' ) ) {
 				$user = get_userdata( $msg_data->account );
 				$msg_data->account_id = $msg_data->account;
@@ -722,7 +724,9 @@ NOTIFICATION
 			}
 		}
 
-		public function action_withdraw_failed( $msg_data ) {
+		public function action_withdraw_failed( $data ) {
+			$msg_data = clone $data;
+
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_enabled' ) ) {
 				$user = get_userdata( $msg_data->account );
 				$msg_data->account_id = $msg_data->account;
@@ -750,7 +754,9 @@ NOTIFICATION
 			}
 		}
 
-		public function action_move_send( $msg_data ) {
+		public function action_move_send( $data ) {
+			$msg_data = clone $data;
+
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_enabled' ) ) {
 				$sender = get_userdata( $msg_data->account );
 				$recipient = get_userdata( $msg_data->other_account );
@@ -781,7 +787,9 @@ NOTIFICATION
 			}
 		}
 
-		public function action_move_send_failed( $msg_data ) {
+		public function action_move_send_failed( $data ) {
+			$msg_data = clone $data;
+
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_enabled' ) ) {
 				$sender = get_userdata( $msg_data->account );
 				$recipient = get_userdata( $msg_data->other_account );
@@ -813,7 +821,9 @@ NOTIFICATION
 			}
 		}
 
-		public function action_move_receive( $msg_data ) {
+		public function action_move_receive( $data ) {
+			$msg_data = clone $data;
+
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_enabled' ) ) {
 				$recipient = get_userdata( $msg_data->account );
 				$sender = get_userdata( $msg_data->other_account );
@@ -846,7 +856,9 @@ NOTIFICATION
 			}
 		}
 
-		public function action_deposit( $msg_data ) {
+		public function action_deposit( $data ) {
+			$msg_data = clone $data;
+
 			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_enabled' ) ) {
 				$user = get_userdata( $msg_data->account );
 				$msg_data->account_id = $msg_data->account;
@@ -884,7 +896,8 @@ NOTIFICATION
 			// use pattern for displaying amounts
 			if ( isset( $msg_data->symbol ) ) {
 				try {
-					$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $msg_data->symbol, false );
+					$dsw = Dashed_Slug_Wallets::get_instance();
+					$adapter = $dsw->get_coin_adapters( $msg_data->symbol, false );
 					$sprintf = $adapter->get_sprintf();
 				} catch ( Exception $e ) {
 					$sprintf = '%01.8F';

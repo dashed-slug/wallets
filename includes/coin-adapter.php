@@ -257,43 +257,54 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		/** @internal */
 		public function settings_text_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"text\" value=\"";
-			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '"/>';
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_int8_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"256\" step=\"1\" value=\"";
-			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_int16_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"65535\" step=\"1\" value=\"";
-			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_currency_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" step=\"0.00000001\" value=\"";
-			echo esc_attr( sprintf( "%01.8f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( sprintf( "%01.8f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_percent_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" max=\"0.5\" step=\"0.001\" value=\"";
-			echo esc_attr( sprintf( "%01.3f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '"/>';
+			echo esc_attr( sprintf( "%01.3f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_pw_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" value=\"";
-			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '"/>';
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
+		}
+
+		/** @internal */
+		public function settings_secret_cb( $arg ) {
+			echo "<p><input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" /> ";
+			if ( $this->is_unlocked() ) {
+				echo '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f513;', 'UTF-8', 'HTML-ENTITIES' ) . '</span>';
+			} else {
+				echo '<span title="' . esc_attr__( 'Wallet locked. Withdrawals will NOT be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f512;', 'UTF-8', 'HTML-ENTITIES' ) . '</span>';
+			}
+			echo '</p><p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/**
@@ -760,6 +771,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @param string $message The alert message.
 		 */
 		public abstract function action_wallets_notify_alert( $message );
+
+
+		/**
+		 * Returns true if the wallet is currently unlocked and can process withdrawals.
+		 *
+		 * Coin adapter implementations must overide this to allow withdrawals.
+		 * Each coin adapter must know if if a secret is currently available.
+		 *
+		 * The cron job will not process withdrawals that correspond to locked coin adapters/wallets.
+		 *
+		 * @return boolean True if wallet is currently unlocked.
+		  * @since 2.13.0
+		 */
+		public function is_unlocked() {
+			return false;
+		}
 
 	} // end class coin_adapter
 

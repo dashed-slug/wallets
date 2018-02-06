@@ -217,7 +217,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			case 'amount':
 			case 'fee':
 				try {
-					$adapter = Dashed_Slug_Wallets::get_instance()->get_coin_adapters( $item['symbol'] );
+					$dsw = Dashed_Slug_Wallets::get_instance();
+					$adapter = $dsw->get_coin_adapters( $item['symbol'] );
 					return sprintf( $adapter->get_sprintf(), $item[ $column_name ] );
 				} catch ( Exception $e ) {
 					return $item[ $column_name ];

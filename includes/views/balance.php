@@ -1,6 +1,14 @@
 <?php defined( 'ABSPATH' ) || die( '-1' ); // don't load directly ?>
 
 <div class="dashed-slug-wallets balance" data-bind="if: coins().length">
-	<label class="coin" data-bind="visible: coins().length > 1"><?php esc_html_e( 'Coin', 'wallets-front' ); ?>: <select data-bind="options: coins(), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input']"></select></label>
-	<label class="balance"><?php esc_html_e( 'Balance', 'wallets-front' ); ?>: <span data-bind="text: currentCoinBalance()">-</span><span class="base-amount" data-bind="text: currentCoinBaseBalance" ></span></label>
+	<?php
+		do_action( 'wallets_ui_before' );
+		do_action( 'wallets_ui_before_balance' );
+	?>
+	<label class="coin" data-bind="visible: coins().length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: coins(), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input']"></select></label>
+	<label class="balance"><?php echo apply_filters( 'wallets_ui_text_balance', esc_html__( 'Balance', 'wallets-front' ) ); ?>: <span data-bind="text: currentCoinBalance()">-</span><span class="base-amount" data-bind="text: currentCoinBaseBalance" ></span></label>
+	<?php
+		do_action( 'wallets_ui_after_balance' );
+		do_action( 'wallets_ui_after' );
+	?>
 </div>

@@ -59,6 +59,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw', 3 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move', 1 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_secrets_retain_minutes', 0 );
 		}
 
 		public static function action_deactivate() {
@@ -76,6 +77,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_withdraw', filter_input( INPUT_POST, 'wallets_retries_withdraw', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_move', filter_input( INPUT_POST, 'wallets_retries_move', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size', filter_input( INPUT_POST, 'wallets_cron_batch_size', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_secrets_retain_minutes', filter_input( INPUT_POST, 'wallets_secrets_retain_minutes', FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-cron', network_admin_url( 'admin.php' ) ) );
 			exit;
@@ -150,25 +152,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-
 				global $wpdb;
 				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
-
 					switch_to_blog( $blog_id );
 					$this->call_cron_on_all_adapters();
 					restore_current_blog();
 				}
-
 			} else {
-
 				$this->call_cron_on_all_adapters();
-
 			}
-
 		}
 
 		private function call_cron_on_all_adapters() {
-			foreach ( Dashed_Slug_Wallets::get_instance()->get_coin_adapters() as $adapter ) {
+			$dsw = Dashed_Slug_Wallets::get_instance();
+			foreach ( $dsw->get_coin_adapters() as $adapter ) {
 				try {
 					$adapter->cron();
 				} catch ( Exception $e ) {
@@ -201,7 +198,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				array( &$this, 'settings_interval_cb'),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
-				array( 'label_for' => 'wallets_cron_interval' )
+				array(
+					'label_for' => 'wallets_cron_interval',
+					'description' => __( 'How often to run the cron job.', 'wallets' ),
+				)
 			);
 
 			register_setting(
@@ -212,12 +212,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_cron_batch_size',
 				__( 'Max batch size', 'wallets' ),
-				array( &$this, 'settings_int8_cb'),
+				array( &$this, 'settings_integer_cb'),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
 					'label_for' => 'wallets_cron_batch_size',
-					'description' => __( 'Up to this many transactions will be attempted per run of the cron job.' )
+					'description' => __( 'Up to this many transactions (withdrawals and internal transfers) will be attempted per run of the cron job.', 'wallets' ),
+					'min' => 1,
+					'max' => 100,
+					'step' => 1,
 				)
 			);
 
@@ -229,12 +232,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_retries_withdraw',
 				__( 'Max retries for failed withdrawals', 'wallets' ),
-				array( &$this, 'settings_int8_cb'),
+				array( &$this, 'settings_integer_cb'),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
 					'label_for' => 'wallets_retries_withdraw',
-					'description' => __( 'Failed withdrawals will be attempted up to this many times.' )
+					'description' => __( 'Failed withdrawals will be attempted up to this many times, while the adapter is unlocked.', 'wallets' ),
+					'min' => 1,
+					'max' => 10,
+					'step' => 1,
 				)
 			);
 
@@ -246,12 +252,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_retries_move',
 				__( 'Max retries for failed transfers to other users', 'wallets' ),
-				array( &$this, 'settings_int8_cb'),
+				array( &$this, 'settings_integer_cb'),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
 					'label_for' => 'wallets_retries_move',
-					'description' => __( 'Failed transfers to other users will be attempted up to this many times.' )
+					'description' => __( 'Failed transfers to other users will be attempted up to this many times.', 'wallets' ),
+					'min' => 1,
+					'max' => 10,
+					'step' => 1,
 				)
 			);
 
@@ -260,6 +269,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets_retries_move'
 			);
 
+			add_settings_field(
+				'wallets_secrets_retain_minutes',
+				__( 'Time to retain withdrawal secrets', 'wallets' ),
+				array( &$this, 'settings_integer_cb'),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for' => 'wallets_secrets_retain_minutes',
+					'description' => __( 'Most coin adapters require a secret passphrase or PIN code to unlock wallet withdrawals. ' .
+						'You can enter the secret in the coin adapter settings. ' .
+						'Specify here how long the coin adapter should retain the secret before deleting it, in minutes. ' .
+						'The cron mechanism only attempts withdrawals while the wallet is unlocked. ' .
+						'( 0 = retain secret forever )', 'wallets' ),
+					'min' => 0,
+					'max' => DAY_IN_SECONDS / MINUTE_IN_SECONDS,
+					'step' => 1,
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_secrets_retain_minutes'
+			);
 		}
 
 		public function action_admin_menu() {
@@ -316,11 +348,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			?></p><?php
 		}
 
-		public function settings_int8_cb( $arg ) {
-			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>"
-			type="number" min="1" max="256" step="1" value="<?php echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ); ?>" />
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+		public function settings_integer_cb( $arg ) {
+			?>
+			<input
+				type="number"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>"
+				min="<?php echo intval( $arg['min'] ); ?>"
+				max="<?php echo intval( $arg['max'] ); ?>"
+				step="<?php echo intval( $arg['step'] ); ?>" />
+
+			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<?php
 		}
 
 		public function settings_interval_cb( $arg ) {

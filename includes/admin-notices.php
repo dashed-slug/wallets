@@ -39,6 +39,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				Dashed_Slug_Wallets::update_option( "wallets_dismissed_$dismiss_option", true );
 				wp_die();
 			}
+
+			if ( current_user_can( 'manage_wallets' ) ) {
+				$this->info(
+					__( '<strong>IMPORTANT</strong>: Read the <a href="https://www.dashed-slug.net/important-action-required-admins-version-2-13-0">release notes for version 2.13.0</a>.', 'wallets' ),
+					'release-notes-2-13-0'
+				);
+			}
 		}
 
 		public function action_admin_enqueue_scripts() {
@@ -46,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( 'assets/scripts/wallets-notify.min.js', DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'2.12.2'
+				'2.13.0'
 			);
 
 		}

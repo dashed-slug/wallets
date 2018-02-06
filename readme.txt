@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.1
-Stable tag: 2.12.2
+Tested up to: 4.9.3
+Stable tag: 2.13.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -257,15 +257,19 @@ You can also use a special menu item to display the user balances as part of a n
 3. Under *Boxes*, make sure that *Bitcoin and Altcoin Wallets balances* is selected.
 4. Now you are free to enter the balances menu item into your menus.
 
-= I don’t like the built-in forms. Can I provide my own? =
+= I don’t like the built-in forms. Can I change them or provide my own? =
 
-First of all, the forms can be styled with CSS. They have convenient HTML classes that you can use.
+1. First of all, the forms can be styled with CSS. They have convenient HTML classes that you can use.
 
-If you wish to create forms with completely different markup, you can provide your own views for these shortcodes.
+2. If you wish to translate the form texts to a different language, see the *Localization* section of this manual.
+
+3. If you wish to change the texts to something else, you may use the `wallets_ui_text_*` WordPress filters.
+
+4. If you wish to create forms with completely different markup, you can provide your own views for these shortcodes.
 Use the `wallets_views_dir` filter to override the directory where the views are stored (the default is `wallets/includes/views`).
 Most people will not need to do this.
 
-Read the [shortcodes documentation](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/wallet-shortcodes/) for more details.
+Read the *Shortcodes* section of this manual for more details.
 
 = I want to do transactions from JavaScript. I don’t want to use the provided shortcodes and their associated forms. =
 
@@ -312,7 +316,7 @@ I do not have plans to add fiat currency deposits. That is not to say that someo
 
 = Can you build an exchange on top of the plugin? =
 
-Yes this is in the future plans.
+Yes this is in the future plans, but it is a huge undertaking! For now you can use the [ShapeShift app extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/) that lets you display a front-end UI to the [ShapeShift.io](https://shapeshift.io/) service.
 
 = I want to pay for premium membership but cannot or do not want to pay via PayPal. =
 
@@ -347,6 +351,16 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.0 =
+- Add: Coin adapters can be in a locked or unlocked state. Locked adapters cannot process withdrawals. Adapters can be unlocked by entering a secret PIN or passphrase.
+- Add: All frontend text is now modifiable via WordPress filters. See the documentation for filter names and example code.
+- Improve: Successful and failed transactions trigger WordPress actions. See the documentation for action names and example code.
+- Fix: An incompatibility with PHP 5.4 is resolved. Note that it is not recommended to install the plugin on PHP versions that have reached end-of-life.
+- Add: WordPress actions allow themes to add markup before and after any frontend UI form. See the documentation for action names.
+- Fix: Internal transaction IDs no longer link to any block explorers.
+- Add: After submitting a transaction, the user is notified to check their e-mail, if an e-mail confirmation is required.
+- Add: Dismissible notice informing users to upgrade the cloud wallet adapters for compatibility with this version.
 
 = 2.12.2 =
 - Fix: Disallow internal transactions and withdrawals if amount - fees is negative.
@@ -724,7 +738,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.12.2 contains bugfixes.
+Version 2.13.0 introduces a new, optional security feature: Coin Adapters can be in an unlocked or locked state. See https://dashed-slug.net/important-action-required-admins-version-2-13-0 for details.
 
 == Donating ==
 

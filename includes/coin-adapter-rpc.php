@@ -40,6 +40,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 					$this->rpc->setSSL();
 				}
 			}
+
+			add_filter( "pre_update_option_{$this->option_slug}-rpc-passphrase", array( &$this, 'filter_pre_update_passphrase' ), 10, 2 );
 		}
 
 		public function action_admin_init_notices() {
@@ -165,7 +167,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-passphrase",
 				__( 'Wallet passphrase', 'wallets' ),
-				array( &$this, 'settings_pw_cb'),
+				array( &$this, 'settings_secret_cb'),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
@@ -309,16 +311,19 @@ CFG;
 		public function do_withdraw( $address, $amount, $comment = '', $comment_to = '' ) {
 
 			if ( ! $this->get_adapter_option( 'general-enabled' ) ) {
-				throw new Exception( 'Adapter is disabled' );
+				throw new Exception( sprintf(
+					__( '%s->%s() failed to withdraw because the adapter is disabled.', 'wallets' ),
+					__CLASS__,
+					__FUNCTION__
+				) );
 			}
 
-			$passphrase = $this->get_adapter_option( 'rpc-passphrase' );
-
-			if ( $passphrase ) {
-				$result = $this->rpc->walletpassphrase( $passphrase, 5 );
-				if ( false === $result ) {
-					throw new Exception( sprintf( __( '%s->%s() failed to unlock with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
-				}
+			if ( ! $this->is_unlocked() ) {
+				throw new Exception( sprintf(
+					__( '%s->%s() failed to withdraw because the wallet is locked.', 'wallets' ),
+					__CLASS__,
+					__FUNCTION__
+				) );
 			}
 
 			$amount = number_format( (float) $amount, 8, '.', '' );
@@ -330,14 +335,100 @@ CFG;
 				"$comment_to"
 			);
 
-			if ( $passphrase ) {
-				$this->rpc->walletlock();
-			}
-
 			if ( false === $result ) {
 				throw new Exception( sprintf( __( '%s->%s() failed to send with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 			return $result;
+		}
+
+		public function is_unlocked() {
+			if ( ! $this->rpc ) {
+				return false;
+			}
+
+			$retain_minutes = intval( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
+
+			if ( ! $retain_minutes ) {
+				// passphrase is saved with no time limit. unlock the wallet for one minute.
+				$secret = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-passphrase" );
+
+				if ( $secret ) {
+					$result = $this->rpc->walletpassphrase( $secret, 1 * MINUTE_IN_SECONDS );
+				}
+			}
+
+			$is_unlocked = false;
+			$result = $this->rpc->getwalletinfo();
+
+			if ( $result ) {
+				if ( ! isset( $result['unlocked_until'] ) || $result['unlocked_until'] > 0 ) {
+					// wallet does not have a passphrase or is unlocked
+					$is_unlocked = true;
+				}
+			}
+
+			if ( ! $is_unlocked ) {
+				// if wallet is locked make sure the db state reflects this
+				Dashed_Slug_Wallets::delete_option( "{$this->option_slug}-rpc-passphrase" );
+			}
+
+			return boolval( $is_unlocked );
+		}
+
+		protected function set_secret( $secret ) {
+			$retain_minutes = intval( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
+			if ( ! $retain_minutes ) {
+				$retain_minutes = 1;
+			}
+
+			$result = $this->rpc->walletpassphrase(
+				$secret,
+				intval( $retain_minutes ) * MINUTE_IN_SECONDS
+			);
+
+			if ( false === $result ) {
+				throw new Exception( sprintf(
+					__( '%s->%s() failed to send with status="%s" and error="%s"', 'wallets' ),
+					__CLASS__,
+					__FUNCTION__,
+					$this->rpc->status,
+					$this->rpc->error
+				) );
+			} else {
+				if ( $retain_minutes ) {
+					error_log( sprintf(
+						'Unlocked coin adapter "%s" for withdrawals using wallet passphrase for %d minutes.',
+						$this->get_adapter_name(),
+						$retain_minutes
+					) );
+				} else {
+					error_log( sprintf(
+						'Unlocked coin adapter "%s" for withdrawals using wallet passphrase indefinitely.',
+						$this->get_adapter_name()
+					) );
+				}
+			}
+		}
+
+		public function filter_pre_update_passphrase( $new_value, $old_value ) {
+			if ( $new_value ) {
+				try {
+					$this->set_secret( $new_value );
+				} catch ( Exception $e ) {
+					error_log( sprintf(
+						'Could not unlock RPC wallet %s with secret passphrase: %s',
+						$this->get_adapter_name(),
+						$e->getMessage()
+					) );
+				}
+			}
+
+			$retain_minutes = intval( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
+			if ( $retain_minutes ) {
+				return false; // do not save the secret to the database
+			} else {
+				return $new_value; // save the secret to the database
+			}
 		}
 
 		// notification API implementation
@@ -496,7 +587,6 @@ CFG;
 				}
 			}
 		}
-
 
 	} // end class coin_adapter_rpc
 } // end if not class exists
