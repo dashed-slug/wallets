@@ -19,6 +19,13 @@
 		};
 
 		var serverErrorHandler = function( response ) {
+			if ( 'undefined' != typeof(response.code) ) {
+				if ( -107 == response.code ) {
+					// do not report permission errors via alert boxes
+					return;
+				}
+			}
+
 			if ( typeof(response.result) == 'string' ) {
 				if ( response.result == 'error' ) {
 					alert( sprintf( wallets_ko_i18n.op_failed_msg, response.message ) );

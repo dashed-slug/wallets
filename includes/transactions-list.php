@@ -159,60 +159,13 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			case 'tags':
 			case 'status':
 			case 'created_time':
+			case 'from':
+			case 'to':
 				return esc_html( $item[ $column_name ] );
-
-			case 'txid':
-				$uri_pattern = apply_filters( 'wallets_explorer_uri_tx_' . $item['symbol'], '' );
-				if ( $uri_pattern ) {
-					$uri = sprintf( $uri_pattern, $item[ 'txid' ] );
-					return '<a href ="' . esc_attr( $uri ) . '">' . $item['txid'] . '</a>';
-				} else {
-					return $item['txid'];
-				}
 
 			case 'admin_confirm':
 			case 'user_confirm':
 				return $item[ $column_name ] ? '&#x2611;' : '&#x2610;';
-
-			case 'from':
-				if ( 'deposit' == $item['category'] ) {
-					$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
-					if ( $uri_pattern ) {
-						$uri = sprintf( $uri_pattern, $item[ 'address' ] );
-						$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
-					} else {
-						$address_html = $item['address'];
-					}
-					if ( $item['extra'] ) {
-						$address_html .= " ({$item['extra']})";
-					}
-					return $address_html;
-				} elseif ( 'withdraw' == $item['category'] ) {
-					return $this->user_link( $item['account_name'] );
-				} elseif ( 'move' == $item['category'] ) {
-					return $this->user_link( $item['account_name'] );
-				}
-				break;
-
-			case 'to':
-				if ( 'deposit' == $item['category'] ) {
-					return  $this->user_link( $item['account_name'] );
-				} elseif ( 'withdraw' == $item['category'] ) {
-					$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
-					if ( $uri_pattern ) {
-						$uri = sprintf( $uri_pattern, $item[ 'address' ] );
-						$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
-					} else {
-						$address_html = $item['address'];
-					}
-					if ( $item['extra'] ) {
-						$address_html .= " ({$item['extra']})";
-					}
-					return $address_html;
-				} elseif ( 'move' == $item['category'] ) {
-					return $this->user_link( $item['other_account_name'] );
-				}
-				break;
 
 			case 'amount':
 			case 'fee':
@@ -224,14 +177,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 					return $item[ $column_name ];
 				}
 
-			case 'confirmations':
-				return 'move' == $item['category'] ? '' : esc_html( $item[ 'confirmations' ] );
-
-			case 'retries':
-				return 'deposit' == $item['category'] ? '' : esc_html( $item[ 'retries' ] );
-
 			default:
-				return '';
+				return '&mdash;';
 		}
 	}
 
@@ -242,8 +189,79 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		return $actions;
 	}
 
+	public function column_from( $item ) {
+		if ( 'deposit' == $item['category'] ) {
+			$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
+			if ( $uri_pattern ) {
+				$uri = sprintf( $uri_pattern, $item[ 'address' ] );
+				$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
+			} else {
+				$address_html = $item['address'];
+			}
+			if ( $item['extra'] ) {
+				$address_html .= " ({$item['extra']})";
+			}
+			return $address_html;
+
+		} elseif ( 'withdraw' == $item['category'] ) {
+			return $this->user_link( $item['account_name'] );
+
+		} elseif ( 'move' == $item['category'] ) {
+			return $this->user_link( $item['account_name'] );
+		}
+	}
+
+	public function column_to( $item ) {
+		if ( 'deposit' == $item['category'] ) {
+			return  $this->user_link( $item['account_name'] );
+
+		} elseif ( 'withdraw' == $item['category'] ) {
+			$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
+			if ( $uri_pattern ) {
+				$uri = sprintf( $uri_pattern, $item[ 'address' ] );
+				$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
+			} else {
+				$address_html = $item['address'];
+			}
+			if ( $item['extra'] ) {
+				$address_html .= " ({$item['extra']})";
+			}
+			return $address_html;
+
+		} elseif ( 'move' == $item['category'] ) {
+			return $this->user_link( $item['other_account_name'] );
+		}
+	}
+
+	public function column_txid( $item ) {
+		if ( 'move' != $item['category'] ) {
+			$uri_pattern = apply_filters( 'wallets_explorer_uri_tx_' . $item['symbol'], '' );
+			if ( $uri_pattern ) {
+				$uri = sprintf( $uri_pattern, $item[ 'txid' ] );
+				return '<a href ="' . esc_attr( $uri ) . '">' . $item['txid'] . '</a>';
+			}
+		}
+		return esc_html( $item['txid'] );
+	}
+
 	public function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="adaper[]" value="%s" />', $item['symbol'] );
+	}
+
+	public function column_confirmations( $item ) {
+		if ( 'move' == $item['category'] ) {
+			return  '';
+		} else {
+			return esc_html( $item[ 'confirmations' ] );
+		}
+	}
+
+	public function column_retries( $item ) {
+		if ( 'deposit' == $item['category'] ) {
+			return '';
+		} else {
+			return esc_html( $item[ 'retries' ] );
+		}
 	}
 
 	public function column_status( $item ) {

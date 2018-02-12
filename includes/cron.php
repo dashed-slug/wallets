@@ -280,8 +280,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					'description' => __( 'Most coin adapters require a secret passphrase or PIN code to unlock wallet withdrawals. ' .
 						'You can enter the secret in the coin adapter settings. ' .
 						'Specify here how long the coin adapter should retain the secret before deleting it, in minutes. ' .
-						'The cron mechanism only attempts withdrawals while the wallet is unlocked. ' .
-						'( 0 = retain secret forever )', 'wallets' ),
+						'The cron mechanism only attempts withdrawals while the wallet is unlocked. ( 0 = retain secret forever ). ' .
+						'For more information read the section "Withdrawals and wallet locks" ' .
+						'in the "Transactions" chapter of the manual.', 'wallets' ),
 					'min' => 0,
 					'max' => DAY_IN_SECONDS / MINUTE_IN_SECONDS,
 					'step' => 1,

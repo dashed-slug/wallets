@@ -26,6 +26,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_redirect_seconds', '3' );
+
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_admin_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_user_enabled', 'on' );
 
@@ -89,10 +91,22 @@ EMAIL
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 
 			if ( isset( $wp->query_vars['__wallets_confirm'] ) ) {
+
+				$redirect_page_id = intval( Dashed_Slug_Wallets::get_option( 'wallets_confirm_redirect_page' ) );
+				if ( $redirect_page_id ) {
+					$redirect_url = get_page_link( $redirect_page_id );
+					$seconds = abs( intval( Dashed_Slug_Wallets::get_option( 'wallets_confirm_redirect_seconds', 3 ) ) );
+					header( "Refresh: $seconds; URL=$redirect_url" );
+				}
+
 				$nonce = sanitize_text_field( $wp->query_vars['__wallets_confirm'] );
 
 				if ( ! ctype_xdigit( $nonce ) || 32 != strlen( $nonce ) ) {
-					wp_die( __( 'The confirmation nonce is not in the correct format. Check your link and try again', 'wallets' ) );
+					wp_die(
+						__( 'The confirmation nonce is not in the correct format. Check your link and try again', 'wallets' ),
+						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+						array( 'response' => $redirect_page_id ? 302 : 400 )
+					);
 				}
 
 				$tx_data = $wpdb->get_row( $wpdb->prepare(
@@ -111,7 +125,11 @@ EMAIL
 				) );
 
 				if ( ! $tx_data ) {
-					wp_die( __( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ) );
+					wp_die(
+						__( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ),
+						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+						array( 'response' => $redirect_page_id ? 302 : 410 )
+					);
 				}
 
 				$ids = array( $tx_data->id => null );
@@ -122,7 +140,11 @@ EMAIL
 				} elseif ( 'move' == $tx_data->category ) {
 					$new_status = $tx_data->admin_confirm || ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ? 'pending' : 'unconfirmed';
 				} else {
-					wp_die( __( 'Can only confirm transfers or withdrawals!', 'wallets' ) );
+					wp_die(
+						__( 'Can only confirm transfers or withdrawals!', 'wallets' ),
+						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+						array( 'response' => $redirect_page_id ? 302 : 400 )
+					);
 				}
 
 				// for internal transfers, get both row IDs
@@ -176,22 +198,32 @@ EMAIL
 					if ( 'pending' == $new_status ) {
 						wp_die(
 							__( 'You have successfully confirmed your transaction and it will be processed soon.', 'wallets' ),
-							__( 'Success', 'wallets' )
+							__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+							array( 'response' => $redirect_page_id ? 302 : 200 )
 						);
 					} else {
 						wp_die(
 							__( 'You have successfully confirmed your transaction. It will be processed once an administrator confirms it too.', 'wallets' ),
-							__( 'Success', 'wallets' )
+							__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+							array( 'response' => $redirect_page_id ? 302 : 200 )
 						);
 					}
 				}
 
 				elseif ( $affected_rows === 0 ) {
-					wp_die( __( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ) );
+					wp_die(
+						__( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ),
+						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+						array( 'response' => $redirect_page_id ? 302 : 404 )
+					);
 				}
 
 				elseif ( $affected_rows === false ) {
-					wp_die( __( 'Failed to update transaction due to an internal error.', 'wallets' ) );
+					wp_die(
+						__( 'Failed to update transaction due to an internal error.', 'wallets' ),
+						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
+						array( 'response' => $redirect_page_id ? 302 : 500 )
+					);
 				}
 			}
 		}
@@ -392,6 +424,36 @@ EMAIL
 			echo esc_html( $arg['description'] ); ?></p><?php
 		}
 
+		public function integer_cb( $arg ) {
+			?>
+			<input
+				type="number"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>"
+				min="<?php echo intval( $arg['min'] ); ?>"
+				max="<?php echo intval( $arg['max'] ); ?>"
+				step="<?php echo intval( $arg['step'] ); ?>" />
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<?php
+		}
+
+		public function page_cb( $arg ) {
+			wp_dropdown_pages( array(
+				'name' => esc_attr( $arg['label_for'] ),
+				'id' => esc_attr( $arg['label_for'] ),
+				'selected' => intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ),
+				'show_option_none' => __( '(none)', 'wallets' ),
+				'option_none_value' => '0',
+			));
+			?><p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
+			echo esc_html( $arg['description'] ); ?></p><?php
+		}
+
+		public function wallets_confirm_redirect_section_cb() {
+			?><p><?php esc_html_e( 'Choose which page, if any, a user should be redirected to after clicking on a confirmation link in their e-mail.', 'wallets'); ?></p><?php
+		}
+
 		public function wallets_confirm_move_section_cb() {
 			?><p><?php esc_html_e( 'Choose which confirmations are required before performing an internal transaction between users.', 'wallets'); ?></p><?php
 		}
@@ -401,7 +463,6 @@ EMAIL
 		}
 
 		public function action_admin_init() {
-
 			// move confirms
 
 			add_settings_section(
@@ -563,6 +624,53 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_withdraw_email_message'
 			);
+
+			// redirect
+
+			add_settings_section(
+				'wallets_confirm_redirect_section',
+				__( 'Redirect after confirmation', 'wallets' ),
+				array( &$this, 'wallets_confirm_redirect_section_cb' ),
+				'wallets-menu-confirmations'
+			);
+
+			add_settings_field(
+				'wallets_confirm_redirect_page',
+				__( 'Redirect to page', 'wallets' ),
+				array( &$this, 'page_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_redirect_section',
+				array(
+					'label_for' => 'wallets_confirm_redirect_page',
+					'description' => __( 'After a user clicks on a confirmation link from their email, they will be redirected to this page.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_redirect_page'
+			);
+
+			add_settings_field(
+				'wallets_confirm_redirect_seconds',
+				__( 'Redirect timeout (seconds)', 'wallets' ),
+				array( &$this, 'integer_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_redirect_section',
+				array(
+					'label_for' => 'wallets_confirm_redirect_seconds',
+					'description' => __( 'User browser will redirect after displaying confirmation message for this many seconds.', 'wallets' ),
+					'min' => 1,
+					'max' => 60,
+					'step' => 1,
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_redirect_page'
+			);
+
 		}
 
 		public function update_network_options() {

@@ -3,8 +3,8 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.3
-Stable tag: 2.13.0
+Tested up to: 4.9.4
+Stable tag: 2.13.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.1 =
+- Add: After confirming a transaction via an email link, the user can be redirected to a page that the admin indicates. See Wallets &rarr; Confirms &rarr; Redirect after confirmation.
+- Improve: Semantic HTTP status codes returned after clicking on confirmation links.
+- Improve: Frontend does not popup an error if some wallet capabilities are disabled.
+- Improve: JSON API uses compressed encoding if the UA accepts it and the PHP zlib extension is installed.
+- Improve: Some internal code improvements in the adapter list.
 
 = 2.13.0 =
 - Add: Coin adapters can be in a locked or unlocked state. Locked adapters cannot process withdrawals. Adapters can be unlocked by entering a secret PIN or passphrase.
@@ -738,7 +745,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.13.0 introduces a new, optional security feature: Coin Adapters can be in an unlocked or locked state. See https://dashed-slug.net/important-action-required-admins-version-2-13-0 for details.
+In version 2.13.1 a user can be redirected to a page that the admin selects, after clicking on a confirmation link. See https://www.dashed-slug.net/redirect-confirmation-link/
 
 == Donating ==
 
