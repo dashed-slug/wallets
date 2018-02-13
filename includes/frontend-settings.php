@@ -21,6 +21,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 		public static function action_activate( $network_active ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_qrcode_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_zlib_disabled', '' );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_poll_interval_transactions', 5 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_poll_interval_coin_info', 5 );
@@ -94,6 +95,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets-menu-frontend-settings',
 				'wallets_poll_interval_transactions'
 			);
+
+			add_settings_field(
+				'wallets_zlib_disabled',
+				__( 'Disable zlib compression for JSON API', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-frontend-settings',
+				'wallets_live_section',
+				array(
+					'label_for' => 'wallets_zlib_disabled',
+					'description' => __( 'The JSON output of the wallets API is compressed if the PHP zlib module is available. ' .
+						'Check this to disable compression, only if you experience problems on the frontend.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-frontend-settings',
+				'wallets_zlib_disabled'
+			);
+
+
 		}
 
 		public function action_admin_menu() {
@@ -145,6 +166,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			check_admin_referer( 'wallets-menu-frontend-settings-options' );
 
 			Dashed_Slug_Wallets::update_option( 'wallets_qrcode_enabled', filter_input( INPUT_POST, 'wallets_qrcode_enabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_zlib_disabled', filter_input( INPUT_POST, 'wallets_zlib_disabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_transactions', filter_input( INPUT_POST, 'wallets_poll_interval_transactions', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_coin_info', filter_input( INPUT_POST, 'wallets_poll_interval_coin_info', FILTER_SANITIZE_NUMBER_INT ) );
@@ -155,7 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 		public function checkbox_cb( $arg ) {
 			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
-			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> /><?php
+			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
+			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p><?php
 		}
 
 		public function integer_cb( $arg ) {

@@ -369,7 +369,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 				// send response
 
-				ini_set( 'zlib.output_compression', 1 );
+				if ( ! headers_sent() ) {
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_zlib_disabled' )  ) {
+						ini_set( 'zlib.output_compression', 0 );
+					} else {
+						ini_set( 'zlib.output_compression', 1 );
+					}
+				}
 
 				if ( isset( $response['code'] ) && Dashed_Slug_Wallets::ERR_NOT_LOGGED_IN == $response['code'] ) {
 					wp_send_json( $response, 403 );

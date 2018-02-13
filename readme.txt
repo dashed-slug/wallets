@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable tag: 2.13.1
+Stable tag: 2.13.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.2 =
+- Add: Admin option to manually disable JSON API response compression with zlib.
+- Improve: Zlib compression status is not altered if HTTP response headers are already sent.
 
 = 2.13.1 =
 - Add: After confirming a transaction via an email link, the user can be redirected to a page that the admin indicates. See Wallets &rarr; Confirms &rarr; Redirect after confirmation.
@@ -745,7 +749,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-In version 2.13.1 a user can be redirected to a page that the admin selects, after clicking on a confirmation link. See https://www.dashed-slug.net/redirect-confirmation-link/
+Version 2.13.2 includes changes so that admins who face issues with zlib compression on the JSON API can disable compression.
 
 == Donating ==
 

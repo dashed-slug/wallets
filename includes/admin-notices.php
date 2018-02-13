@@ -53,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( 'assets/scripts/wallets-notify.min.js', DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'2.13.1'
+				'2.13.2'
 			);
 
 		}
