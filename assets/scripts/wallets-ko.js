@@ -561,24 +561,32 @@
 		setTimeout( function() {
 			walletsViewModel.loadCoins();
 
-			setInterval( function() {
-				if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
-					return;
-				}
-				walletsViewModel.loadCoins();
-			}, walletsUserData.pollIntervalCoinInfo * 60 * 1000 );
+			var minutes = parseFloat( walletsUserData.pollIntervalCoinInfo );
+
+			if ( minutes ) {
+				setInterval( function() {
+					if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
+						return;
+					}
+					walletsViewModel.loadCoins();
+				}, minutes * 60 * 1000 );
+			}
 		}, 1000 );
 
-		// two seconds after doc ready, load coins and start interval
+		// two seconds after doc ready, load transactions and start interval
 		setTimeout( function() {
 			walletsViewModel.loadTransactions();
 
-			setInterval( function() {
-				if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
-					return;
-				}
-				walletsViewModel.loadTransactions();
-			}, walletsUserData.pollIntervalTransactions * 60 * 1000 );
+			var minutes = parseFloat( walletsUserData.pollIntervalTransactions );
+
+			if ( minutes ) {
+				setInterval( function() {
+					if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
+						return;
+					}
+					walletsViewModel.loadTransactions();
+				}, minutes * 60 * 1000 );
+			}
 		}, 2000 );
 
 		// load coin data again when gaining visibility

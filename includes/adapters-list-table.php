@@ -173,9 +173,9 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 	public function column_locked( $item ) {
 		if ( $item['unlocked'] ) {
-			return '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f513;', 'UTF-8', 'HTML-ENTITIES' ) . ' ' . __( 'Unlocked', 'wallets' ) . '</span>';
+			return '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">&#x1f513;</span>';
 		} else {
-			return '<span title="' . esc_attr__( 'Wallet locked. Withdrawals will NOT be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f512;', 'UTF-8', 'HTML-ENTITIES' ) . ' ' .__( 'Locked', 'wallets' ) . '</span>';
+			return '<span title="' . esc_attr__( 'Wallet locked. Withdrawals will NOT be processed.', 'wallets' ) . '">&#x1f512;</span>';
 		}
 	}
 

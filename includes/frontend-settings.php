@@ -64,8 +64,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets_live_section',
 				array(
 					'label_for' => 'wallets_poll_interval_coin_info',
-					'description' => __( 'How often information about coins, including user balances, is refreshed.', 'wallets' ),
-					'min' => 0.25,
+					'description' => __( 'How often information about coins, including user balances, is refreshed. (0 = no refresh)', 'wallets' ),
+					'min' => 0,
 					'max' => 15,
 					'step' => 0.25
 				)
@@ -84,8 +84,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets_live_section',
 				array(
 					'label_for' => 'wallets_poll_interval_transactions',
-					'description' => __( 'How often user transaction data is refreshed.', 'wallets' ),
-					'min' => 0.25,
+					'description' => __( 'How often user transaction data is refreshed. (0 = no refresh).', 'wallets' ),
+					'min' => 0,
 					'max' => 15,
 					'step' => 0.25
 				)

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable tag: 2.13.2
+Stable tag: 2.13.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.3 =
+- Improve: No longer requires the mbstring PHP module to be installed.
+- Add: Live polling on the frontend can now be turned off by setting the time intervals to 0.
+- Add: The debug panel in the admin dashboard now reports if PHP modules relevant to the plugin are loaded or not.
+- Add: The debug panel in the admin dashboard now reports which plugin extensions are activated or network-activated.
 
 = 2.13.2 =
 - Add: Admin option to manually disable JSON API response compression with zlib.

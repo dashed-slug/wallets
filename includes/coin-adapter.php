@@ -300,9 +300,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		public function settings_secret_cb( $arg ) {
 			echo "<p><input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" /> ";
 			if ( $this->is_unlocked() ) {
-				echo '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f513;', 'UTF-8', 'HTML-ENTITIES' ) . '</span>';
+				echo '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">&#x1f513;</span>';
 			} else {
-				echo '<span title="' . esc_attr__( 'Wallet locked. Withdrawals will NOT be processed.', 'wallets' ) . '">' . mb_convert_encoding(  '&#x1f512;', 'UTF-8', 'HTML-ENTITIES' ) . '</span>';
+				echo '<span title="' . esc_attr__( 'Wallet locked. Withdrawals will NOT be processed.', 'wallets' ) . '">&#x1f512;</span>';
 			}
 			echo '</p><p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}

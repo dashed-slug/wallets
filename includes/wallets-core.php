@@ -181,7 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.13.2',
+					'2.13.3',
 					true
 				);
 
@@ -199,8 +199,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				}
 				wp_localize_script( 'wallets_ko', 'walletsUserData', array(
 					'baseSymbol' => $base_symbol,
-					'pollIntervalCoinInfo' => Dashed_Slug_wallets::get_option( 'wallets_poll_interval_coin_info', 5 ),
-					'pollIntervalTransactions' => Dashed_Slug_wallets::get_option( 'wallets_poll_interval_transactions', 5 ),
+					'pollIntervalCoinInfo' => Dashed_Slug_wallets::get_option( 'wallets_poll_interval_coin_info', 0 ),
+					'pollIntervalTransactions' => Dashed_Slug_wallets::get_option( 'wallets_poll_interval_transactions', 0 ),
 				) );
 
 				wp_enqueue_script( 'wallets_ko' );
@@ -215,7 +215,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.13.2',
+					'2.13.3',
 					true
 				);
 
@@ -229,7 +229,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.13.2'
+					'2.13.3'
 				);
 			}
 		}
@@ -605,13 +605,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.13.2';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '9f68995';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '2.13.3';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'ed4fd2e';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
 			$data[ __( 'DB prefix', 'wallets' ) ] = $wpdb->prefix;
-			$data[ __( 'Supports cURL', 'wallets' ) ] = function_exists( 'curl_init' );
 			$data[ __( 'Is multisite', 'wallets' ) ] = is_multisite();
 			$data[ __( 'Is network activated', 'wallets' ) ] = is_plugin_active_for_network( 'wallets/wallets.php' );
 			$data[ __( 'PHP max execution time', 'wallets' ) ] = ini_get( 'max_execution_time' );
@@ -621,9 +620,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'WP_DEBUG_LOG',
 				'WP_DEBUG_DISPLAY',
 				'DISABLE_WP_CRON',
-				'DSWALLETS_FILE'
+				'DSWALLETS_FILE',
 			) as $const ) {
-				$data[ $const ] = defined( $const ) ? constant( $const ) : 'n/a';
+				$data[ "Constant '$const'" ] = defined( $const ) ? constant( $const ) : 'n/a';
+			}
+
+			foreach ( array(
+				'curl',
+				'mbstring',
+				'zlib',
+			) as $extension ) {
+				$data[ "PHP Extension '$extension'" ] = extension_loaded( $extension ) ? __( 'Loaded', 'wallets' ) : __( 'Not loaded', 'wallets' );
+			}
+
+			$active_exts = array();
+			$net_active_exts = array();
+			$app_exts = json_decode( file_get_contents( DSWALLETS_PATH . '/assets/data/features.json' ) );
+			$adapter_exts = json_decode( file_get_contents( DSWALLETS_PATH . '/assets/data/adapters.json' ) );
+
+			foreach ( array_merge( $app_exts, $adapter_exts ) as $extension ) {
+				if ( is_plugin_active( "{$extension->slug}/{$extension->slug}.php") ) {
+					 $active_exts[] = $extension->slug;
+				} elseif ( is_plugin_active_for_network( "{$extension->slug}/{$extension->slug}.php" ) ) {
+					$net_active_exts[] = $extension->slug;
+				}
+				$data[ "Active wallets extensions"] = $active_exts ? implode( ', ', $active_exts ) : 'n/a';
+				$data[ "Network-active wallets extensions"] = $net_active_exts ? implode( ', ', $net_active_exts ) : 'n/a';
 			}
 
 			?><p><?php esc_html_e( 'When requesting support, please send the following info along with your request.', 'wallets' ); ?></p>

@@ -86,7 +86,11 @@ CFG;
 		}
 
 		public function get_sprintf() {
-			return mb_convert_encoding('&#x0E3F;', 'UTF-8', 'HTML-ENTITIES') . '%01.8f';
+			if ( function_exists( 'mb_convert_encoding' ) ) {
+				return mb_convert_encoding('&#x0E3F;', 'UTF-8', 'HTML-ENTITIES') . '%01.8f';
+			} else {
+				return parent::get_sprintf();
+			}
 		}
 
 		public function get_symbol() {
