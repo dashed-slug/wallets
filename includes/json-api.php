@@ -177,7 +177,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->name = $adapter->get_name();
 								$coin_info->symbol = $adapter->get_symbol();
 								$coin_info->icon_url = $adapter->get_icon_url();
-								$coin_info->sprintf = $adapter->get_sprintf();
+								$coin_info->sprintf = apply_filters( 'wallets_sprintf_pattern_' . $coin_info->symbol, $adapter->get_sprintf() );
 								$coin_info->extra_desc = $adapter->get_extra_field_description();
 
 								$coin_info->explorer_uri_address = apply_filters( 'wallets_explorer_uri_add_' . $coin_info->symbol, '' );

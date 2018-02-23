@@ -365,7 +365,17 @@ CFG;
 					// wallet does not have a passphrase or is unlocked
 					$is_unlocked = true;
 				}
+			} else {
+				// some old forks of Bitcoin have getinfo instead of getwalletinfo
+				$result = $this->rpc->getinfo();
+				if ( $result ) {
+					if ( ! isset( $result['unlocked_until'] ) || $result['unlocked_until'] > 0 ) {
+						// wallet does not have a passphrase or is unlocked
+						$is_unlocked = true;
+					}
+				}
 			}
+
 
 			if ( ! $is_unlocked ) {
 				// if wallet is locked make sure the db state reflects this

@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable tag: 2.13.3
+Stable tag: 2.13.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.4 =
+- Add: Frontend sprintf pattern for cryptocurrency amounts can now be overridden via a WordPress filter (see manual).
+- Fix: Improved detection of wallet lock status for wallets that have support only for `getinfo` command and not `getwalletinfo`.
 
 = 2.13.3 =
 - Improve: No longer requires the mbstring PHP module to be installed.
@@ -755,7 +759,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.13.2 includes changes so that admins who face issues with zlib compression on the JSON API can disable compression.
+Version 2.13.4 fixes lock status detection for some old full node wallets, and includes one other user request.
 
 == Donating ==
 
@@ -763,7 +767,7 @@ This is a free plugin.
 
 The dashed-slug is a [heroic (or maybe foolish?) one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against the odds :-)
 
-Showing your support helps the dashed-slug purchase the necessary coffee for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
+Showing your support helps the dashed-slug purchase the necessary coffee and energy drinks necessary for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
 
 These are all the ways you can show your support, if you so choose:
 
@@ -771,5 +775,7 @@ These are all the ways you can show your support, if you so choose:
 2. **Translate the plugin** and donate your translation. Your contribution will be mentioned in the changelog. See the manual entry on *Localization* for instructions.
 2. **Report bugs and suggest features.**
 3. **Spread the word** to your friends.
-4. **If you wish, you may donate** any amount [via flattr](https://flattr.com/profile/dashed-slug) or via Bitcoin at `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy` or via DogeCoin at `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`.
-
+4. **If you wish, you may donate** any amount [via flattr](https://flattr.com/profile/dashed-slug) or via the following dashed-slug addresses:
+	- Bitcoin: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
+	- Litecoin: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
+	- Dogecoin: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
