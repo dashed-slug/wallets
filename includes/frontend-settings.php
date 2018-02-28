@@ -41,7 +41,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				array( &$this, 'checkbox_cb' ),
 				'wallets-menu-frontend-settings',
 				'wallets_qrcode_section',
-				array( 'label_for' => 'wallets_qrcode_enabled' )
+				array(
+					'label_for' => 'wallets_qrcode_enabled',
+					'description' => __( 'Controls whether a QR Code is displayed.', 'wallets ' ),
+				)
 			);
 
 			register_setting(
@@ -67,7 +70,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 					'description' => __( 'How often information about coins, including user balances, is refreshed. (0 = no refresh)', 'wallets' ),
 					'min' => 0,
 					'max' => 15,
-					'step' => 0.25
+					'step' => 0.25,
+					'default' => 5,
 				)
 			);
 
@@ -87,7 +91,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 					'description' => __( 'How often user transaction data is refreshed. (0 = no refresh).', 'wallets' ),
 					'min' => 0,
 					'max' => 15,
-					'step' => 0.25
+					'step' => 0.25,
+					'default' => 5,
 				)
 			);
 
@@ -185,8 +190,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			?>
 			<input
 				type="number"
+				required="required"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
-				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>"
+				value="<?php echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'], $arg['default'] ) ) ); ?>"
 				min="<?php echo floatval( $arg['min'] ); ?>"
 				max="<?php echo floatval( $arg['max'] ); ?>"
 				step="<?php echo floatval( $arg['step'] ); ?>" />

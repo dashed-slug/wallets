@@ -4,7 +4,7 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable tag: 2.13.4
+Stable tag: 2.13.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.5 =
+- Fix: User no more allowed to enter invalid polling intervals such as an empty string, resulting in frontend slowdown.
+- Fix: The filter `wallets__sprintf_pattern_XYZ` modifies the amounts display pattern in the `[wallets_transactions]` shortcode.
+- Fix: The filter `wallets__sprintf_pattern_XYZ` modifies the amounts display pattern in the special balances menu item.
+- Fix: Dropdowns in front-end are now not affected by the Select2 JavaScript library (compatibility with AdForest theme and possibly more).
+- Add: Transaction category and status values are now translatable and filterable in the `[wallets_transactions]` shortcode.
+- Improve: Updated Greek language translation to reflect changes above.
 
 = 2.13.4 =
 - Add: Frontend sprintf pattern for cryptocurrency amounts can now be overridden via a WordPress filter (see manual).
@@ -759,7 +767,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.13.4 fixes lock status detection for some old full node wallets, and includes one other user request.
+Version 2.13.5 is a patch release that includes some minor improvements and user requests to the plugin.
 
 == Donating ==
 

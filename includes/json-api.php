@@ -248,8 +248,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$response['transactions'] = $core->get_transactions( $symbol, $count, $from, 0 );
 
 							$adapter = $core->get_coin_adapters( $symbol );
-							$format = $adapter->get_sprintf();
+							$format = apply_filters( 'wallets_sprintf_pattern_' . $symbol, $adapter->get_sprintf() );
 							foreach ( $response['transactions'] as $tx ) {
+								// TODO will remove the string renderings in version 3.0.0. This will save space in the JSON output.
 								$tx->amount_string = sprintf( $format, $tx->amount );
 								$tx->fee_string = $tx->fee ? sprintf( $format, $tx->fee ) : '-';
 							}

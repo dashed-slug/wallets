@@ -34,7 +34,7 @@
 			</thead>
 			<tbody data-bind="foreach: transactions()">
 				<tr data-bind="if: ( category == 'withdraw' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
-					<td class="type" data-bind="text: category"></td>
+					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
@@ -48,7 +48,7 @@
 					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
-					<td class="status" data-bind="text: status"></td>
+					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
 					<td class="retries" data-bind="text: ( 'unconfirmed' == status || 'pending' == status ) ? retries : ''"></td>
 					<?php
 					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
@@ -60,7 +60,7 @@
 				</tr>
 
 				<tr data-bind="if: ( category == 'deposit' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
-					<td class="type" data-bind="text: category"></td>
+					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
@@ -74,7 +74,7 @@
 					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
-					<td class="status" data-bind="text: status"></td>
+					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
 					<td class="retries"></td>
 					<?php
 					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
@@ -86,7 +86,7 @@
 				</tr>
 
 				<tr data-bind="if: ( category == 'move' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
-					<td class="type" data-bind="text: category"></td>
+					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
 					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
@@ -96,7 +96,7 @@
 					<td class="txid" data-bind="text: txid"></td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations"></td>
-					<td class="status" data-bind="text: status"></td>
+					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
 					<td class="retries"></td>
 					<?php
 					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>

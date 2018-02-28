@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.4\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-02-23 10:55:01+00:00\n"
+"POT-Creation-Date: 2018-02-28 10:38:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -80,7 +80,7 @@ msgstr ""
 #: includes/coin-adapter.php:221 includes/coin-adapter.php:242
 #: includes/coin-adapter.php:318 includes/cold-storage.php:135
 #: includes/confirmations.php:331 includes/cron.php:315
-#: includes/frontend-settings.php:136 includes/notifications.php:561
+#: includes/frontend-settings.php:141 includes/notifications.php:561
 #: includes/rates.php:265 includes/transactions.php:92
 #: includes/transactions.php:814 includes/transactions.php:995
 #: includes/transactions.php:1015 includes/transactions.php:1035
@@ -90,8 +90,8 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:96 includes/caps.php:90
-#: includes/cold-storage.php:114 includes/json-api.php:307
-#: includes/json-api.php:341 includes/transactions.php:820
+#: includes/cold-storage.php:114 includes/json-api.php:308
+#: includes/json-api.php:342 includes/transactions.php:820
 #: includes/transactions.php:999 includes/transactions.php:1019
 #: includes/transactions.php:1039 includes/transactions.php:1058
 #: includes/transactions.php:1078 includes/transactions.php:1100
@@ -985,41 +985,45 @@ msgstr ""
 msgid "Enable QR Codes"
 msgstr ""
 
-#: includes/frontend-settings.php:54
+#: includes/frontend-settings.php:46
+msgid "Controls whether a QR Code is displayed."
+msgstr ""
+
+#: includes/frontend-settings.php:57
 msgid "Live polling settings"
 msgstr ""
 
-#: includes/frontend-settings.php:61
+#: includes/frontend-settings.php:64
 msgid "Coin info poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:67
+#: includes/frontend-settings.php:70
 msgid ""
 "How often information about coins, including user balances, is refreshed. "
 "(0 = no refresh)"
 msgstr ""
 
-#: includes/frontend-settings.php:81
+#: includes/frontend-settings.php:85
 msgid "Transaction list poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:87
+#: includes/frontend-settings.php:91
 msgid "How often user transaction data is refreshed. (0 = no refresh)."
 msgstr ""
 
-#: includes/frontend-settings.php:101
+#: includes/frontend-settings.php:106
 msgid "Disable zlib compression for JSON API"
 msgstr ""
 
-#: includes/frontend-settings.php:139
+#: includes/frontend-settings.php:144
 msgid "Bitcoin and Altcoin Wallets frontend settings"
 msgstr ""
 
-#: includes/frontend-settings.php:141
+#: includes/frontend-settings.php:146
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:201
+#: includes/frontend-settings.php:207
 msgid "\"QR Code\" is a registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
@@ -1032,8 +1036,8 @@ msgid "Must be logged in"
 msgstr ""
 
 #: includes/json-api.php:131 includes/json-api.php:161
-#: includes/json-api.php:240 includes/json-api.php:273
-#: includes/json-api.php:301 includes/json-api.php:335
+#: includes/json-api.php:240 includes/json-api.php:274
+#: includes/json-api.php:302 includes/json-api.php:336
 #: includes/transactions.php:774 includes/wallets-core.php:689
 #: includes/wallets-core.php:824 includes/wallets-core.php:878
 #: includes/wallets-core.php:934 includes/wallets-core.php:1007
@@ -1045,15 +1049,15 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:258
+#: includes/json-api.php:259
 msgid "Could not get %s transactions"
 msgstr ""
 
-#: includes/json-api.php:319
+#: includes/json-api.php:320
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:353
+#: includes/json-api.php:354
 msgid "Could not move %s"
 msgstr ""
 

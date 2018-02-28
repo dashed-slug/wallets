@@ -4,6 +4,7 @@
  */
 (function( $ ) {
 	'use strict';
+
 	$( function() {
 
 		// common error handlers for all requests
@@ -477,6 +478,15 @@
 
 								for ( var c in coins ) {
 									if ( coins[ c ].symbol == transactions[ t ].symbol ) {
+
+										if ( 'string' !== typeof ( transactions[ t ].amount_string ) ) {
+											transactions[ t ].amount_string = sprintf( coins[ c ].sprintf, transactions[ t ].amount );
+										}
+
+										if ( 'string' !== typeof ( transactions[ t ].fee_string ) ) {
+											transactions[ t ].fee_string = sprintf( coins[ c ].sprintf, transactions[ t ].fee );
+										}
+
 										if ( walletsUserData.baseSymbol && coins[ c ].rate ) {
 											transactions[ t ].amount_base = sprintf( baseSprintf, transactions[ t ].amount * coins[ c ].rate );
 											transactions[ t ].fee_base = sprintf( baseSprintf, transactions[ t ].fee * coins[ c ].rate );
@@ -557,9 +567,22 @@
 			}
 		});
 
+		// fault-tolerant way of making sure that select2 is not applied to the dropdowns of this plugin
+		function removeSelect2() {
+			$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function (i, el ) {
+				if ( $( el ).data( 'select2' ) ) {
+					$( el ).select2( 'destroy' );
+				} else {
+					$( el ).removeClass( 'select2-hidden-accessible' );
+				}
+			} );
+			$( '.dashed-slug-wallets .select2' ).remove();
+		}
+
 		// one second after doc ready, load coins and start interval
 		setTimeout( function() {
 			walletsViewModel.loadCoins();
+			removeSelect2();
 
 			var minutes = parseFloat( walletsUserData.pollIntervalCoinInfo );
 
