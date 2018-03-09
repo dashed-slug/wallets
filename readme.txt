@@ -4,7 +4,8 @@ Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable tag: 2.13.5
+Requires PHP: 5.6
+Stable tag: 2.13.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,10 +19,16 @@ https://www.youtube.com/watch?v=_dbkKHhEzRQ
 
 = At a glance =
 
-[Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin)
-is a FREE WordPress plugin by [dashed-slug](https://dashed-slug.net).
+[Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin) is a FREE WordPress plugin by [dashed-slug](https://dashed-slug.net).
 
 It enables financial transactions on your site via Bitcoins and other cryptocurrencies.
+
+
+= Get the free PDF manual! =
+
+1. Visit the dashed-slug [download area](https://dashed-slug.net/downloads).
+2. Download the Bitcoin and Altcoin Wallets **bundle**. You will find the PDF file inside the ZIP download.
+3. RTFM! :-)
 
 = Bitcoin and Altcoin Wallets FREE plugin overview =
 
@@ -99,57 +106,14 @@ The dashed-slug is a social slug:
 
 == Installation ==
 
-= Overview =
+As a new user, you should first read the glossary section of the documentation to familiarize yourself with some basic concepts. The troubleshooting section for the main plugin is also found in the documentation. The support forum for the main plugin is at [WordPress.org](https://wordpress.org/support/plugin/wallets), but please first read [this notice](https://wordpress.org/support/topic/important-please-read-before-posting-an-issue/) before posting.
 
-*The installation for the plugin itself is the same as for any WordPress plugin.
-Additionally, **you will have to install and maintain a Bitcoin daemon on your server**.
-This will typically require SSH access and some basic knowledge of UNIX/Linux.*
-
-= Instructions =
-
-To Install the plugin and connect it to a Bitcoin full node using the built-in Bitcoin adapter:
-
-1. Make sure that you have **the latest WordPress version** installed,
-   and that you are running on **at least PHP 5.6.**
-   Even though the plugin has been tested on WordPress 4.0 and PHP 5.3,
-   for security reasons you are **strongly** recommended to use the latest version of WordPress and a supported version of PHP.
-   [Check to see here](http://php.net/supported-versions.php) if your PHP version is currently supported for security issues.
-   As of 2017, anything below 5.6 has reached its end-of-life and is no longer supported.
-
-2. **Install and activate the Wallets plugin.** For general information on installing WordPress plugins, you can consult the
-   [relevant WordPress documentation](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
-
-3. **Install a Bitcoin full node** on your server. Detailed instructions
-   [are available here](https://bitcoin.org/en/full-node). Read and follow the instructions carefully.
-
-   *Take note of the
-   [memory, disk, and bandwidth requirements](https://bitcoin.org/en/full-node#minimum-requirements)
-   and check against the resources available on your server.* If you find that running a full node is too heavy on
-   your server's resources, or if you do not have the technical expertise to work with Linux and the command line,
-   or if you only have access to shared hosting, please see the FAQ section below for alternative options.
-
-4. **Configure the bitcoin adapter on your WordPress installation.**
-   Navigate to *Wallets* &rarr; *Bitcoin (BTC)* in your WordPress admin area.
-
-   At a minimum you need to enable the adapter and enter the
-   location and credentials to your *Bitcoin daemon RPC API*.
-
-   You will need to set the following: `IP`, `Port`, `User`, `Password`, `Path`.
-
-5. **Configure the bitcoin daemon on your server.**
-   You will need to edit your `~/.bitcoin/bitcoin.conf` file and make the configuration match what you entered above.
-   The plugin will give you the exact configuration arguments that you need to start the daemon with.
-
-   For more information on the bitcoin daemon configuration,
-   consult [the relevant wiki page](https://en.bitcoin.it/wiki/Running_Bitcoin).
-
-6. **Check that the adapter works.**
-   Navigate to the *Wallets* menu in the admin area.
-   If the Bitcoin *Adapter Status* reads *Responding*, then you're good to go.
-
-   **Note that for a new `bitcoind` installation, you might have to wait until the entire blockchain downloads first.**
-   This can take a few hours. Again, skip to the FAQ section for other alternatives.
-
+First, understand the tradeoff between setting up a full node or using the cloud wallets.
+- If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ). A full node is harder to setup and maintain, but gives you performance and freedom to control network fee settings.
+- **Cloud wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
+  - If you are interested in installing the CoinPayments adapter, then the installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
+  - If you prefer to install the block.io coin adapter then the installation instructions are on that other [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
+  You will also find a troubleshooting section on these pages, and the support forums are [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/) and [here](https://www.dashed-slug.net/forums/forum/block-io-cloud-wallet-adapter-extension-support/).
 
 = Disclaimer =
 
@@ -250,12 +214,8 @@ These shortcodes render [knockout.js](http://knockoutjs.com/)-enabled forms. Rea
 You can enter the same UI elements into your theme's widget area.
 Simply go to *Appearance* &rarr; *Widgets* and use the provided front-end widgets.
 
-You can also use a special menu item to display the user balances as part of a nav menu:
+You can also use a special menu item to display the user balances as part of a nav menu. See the *Frontend* section of the documentation for details.
 
-1. Go to *Appearance* &rarr; *Menus*.
-2. At the top right side of the screen, click *Screen Options*.
-3. Under *Boxes*, make sure that *Bitcoin and Altcoin Wallets balances* is selected.
-4. Now you are free to enter the balances menu item into your menus.
 
 = I don’t like the built-in forms. Can I change them or provide my own? =
 
@@ -351,6 +311,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.6 =
+- Add: Added stocks.exchange exchange rates provider.
+- Add: Option to switch off frontend reloading of coin info when page regains visibility.
+- Add: Spanish language translation for frontend contributed by Javier Enrique Vargas Parra <jevargas@uniandes.edu.co>.
+- Change: NovaExchange rates provider re-enabled after announcement that the exchange will not be decommissioned.
+- Improve: Multiple calls to the same exchange rates API endpoint are no longer repeated.
+- Improve: Suggested curl notify commands for full node wallets now include the -k switch to bypass problems with invalid SSL certificates.
 
 = 2.13.5 =
 - Fix: User no more allowed to enter invalid polling intervals such as an empty string, resulting in frontend slowdown.
@@ -767,7 +735,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.13.5 is a patch release that includes some minor improvements and user requests to the plugin.
+Version 2.13.6 is a patch release that includes some minor improvements and user requests to the plugin.
 
 == Donating ==
 

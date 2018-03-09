@@ -23,6 +23,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_qrcode_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_zlib_disabled', '' );
 
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_visibility_check_enabled', 'on' );
+
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_poll_interval_transactions', 5 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_poll_interval_coin_info', 5 );
 		}
@@ -78,6 +80,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			register_setting(
 				'wallets-menu-frontend-settings',
 				'wallets_poll_interval_coin_info'
+			);
+
+			add_settings_field(
+				'wallets_visibility_check_enabled',
+				__( 'Also load coin info when the page becomes visible', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-frontend-settings',
+				'wallets_live_section',
+				array(
+					'label_for' => 'wallets_visibility_check_enabled',
+					'description' => __( 'Information about coins and balances is also loaded whenever the wallets page gains visibility, according to the ' .
+						'Page Visibility API. Uncheck this box to disable this behavior.', 'wallets ' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-frontend-settings',
+				'wallets_visibility_check_enabled'
 			);
 
 			add_settings_field(

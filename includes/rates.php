@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( '-1' );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi' );
+		private static $providers = array( 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
 		private static $rates = array();
 		private static $cryptos = array();
 		private static $fiats = array();
@@ -329,12 +329,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 					value="<?php echo esc_attr( $provider ); ?>"
 
-					<?php if ( 'novaexchange' == $provider && time() > strtotime( '2018-02-28' ) ): ?>
-						disabled="disabled"
-						style="cursor: not-allowed;"
-						title="The Novaexchange API has been decomissioned. Please switch to another API."
-					<?php endif; ?>
-
 						<?php checked( $provider, Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?> />
 
 				<?php
@@ -548,7 +542,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		// helpers
 
+		// this simple caching mechanism only serves so as to not download the same URL twice in the same request
+		private static $cache = array();
+
 		private static function file_get_contents( $url ) {
+			if ( isset( self::$cache[ $url ] ) ) {
+				return self::$cache[ $url ];
+			}
+
 			if ( function_exists( 'curl_init' ) ) {
 				$ch = curl_init();
 				curl_setopt( $ch, CURLOPT_URL, $url );
@@ -585,6 +586,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						) ) ) );
 			}
 
+			if ( is_string( $result ) ) {
+				self::$cache[ $url ] = $result;
+			}
 			return $result;
 		}
 
@@ -727,6 +731,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 							if ( 'USD' != $s && 'USDT' != $s ) {
 								$cryptos[] = $s;
 							}
+						}
+					}
+				}
+			}
+			return $cryptos;
+		}
+
+		public static function filter_rates_cryptos_stocksexchange( $cryptos, $provider ) {
+
+			if ( 'stocksexchange' == $provider ) {
+				$url = 'https://stocks.exchange/api2/markets';
+				$json = self::file_get_contents( $url );
+				if ( false !== $json ) {
+					$obj = json_decode( $json );
+					if ( ! is_null( $obj ) ) {
+						foreach ( $obj as $market ) {
+							$cryptos[] = $market->currency;
 						}
 					}
 				}
@@ -890,6 +911,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			}
 			return $rates;
 		}
+
+		public static function filter_rates_stocksexchange( $rates, $provider ) {
+			if ( 'stocksexchange' == $provider ) {
+				$url = 'https://stocks.exchange/api2/ticker';
+				$json = self::file_get_contents( $url );
+				if ( false !== $json ) {
+					$obj = json_decode( $json );
+					if ( ! is_null( $obj ) ) {
+						foreach ( $obj as $market ) {
+							$m = str_replace( 'USDT', 'USD', $market->market_name );
+							$rates[ $m ] = $market->last;
+						}
+					}
+				}
+			}
+			return $rates;
+		}
+
 
 		// API
 

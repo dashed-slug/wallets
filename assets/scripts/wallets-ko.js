@@ -69,6 +69,29 @@
 				self.updateQrCode();
 			};
 
+
+			// the nonces necessary to perform actions over the JSON API
+			self.nonces = ko.observable( {} );
+
+			self.loadNonces = function() {
+				var nonces = {};
+				$.ajax({
+					dataType: 'json',
+					async: false,
+					cache: true,
+					data: { '__wallets_action': 'get_nonces' },
+					success: function( response ) {
+						if ( response.result != 'success' ) {
+							serverErrorHandler( response );
+							return;
+						}
+						nonces = response.nonces;
+					},
+					error: xhrErrorHandler
+				});
+				self.nonces( nonces );
+			};
+
 			// balance of the currently selected coin, string-formatted for that coin
 			self.currentCoinBalance = ko.computed( function() {
 				var coins = self.coins();
@@ -93,26 +116,6 @@
 					}
 				}
 				return '';
-			});
-
-			// the nonces necessary to perform actions over the JSON API
-			self.nonces = ko.computed( function() {
-				var nonces = [];
-				$.ajax({
-					dataType: 'json',
-					async: false,
-					cache: true,
-					data: { '__wallets_action': 'get_nonces' },
-					success: function( response ) {
-						if ( response.result != 'success' ) {
-							serverErrorHandler( response );
-							return;
-						}
-						nonces = response.nonces;
-					},
-					error: xhrErrorHandler
-				});
-				return nonces;
 			});
 
 			self.updateQrCode = function() {
@@ -579,13 +582,17 @@
 			$( '.dashed-slug-wallets .select2' ).remove();
 		}
 
-		// one second after doc ready, load coins and start interval
+		// one second after doc ready, load coins and nonces, then start polling
 		setTimeout( function() {
-			walletsViewModel.loadCoins();
 			removeSelect2();
 
-			var minutes = parseFloat( walletsUserData.pollIntervalCoinInfo );
+			walletsViewModel.loadNonces();
+			setInterval( function() {
+				walletsViewModel.loadNonces();
+			}, 12 * 60 * 60 * 1000 );
 
+			walletsViewModel.loadCoins();
+			var minutes = parseFloat( walletsUserData.pollIntervalCoinInfo );
 			if ( minutes ) {
 				setInterval( function() {
 					if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
@@ -594,6 +601,7 @@
 					walletsViewModel.loadCoins();
 				}, minutes * 60 * 1000 );
 			}
+
 		}, 1000 );
 
 		// two seconds after doc ready, load transactions and start interval
@@ -612,12 +620,14 @@
 			}
 		}, 2000 );
 
-		// load coin data again when gaining visibility
-		window.document.addEventListener( 'visibilitychange', function() {
-			if ( ! window.document.hidden ) {
-				walletsViewModel.loadCoins();
-			}
-		});
+		if ( parseInt( walletsUserData.walletsVisibilityCheckEnabled ) ) {
+			// load coin data again when gaining visibility
+			window.document.addEventListener( 'visibilitychange', function() {
+				if ( ! window.document.hidden ) {
+					walletsViewModel.loadCoins();
+				}
+			});
+		}
 
 	} );
 })( jQuery );

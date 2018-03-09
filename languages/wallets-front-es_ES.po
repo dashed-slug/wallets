@@ -2,255 +2,269 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-03-09 10:59:21+00:00\n"
+"POT-Creation-Date: 2018-02-28 10:38:35+00:00\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n1.0.1\n"
+"PO-Revision-Date: 2018-03-02 12:08-0500\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es_ES\n"
 
 #: includes/sidebar-widgets.php:35
 msgid "Deposit to wallet"
-msgstr ""
+msgstr "Depósito a la billetera"
 
 #: includes/sidebar-widgets.php:39
 msgid "Withdraw from wallet"
-msgstr ""
+msgstr "Retirar de la billetera"
 
 #: includes/sidebar-widgets.php:43
 msgid "Transfer to user wallet"
-msgstr ""
+msgstr "Transferir a la billetera del usuario"
 
 #: includes/sidebar-widgets.php:47
 msgid "Wallet balance"
-msgstr ""
+msgstr "Saldo de la billetera"
 
 #: includes/sidebar-widgets.php:51
 msgid "Wallet transactions"
-msgstr ""
+msgstr "Transacciones de billetera"
 
 #: includes/sidebar-widgets.php:108
 msgid ""
 "A form that will let the user know which address they can send coins to if "
 "they wish to make a deposit."
 msgstr ""
+"Un formulario que le permitirá al usuario saber a qué dirección pueden "
+"enviar las monedas si desea hacer un depósito."
 
 #: includes/sidebar-widgets.php:119
 msgid "A form that will let the user withdraw funds."
-msgstr ""
+msgstr "Un formulario que le permitirá al usuario retirar fondos."
 
 #: includes/sidebar-widgets.php:130
 msgid "A form that lets the user transfer coins to other users on your site."
 msgstr ""
+"Un formulario que permite al usuario transferir monedas a otros usuarios en "
+"su sitio."
 
 #: includes/sidebar-widgets.php:141
 msgid "The current user's balances in all enabled coins."
-msgstr ""
+msgstr "Los saldos actuales del usuario en todas las monedas habilitadas."
 
 #: includes/sidebar-widgets.php:152
 msgid ""
-"An interactive table that shows past deposits, withdrawals and transfers "
-"for the user."
+"An interactive table that shows past deposits, withdrawals and transfers for "
+"the user."
 msgstr ""
+"Una tabla interactiva que muestra depósitos en el pasados, retiros y "
+"transferencias del usuario."
 
 #: includes/views/balance.php:8 includes/views/deposit.php:8
 #: includes/views/move.php:8 includes/views/transactions.php:8
 #: includes/views/withdraw.php:8
 msgid "Coin"
-msgstr ""
+msgstr "Moneda"
 
 #: includes/views/balance.php:9
 msgid "Balance"
-msgstr ""
+msgstr "Saldo"
 
 #: includes/views/deposit.php:10
 msgid "Deposit address"
-msgstr ""
+msgstr "Dirección de depósito"
 
 #: includes/views/move.php:9
 msgid "Recipient user"
-msgstr ""
+msgstr "Usuario destinatario"
 
 #: includes/views/move.php:10 includes/views/withdraw.php:10
 msgid "Amount"
-msgstr ""
+msgstr "Cantidad"
 
 #: includes/views/move.php:11 includes/views/withdraw.php:11
 msgid "Fee (deducted from amount)"
-msgstr ""
+msgstr "Tarifa (deducida de la cantidad)"
 
 #: includes/views/move.php:12 includes/views/transactions.php:22
 #: includes/views/withdraw.php:12
 msgid "Comment"
-msgstr ""
+msgstr "Comentario"
 
 #: includes/views/move.php:16 includes/views/withdraw.php:15
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 #: includes/views/move.php:17 includes/views/withdraw.php:16
 msgid "Reset form"
-msgstr ""
+msgstr "Restablecer formulario"
 
 #: includes/views/transactions.php:9
 msgid "Rows per page"
-msgstr ""
+msgstr "Filas por página"
 
 #: includes/views/transactions.php:10
 msgid "Page"
-msgstr ""
+msgstr "Página"
 
 #: includes/views/transactions.php:14
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: includes/views/transactions.php:15
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 #: includes/views/transactions.php:16
 msgid "Time"
-msgstr ""
+msgstr "Hora"
 
 #: includes/views/transactions.php:17
 msgid "Amount (+fee)"
-msgstr ""
+msgstr "Cantidad (+ tarifa)"
 
 #: includes/views/transactions.php:18
 msgid "Fee"
-msgstr ""
+msgstr "Tarifa"
 
 #: includes/views/transactions.php:19
 msgid "From"
-msgstr ""
+msgstr "De"
 
 #: includes/views/transactions.php:20
 msgid "To"
-msgstr ""
+msgstr "A"
 
 #: includes/views/transactions.php:21
 msgid "Tx ID"
-msgstr ""
+msgstr "Tx ID"
 
 #: includes/views/transactions.php:23
 msgid "Confirmations"
-msgstr ""
+msgstr "Confirmaciones"
 
 #: includes/views/transactions.php:24
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 #: includes/views/transactions.php:25
 msgid "Retries&nbsp;left"
-msgstr ""
+msgstr "Reintentos & izquierda"
 
 #: includes/views/transactions.php:28
 msgid "Admin&nbsp;confirm"
-msgstr ""
+msgstr "Confirmación del Admin"
 
 #: includes/views/transactions.php:31
 msgid "User&nbsp;confirm"
-msgstr ""
+msgstr "Confirmación Usuario"
 
 #: includes/views/transactions.php:42 includes/views/transactions.php:71
 #: includes/views/transactions.php:94 includes/views/transactions.php:95
 msgid "me"
-msgstr ""
+msgstr "yo"
 
 #: includes/views/withdraw.php:9
 msgid "Withdraw to address"
-msgstr ""
+msgstr "Retirar a la dirección"
 
 #: includes/wallets-ko-i18n.php:7
 msgid "Wallet operation failed due to an unexpected error"
-msgstr ""
+msgstr "La operación en la billetera falló debido a un error inesperado"
 
 #: includes/wallets-ko-i18n.php:8
 msgid "Wallet operation failed: %s"
-msgstr ""
+msgstr "La operación en la billetera Wallet falló: %s"
 
 #: includes/wallets-ko-i18n.php:9
 msgid "Could not contact server. Status: %s Error: %s"
-msgstr ""
+msgstr "No se pudo contactar al servidor. Estado: %s Error: %s"
 
 #: includes/wallets-ko-i18n.php:10
 msgid "Check to see if you have typed the address correctly!"
-msgstr ""
+msgstr "¡Comprueba si has escrito la dirección correctamente!"
 
 #: includes/wallets-ko-i18n.php:12
 msgid "deposit"
-msgstr ""
+msgstr "deposito"
 
 #: includes/wallets-ko-i18n.php:13
 msgid "withdraw"
-msgstr ""
+msgstr "retiro"
 
 #: includes/wallets-ko-i18n.php:14
 msgid "transfer"
-msgstr ""
+msgstr "transferencia"
 
 #: includes/wallets-ko-i18n.php:16
 msgid "unconfirmed"
-msgstr ""
+msgstr "sin confirmar"
 
 #: includes/wallets-ko-i18n.php:17
 msgid "pending"
-msgstr ""
+msgstr "pendiente"
 
 #: includes/wallets-ko-i18n.php:18
 msgid "done"
-msgstr ""
+msgstr "hecho"
 
 #: includes/wallets-ko-i18n.php:19
 msgid "failed"
-msgstr ""
+msgstr "fallo"
 
 #: includes/wallets-ko-i18n.php:20
 msgid "cancelled"
-msgstr ""
+msgstr "cancelado"
 
 #: includes/wallets-ko-i18n.php:26
 msgid ""
-"Successfully submitted a transaction request of %s %s. Please check your "
-"e-mail for confirmation instructions."
+"Successfully submitted a transaction request of %s %s. Please check your e-"
+"mail for confirmation instructions."
 msgstr ""
+"Se envió con éxito una solicitud de transacción de %s %s. Por favor revise "
+"su correo electrónico para obtener instrucciones de confirmación."
 
 #: includes/wallets-ko-i18n.php:31
 msgid "Successfully submitted a transaction request of %s %s."
-msgstr ""
+msgstr "Se envió con éxito una solicitud de transacción de %s %s."
 
 #: includes/wallets-ko-i18n.php:38
 msgid ""
 "Successfully submitted a withdrawal request of %s %s to %s. Please check "
 "your e-mail for confirmation instructions."
 msgstr ""
+"Se envió con éxito una solicitud de retirada de %s %s a %s. Por favor revise "
+"su correo electrónico para obtener instrucciones de confirmación."
 
 #: includes/wallets-ko-i18n.php:43
 msgid "Successfully submitted a withdrawal request of %s %s."
-msgstr ""
+msgstr "Se envió con éxito una solicitud de retiro de %s %s."
 
 #. Plugin Name of the plugin/theme
 msgid "Bitcoin and Altcoin Wallets"
-msgstr ""
+msgstr "Billeteras de Bitcoin y Altcoin"
 
 #. Plugin URI of the plugin/theme
 msgid "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin"
-msgstr ""
+msgstr "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin"
 
 #. Description of the plugin/theme
 msgid ""
 "Turn your blog into a bank: Let your users deposit, withdraw, and transfer "
 "bitcoins and altcoins on your site."
 msgstr ""
+"Convierta su blog en un banco: permita que sus usuarios depositen, retiren y "
+"transfieran bitcoins y altcoins en su sitio."
 
 #. Author of the plugin/theme
 msgid "dashed-slug <info@dashed-slug.net>"
-msgstr ""
+msgstr "dashed-slug <info@dashed-slug.net>"
 
 #. Author URI of the plugin/theme
 msgid "http://dashed-slug.net"
-msgstr ""
+msgstr "http://dashed-slug.net"

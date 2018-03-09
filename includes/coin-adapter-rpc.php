@@ -233,9 +233,9 @@ server=1
 rpcallowip=127.0.0.1
 rpcallowip=$wp_ip
 rpcport=$port
-walletnotify=curl -s $wallet_url >/dev/null
-blocknotify=curl -s $block_url >/dev/null
-alertnotify= curl -s $alert_url >/dev/null
+walletnotify=curl -sk $wallet_url >/dev/null
+blocknotify=curl -sk $block_url >/dev/null
+alertnotify= curl -sk $alert_url >/dev/null
 rpcuser=$user
 rpcpassword=ENTER_SECRET_RPC_PASSWORD_HERE
 CFG;
