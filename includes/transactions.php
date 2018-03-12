@@ -1084,7 +1084,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							SET
 								status = 'cancelled'
 							WHERE
-								id IN ( $set_of_ids )
+								id IN ( $set_of_ids ) AND
+								( status IN ( 'unconfirmed', 'pending' ) OR
+								( status = 'done' && category = 'move' ) )
 							"
 						);
 
@@ -1105,9 +1107,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								$table_name_txs
 							SET
 								retries = IF( category='withdraw', %d, %d ),
-								status = 'pending'
+								status = 'unconfirmed'
 							WHERE
-								id IN ( $set_of_ids )
+								id IN ( $set_of_ids ) AND
+								status IN ( 'cancelled', 'failed' )
 							",
 							Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
 							Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 )

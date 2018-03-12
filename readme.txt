@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.4
 Requires PHP: 5.6
-Stable tag: 2.13.6
+Stable tag: 2.13.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ https://www.youtube.com/watch?v=_dbkKHhEzRQ
 
 [Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin) is a FREE WordPress plugin by [dashed-slug](https://dashed-slug.net).
 
-It enables financial transactions on your site via Bitcoins and other cryptocurrencies.
+Your users can perform financial transactions on your site via Bitcoins and other cryptocurrencies.
 
 
 = Get the free PDF manual! =
@@ -83,14 +83,6 @@ Here are all the currently available premium app extensions to the Bitcoin and A
 
 Premium members also get auto-updates for any installed extensions. [Instructions for how to set up auto-updates are here](https://www.dashed-slug.net/dashed-slug/extension-updates-activation/).
 
-= And here's a preview of what is to come: =
-
-- An interest-paying plugin for investment-type sites.
-- Plugins that **[reward user engagement](https://en.wikipedia.org/wiki/Gamification)**.
-- An **[ad exchange](https://en.wikipedia.org/wiki/Ad_exchange)** plugin to enable administrators to sell ad spaces and
-  to let advertisers bid for these ad spaces.
-- etc.
-
 **The dashed-slug.net development is driven by your feedback. Send in your feature requests today.**
 
 = follow the slime =
@@ -109,11 +101,20 @@ The dashed-slug is a social slug:
 As a new user, you should first read the glossary section of the documentation to familiarize yourself with some basic concepts. The troubleshooting section for the main plugin is also found in the documentation. The support forum for the main plugin is at [WordPress.org](https://wordpress.org/support/plugin/wallets), but please first read [this notice](https://wordpress.org/support/topic/important-please-read-before-posting-an-issue/) before posting.
 
 First, understand the tradeoff between setting up a full node or using the cloud wallets.
-- If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ). A full node is harder to setup and maintain, but gives you performance and freedom to control network fee settings.
-- **Cloud wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
+
+= Full node =
+
+If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ). A full node is harder to setup and maintain, but gives you performance and freedom to control network fee settings.
+
+= Cloud wallets =
+
+**Cloud wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
   - If you are interested in installing the CoinPayments adapter, then the installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
   - If you prefer to install the block.io coin adapter then the installation instructions are on that other [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
-  You will also find a troubleshooting section on these pages, and the support forums are [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/) and [here](https://www.dashed-slug.net/forums/forum/block-io-cloud-wallet-adapter-extension-support/).
+
+There is a troubleshooting section on the coin adapter pages.
+
+The support forums are [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/) and [here](https://www.dashed-slug.net/forums/forum/block-io-cloud-wallet-adapter-extension-support/).
 
 = Disclaimer =
 
@@ -133,9 +134,9 @@ By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that y
 
 = Further reading =
 
-- https://codex.wordpress.org/Managing_Plugins#Installing_Plugins
-- https://bitcoin.org/en/full-node
-- https://en.bitcoin.it/wiki/Running_Bitcoin
+- [https://codex.wordpress.org/Managing_Plugins#Installing_Plugins](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins)
+- [https://bitcoin.org/en/full-node](https://bitcoin.org/en/full-node)
+- [https://en.bitcoin.it/wiki/Running_Bitcoin](https://en.bitcoin.it/wiki/Running_Bitcoin)
 
 
 == Frequently Asked Questions ==
@@ -311,6 +312,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 2.13.7 =
+- Improve: More kinds of transactions can be cancelled via the admin interface.
+- Improve: More kinds of transactions can be retried via the admin interface.
+- Fix: Avoid race condition that sometimes prevented the fix to the Select2 issue originally addressed in 2.13.5 .
+- Fix: Make sure that JavaScript withdrawal address validators are always functions before calling them.
+- Fix: The option to switch off frontend reloading of coin info when page regains visibility can now be changed in multisite installs.
 
 = 2.13.6 =
 - Add: Added stocks.exchange exchange rates provider.
@@ -735,7 +743,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.13.6 is a patch release that includes some minor improvements and user requests to the plugin.
+Version 2.13.7 is a patch release that includes some minor improvements and user requests to the plugin.
 
 == Donating ==
 

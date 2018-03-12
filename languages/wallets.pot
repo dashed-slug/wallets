@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-03-09 10:59:21+00:00\n"
+"POT-Creation-Date: 2018-03-12 16:11:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -85,7 +85,7 @@ msgstr ""
 #: includes/transactions.php:814 includes/transactions.php:995
 #: includes/transactions.php:1015 includes/transactions.php:1035
 #: includes/transactions.php:1054 includes/transactions.php:1074
-#: includes/transactions.php:1096
+#: includes/transactions.php:1098
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -94,7 +94,7 @@ msgstr ""
 #: includes/json-api.php:342 includes/transactions.php:820
 #: includes/transactions.php:999 includes/transactions.php:1019
 #: includes/transactions.php:1039 includes/transactions.php:1058
-#: includes/transactions.php:1078 includes/transactions.php:1100
+#: includes/transactions.php:1078 includes/transactions.php:1102
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -1027,7 +1027,7 @@ msgstr ""
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:227
+#: includes/frontend-settings.php:229
 msgid "\"QR Code\" is a registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
@@ -1418,47 +1418,47 @@ msgstr ""
 msgid "&#x1F5D9; Cancel"
 msgstr ""
 
-#: includes/transactions-list.php:301
+#: includes/transactions-list.php:304
 msgid "Transaction will be RETRIED."
 msgstr ""
 
-#: includes/transactions-list.php:302
+#: includes/transactions-list.php:305
 msgid "&#8635; Retry"
 msgstr ""
 
-#: includes/transactions-list.php:333
+#: includes/transactions-list.php:334
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: includes/transactions-list.php:334
+#: includes/transactions-list.php:335
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:350
+#: includes/transactions-list.php:351
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: includes/transactions-list.php:351
+#: includes/transactions-list.php:352
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: includes/transactions-list.php:386
+#: includes/transactions-list.php:387
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: includes/transactions-list.php:387
+#: includes/transactions-list.php:388
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:403
+#: includes/transactions-list.php:404
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: includes/transactions-list.php:404
+#: includes/transactions-list.php:405
 msgid "&#x2713; User accept"
 msgstr ""
 

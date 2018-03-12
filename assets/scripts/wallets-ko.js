@@ -36,6 +36,19 @@
 			}
 		};
 
+		// fault-tolerant way of making sure that select2 is not applied to the dropdowns of this plugin
+		function removeSelect2() {
+			$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function (i, el ) {
+				if ( $( el ).data( 'select2' ) ) {
+					$( el ).select2( 'destroy' );
+				} else {
+					$( el ).removeClass( 'select2-hidden-accessible' );
+				}
+			} );
+			$( '.dashed-slug-wallets .select2' ).remove();
+		}
+
+
 		// the knockout viewmodel
 		function WalletsViewModel() {
 			var self = this;
@@ -66,6 +79,7 @@
 				});
 
 				self.coins( coins );
+				removeSelect2();
 				self.updateQrCode();
 			};
 
@@ -292,19 +306,21 @@
 			// [wallets_withdraw] shortcode
 			var validators = [];
 			$.fn.walletsBindWithdrawAddressValidator = function( symbol, validatorFunction ) {
-				validators.push( {
-					symbol: symbol,
-					validatorFunction: validatorFunction
-				} );
+				if ( 'string' == typeof( symbol ) && 'function' == typeof ( validatorFunction ) ) {
+					validators.push( {
+						symbol: symbol,
+						validatorFunction: validatorFunction
+					} );
+				}
 			};
 
 			// withdraw address, used in the [wallets_withdraw] form
 			self.withdrawAddress = ko.observable().extend({
 				validation: [{
 						validator: function( val ) {
-							for (var i in validators ) {
-								if ( self.selectedCoin() == validators[i].symbol ) {
-									var result = validators[i].validatorFunction( val );
+							for ( var i in validators ) {
+								if ( self.selectedCoin() == validators[ i ].symbol && 'function' == typeof( validators[ i ].validatorFunction ) ) {
+									var result = validators[ i ].validatorFunction( val );
 									if ( ! result ) {
 										return false;
 									}
@@ -569,18 +585,6 @@
 				alert( sprintf( wallets_ko_i18n.submit_wd, amount, symbol, address ) );
 			}
 		});
-
-		// fault-tolerant way of making sure that select2 is not applied to the dropdowns of this plugin
-		function removeSelect2() {
-			$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function (i, el ) {
-				if ( $( el ).data( 'select2' ) ) {
-					$( el ).select2( 'destroy' );
-				} else {
-					$( el ).removeClass( 'select2-hidden-accessible' );
-				}
-			} );
-			$( '.dashed-slug-wallets .select2' ).remove();
-		}
 
 		// one second after doc ready, load coins and nonces, then start polling
 		setTimeout( function() {

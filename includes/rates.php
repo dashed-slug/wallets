@@ -797,7 +797,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				$json = self::file_get_contents( $url );
 				if ( false !== $json ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->success ) && $obj->success ) {
+					if ( isset( $obj->success ) && $obj->success && isset( $obj->result ) && isset( $obj->result->Last ) ) {
 						$rates['USD_BTC'] = $obj->result->Last;
 					}
 				}
