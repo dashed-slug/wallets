@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'3.0.0'
+				'3.0.1'
 			);
 		}
 

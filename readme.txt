@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.4
 Requires PHP: 5.6
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -309,6 +309,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.0.1 =
+- Fix: Do not throw an alert box error in frontend when an AJAX request is cancelled by the browser, if the user clicks on a new link while the request is in transit.
 
 = 3.0.0 =
 - Add: New improved PHP API for working with wallets, based on WordPress actions and filters. See documentation for details.
@@ -752,7 +755,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.0.0 of Bitcoin and Altcoin Wallets for WordPress brings improvements to the front-end performance of the plugin, and much better developer APIs. Please [read the release notes](http://dashed-slug.net/wallets-3-0-0/).
+Version, 3.0.1 fixes an issue with the frontend that was introduced in 3.0.0.
 
 == Donating ==
 

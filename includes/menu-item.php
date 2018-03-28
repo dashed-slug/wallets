@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.0.0',
+				'3.0.1',
 				true
 			);
 		}

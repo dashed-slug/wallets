@@ -10,7 +10,11 @@
 		// common error handlers for all requests
 
 		var xhrErrorHandler = function( jqXHR, textStatus, errorThrown ) {
-			if ( 403 == jqXHR.status ) {
+			if ( ! jqXHR.status ) {
+				// request was cancelled
+				return;
+			} else if ( 403 == jqXHR.status ) {
+				// not logged in
 				return;
 			} else if ( 401 == jqXHR.status ) {
 				$( '.dashed-slug-wallets' ).replaceWith( '<div class="dashed-slug-wallets">' + jqXHR.responseJSON.message + '</div>' );
