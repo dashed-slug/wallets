@@ -270,8 +270,8 @@ EMAIL
 				// use pattern for displaying amounts
 				if ( isset( $row['symbol'] ) ) {
 					try {
-						$dsw = Dashed_Slug_Wallets::get_instance();
-						$adapter = $dsw->get_coin_adapters( $row['symbol'], false );
+						$adapters = apply_filters( 'wallets_api_adapters', array() );
+						$adapter = $adapters[ $row['symbol'] ];
 						$sprintf = $adapter->get_sprintf();
 					} catch ( Exception $e ) {
 						$sprintf = '%01.8F';

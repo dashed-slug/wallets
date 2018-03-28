@@ -895,11 +895,11 @@ NOTIFICATION
 
 			// use pattern for displaying amounts
 			if ( isset( $msg_data->symbol ) ) {
-				try {
-					$dsw = Dashed_Slug_Wallets::get_instance();
-					$adapter = $dsw->get_coin_adapters( $msg_data->symbol, false );
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+				if ( isset( $adapters[ $msg_data->symbol ] ) ) {
+					$adapter = $adapters[ $msg_data->symbol ];
 					$sprintf = $adapter->get_sprintf();
-				} catch ( Exception $e ) {
+				} else {
 					$sprintf = '%01.8F';
 				}
 

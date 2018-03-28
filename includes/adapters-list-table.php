@@ -55,12 +55,10 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			$this->get_sortable_columns(),
 		);
 
-		$dsw = Dashed_Slug_Wallets::get_instance();
 
-		$adapters = $dsw->get_coin_adapters();
 		$this->items = array();
 
-		$balances = $dsw->get_balance_totals_per_coin();
+		$balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 
 		global $wpdb;
 		$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
@@ -84,6 +82,8 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			),
 			OBJECT_K
 		);
+
+		$adapters = apply_filters( 'wallets_api_adapters', array() );
 
 		foreach ( $adapters as $symbol => &$adapter ) {
 

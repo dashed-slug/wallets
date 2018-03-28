@@ -77,11 +77,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 		}
 
 		public function export_handler() {
-			$core = Dashed_Slug_Wallets::get_instance();
 
 			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 			$symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
-			$adapter = $core->get_coin_adapters( $symbol );
+			$adapters = apply_filters( 'wallets_api_adapters', array() );
+
+			if ( ! $symbol || ! isset( $adapters[ $symbol ] ) ) {
+				return;
+			}
+
+			$adapter = $adapters[ $symbol ];
 
 			switch ( $action ) {
 

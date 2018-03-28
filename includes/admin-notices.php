@@ -42,8 +42,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 			if ( current_user_can( 'manage_wallets' ) ) {
 				$this->info(
-					__( '<strong>IMPORTANT</strong>: Read the <a href="https://www.dashed-slug.net/important-action-required-admins-version-2-13-0">release notes for version 2.13.0</a>.', 'wallets' ),
-					'release-notes-2-13-0'
+					__( '<strong>IMPORTANT</strong>: Read the <a href="https://www.dashed-slug.net/wallets-3-0-0">release notes for version 3.0.0</a>.', 'wallets' ),
+					'release-notes-3-0-0'
 				);
 			}
 		}
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( 'assets/scripts/wallets-notify.min.js', DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'2.13.7'
+				'3.0.0'
 			);
 
 		}

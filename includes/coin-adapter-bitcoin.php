@@ -26,8 +26,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_Bitcoin' ) ) {
 		 * @see Dashed_Slug_Wallets_Coin_Adapter_RPC::get_recommended_config()
 		 */
 		protected function get_recommended_config() {
-			$wallet_url = site_url( 'wallets/notify/' . $this->get_symbol() . '/wallet/%s' );
-			$block_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/block/%s' );
+			$wallet_url = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/wallet/%s' );
+			$block_url = site_url( 'wallets/api2/notify/' . $this->get_symbol(). '/block/%s' );
 			$wp_ip = self::server_ip();
 			$user = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
 			$password = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-password" );

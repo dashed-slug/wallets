@@ -40,16 +40,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.13.7',
+				'3.0.0',
 				true
 			);
 		}
 
 		public function compute_deposit_addresses() {
 
-			$dsw = Dashed_Slug_Wallets::get_instance();
+			$adapters = apply_filters( 'wallets_api_adapters', array() );
 
-			foreach ( $dsw->get_coin_adapters( null, false ) as $symbol => $adapter ) {
+			foreach ( $adapters as $symbol => $adapter ) {
 				$deposit_address = Dashed_Slug_Wallets::get_option( "wallets_cs_address_$symbol" );
 
 				if ( ! $deposit_address ) {
@@ -79,13 +79,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 						$cold_storage_amount = filter_input( INPUT_POST, 'wallets_cs_amount', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 
 						if ( $cold_storage_address && $cold_storage_amount ) {
-							$dsw = Dashed_Slug_Wallets::get_instance();
 							$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
-							try {
-								$adapter = $dsw->get_coin_adapters( $cold_storage_symbol );
-							} catch ( Exception $e ) {
+							$adapters = apply_filters( 'wallets_api_adapters', array() );
+							if ( isset( $adapters[ $cold_storage_symbol ] ) ) {
+								$adapter = $adapters[ $cold_storage_symbol ];
+							} else {
 								$notices->error( sprintf( __( 'Cannot withdraw to cold storage: %s', 'wallets' ), $e->getMessage() ) );
+								return;
 							}
 
 							$msg = sprintf(
@@ -135,9 +136,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			$dsw = Dashed_Slug_Wallets::get_instance();
+			$balance_sums = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 
-			$balance_sums = $dsw->get_balance_totals_per_coin();
+			$adapters = apply_filters( 'wallets_api_adapters', array() );
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets: Transfer to and from cold storage', 'wallets' ); ?></h1>
 
@@ -150,44 +151,53 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 						<thead>
 							<th><?php esc_html_e( 'Adapter', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Currency', 'wallets' ); ?></th>
-							<th><?php esc_html_e( 'User Balances', 'wallets' ); ?></th>
-							<th><?php esc_html_e( 'Online Balance', 'wallets' ); ?></th>
+							<th><?php esc_html_e( 'Sum of User Balances', 'wallets' ); ?></th>
+							<th><?php esc_html_e( 'Online Wallet Balance', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Actions', 'wallets' ); ?></th>
 						</thead>
 						<tbody style="vertical-align: top;"><?php
 
-								foreach ( $dsw->get_coin_adapters() as $symbol => $adapter ):
 
-									// skip offline walelts
+								foreach ( $adapters as $symbol => $adapter ):
+
+									// skip offline wallets
 									try {
 										$wallet_balance = $adapter->get_balance();
 									} catch ( Exception $e ) {
 										continue;
 									}
 
-									// skip wallets with no coins owned by users
-									if ( ! isset( $balance_sums[ $symbol ] )  )
-										$balance_sums[ $symbol ] = 0;
-
+									if ( isset( $balance_sums[ $symbol ] ) ) {
+										$user_balances = $balance_sums[ $symbol ];
+									} else {
+										$user_balances = 0;
+									}
 						?><tr>
 
 								<td><?php echo esc_html( $adapter->get_adapter_name() ); ?></td>
 								<td><?php echo esc_html( sprintf( "%s (%s)", $adapter->get_name(), $symbol ) ); ?></td>
-								<td><?php echo esc_html( sprintf( $adapter->get_sprintf(), $balance_sums[ $symbol ] ) ); ?></td>
+								<td><?php echo esc_html( sprintf( $adapter->get_sprintf(), $user_balances ) ); ?></td>
 
 								<td><?php
-									$progress  = 100 * $wallet_balance / $balance_sums[ $symbol ];
+									if ( ! isset(  $balance_sums[ $symbol ] ) ) {
 
-									echo esc_html( sprintf(
-										$adapter->get_sprintf() . ' (%01.2f%%)',
-										$wallet_balance,
-										number_format( $progress, 2, '.', '' )
-									) );
+										echo esc_html( sprintf(
+											$adapter->get_sprintf(),
+											$wallet_balance
+										) );
+									} else {
+										$progress  = 100 * $wallet_balance / $balance_sums[ $symbol ];
 
-									if ( ! is_nan( $progress ) ): ?>
+										echo esc_html( sprintf(
+											$adapter->get_sprintf() . ' (%01.2f%%)',
+											$wallet_balance,
+											number_format( $progress, 2, '.', '' )
+										) );
+									?>
 										<br />
 										<progress max="100" value="<?php echo  min( 100, $progress ); ?>" ></progress><?php
-									endif; ?>
+									}
+									?>
 								</td>
 
 								<td>
@@ -213,11 +223,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					$cold_storage_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 					$cold_storage_symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
 
-					try {
-						$adapter = $dsw->get_coin_adapters( $cold_storage_symbol );
-					} catch ( Exception $e ) {
+
+					if ( ! isset( $adapters[ $cold_storage_symbol ] ) ) {
 						return;
 					}
+
+					$adapter = $adapters[ $cold_storage_symbol ];
 
 					if ( 'withdraw' == $cold_storage_tab ): ?>
 
@@ -339,18 +350,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 		public function helper_text( $symbol ) {
 			if ( is_string( $symbol ) ) {
 
-				$dsw = Dashed_Slug_Wallets::get_instance();
 
-				try {
-					$adapter = $dsw->get_coin_adapters( $symbol );
-				} catch ( Exception $e ) {
+
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+
+				if ( ! isset( $adapters[ $symbol ] ) ) {
 					return;
 				}
+				$adapter = $adapters[ $symbol ];
 
 				if ( $adapter ) {
 
 					$wallet_balance = $adapter->get_balance();
-					$user_balances = $dsw->get_balance_totals_per_coin();
+					$user_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 					$cold_storage_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 
 					for ( $r = 10; $r <= 100; $r += 10 ):

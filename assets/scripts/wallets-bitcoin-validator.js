@@ -21,8 +21,9 @@
 						return false;
 					}
 
-					if ( bytes.length != 21 )
+					if ( bytes.length != 21 ) {
 						return false;
+					}
 
 					var version = bytes[0];
 

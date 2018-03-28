@@ -21,35 +21,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 	 */
 	final class Dashed_Slug_Wallets {
 
-		/** error code for exception thrown while getting user info */
-		const ERR_GET_USERS_INFO = -101;
+		/** Error code for exception thrown while getting user info. */
+		const ERR_GET_USERS_INFO = Dashed_Slug_Wallets_PHP_API::ERR_GET_USERS_INFO;
 
-		/** error code for exception thrown while getting coins info */
-		const ERR_GET_COINS_INFO = -102;
+		/** Error code for exception thrown while getting coins info. */
+		const ERR_GET_COINS_INFO = Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO;
 
-		/** error code for exception thrown while getting transactions */
-		const ERR_GET_TRANSACTIONS = -103;
+		/** Error code for exception thrown while getting transactions. */
+		const ERR_GET_TRANSACTIONS = Dashed_Slug_Wallets_PHP_API::ERR_GET_TRANSACTIONS;
 
-		/** error code for exception thrown while performing withdrawals */
-		const ERR_DO_WITHDRAW = -104;
+		/** Error code for exception thrown while performing withdrawals. */
+		const ERR_DO_WITHDRAW = Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW;
 
-		/** error code for exception thrown while transferring funds between users */
-		const ERR_DO_MOVE = -105;
+		/** Error code for exception thrown while transferring funds between users. */
+		const ERR_DO_MOVE = Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE;
 
-		/** error code for exception thrown due to user not being logged in */
-		const ERR_NOT_LOGGED_IN = -106;
+		/** Error code for exception thrown due to user not being logged in. */
+		const ERR_NOT_LOGGED_IN = Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN;
 
-		/** error code for exception thrown due to insufficient capabilities */
-		const ERR_NOT_ALLOWED = -107;
+		/** Error code for exception thrown due to insufficient capabilities. */
+		const ERR_NOT_ALLOWED = Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED;
 
 		/** @internal */
 		private static $_instance;
 
 		/** @internal */
 		private $_notices;
-
-		/** @internal */
-		private $_adapters = array();
 
 		/** @internal */
 		public static $table_name_txs = '';
@@ -65,19 +62,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$this->_notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
-			if ( ! is_admin() ) {
-				Dashed_Slug_Wallets_JSON_API::get_instance();
-			}
-
 			// wp actions
-			add_action( 'plugins_loaded', array( &$this, 'action_plugins_loaded' ) );
 			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
 			add_action( 'delete_blog', array( &$this, 'action_delete_blog' ), 10, 2 );
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-				add_filter( 'network_admin_plugin_action_links', array( &$this, 'filter_network_admin_plugin_action_links' ), 10, 2);
+				add_filter( 'network_admin_plugin_action_links', array( &$this, 'filter_network_admin_plugin_action_links' ), 10, 2 );
 			} else {
 				add_filter( 'plugin_action_links_' . plugin_basename( DSWALLETS_FILE ), array( &$this, 'filter_plugin_action_links' ) );
 			}
@@ -101,12 +93,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/**
 		 * Returns the singleton core of this plugin that provides the application-facing API.
 		 *
-		 *  @api
 		 *  @since 1.0.0 Introduced
 		 *  @return object The singleton instance of this class.
 		 *
 		 */
-		 public static function get_instance() {
+		public static function get_instance() {
 			if ( ! ( self::$_instance instanceof self ) ) {
 				self::$_instance = new self();
 			};
@@ -181,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'2.13.7',
+					'3.0.0',
 					true
 				);
 
@@ -216,7 +207,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'2.13.7',
+					'3.0.0',
 					true
 				);
 
@@ -230,7 +221,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'2.13.7'
+					'3.0.0'
 				);
 			}
 		}
@@ -258,42 +249,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$links[] = '<a href="https://wordpress.org/support/plugin/wallets" style="color: #dd9933;">' . __( 'Support', 'wallets' ) . '</a>';
 			}
 			return $links;
-		}
-
-
-		/**
-		 * Discovers all concrete subclasses of coin adapter and instantiates.
-		 * Any subclass constructors must not expect arguments.
-		 *
-		 * @internal */
-		public function action_plugins_loaded() {
-			do_action( 'wallets_declare_adapters' );
-
-			$this->_adapters = array();
-			foreach ( get_declared_classes() as $adapter_class_name ) {
-				if ( is_subclass_of( $adapter_class_name, 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
-					$adapter_class_reflection = new ReflectionClass( $adapter_class_name );
-					if ( ! $adapter_class_reflection->isAbstract() ) {
-						$adapter_instance = new $adapter_class_name;
-						if ( $adapter_instance->is_enabled() ) {
-							$adapter_symbol = $adapter_instance->get_symbol();
-							if ( isset( $this->_adapters[ $adapter_symbol ] ) ) {
-								$conflicting_adapter_instance = $this->_adapters[ $adapter_symbol ];
-								$this->_notices->error( sprintf(
-									__( 'The "%1$s" coin adapter can conflict with another adapter "%2$s" that is already registered for the coin %3$s (%4$s). ' .
-										'You must make sure that only one adapter is enabled at any time.', 'wallets'),
-									$adapter_instance->get_adapter_name(),
-									$conflicting_adapter_instance->get_adapter_name(),
-									$conflicting_adapter_instance->get_name(),
-									$conflicting_adapter_instance->get_symbol()
-								), "adapter_conflict_$adapter_symbol" );
-							} else {
-								$this->_adapters[ $adapter_symbol ] = $adapter_instance;
-							}
-						}
-					}
-				}
-			}
 		}
 
 		/** @internal */
@@ -464,7 +419,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			}
 
-
 			$tx_indexes = $wpdb->get_col( $wpdb->prepare( "
 				SELECT
 					DISTINCT index_name
@@ -606,8 +560,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '2.13.7';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '9e6986e';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '3.0.0';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'f953abd';
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
@@ -669,39 +623,42 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			</table><?php
 		}
 
-		/**
-		 * Returns the coin adapter for the symbol specified, or an associative array of all the adapters
-		 * if the symbol is omitted.
-		 *
-		 * The adapters provide the low-level API for talking to the various wallets.
-		 *
-		 * @since 2.2.0 Only returns enabled adapters
-		 * @since 2.1.0 Added $check_capabilities argument
-		 * @since 1.0.0 Introduced
-		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
-		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
-		 * @return Dashed_Slug_Wallets_Coin_Adapter|array The instance of the adapter or array of adapters requested.
-		 */
-		public function get_coin_adapters( $symbol = null, $check_capabilities = false ) {
-			if ( $check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
-			)  {
-				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
-			}
+		//////// Exchange rate API
 
-			if ( is_null( $symbol ) ) {
-				return $this->_adapters;
-			}
-			if ( ! is_string( $symbol ) ) {
-				throw new Exception( __( 'The symbol for the requested coin adapter was not a string.', 'wallets' ), self::ERR_GET_COINS_INFO );
-			}
-			$symbol = strtoupper( $symbol );
-			if ( ! isset ( $this->_adapters[ $symbol  ] ) ) {
-				throw new Exception( sprintf( __( 'The coin adapter for the symbol %s is not available.', 'wallets' ), $symbol ), self::ERR_GET_COINS_INFO );
-			}
-			return $this->_adapters[ $symbol ];
+		/**
+		 * Returns the exchange rate between two currencies.
+		 *
+		 * example: get_exchange_rate( 'USD', 'BTC' ) would return a value such that
+		 *
+		 * amount_in_usd / value = amount_in_btc
+		 *
+		 * @param string $from The currency to convert from.
+		 * @param string $to The currency to convert to.
+		 * @return boolean|number Exchange rate or false.
+		 */
+		public static function get_exchange_rate( $from, $to ) {
+			return Dashed_Slug_Wallets_Rates::get_exchange_rate( $from, $to );
 		}
+
+		/**
+		 * True if the symbol corresponds to a known fiat currency
+		 * @param string $symbol A currency symbol
+		 * @return boolean True if fiat
+		 */
+		public static function is_fiat( $symbol ) {
+			return Dashed_Slug_Wallets_Rates::is_fiat( $symbol );
+		}
+
+		/**
+		 * True if the symbol corresponds to a known cryptocurrency
+		 * @param string $symbol A currency symbol
+		 * @return boolean True if crypto
+		 */
+		public static function is_crypto( $symbol ) {
+			return Dashed_Slug_Wallets_Rates::is_crypto( $symbol );
+		}
+
+		//////// Helpers for multisite options and transients ////////
 
 		/**
 		 * This helper delegates to add_site_option if the plugin is network activated on a multisite install, or to add_option otherwise.
@@ -800,83 +757,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_transient' : 'get_transient', $transient );
 		}
 
-		/**
-		 * Get user's wallet balance.
-		 *
-		 * Get the current logged in user's total wallet balance for a specific coin. Only transactions with status = 'done' are counted.
-		 * This replaces the previous filtering based on the $minconf argument.
-		 *
-		 * @api
-		 * @since 2.3.0 The $minconf parameter is deprecated.
-		 * @since 2.1.0 Added $check_capabilities argument.
-		 * @since 1.0.0 Introduced
-		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
-		 * @param null $minconf Ignored.
-		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
-		 * @param int $account The user_id of the account to check, or null to retrieve logged in account's balance. Default: null.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
-		 * @return float The balance.
-		 */
-		public function get_balance( $symbol, $minconf = null, $check_capabilities = false, $account = null ) {
-			if (
-				$check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
-			 ) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
-			}
-
-			if ( is_null( $account ) ) {
-				$account = get_current_user_id();
-			}
-			$account = intval( $account );
-
-			static $user_balances = array();
-
-			if ( ! isset( $user_balances[ $account ] ) ) {
-
-				global $wpdb;
-				$table_name_txs = self::$table_name_txs;
-
-				$user_balances_query = $wpdb->prepare(
-					"
-					SELECT
-						symbol,
-						sum(amount) AS balance
-					FROM
-						$table_name_txs
-					WHERE
-						( blog_id = %d || %d ) AND
-						account = %d AND
-						status = 'done'
-					GROUP BY
-						symbol
-					",
-					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-					$account
-				);
-
-				$user_balances[ $account ] = $wpdb->get_results( $user_balances_query );
-			}
-
-			foreach ( $user_balances[ $account ] as &$user_balance ) {
-				if ( $user_balance->symbol == $symbol ) {
-					return $user_balance->balance;
-				}
-			}
-
-			return 0;
-		}
+		//////// other helpers ////////
 
 		/**
 		 * Get confirmed balance totals for all users grouped by coin.
 		 *
-		 * @since 2.7
+		 * @since 3.0.0 Changed to static.
+		 * @since 2.7 Introduced
+		 * @internal
 		 * @return An assoc array of symbols to total confirmed user balance sums.
 		 */
-		public function get_balance_totals_per_coin() {
+		public static function get_balance_totals_per_coin() {
 			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 			}
 			static $balances = array();
 			if ( $balances ) {
@@ -888,7 +781,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$user_balances_query = $wpdb->prepare( "
 				SELECT
-					SUM(amount) as balance,
+					SUM( amount ) as balance,
 					symbol
 				FROM
 					$table_name_txs
@@ -909,81 +802,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			return $balances;
 		}
 
-		/**
-		 * Get transactions of current logged in user.
-		 *
-		 * Returns the deposits, withdrawals and intra-user transfers initiated by the current logged in user
-		 * for the specified coin.
-		 *
-		 * @api
-		 * @since 2.1.0 Added $check_capabilities argument
-		 * @since 1.0.0 Introduced
-		 * @param string $symbol Character symbol of the wallet's coin.
-		 * @param integer $count Maximal number of transactions to return.
-		 * @param integer $from Start retrieving transactions from this offset.
-		 * @param integer $minconf (optional) Minimum number of confirmations for deposits and withdrawals. If left out, the default adapter setting is used.
-		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
-		 * @return array The transactions.
-		 */
-		 public function get_transactions( $symbol, $count = 10, $from = 0, $minconf = null, $check_capabilities = false ) {
-			if (
-					$check_capabilities &&
-					! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
-					current_user_can( Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS ) )
-			) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
-			}
-
-			$adapter = $this->get_coin_adapters( $symbol, $check_capabilities );
-
-			if ( ! is_int( $minconf ) ) {
-				$minconf = $adapter->get_minconf();
-			}
-
-			global $wpdb;
-			$table_name_txs = self::$table_name_txs;
-			$txs = $wpdb->get_results( $wpdb->prepare(
-				"
-					SELECT
-						txs.*,
-						u.user_login other_account_name
-					FROM
-						$table_name_txs txs
-					LEFT JOIN
-						{$wpdb->users} u
-					ON ( u.ID = txs.other_account )
-					WHERE
-						( blog_id = %d || %d ) AND
-						txs.account = %d AND
-						txs.symbol = %s AND
-						( txs.confirmations >= %d OR txs.category = 'move' )
-					ORDER BY
-						created_time DESC
-					LIMIT
-						$from, $count
-				",
-				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-				get_current_user_id(),
-				$symbol,
-				intval( $minconf )
-			) );
-
-			foreach ( $txs as &$tx ) {
-				unset( $tx->id );
-				unset( $tx->blog_id );
-				unset( $tx->nonce );
-			}
-
-			return $txs;
-		}
-
+		//////// PHP API v1 (deprecated)
 
 		/**
 		 * Withdraw from current logged in user's account.
 		 *
-		 * @api
+		 * @deprecated Use `wallets_api_withdraw` instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_withdraw_action()
+		 * @since 3.0.0 Deprecated in favor of the `wallets_api_withdraw` WordPress action.
 		 * @since 2.4.0 Added $skip_confirm argument.
 		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
 		 * @since 2.1.0 Added $check_capabilities argument
@@ -996,138 +822,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *		See Dashed_Slug_Wallets_Coin_Adapter->get_extra_field_description() for details
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
 		 * @return void
 		 */
 		public function do_withdraw( $symbol, $address, $amount, $comment = '', $extra = '', $check_capabilities = false, $skip_confirm = false ) {
-			if (
-				$check_capabilities &&
-				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
-				current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
-			) ) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
-			}
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_withdraw WordPress action instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+			);
 
-			$adapter = $this->get_coin_adapters( $symbol, $check_capabilities );
-
-			global $wpdb;
-
-			$table_name_txs = self::$table_name_txs;
-			$table_name_adds = self::$table_name_adds;
-			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
-
-			// first check if address belongs to another user on this system, and if so do a move transaction instead
-			$deposit_address = $wpdb->get_row( $wpdb->prepare(
-				"
-				SELECT
-					account
-				FROM
-					{$table_name_adds}
-				WHERE
-					( blog_id = %d || %d ) AND
-					symbol = %s AND
-					address = %s AND
-					( extra = %s || extra IS NULL )
-				ORDER BY
-					created_time DESC
-				LIMIT 1
-				",
-				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-				$symbol,
-				$address,
-				$extra ? $extra : ''
+			do_action( 'wallets_api_withdraw', array(
+				'symbol' => $symbol,
+				'amount' => $amount,
+				'address' => $address,
+				'extra' => $extra,
+				'comment' => $comment,
+				'check_capabilities' => $check_capabilities,
+				'skip_confirm' => $skip_confirm,
 			) );
-
-			if ( ! is_null( $deposit_address ) ) {
-
-				if ( get_current_user_id() == $deposit_address->account ) {
-					throw new Exception(
-						__( 'You cannot withdraw to one of your own deposit addresses on this system.', 'wallets' ),
-						self::ERR_DO_WITHDRAW );
-
-				}
-				$this->do_move( $symbol, $deposit_address->account, $amount, $comment, $check_capabilities );
-				return;
-			}
-
-			// start db transaction and lock tables
-			$wpdb->query( 'SET autocommit=0' );
-			$wpdb->query( "
-				LOCK TABLES
-					$table_name_txs WRITE,
-					$table_name_options WRITE,
-					$table_name_adds a READ,
-					$wpdb->users u READ
-			" );
-
-			try {
-
-				$balance = $this->get_balance( $symbol, null, $check_capabilities );
-				$fee = $adapter->get_withdraw_fee() + $amount * $adapter->get_withdraw_fee_proportional();
-
-				if ( $amount <= $fee ) {
-					throw new Exception( __( 'Amount after deducting fees must be positive', 'wallets' ), self::ERR_DO_WITHDRAW );
-				}
-				if ( $balance < $amount ) {
-					$format = $adapter->get_sprintf();
-					throw new Exception(
-						sprintf(
-							__( 'Insufficient funds: %s > %s', 'wallets' ),
-								sprintf( $format, $amount ),
-								sprintf( $format, $balance ) ),
-							self::ERR_DO_WITHDRAW );
-				}
-
-				$time = current_time( 'mysql', true );
-
-				$txrow = array(
-					'blog_id' => get_current_blog_id(),
-					'category' => 'withdraw',
-					'account' => get_current_user_id(),
-					'address' => $address,
-					'extra' => $extra,
-					'symbol' => $symbol,
-					'amount' => -number_format( $amount, 10, '.', '' ),
-					'fee' => number_format( $fee, 10, '.', '' ),
-					'created_time' => $time,
-					'updated_time' => $time,
-					'comment' => $comment,
-					'status' => $skip_confirm ? 'pending' : 'unconfirmed',
-					'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 1 ),
-					'nonce' => md5( uniqid( NONCE_KEY, true ) ),
-				);
-
-				$affected = $wpdb->insert(
-					self::$table_name_txs,
-					$txrow,
-					array( '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
-				);
-
-				if ( false === $affected ) {
-					throw new Exception( 'DB insert failed ' . print_r( $txrow, true ) );
-				}
-				$txrow['id'] = $wpdb->insert_id;
-
-			} catch ( Exception $e ) {
-				$wpdb->query( 'ROLLBACK' );
-				$wpdb->query( 'UNLOCK TABLES' );
-				$wpdb->query( 'SET autocommit=1' );
-				throw $e;
-			}
-			$wpdb->query( 'COMMIT' );
-			$wpdb->query( 'UNLOCK TABLES' );
-			$wpdb->query( 'SET autocommit=1' );
-
-			if ( ! $skip_confirm && isset( $txrow['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
-				do_action( 'wallets_send_user_confirm_email', $txrow );
-			}
 		}
 
 		/**
 		 * Move funds from the current logged in user's balance to the specified user.
 		 *
-		 * @api
+		 * @deprecated Use `wallets_api_move` WordPress action instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_move_action()
+		 * @since 3.0.0 Deprecated in favor of `wallets_api_move` WordPress action.
 		 * @since 2.4.2 Added $fromaccount.
 		 * @since 2.4.0 Added $skip_confirm argument.
 		 * @since 2.3.0 Only inserts a pending transaction. The transaction is to be executed after being accepted by the user and/or admin.
@@ -1142,276 +862,205 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
 		 * @param int|null $fromaccount The WordPress user_ID of the sender, or null for current user ID.
 		 * @return void
-		 * @throws Exception If move fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 * @throws Exception If move fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
 		 */
 		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '', $skip_confirm = false, $fromaccount = null  ) {
-			if (
-				$check_capabilities &&
-				! ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
-				current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER ) )
-			) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
-			}
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_move WordPress action instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+			);
 
-			if ( $toaccount == $fromaccount ) {
-				throw new Exception( __( 'Cannot send funds to self', 'wallets' ), self::ERR_DO_MOVE );
-			}
-
-			if ( is_null( $fromaccount ) ) {
-				$fromaccount = get_current_user_id();
-			}
-
-			$adapter = $this->get_coin_adapters( $symbol );
-
-			global $wpdb;
-
-			$table_name_txs = self::$table_name_txs;
-			$table_name_adds = self::$table_name_adds;
-			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
-
-			// start db transaction and lock tables
-			$wpdb->query( 'SET autocommit=0' );
-			$wpdb->query( "
-				LOCK TABLES
-					$table_name_txs WRITE,
-					$table_name_options WRITE,
-					$table_name_adds READ
-			" );
-
-			try {
-				$balance = $this->get_balance( $symbol, null, $check_capabilities, $fromaccount );
-				$fee = $adapter->get_move_fee() + $amount * $adapter->get_move_fee_proportional();
-
-				if ( $amount <= $fee ) {
-					throw new Exception( __( 'Amount after deducting fees must be positive', 'wallets' ), self::ERR_DO_MOVE );
-				}
-				if ( $balance < $amount ) {
-					$format = $adapter->get_sprintf();
-					throw new Exception(
-						sprintf(
-							__( 'Insufficient funds: %s > %s', 'wallets' ),
-							sprintf( $format, $amount ),
-							sprintf( $format, $balance ) ),
-						self::ERR_DO_WITHDRAW );
-				}
-
-				$current_time_gmt = current_time( 'mysql', true );
-				$txid = uniqid( 'move-', true );
-				$unique_tags = array();
-				foreach ( explode( ' ', $tags ) as $tag ) {
-					$unique_tags[ $tag ] = true;
-				}
-				$tags = array_keys( $unique_tags );
-				sort( $tags );
-				$tags = implode( ' ', $tags );
-
-				$txrow1 = array(
-					'blog_id' => get_current_blog_id(),
-					'category' => 'move',
-					'tags' => trim( "send $tags" ),
-					'account' => $fromaccount,
-					'other_account' => intval( $toaccount ),
-					'txid' => "$txid-send",
-					'symbol' => $symbol,
-					'amount' => -number_format( $amount, 10, '.', '' ),
-					'fee' => number_format( $fee, 10, '.', '' ),
-					'created_time' => $current_time_gmt,
-					'updated_time' => $current_time_gmt,
-					'comment' => $comment,
-					'status' => $skip_confirm ? 'done' : 'unconfirmed',
-					'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ),
-					'nonce' => md5( uniqid( NONCE_KEY, true ) ),
-				);
-
-				$txrow2 = array(
-					'blog_id' => get_current_blog_id(),
-					'category' => 'move',
-					'tags' => trim( "receive $tags" ),
-					'account' => intval( $toaccount ),
-					'other_account' => $fromaccount,
-					'txid' => "$txid-receive",
-					'symbol' => $symbol,
-					'amount' => number_format( $amount - $fee, 10, '.', '' ),
-					'fee' => 0,
-					'created_time' => $current_time_gmt,
-					'updated_time' => $current_time_gmt,
-					'comment' => $comment,
-					'status' => $skip_confirm ? 'done' : 'unconfirmed',
-					'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ),
-				);
-
-				$affected = $wpdb->insert(
-					self::$table_name_txs,
-					$txrow1,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
-				);
-
-				if ( false === $affected ) {
-					throw new Exception( 'DB insert failed ' . print_r( $txrow1, true ) );
-				}
-
-				$txrow1['id'] = $wpdb->insert_id;
-
-				$affected = $wpdb->insert(
-					self::$table_name_txs,
-					$txrow2,
-					array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' )
-				);
-
-				if ( false === $affected ) {
-					throw new Exception( 'DB insert failed ' . print_r( $txrow2, true ) );
-				}
-
-				$txrow2['id'] = $wpdb->insert_id;
-
-			} catch ( Exception $e ) {
-				$wpdb->query( 'ROLLBACK' );
-				$wpdb->query( 'UNLOCK TABLES' );
-				$wpdb->query( 'SET autocommit=1' );
-				throw $e;
-			}
-			$wpdb->query( 'COMMIT' );
-			$wpdb->query( 'UNLOCK TABLES' );
-			$wpdb->query( 'SET autocommit=1' );
-
-			if ( ! $skip_confirm && isset( $txrow1['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
-				do_action( 'wallets_send_user_confirm_email', $txrow1 );
-			}
-
+			do_action( 'wallets_api_move', array(
+				'symbol' => $symbol,
+				'amount' => $amount,
+				'from_user_id' => $fromaccount,
+				'to_user_id' => $toaccount,
+				'comment' => $comment,
+				'tags' => $tags,
+				'check_capabilities' => $check_capabilities,
+				'skip_confirm' => $skip_confirm,
+			) );
 		}
 
 		/**
 		 * Get a deposit address for the current logged in user's account.
 		 *
-		 * @api
-		 * @since 2.4.2 Introduced to replace get_new_address
+		 * @deprecated Use `wallets_api_deposit_address` WordPress filter instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_deposit_address_filter()
+		 * @since 3.0.0 Delegates to `wallets_api_deposit_address` WordPress filter.
+		 * @since 2.4.2 Introduced to replace `get_new_address()`
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return string|array A deposit address associated with the current logged in user,
 		 *		or an array of an address plus extra transaction info, for coins that require it.
 		 * @throws Exception If the operation fails.
 		 */
-		 public function get_deposit_address( $symbol, $account = null, $check_capabilities = false ) {
-			if (
-				$check_capabilities &&
-				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
-			) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+		public function get_deposit_address( $symbol, $account = null, $check_capabilities = false ) {
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_deposit_address WordPress filter instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+			);
+
+			$args = array(
+				'check_capabilities' => $check_capabilities,
+				'symbol' => $symbol,
+			);
+
+			if ( is_numeric( $account ) ) {
+				$args['user_id'] = $account;
 			}
 
-			if ( is_null( $account ) ) {
-				$account = get_current_user_id();
-			}
-
-			$adapter = $this->get_coin_adapters( $symbol );
-
-			global $wpdb;
-			$table_name_adds = self::$table_name_adds;
-			$result = $wpdb->get_row( $wpdb->prepare(
-				"
-					SELECT
-						address,
-						extra
-					FROM
-						$table_name_adds a
-					WHERE
-						( blog_id = %d || %d ) AND
-						account = %d AND
-						symbol = %s
-					ORDER BY
-						created_time DESC
-					LIMIT 1
-				",
-				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-				$account,
-				$symbol
-			) );
-
-			if ( is_null( $result ) ) {
-
-				$address = $adapter->get_new_address();
-
-				$address_row = new stdClass();
-				$address_row->account = $account;
-				$address_row->symbol = $symbol;
-
-				if ( is_array( $address ) ) {
-					$address_row->address = $address[0];
-					$address_row->extra = $address[1];
-				} else {
-					$address_row->address = $address;
-				}
-
-				// trigger action that inserts user-address mapping to db
-				do_action( 'wallets_address', $address_row );
-
-			} else {
-				if ( $result->extra ) {
-					$address = array( $result->address, $result->extra );
-				} else {
-					$address = $result->address;
-				}
-			}
+			$address = apply_filters( 'wallets_api_deposit_address', null, $args );
 
 			return $address;
-
-		} // function get_deposit_address()
-
+		}
 
 		/**
 		 * Get a deposit address for the current logged in user's account.
 		 *
-		 * @deprecated Use get_deposit_address instead.
-		 * @api
-		 * @see Dashed_Slug_Wallets::get_deposit_address()
-		 * @since 2.4.2 Superseeded by get_deposit_address
+		 * @deprecated Use `wallets_api_deposit_address` WordPress filter instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_deposit_address_filter()
+		 * @since 3.0.0 Delegates to `wallets_api_deposit_address` WordPress filter.
+		 * @since 2.4.2 Deprecated in favor of `get_deposit_address()`
 		 * @since 2.1.0 Added $check_capabilities argument
 		 * @since 1.0.0 Introduced
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return string A deposit address associated with the current logged in user.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
 		 */
 		public function get_new_address( $symbol, $check_capabilities = false ) {
 			trigger_error(
-				'The ' . __FUNCTION__ . ' method is deprecated. Please use get_deposit_address instead.',
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_deposit_address WordPress filter instead.',
 				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
 			);
-			return $this->get_deposit_address($symbol, null, $check_capabilities );
+
+			$args = array(
+				'check_capabilities' => $check_capabilities,
+				'symbol' => $symbol,
+				'user_id' => get_current_user_id(),
+			);
+
+			$address = apply_filters( 'wallets_api_deposit_address', null, $args );
+
+			return $address;
 		}
 
 		/**
-		 * Returns the exchange rate between two currencies.
+		 * Get user's wallet balance.
 		 *
-		 * example: get_exchange_rate( 'USD', 'BTC' ) would return a value such that
+		 * Get the current logged in user's total wallet balance for a specific coin. Only transactions with status = 'done' are counted.
+		 * This replaces the previous filtering based on the $minconf argument.
 		 *
-		 * amount_in_usd / value = amount_in_btc
-		 *
-		 * @param string $from The currency to convert from.
-		 * @param string $to The currency to convert to.
-		 * @return boolean|number Exchange rate or false.
+		 * @deprecated Use `wallets_api_balance` WordPress filter instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_balance_filter()
+		 * @since 3.0.0 Delegates to `wallets_api_balance` WordPress filter.
+		 * @since 2.3.0 The $minconf parameter is deprecated.
+		 * @since 2.1.0 Added $check_capabilities argument.
+		 * @since 1.0.0 Introduced
+		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
+		 * @param null $minconf Ignored.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @param int $account The user_id of the account to check, or null to retrieve logged in account's balance. Default: null.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
+		 * @return float The balance.
 		 */
-		public static function get_exchange_rate( $from, $to ) {
-			return Dashed_Slug_Wallets_Rates::get_exchange_rate( $from, $to );
+		public function get_balance( $symbol, $minconf = null, $check_capabilities = false, $account = null ) {
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_balance WordPress filter instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+				);
+
+			$args = array(
+				'check_capabilities' => $check_capabilities,
+				'symbol' => $symbol,
+			);
+
+			if ( is_numeric( $account ) ) {
+				$args['user_id'] = $account;
+			}
+
+			$balance = apply_filters( 'wallets_api_balance', 0, $args );
+
+			return $balance;
 		}
 
 		/**
-		 * True if the symbol corresponds to a known fiat currency
-		 * @param string $symbol A currency symbol
-		 * @return boolean True if fiat
+		 * Get transactions of current logged in user.
+		 *
+		 * Returns the deposits, withdrawals and intra-user transfers initiated by the current logged in user
+		 * for the specified coin.
+		 *
+		 * @deprecated Use `wallets_api_transactions` WordPress filter instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_transactions_filter()
+		 * @since 3.0.0 Delegates to `wallets_api_transactions` WordPress filter.
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
+		 * @param string $symbol Character symbol of the wallet's coin.
+		 * @param integer $count Maximal number of transactions to return.
+		 * @param integer $from Start retrieving transactions from this offset.
+		 * @param integer $minconf (optional) Minimum number of confirmations for deposits and withdrawals. If left out, the default adapter setting is used.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
+		 * @return array The transactions.
 		 */
-		public static function is_fiat( $symbol ) {
-			return Dashed_Slug_Wallets_Rates::is_fiat( $symbol );
+		public function get_transactions( $symbol, $count = 10, $from = 0, $minconf = null, $check_capabilities = false ) {
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_transactions WordPress filter instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+			);
+
+			$args = array(
+				'symbol' => $symbol,
+				'count' => $count,
+				'from' => $from,
+				'minconf' => $minconf,
+				'check_capabilities' => $check_capabilities,
+			);
+
+			$txs = apply_filters( 'wallets_api_transactions', array(), $args );
+
+			return $txs;
 		}
 
 		/**
-		 * True if the symbol corresponds to a known cryptocurrency
-		 * @param string $symbol A currency symbol
-		 * @return boolean True if crypto
+		 * Returns the coin adapter for the symbol specified, or an associative array of all the adapters
+		 * if the symbol is omitted.
+		 *
+		 * The adapters provide the low-level API for talking to the various wallets.
+		 *
+		 * @deprecated Use `wallets_api_adapters` WordPress filter instead.
+		 * @see Dashed_Slug_Wallets_PHP_API::api_adapters_filter()
+		 * @since 3.0.0 Delegates to `wallets_api_adapters` WordPress filter.
+		 * @since 2.2.0 Only returns enabled adapters
+		 * @since 2.1.0 Added $check_capabilities argument
+		 * @since 1.0.0 Introduced
+		 * @param string $symbol (Usually) three-letter symbol of the wallet's coin.
+		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
+		 * @return Dashed_Slug_Wallets_Coin_Adapter|array The instance of the adapter or array of adapters requested.
 		 */
-		public static function is_crypto( $symbol ) {
-			return Dashed_Slug_Wallets_Rates::is_crypto( $symbol );
+		public function get_coin_adapters( $symbol = null, $check_capabilities = false ) {
+			trigger_error(
+				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_adapters WordPress filter instead.',
+				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
+			);
+
+			$adapters = apply_filters( 'wallets_api_adapters', array(), array(
+				'check_capabilities' => $check_capabilities,
+			) );
+
+			if ( is_null( $symbol ) ) {
+				return $adapters;
+			}
+			if ( ! is_string( $symbol ) ) {
+				throw new Exception( __( 'The symbol for the requested coin adapter was not a string.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
+			}
+			$symbol = strtoupper( $symbol );
+			if ( ! isset ( $adapters[ $symbol  ] ) ) {
+				throw new Exception( sprintf( __( 'The coin adapter for the symbol %s is not available.', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
+			}
+			return $adapters[ $symbol ];
 		}
 	}
 }

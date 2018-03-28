@@ -57,30 +57,32 @@
 			self.selectedCoin = ko.observable();
 
 			// the structure that describes online coins and the user balance for those coins
-			self.coins = ko.observable( [] );
+			self.coins = ko.observable( {} );
 
 			self.loadCoins = function() {
-				var coins = [];
 				$.ajax({
 					dataType: 'json',
-					async: false,
 					cache: true,
-					data: { '__wallets_action': 'get_coins_info' },
+					data: {
+						'__wallets_apiversion' : 2,
+						'__wallets_action': 'get_coins_info'
+					},
 					success: function( response ) {
 						if ( response.result != 'success' ) {
 							serverErrorHandler( response );
 							return;
 						}
-						for ( var symbol in response.coins ) {
-							coins.push( response.coins[ symbol ] );
+						self.coins( response.coins );
+						if ( ! $.isEmptyObject( response.coins ) ) {
+							self.selectedCoin( Object.keys( response.coins )[ 0 ] );
 						}
+					},
+					complete: function( jqXHR, status ) {
+						removeSelect2();
+						self.updateQrCode();
 					},
 					error: xhrErrorHandler
 				});
-
-				self.coins( coins );
-				removeSelect2();
-				self.updateQrCode();
 			};
 
 
@@ -88,31 +90,31 @@
 			self.nonces = ko.observable( {} );
 
 			self.loadNonces = function() {
-				var nonces = {};
 				$.ajax({
 					dataType: 'json',
-					async: false,
-					cache: true,
-					data: { '__wallets_action': 'get_nonces' },
+					cache: false,
+					data: {
+						'__wallets_apiversion' : 2,
+						'__wallets_action': 'get_nonces'
+					},
 					success: function( response ) {
 						if ( response.result != 'success' ) {
 							serverErrorHandler( response );
 							return;
 						}
-						nonces = response.nonces;
+						self.nonces( response.nonces );
+
 					},
 					error: xhrErrorHandler
 				});
-				self.nonces( nonces );
 			};
 
 			// balance of the currently selected coin, string-formatted for that coin
 			self.currentCoinBalance = ko.computed( function() {
 				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						return sprintf( coins[ coin ].sprintf, coins[ coin ].balance );
-					}
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					return sprintf( coins[ coin ].sprintf, coins[ coin ].balance );
 				}
 				return '';
 			});
@@ -121,11 +123,10 @@
 			self.currentCoinBaseBalance = ko.computed( function() {
 				if ( walletsUserData.baseSymbol ) {
 					var coins = self.coins();
-					for ( var coin in coins ) {
-						if ( coins[ coin ].symbol == self.selectedCoin() ) {
-							if ( coins[ coin ].rate ) {
-								return sprintf( walletsUserData.baseSymbol + ' %01.2f', coins[ coin ].balance * coins[ coin ].rate );
-							}
+					var coin = self.selectedCoin();
+					if ( 'object' == typeof( coins[ coin ] ) ) {
+						if ( coins[ coin ].rate ) {
+							return sprintf( walletsUserData.baseSymbol + ' %01.2f', coins[ coin ].balance * coins[ coin ].rate );
 						}
 					}
 				}
@@ -138,16 +139,15 @@
 					$qrnode.empty();
 
 					var coins = self.coins();
-					for ( var coin in coins ) {
-						if ( coins[ coin ].symbol == self.selectedCoin() ) {
-
-							if ( coins[ coin ].deposit_address_qrcode_uri ) {
-								$qrnode.qrcode( {
-									text: coins[ coin ].deposit_address_qrcode_uri
-								} );
-							}
-							return;
+					var coin = self.selectedCoin();
+					if ( 'object' == typeof( coins[ coin ] ) ) {
+						if ( coins[ coin ].deposit_address_qrcode_uri ) {
+							$qrnode.qrcode( {
+								text: coins[ coin ].deposit_address_qrcode_uri
+							} );
 						}
+					} else {
+						$qrnode.empty();
 					}
 				}
 			};
@@ -160,10 +160,9 @@
 			// the deposit address for the currently selected coin
 			self.currentCoinDepositAddress = ko.computed( function() {
 				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						return coins[ coin ].deposit_address;
-					}
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					return coins[ coin ].deposit_address;
 				}
 				return '';
 			});
@@ -171,13 +170,10 @@
 			// the deposit address extra field (e.g. payment id for XMR or XRP), for the currently selected coin, or empty if n/a
 			self.currentCoinDepositExtra = ko.computed( function() {
 				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						if ( typeof coins[ coin ].deposit_extra !== 'undefined' ) {
-							return coins[ coin ].deposit_extra;
-						} else {
-							return '';
-						}
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					if ( 'string' == typeof (coins[ coin ].deposit_extra ) ) {
+						return coins[ coin ].deposit_extra;
 					}
 				}
 				return '';
@@ -196,11 +192,10 @@
 				if ( ! isNaN( amount ) ) {
 					if ( walletsUserData.baseSymbol ) {
 						var coins = self.coins();
-						for ( var coin in coins ) {
-							if ( coins[ coin ].symbol == self.selectedCoin() ) {
-								if ( coins[ coin ].rate ) {
-									return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( amount ) * coins[ coin ].rate );
-								}
+						var coin = self.selectedCoin();
+						if ( 'object' == typeof( coins[ coin ] ) ) {
+							if ( coins[ coin ].rate ) {
+								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( amount ) * coins[ coin ].rate );
 							}
 						}
 					}
@@ -215,56 +210,28 @@
 			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
 			self.moveFee = ko.computed( function( ) {
 				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						var fee = parseFloat( coins[ coin ].move_fee );
-						fee += parseFloat( coins[ coin ].move_fee_proportional ) * parseFloat( self.moveAmount() );
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					var fee = parseFloat( coins[ coin ].move_fee );
+					fee += parseFloat( coins[ coin ].move_fee_proportional ) * parseFloat( self.moveAmount() );
 
-						if ( ! isNaN( fee ) ) {
-							var feeString = sprintf( coins[ coin ].sprintf, fee );
-							var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+					if ( ! isNaN( fee ) ) {
+						var feeString = sprintf( coins[ coin ].sprintf, fee );
+						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
 
-							if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-								return [ feeString, feeBaseString ];
-							} else {
-								return [ feeString, '' ];
-							}
+						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+							return [ feeString, feeBaseString ];
+						} else {
+							return [ feeString, '' ];
 						}
 					}
 				}
 				return ['',''];
 			});
 
-			// list of users, used in the [wallets_move] form.
-			self.users = ko.computed( function() {
-				var users = [];
-				$.ajax({
-						dataType: 'json',
-						async: false,
-						cache: true,
-						data: { '__wallets_action': 'get_users_info' },
-						success: function( response ) {
-								if ( response.result != 'success' ) {
-										serverErrorHandler( response );
-										return;
-								}
-
-								for ( var user in response.users ) {
-									users.push( response.users[ user ] );
-								}
-
-								if ( users.length ) {
-									self.moveUser( users[ 0 ] );
-								}
-						},
-						error: xhrErrorHandler
-				});
-				return users;
-			} );
-
 			// the move action that performs internal transfer requests. runs when the button is hit in the [wallets_move] form
 			self.doMove = function( form ) {
-				var user = self.moveUser().id,
+				var user = self.moveUser(),
 					amount = self.moveAmount(),
 					comment = self.moveComment(),
 					symbol = self.selectedCoin(),
@@ -275,6 +242,7 @@
 					dataType: 'json',
 					cache: false,
 					data: {
+						'__wallets_apiversion' : 2,
 						'__wallets_action' : 'do_move',
 						'__wallets_move_toaccount' : user,
 						'__wallets_move_amount' : amount,
@@ -342,11 +310,10 @@
 				if ( ! isNaN( amount ) ) {
 					if ( walletsUserData.baseSymbol ) {
 						var coins = self.coins();
-						for ( var coin in coins ) {
-							if ( coins[ coin ].symbol == self.selectedCoin() ) {
-								if ( coins[ coin ].rate ) {
-									return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
-								}
+						var coin = self.selectedCoin();
+						if ( 'object' == typeof( coins[ coin ] ) ) {
+							if ( coins[ coin ].rate ) {
+								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
 							}
 						}
 					}
@@ -363,10 +330,9 @@
 			// the label text describing what the "payment id" extra field is, used in the [wallets_withdraw] form
 			self.withdrawExtraDesc = ko.computed( function() {
 				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						return coins[ coin ].extra_desc;
-					}
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					return coins[ coin ].extra_desc;
 				}
 				return false; // use default
 			});
@@ -375,20 +341,19 @@
 			// fee to be paid in a withdrawal, used in the [wallets_withdraw] form
 			self.withdrawFee = ko.computed( function() {
 				var coins = self.coins();
-				for ( var coin in coins ) {
-					if ( coins[ coin ].symbol == self.selectedCoin() ) {
-						var fee = parseFloat( coins[ coin ].withdraw_fee );
-						fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					var fee = parseFloat( coins[ coin ].withdraw_fee );
+					fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
 
-						if ( ! isNaN( fee ) ) {
-							var feeString = sprintf( coins[ coin ].sprintf, fee );
-							var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+					if ( ! isNaN( fee ) ) {
+						var feeString = sprintf( coins[ coin ].sprintf, fee );
+						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
 
-							if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-								return [ feeString, feeBaseString ];
-							} else {
-								return [ feeString, '' ];
-							}
+						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+							return [ feeString, feeBaseString ];
+						} else {
+							return [ feeString, '' ];
 						}
 					}
 				}
@@ -408,6 +373,7 @@
 					dataType: 'json',
 					cache: false,
 					data: {
+						'__wallets_apiversion' : 2,
 						'__wallets_action' : 'do_withdraw',
 						'__wallets_withdraw_address' : address,
 						'__wallets_symbol' : symbol,
@@ -441,10 +407,10 @@
 
 
 			// current page number in the [wallets_transactions] view
-			self.currentPage = ko.observable().extend({ throttle: 500, notify: 'always' });
+			self.currentPage = ko.observable( 1 ).extend({ rateLimit: 500 });
 
 			// how many rows to show per page, in the [wallets_transactions] view
-			self.rowsPerPage = ko.observable(10).extend({ throttle: 500 });
+			self.rowsPerPage = ko.observable( 10 ).extend({ rateLimit: 500 });
 
 			// a page of transactions to show in the [wallets_transactions] view
 			self.transactions = ko.observable( [] );
@@ -455,7 +421,6 @@
 				var count = self.rowsPerPage();
 				var from = ( page -1) * count;
 				var symbol = self.selectedCoin();
-				var transactions = [];
 
 				if ( 'string' !== typeof symbol ) {
 					return;
@@ -467,15 +432,16 @@
 
 				$.ajax({
 					dataType: 'json',
-					async: false,
 					cache: true,
 					data: {
+						'__wallets_apiversion' : 2,
 						'__wallets_action' : 'get_transactions',
 						'__wallets_tx_count' : count,
 						'__wallets_tx_from' : from,
 						'__wallets_symbol' : symbol
 					},
 					success: function( response ) {
+						var transactions = [];
 						if ( response.result != 'success' ) {
 							serverErrorHandler( response );
 							return;
@@ -495,40 +461,38 @@
 								transactions[ t ].tx_uri = '';
 								transactions[ t ].address_uri = '';
 
-								for ( var c in coins ) {
-									if ( coins[ c ].symbol == transactions[ t ].symbol ) {
+								var coin = transactions[ t ].symbol;
+								if ( 'object' == typeof( coins[ coin ] ) ) {
 
-										if ( 'string' !== typeof ( transactions[ t ].amount_string ) ) {
-											transactions[ t ].amount_string = sprintf( coins[ c ].sprintf, transactions[ t ].amount );
-										}
+									if ( 'string' !== typeof ( transactions[ t ].amount_string ) ) {
+										transactions[ t ].amount_string = sprintf( coins[ coin ].sprintf, transactions[ t ].amount );
+									}
 
-										if ( 'string' !== typeof ( transactions[ t ].fee_string ) ) {
-											transactions[ t ].fee_string = sprintf( coins[ c ].sprintf, transactions[ t ].fee );
-										}
+									if ( 'string' !== typeof ( transactions[ t ].fee_string ) ) {
+										transactions[ t ].fee_string = sprintf( coins[ coin ].sprintf, transactions[ t ].fee );
+									}
 
-										if ( walletsUserData.baseSymbol && coins[ c ].rate ) {
-											transactions[ t ].amount_base = sprintf( baseSprintf, transactions[ t ].amount * coins[ c ].rate );
-											transactions[ t ].fee_base = sprintf( baseSprintf, transactions[ t ].fee * coins[ c ].rate );
-										} else {
-											transactions[ t ].amount_base = transactions[ t ].fee_base = '';
-										}
+									if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
+										transactions[ t ].amount_base = sprintf( baseSprintf, transactions[ t ].amount * coins[ coin ].rate );
+										transactions[ t ].fee_base = sprintf( baseSprintf, transactions[ t ].fee * coins[ coin ].rate );
+									} else {
+										transactions[ t ].amount_base = transactions[ t ].fee_base = '';
+									}
 
-										if ( 'string' === typeof ( transactions[ t ].txid ) ) {
-											transactions[ t ].tx_uri = sprintf( coins[ c ].explorer_uri_tx, transactions[ t ].txid );
-										}
+									if ( 'string' === typeof ( transactions[ t ].txid ) ) {
+										transactions[ t ].tx_uri = sprintf( coins[ coin ].explorer_uri_tx, transactions[ t ].txid );
+									}
 
-										if ( 'string' === typeof ( transactions[t].address ) ) {
-											transactions[ t ].address_uri = sprintf( coins[ c ].explorer_uri_address, transactions[ t ].address );
-										}
+									if ( 'string' === typeof ( transactions[t].address ) ) {
+										transactions[ t ].address_uri = sprintf( coins[ coin ].explorer_uri_address, transactions[ t ].address );
 									}
 								}
 							}
 						}
+						self.transactions( transactions );
 					},
 					error: xhrErrorHandler
 				});
-
-				self.transactions( transactions );
 			};
 
 			self.selectedCoin.subscribe( self.loadTransactions );
@@ -554,9 +518,6 @@
 		} );
 
 		// set sane defaults
-		if ( walletsViewModel.coins().length ) {
-			walletsViewModel.selectedCoin( walletsViewModel.coins()[ 0 ].symbol );
-		}
 		walletsViewModel.currentPage(1);
 
 		// handle the bubbling events on move or withdraw response from server

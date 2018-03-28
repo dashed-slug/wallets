@@ -320,7 +320,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$dsw = Dashed_Slug_Wallets::get_instance();
 
 			$withdrawal_symbols = array();
-			$adapters = $dsw->get_coin_adapters();
+			$adapters = apply_filters( 'wallets_api_adapters', array() );
+
 			foreach ( $adapters as $a ) {
 				if ( $a->is_enabled() && $a->is_unlocked() ) {
 					$withdrawal_symbols[] = $a->get_symbol();
@@ -396,7 +397,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							sprintf(
 								__( 'Cannot withdraw to address %s because it is a deposit address on this system.', 'wallets' ),
 								$wd_tx->address ),
-							Dashed_Slug_Wallets::ERR_DO_WITHDRAW );
+							Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW );
 					}
 
 					$balance_query = $wpdb->prepare(
@@ -427,7 +428,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						throw new Exception( 'Insufficient balance' );
 					}
 
-					$adapter = $dsw->get_coin_adapters( $wd_tx->symbol );
+					$adapter = $adapters[ $wd_tx->symbol ];
 
 					// adapter could have locked since we last checked. check again.
 					if ( ! $adapter->is_unlocked() ) {
@@ -515,12 +516,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 */
 		public function action_wallets_transaction( $tx ) {
 			try {
-				$dsw = Dashed_Slug_Wallets::get_instance();
-				$adapter = $dsw->get_coin_adapters( $tx->symbol, false );
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+				if ( ! isset( $adapters[ $tx->symbol ] ) ) {
+					throw new Exception();
+				}
 			} catch ( Exception $e ) {
 				error_log( __FUNCTION__ . ": Adapter for {$tx->symbol} transaction {$tx->txid} is not online" );
 				return;
 			}
+
+			$adapter = $adapters[ $tx->symbol ];
 
 			if ( $adapter ) {
 
@@ -761,7 +766,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @param string|null $extra Optional comment or other info attached to the destination address.
 		 * @throws Exception If the address is not associated with an account.
-		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets::ERR_*.
+		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
 		 * @return integer The WordPress user ID for the account found.
 		 */
 		public function get_account_id_for_address( $symbol, $address, $check_capabilities = false, $extra = '' ) {
@@ -771,7 +776,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				$check_capabilities &&
 				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 				) {
-					throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets::ERR_NOT_ALLOWED );
+					throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 				}
 
 				$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
@@ -800,7 +805,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				) );
 
 				if ( is_null( $account ) ) {
-					throw new Exception( sprintf( __( 'Could not get account for %s address %s', 'wallets' ), $symbol, $address ), Dashed_Slug_Wallets::ERR_GET_COINS_INFO );
+					throw new Exception( sprintf( __( 'Could not get account for %s address %s', 'wallets' ), $symbol, $address ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
 				}
 
 				return intval( $account );

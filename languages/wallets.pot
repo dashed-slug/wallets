@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 2.13.7\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-03-12 16:11:00+00:00\n"
+"POT-Creation-Date: 2018-03-28 09:34:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "Wallet Balance"
 msgstr ""
 
-#: includes/adapters-list-table.php:22
+#: includes/adapters-list-table.php:22 includes/cold-storage.php:154
 msgid "Sum of User Balances"
 msgstr ""
 
@@ -73,48 +73,49 @@ msgstr ""
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: includes/adapters-list.php:90 includes/adapters-list.php:124
+#: includes/adapters-list.php:95 includes/adapters-list.php:129
 #: includes/admin-menu.php:59 includes/caps.php:95 includes/caps.php:162
 #: includes/coin-adapter-bitcoin.php:58 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:253 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:221 includes/coin-adapter.php:242
-#: includes/coin-adapter.php:318 includes/cold-storage.php:135
-#: includes/confirmations.php:331 includes/cron.php:315
-#: includes/frontend-settings.php:161 includes/notifications.php:561
+#: includes/coin-adapter.php:318 includes/cold-storage.php:136
+#: includes/confirmations.php:331 includes/cron.php:318
+#: includes/frontend-settings.php:186 includes/notifications.php:561
 #: includes/rates.php:265 includes/transactions.php:92
-#: includes/transactions.php:814 includes/transactions.php:995
-#: includes/transactions.php:1015 includes/transactions.php:1035
-#: includes/transactions.php:1054 includes/transactions.php:1074
-#: includes/transactions.php:1098
+#: includes/transactions.php:819 includes/transactions.php:1000
+#: includes/transactions.php:1020 includes/transactions.php:1040
+#: includes/transactions.php:1059 includes/transactions.php:1079
+#: includes/transactions.php:1103
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: includes/adapters-list.php:96 includes/caps.php:90
-#: includes/cold-storage.php:114 includes/json-api.php:308
-#: includes/json-api.php:342 includes/transactions.php:820
-#: includes/transactions.php:999 includes/transactions.php:1019
-#: includes/transactions.php:1039 includes/transactions.php:1058
-#: includes/transactions.php:1078 includes/transactions.php:1102
+#: includes/adapters-list.php:101 includes/caps.php:90
+#: includes/cold-storage.php:115 includes/json-api.php:389
+#: includes/json-api.php:430 includes/json-api.php:686
+#: includes/json-api.php:727 includes/transactions.php:825
+#: includes/transactions.php:1004 includes/transactions.php:1024
+#: includes/transactions.php:1044 includes/transactions.php:1063
+#: includes/transactions.php:1083 includes/transactions.php:1107
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: includes/adapters-list.php:129
+#: includes/adapters-list.php:134
 msgid "Bitcoin and Altcoin Wallets coin adapters list"
 msgstr ""
 
-#: includes/adapters-list.php:130
+#: includes/adapters-list.php:135
 msgid ""
 "This plugin uses Coin Adapters to communicate with actual coin wallets. A "
 "Bitcoin core adapter is built-in, and you can download more coin adapters "
 "for free from the dashed-slug website."
 msgstr ""
 
-#: includes/adapters-list.php:132
+#: includes/adapters-list.php:137
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: includes/admin-menu.php:37 includes/wallets-core.php:246
-#: includes/wallets-core.php:256
+#: includes/admin-menu.php:37 includes/wallets-core.php:237
+#: includes/wallets-core.php:247
 msgid "Wallets"
 msgstr ""
 
@@ -130,8 +131,8 @@ msgstr ""
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: includes/admin-menu.php:78 includes/cold-storage.php:309
-#: includes/cold-storage.php:322 includes/rates.php:350
+#: includes/admin-menu.php:78 includes/cold-storage.php:320
+#: includes/cold-storage.php:333 includes/rates.php:350
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -255,8 +256,8 @@ msgstr ""
 #: includes/admin-notices.php:45
 msgid ""
 "<strong>IMPORTANT</strong>: Read the <a "
-"href=\"https://www.dashed-slug.net/important-action-required-admins-version-"
-"2-13-0\">release notes for version 2.13.0</a>."
+"href=\"https://www.dashed-slug.net/wallets-3-0-0\">release notes for "
+"version 3.0.0</a>."
 msgstr ""
 
 #: includes/admin-user.php:38
@@ -590,108 +591,104 @@ msgstr ""
 msgid "Cannot withdraw to cold storage: %s"
 msgstr ""
 
-#: includes/cold-storage.php:92
+#: includes/cold-storage.php:93
 msgid "Sent %s to cold storage address %s"
 msgstr ""
 
-#: includes/cold-storage.php:108
+#: includes/cold-storage.php:109
 msgid "Failed to withdraw to cold storage: %s"
 msgstr ""
 
-#: includes/cold-storage.php:142
+#: includes/cold-storage.php:143
 msgid "Bitcoin and Altcoin Wallets: Transfer to and from cold storage"
 msgstr ""
 
-#: includes/cold-storage.php:144
+#: includes/cold-storage.php:145
 msgid ""
 "<a href=\"https://en.bitcoin.it/wiki/Cold_storage\" target=\"_blank\">Cold "
 "storage</a> lets you remove part of your site's funds from the online "
 "wallet to mitigate risk in the event of a cyber-attack. "
 msgstr ""
 
-#: includes/cold-storage.php:145
+#: includes/cold-storage.php:146
 msgid ""
 "Any funds you withdraw or deposit here will affect your total wallet "
 "balance but not any user balances. "
 msgstr ""
 
-#: includes/cold-storage.php:148
+#: includes/cold-storage.php:149
 msgid "Cold storage state for your online wallets:"
 msgstr ""
 
-#: includes/cold-storage.php:151
+#: includes/cold-storage.php:152
 msgid "Adapter"
 msgstr ""
 
-#: includes/cold-storage.php:152
+#: includes/cold-storage.php:153
 msgid "Currency"
 msgstr ""
 
-#: includes/cold-storage.php:153
-msgid "User Balances"
-msgstr ""
-
-#: includes/cold-storage.php:154
-msgid "Online Balance"
-msgstr ""
-
 #: includes/cold-storage.php:155
+msgid "Online Wallet Balance"
+msgstr ""
+
+#: includes/cold-storage.php:156
 msgid "Actions"
 msgstr ""
 
-#: includes/cold-storage.php:197
+#: includes/cold-storage.php:207
 msgid "Deposit"
 msgstr ""
 
-#: includes/cold-storage.php:202
+#: includes/cold-storage.php:212
 msgid "Withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:225
+#: includes/cold-storage.php:236
 msgid "Withdraw %s to cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:248
+#: includes/cold-storage.php:259
 msgid "Amount"
 msgstr ""
 
-#: includes/cold-storage.php:256
+#: includes/cold-storage.php:267
 msgid "External address"
 msgstr ""
 
-#: includes/cold-storage.php:262
+#: includes/cold-storage.php:273
 msgid "Withdraw to storage"
 msgstr ""
 
-#: includes/cold-storage.php:273
+#: includes/cold-storage.php:284
 msgid "Deposit %s from cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:305
+#: includes/cold-storage.php:316
 msgid "Need a hardware wallet?"
 msgstr ""
 
-#: includes/cold-storage.php:333
+#: includes/cold-storage.php:344
 msgid "You are responsible for the money people deposit on your site. "
 msgstr ""
 
-#: includes/cold-storage.php:334
+#: includes/cold-storage.php:345
 msgid "Get a hardware wallet and sleep easier!"
 msgstr ""
 
-#: includes/cold-storage.php:367
+#: includes/cold-storage.php:379
 msgid "To have <code>%d%%</code> online (<code>%s</code>), %s %s."
 msgstr ""
 
-#: includes/cold-storage.php:370
+#: includes/cold-storage.php:382
 msgid "deposit"
 msgstr ""
 
-#: includes/cold-storage.php:370
+#: includes/cold-storage.php:382
 msgid "withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:378
+#: includes/cold-storage.php:390
 msgid "You currently have <code>%01.2f%%</code> online (<code>%s</code>)."
 msgstr ""
 
@@ -923,146 +920,164 @@ msgstr ""
 msgid "half an hour"
 msgstr ""
 
-#: includes/cron.php:190
+#: includes/cron.php:193
 msgid "Perioric checks"
 msgstr ""
 
-#: includes/cron.php:197
+#: includes/cron.php:200
 msgid "Run every"
 msgstr ""
 
-#: includes/cron.php:203
+#: includes/cron.php:206
 msgid "How often to run the cron job."
 msgstr ""
 
-#: includes/cron.php:214
+#: includes/cron.php:217
 msgid "Max batch size"
 msgstr ""
 
-#: includes/cron.php:220
+#: includes/cron.php:223
 msgid ""
 "Up to this many transactions (withdrawals and internal transfers) will be "
 "attempted per run of the cron job."
 msgstr ""
 
-#: includes/cron.php:234
+#: includes/cron.php:237
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: includes/cron.php:240
+#: includes/cron.php:243
 msgid ""
 "Failed withdrawals will be attempted up to this many times, while the "
 "adapter is unlocked."
 msgstr ""
 
-#: includes/cron.php:254
+#: includes/cron.php:257
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: includes/cron.php:260
+#: includes/cron.php:263
 msgid "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: includes/cron.php:274
+#: includes/cron.php:277
 msgid "Time to retain withdrawal secrets"
 msgstr ""
 
-#: includes/cron.php:318
+#: includes/cron.php:321
 msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: includes/cron.php:348
+#: includes/cron.php:351
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron "
 "job."
 msgstr ""
 
-#: includes/frontend-settings.php:35
+#: includes/frontend-settings.php:36
 msgid "QR Code display settings"
 msgstr ""
 
-#: includes/frontend-settings.php:42
+#: includes/frontend-settings.php:43
 msgid "Enable QR Codes"
 msgstr ""
 
-#: includes/frontend-settings.php:48
+#: includes/frontend-settings.php:49
 msgid "Controls whether a QR Code is displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:59
+#: includes/frontend-settings.php:60
 msgid "Live polling settings"
 msgstr ""
 
-#: includes/frontend-settings.php:66
+#: includes/frontend-settings.php:67
 msgid "Coin info poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:72
+#: includes/frontend-settings.php:73
 msgid ""
 "How often information about coins, including user balances, is refreshed. "
 "(0 = no refresh)"
 msgstr ""
 
-#: includes/frontend-settings.php:87
+#: includes/frontend-settings.php:88
 msgid "Also load coin info when the page becomes visible"
 msgstr ""
 
-#: includes/frontend-settings.php:105
+#: includes/frontend-settings.php:106
 msgid "Transaction list poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:111
+#: includes/frontend-settings.php:112
 msgid "How often user transaction data is refreshed. (0 = no refresh)."
 msgstr ""
 
-#: includes/frontend-settings.php:126
+#: includes/frontend-settings.php:127
+msgid "JSON API Settings"
+msgstr ""
+
+#: includes/frontend-settings.php:134
 msgid "Disable zlib compression for JSON API"
 msgstr ""
 
-#: includes/frontend-settings.php:164
+#: includes/frontend-settings.php:152
+msgid "Enable legacy JSON APIs"
+msgstr ""
+
+#: includes/frontend-settings.php:189
 msgid "Bitcoin and Altcoin Wallets frontend settings"
 msgstr ""
 
-#: includes/frontend-settings.php:166
+#: includes/frontend-settings.php:191
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:229
+#: includes/frontend-settings.php:255
 msgid "\"QR Code\" is a registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
-#: includes/json-api.php:113
+#: includes/json-api.php:190 includes/json-api.php:520
 msgid "Could not process notification."
 msgstr ""
 
-#: includes/json-api.php:117
+#: includes/json-api.php:194 includes/json-api.php:524
 msgid "Must be logged in"
 msgstr ""
 
-#: includes/json-api.php:131 includes/json-api.php:161
-#: includes/json-api.php:240 includes/json-api.php:274
-#: includes/json-api.php:302 includes/json-api.php:336
-#: includes/transactions.php:774 includes/wallets-core.php:690
-#: includes/wallets-core.php:825 includes/wallets-core.php:879
-#: includes/wallets-core.php:935 includes/wallets-core.php:1008
-#: includes/wallets-core.php:1153 includes/wallets-core.php:1299
+#: includes/json-api.php:208 includes/json-api.php:238
+#: includes/json-api.php:317 includes/json-api.php:365
+#: includes/json-api.php:383 includes/json-api.php:424
+#: includes/json-api.php:535 includes/json-api.php:614
+#: includes/json-api.php:662 includes/json-api.php:680
+#: includes/json-api.php:721 includes/php-api.php:141 includes/php-api.php:230
+#: includes/php-api.php:292 includes/php-api.php:389 includes/php-api.php:585
+#: includes/php-api.php:768 includes/transactions.php:779
+#: includes/wallets-core.php:772
 msgid "Not allowed"
 msgstr ""
 
-#: includes/json-api.php:148
+#: includes/json-api.php:225
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:259
-msgid "Could not get %s transactions"
+#: includes/json-api.php:334 includes/json-api.php:631
+msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
-#: includes/json-api.php:320
+#: includes/json-api.php:350 includes/json-api.php:647
+msgid "Could not get \"%s\" transactions"
+msgstr ""
+
+#: includes/json-api.php:408 includes/json-api.php:705
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:354
+#: includes/json-api.php:450 includes/json-api.php:766
 msgid "Could not move %s"
+msgstr ""
+
+#: includes/json-api.php:749
+msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 
 #: includes/menu-item.php:39
@@ -1217,6 +1232,34 @@ msgstr ""
 msgid ""
 "Only for failed withdrawals, shows the last error occurred in a failed "
 "transaction."
+msgstr ""
+
+#: includes/php-api.php:396
+msgid "Adapter for \"%s\" is not online for withdrawal"
+msgstr ""
+
+#: includes/php-api.php:438
+msgid "You cannot withdraw to one of your own deposit addresses on this system."
+msgstr ""
+
+#: includes/php-api.php:474 includes/php-api.php:637
+msgid "Amount after deducting fees must be positive"
+msgstr ""
+
+#: includes/php-api.php:480 includes/php-api.php:644
+msgid "Insufficient funds: %s > %s"
+msgstr ""
+
+#: includes/php-api.php:590
+msgid "Cannot send funds to self"
+msgstr ""
+
+#: includes/php-api.php:600
+msgid "Adapter for \"%s\" is not online for move action"
+msgstr ""
+
+#: includes/php-api.php:818
+msgid "Adapter for \"%s\" is not online for getting a deposit address"
 msgstr ""
 
 #: includes/rates.php:71
@@ -1478,125 +1521,109 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: includes/transactions.php:397
+#: includes/transactions.php:398
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this "
 "system."
 msgstr ""
 
-#: includes/transactions.php:803
+#: includes/transactions.php:808
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: includes/transactions.php:840
+#: includes/transactions.php:845
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:848
+#: includes/transactions.php:853
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:247 includes/wallets-core.php:257
+#: includes/wallets-core.php:238 includes/wallets-core.php:248
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:248 includes/wallets-core.php:258
+#: includes/wallets-core.php:239 includes/wallets-core.php:249
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:431
+#: includes/wallets-core.php:386
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:437
+#: includes/wallets-core.php:392
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:516
+#: includes/wallets-core.php:470
 msgid ""
 "You are using WordPress %s. This plugin has been tested with %s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:609
+#: includes/wallets-core.php:563
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:610
+#: includes/wallets-core.php:564
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:611
+#: includes/wallets-core.php:565
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:612
+#: includes/wallets-core.php:566
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:613
+#: includes/wallets-core.php:567
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:614
+#: includes/wallets-core.php:568
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:615
+#: includes/wallets-core.php:569
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:616
+#: includes/wallets-core.php:570
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:617
+#: includes/wallets-core.php:571
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:634
+#: includes/wallets-core.php:588
 msgid "Loaded"
 msgstr ""
 
-#: includes/wallets-core.php:634
+#: includes/wallets-core.php:588
 msgid "Not loaded"
 msgstr ""
 
-#: includes/wallets-core.php:652
+#: includes/wallets-core.php:606
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:697
+#: includes/wallets-core.php:1057
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:701
+#: includes/wallets-core.php:1061
 msgid "The coin adapter for the symbol %s is not available."
-msgstr ""
-
-#: includes/wallets-core.php:1046
-msgid "You cannot withdraw to one of your own deposit addresses on this system."
-msgstr ""
-
-#: includes/wallets-core.php:1070 includes/wallets-core.php:1186
-msgid "Amount after deducting fees must be positive"
-msgstr ""
-
-#: includes/wallets-core.php:1076 includes/wallets-core.php:1192
-msgid "Insufficient funds: %s > %s"
-msgstr ""
-
-#: includes/wallets-core.php:1157
-msgid "Cannot send funds to self"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

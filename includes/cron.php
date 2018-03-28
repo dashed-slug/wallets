@@ -164,8 +164,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		private function call_cron_on_all_adapters() {
-			$dsw = Dashed_Slug_Wallets::get_instance();
-			foreach ( $dsw->get_coin_adapters() as $adapter ) {
+			$adapters = apply_filters( 'wallets_api_adapters', array(), array(
+				'online_only' => true,
+			) );
+
+			foreach ( $adapters as $adapter ) {
 				try {
 					$adapter->cron();
 				} catch ( Exception $e ) {

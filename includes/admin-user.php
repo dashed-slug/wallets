@@ -60,13 +60,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 			<table class="form-table">
 				<tbody><?php
-				$adapters = $dsw->get_coin_adapters();
-					foreach ( $adapters as $adapter ):
+					$adapters = apply_filters( 'wallets_api_adapters', array() );
+					foreach ( $adapters as $adapter ) {
 						try {
 							$symbol = $adapter->get_symbol();
-							$balance = $dsw->get_balance( $symbol, null, false, $profileuser->ID );
+							$balance = apply_filters( 'wallets_api_balance', 0, array(
+								'user_id' => $profileuser->ID,
+								'check_capabilities' => false,
+								'symbol' => $symbol,
+							) );
 							$balance_str = sprintf( $adapter->get_sprintf(), $balance );
-							$deposit_address = $dsw->get_deposit_address( $symbol, $profileuser->ID );
+							$deposit_address = apply_filters( 'wallets_api_deposit_address', '', array(
+								'user_id' => $profileuser->ID,
+								'symbol' => $symbol,
+							) );
+
 							$explorer_uri_address = apply_filters( "wallets_explorer_uri_add_$symbol", '' ); ?>
 						<tr>
 							<th>
@@ -110,9 +118,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 					} catch ( Exception $e ) {
 						// Coin might have been taken offline. Continue silently to the next one.
 					}
-					endforeach; ?>
-				</tbody>
-			</table>
+				} ?>
+			</tbody>
+		</table>
 		<?php
 		}
 

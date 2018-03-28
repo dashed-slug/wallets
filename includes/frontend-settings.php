@@ -22,6 +22,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 		public static function action_activate( $network_active ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_qrcode_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_zlib_disabled', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_legacy_json_apis', '' );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_visibility_check_enabled', 'on' );
 
@@ -121,12 +122,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets_poll_interval_transactions'
 			);
 
+			add_settings_section(
+				'wallets_json_api_section',
+				__( 'JSON API Settings', 'wallets' ),
+				array( &$this, 'wallets_json_api_section_cb' ),
+				'wallets-menu-frontend-settings'
+			);
+
 			add_settings_field(
 				'wallets_zlib_disabled',
 				__( 'Disable zlib compression for JSON API', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
 				'wallets-menu-frontend-settings',
-				'wallets_live_section',
+				'wallets_json_api_section',
 				array(
 					'label_for' => 'wallets_zlib_disabled',
 					'description' => __( 'The JSON output of the wallets API is compressed if the PHP zlib module is available. ' .
@@ -139,6 +147,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets_zlib_disabled'
 			);
 
+			add_settings_field(
+				'wallets_legacy_json_apis',
+				__( 'Enable legacy JSON APIs', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-frontend-settings',
+				'wallets_json_api_section',
+				array(
+					'label_for' => 'wallets_legacy_json_apis',
+					'description' => __( 'As the plugin is further developed, new versions of the JSON API are introduced. ' .
+						'Check this only if you wish to enable older versions of the JSON API, to provide compatibility with other components.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-frontend-settings',
+				'wallets_legacy_json_apis'
+			);
 
 		}
 
@@ -192,6 +217,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 			Dashed_Slug_Wallets::update_option( 'wallets_qrcode_enabled', filter_input( INPUT_POST, 'wallets_qrcode_enabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( 'wallets_zlib_disabled', filter_input( INPUT_POST, 'wallets_zlib_disabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_legacy_json_apis', filter_input( INPUT_POST, 'wallets_legacy_json_apis', FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			Dashed_Slug_Wallets::update_option( 'wallets_visibility_check_enabled', filter_input( INPUT_POST, 'wallets_visibility_check_enabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
@@ -236,6 +262,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'the JSON API at regular intervals. This can cause additional overhead on your server. Polling is only done when the user browser ' .
 				'displays your page, not when the browser is minimized or displays another tab. Here you can control the time '.
 				'interval between polling requests.', 'wallets' ); ?></p>
+			<?php
+		}
+
+		public function wallets_json_api_section_cb() {
+			?><p><?php esc_html_e( 'Frontend UIs use a JSON API to communicate with the plugin. ' .
+				'This same API can also be used by third party components that need to interact with the plugin. ' .
+				'The API is documented in the accompanying PDF manual for this plugin.', 'wallets' ); ?></p>
 			<?php
 		}
 

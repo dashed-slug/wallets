@@ -221,9 +221,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 		// helpers
 
 		protected function get_recommended_config() {
-			$wallet_url = site_url( 'wallets/notify/' . $this->get_symbol() . '/wallet/%s' );
-			$block_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/block/%s' );
-			$alert_url = site_url( 'wallets/notify/' . $this->get_symbol(). '/alert/%s' );
+			$wallet_url = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/wallet/%s' );
+			$block_url = site_url( 'wallets/api2/notify/' . $this->get_symbol(). '/block/%s' );
+			$alert_url = site_url( 'wallets/api2/notify/' . $this->get_symbol(). '/alert/%s' );
 			$wp_ip = self::server_ip();
 			$user = $this->get_adapter_option( 'rpc-user');
 			$port = intval( $this->get_adapter_option( 'rpc-port') );

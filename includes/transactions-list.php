@@ -169,11 +169,11 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 			case 'amount':
 			case 'fee':
-				try {
-					$dsw = Dashed_Slug_Wallets::get_instance();
-					$adapter = $dsw->get_coin_adapters( $item['symbol'] );
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+				if ( isset( $adapters[ $item['symbol'] ] ) ) {
+					$adapter = $adapters[ $item['symbol'] ];
 					return sprintf( $adapter->get_sprintf(), $item[ $column_name ] );
-				} catch ( Exception $e ) {
+				} else {
 					return $item[ $column_name ];
 				}
 

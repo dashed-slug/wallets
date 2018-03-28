@@ -845,8 +845,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_yobit( $rates, $provider ) {
 			if ( 'yobit' == $provider ) {
 				$market_names = array();
-				$dsw = Dashed_Slug_Wallets::get_instance();
-				foreach ( array_keys( $dsw->get_coin_adapters() ) as $symbol ) {
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+
+				foreach ( array_keys( $adapters ) as $symbol ) {
 					if ( 'BCH' == $symbol ) {
 						$market_names[] = 'bcc_btc';
 					} elseif ( 'BTC' != $symbol ) {

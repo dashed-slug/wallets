@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'2.13.7',
+				'3.0.0',
 				true
 			);
 		}
@@ -128,15 +128,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 
 			if( 'balances' == $item->type && is_user_logged_in() ) {
 
-				$dsw = Dashed_Slug_Wallets::get_instance();
-
 				ob_start();
 				?><a href="#"><?php echo esc_html( $item->title ); ?></a>
 				<ul class="sub-menu"><?php
-					$adapters = $dsw->get_coin_adapters();
+					$adapters = apply_filters( 'wallets_api_adapters', array() );
 					foreach ( $adapters as $symbol => &$adapter ):
 						try {
-							$balance = $dsw->get_balance( $adapter->get_symbol(), null, true, get_current_user_id() );
+							$balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => $symbol ) );
 						} catch ( Exception $e ) {
 							continue;
 						}

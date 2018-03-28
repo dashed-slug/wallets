@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.4
 Requires PHP: 5.6
-Stable tag: 2.13.7
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,16 +48,14 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 - Configure who has a wallet and who does what using WordPress capabilities.
 - Configure e-mail notifications for users.
 - Configure e-mail confirmations for transactions and optionally confirm transactions via the admin interface.
-- **Backup and restore transactions**: An **import/export** functionality to backup transactions to and from
-  [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files.
+- **Backup and restore transactions**: An **import/export** functionality to backup transactions to and from [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 - **Extensible architecture**
   - Easily install coin adapter plugins to use other cryprocurrencies besides Bitcoin.
   - Easily install extension plugins that talk to the PHP API to provide additional functionality such as payment gateways.
 
 = Free coin adapter extensions =
 
- You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all
- subscribers at [dashed-slug](https://www.dashed-slug.net) (you do not have to pay for membership).
+ You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all [subscribers at dashed-slug](https://www.dashed-slug.net/dashed-slug/subscribe/) (you do not have to pay for membership).
 
 - [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
 - [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
@@ -69,8 +67,7 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 
 = Premium plugin extensions available today =
 
-Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to
-this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wordpress.org/plugins/slate/) FREE WordPress plugin).
+Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wordpress.org/plugins/slate/) FREE WordPress plugin).
 
 Here are all the currently available premium app extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
 
@@ -312,6 +309,18 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.0.0 =
+- Add: New improved PHP API for working with wallets, based on WordPress actions and filters. See documentation for details.
+- Change: The previous PHP API is still functional but is now marked as deprecated.
+- Add: The JSON APIs are now versioned, to allow for stable improvements.
+- Add: New version 2 of the JSON API does not include the `get_users_info` call which divulged user login names. Accepts usernames or emails as destination user in `do_move` action.
+- Change: Previous version 1 of the JSON API is available only if "legacy APIs" option is enabled in the frontend settings.
+- Improve: Frontend no longer performs synchronous AJAX requests on the main thread. This fixes the issue where the UI would temporarily "freeze".
+- Improve: The `[wallets_move]` shortcode now accepts the recipient user as a username or email. This was previously a dropdown and was causing scaling problems.
+- Improve: The coins data structure in the wallets frontend is now indexed, resulting in better JavaScript performance throughout the frontend code.
+- Fix: Nonces provided with the `get_nonces` JSON API call are no longer cached. Caching would sometimes cause stale nonces to be used, resulting in request forgery errors.
+- Improve: The knockout JavaScript code now uses the `rateLimit` extender in favor of the deprecated `throttle` extender.
 
 = 2.13.7 =
 - Improve: More kinds of transactions can be cancelled via the admin interface.
@@ -743,7 +752,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version 2.13.7 is a patch release that includes some minor improvements and user requests to the plugin.
+Version, 3.0.0 of Bitcoin and Altcoin Wallets for WordPress brings improvements to the front-end performance of the plugin, and much better developer APIs. Please [read the release notes](http://dashed-slug.net/wallets-3-0-0/).
 
 == Donating ==
 
