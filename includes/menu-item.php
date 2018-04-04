@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.0.1',
+				'3.0.2',
 				true
 			);
 		}
@@ -142,11 +142,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 						$coin_name_str = esc_html( $adapter->get_name() );
 						$pattern = apply_filters( 'wallets_sprintf_pattern_' . $symbol, $adapter->get_sprintf() );
 						$balance_str = esc_html( sprintf( $pattern, $balance ) );
+						$icon_url = $adapter->get_icon_url();
 
 					?>
 					<li class="menu-item">
 						<?php echo $args->link_before; ?>
-						<a href="#">
+						<a
+							href="#"
+							class="wallets-menu-icon"
+							style="background-image: url(<?php echo esc_attr( $icon_url ); ?>)">
 							<?php echo $args->before; ?>
 							<div class="wallets-coin-name"><?php echo $coin_name_str; ?></div>
 							<div class="wallets-balance"><?php echo $balance_str; ?></div>

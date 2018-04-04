@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP API to the plugin. Mostly based on WordPress actions and filters. See the documentation for details.
+ * PHP API to the plugin.
  *
  * @api
  * @since 3.0.0
@@ -12,6 +12,12 @@ defined( 'ABSPATH' ) || die( '-1' );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
+	/**
+	 * PHP API to the plugin. Allows programmatic access using WordPress actions and filters.
+	 *
+	 * @author alexg
+	 *
+	 */
 	class Dashed_Slug_Wallets_PHP_API {
 
 		/** Error code for exception thrown while getting user info. */

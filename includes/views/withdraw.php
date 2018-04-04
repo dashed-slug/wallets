@@ -5,7 +5,7 @@
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_withdraw' );
 	?>
-	<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.values( coins() ), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input']"></select></label>
+	<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.values( coins() ), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
 	<label class="address"><?php echo apply_filters( 'wallets_ui_text_withdrawtoaddress', esc_html__( 'Withdraw to address', 'wallets-front' ) ); ?>: <input type="text" data-bind="value: withdrawAddress" /></label>
 	<label class="amount"><?php echo apply_filters( 'wallets_ui_text_amount', esc_html__( 'Amount', 'wallets-front' ) ); ?>: <input type="text"  data-bind="value: withdrawAmount, valueUpdate: ['afterkeydown', 'input']" /><span class="base-amount" data-bind="text: withdrawBaseAmount"></span></label>
 	<label class="fee"><?php echo apply_filters( 'wallets_ui_text_feedeductedfromamount', esc_html__( 'Fee (deducted from amount)', 'wallets-front' ) ); ?>: <input type="text" data-bind="value: withdrawFee()[0], enable: false" /><span class="base-amount" data-bind="text: withdrawFee()[1]"></span></label>

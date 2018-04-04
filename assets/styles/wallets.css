@@ -71,3 +71,15 @@
 	padding: 4px;
 	margin: 0 auto;
 }
+
+.dashed-slug-wallets label.coin select {
+	background-repeat: no-repeat;
+	background-size: auto 90%;
+	background-position: calc(100% - 20px) 50%;
+}
+
+.menu-item .wallets-menu-icon {
+	background-repeat: no-repeat;
+	background-size: auto 90%;
+	background-position: calc(100% - 20px) 50%;
+}

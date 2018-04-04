@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( '-1' );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
+		private static $providers = array( 'coinmarketcap', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
 		private static $rates = array();
 		private static $cryptos = array();
 		private static $fiats = array();
@@ -483,7 +483,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_provider', 'bittrex' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_provider', 'coinmarketcap' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry', 5 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled', '' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip', '127.0.0.1' );
@@ -615,9 +615,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				$url = 'https://api.fixer.io/latest?base=USD';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->rates ) ) {
+					if ( is_object( $obj ) && isset( $obj->rates ) ) {
 						foreach ( $obj->rates as $fixer_symbol => $rate) {
 							$fiats[] = $fixer_symbol;
 						}
@@ -627,13 +627,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $fiats;
 		}
 
+		public static function filter_rates_cryptos_coinmarketcap( $cryptos, $provider ) {
+			if ( 'coinmarketcap' == $provider ) {
+				$url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_array( $obj ) ) {
+						foreach ( $obj as $market ) {
+							if ( isset( $market->symbol ) ) {
+								$cryptos[] = $market->symbol;
+							}
+						}
+					}
+				}
+			}
+			return $cryptos;
+		}
+
 		public static function filter_rates_cryptos_bittrex( $cryptos, $provider ) {
 			if ( 'bittrex' == $provider ) {
 				$url = 'https://bittrex.com/api/v1.1/public/getmarkets';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->success ) && $obj->success ) {
+					if ( is_object( $obj ) && isset( $obj->success ) && $obj->success ) {
 						if ( isset( $obj->result ) && is_array( $obj->result ) ) {
 							foreach ( $obj->result as $market ) {
 								$s = $market->MarketCurrency;
@@ -648,13 +666,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public static function filter_rates_cryptos_poloniex( $cryptos, $provider ) {
 			if ( 'poloniex' == $provider ) {
-				$json = self::file_get_contents( "https://poloniex.com/public?command=returnTicker" );
-				if ( false !== $json ) {
+				$url = 'https://poloniex.com/public?command=returnTicker';
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					foreach ( $obj as $marketname => $market ) {
-						foreach ( explode( '_', $marketname ) as $s ) {
-							if ( 'USDT' != $s ) {
-								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+					if ( is_object( $obj ) ) {
+						foreach ( $obj as $marketname => $market ) {
+							foreach ( explode( '_', $marketname ) as $s ) {
+								if ( 'USDT' != $s ) {
+									$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								}
 							}
 						}
 					}
@@ -665,10 +686,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public static function filter_rates_cryptos_novaexchange( $cryptos, $provider ) {
 			if ( 'novaexchange' == $provider ) {
-				$json = self::file_get_contents( 'https://novaexchange.com/remote/v2/markets/' );
-				if ( false !== $json ) {
+				$url = 'https://novaexchange.com/remote/v2/markets/';
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->status ) && 'success' == $obj->status ) {
+					if ( is_object( $obj ) && isset( $obj->status ) && 'success' == $obj->status ) {
 						if ( isset( $obj->markets ) && is_array( $obj->markets ) ) {
 							foreach ( $obj->markets as $market ) {
 								foreach ( explode( '_', $market->marketname ) as $s ) {
@@ -685,9 +707,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_cryptos_yobit( $cryptos, $provider ) {
 			if ( 'yobit' == $provider ) {
 				$json = self::file_get_contents( 'https://yobit.net/api/3/info' );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->pairs ) ) {
+					if ( is_object( $obj ) && isset( $obj->pairs ) ) {
 						foreach ( $obj->pairs as $marketname => $market ) {
 							foreach ( explode( '_', strtoupper( $marketname ) ) as $s ) {
 								if ( 'RUR' !== $s && 'USD' !== $s ) {
@@ -704,9 +726,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_cryptos_cryptopia( $cryptos, $provider ) {
 			if ( 'cryptopia' == $provider ) {
 				$json = self::file_get_contents( 'https://www.cryptopia.co.nz/api/GetCurrencies' );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) ) {
+					if ( is_object( $obj ) && isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) ) {
 						foreach ( $obj->Data as $market ) {
 							$s = $market->Symbol;
 							if ( 'USD' != $s && 'USDT' != $s ) {
@@ -723,9 +745,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			if ( 'tradesatoshi' == $provider ) {
 				$json = self::file_get_contents( 'https://tradesatoshi.com/api/public/getcurrencies' );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->success ) && $obj->success && isset( $obj->result) ) {
+					if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result) ) {
 						foreach ( $obj->result as $market ) {
 							$s = $market->currency;
 							if ( 'USD' != $s && 'USDT' != $s ) {
@@ -743,9 +765,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( 'stocksexchange' == $provider ) {
 				$url = 'https://stocks.exchange/api2/markets';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( ! is_null( $obj ) ) {
+					if ( is_object( $obj ) ) {
 						foreach ( $obj as $market ) {
 							$cryptos[] = $market->currency;
 						}
@@ -760,9 +782,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_fixer( $rates, $provider ) {
 			$url = 'http://api.fixer.io/latest?base=USD';
 			$json = self::file_get_contents( $url );
-			if ( false !== $json ) {
+			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
-				if ( ! isset( $obj->error ) && isset( $obj->rates ) ) {
+				if ( is_object( $obj ) && ! isset( $obj->error ) && isset( $obj->rates ) ) {
 					foreach ( $obj->rates as $s => $r ) {
 						$rates["{$s}_USD"] = $r;
 					}
@@ -773,14 +795,39 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		// filters that pull cryptocurrency symbols
 
+
+		public static function filter_rates_coinmarketcap( $rates, $provider ) {
+
+			if ( 'coinmarketcap' == $provider ) {
+				$url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_array( $obj ) ) {
+						foreach ( $obj as $market ) {
+							if ( isset( $market->price_usd ) ) {
+								$rates["USD_{$market->symbol}"] = $market->price_usd;
+							}
+							if ( isset( $market->price_btc ) ) {
+								$rates["BTC_{$market->symbol}"] = $market->price_btc;
+							}
+						}
+					}
+				}
+			}
+			return $rates;
+		}
+
+
+
 		public static function filter_rates_bittrex( $rates, $provider ) {
 
 			if ( 'bittrex' == $provider ) {
 				$url = "https://bittrex.com/api/v1.1/public/getmarketsummaries";
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->success ) && $obj->success ) {
+					if ( is_object( $obj ) && isset( $obj->success ) && $obj->success ) {
 						foreach ( $obj->result as $market ) {
 							$m = str_replace( '-', '_', $market->MarketName );
 							$m = str_replace( 'USDT', 'USD', $m );
@@ -795,9 +842,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( ! isset( $rates['USD_BTC'] ) ) {
 				$url = 'https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->success ) && $obj->success && isset( $obj->result ) && isset( $obj->result->Last ) ) {
+					if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result ) && isset( $obj->result->Last ) ) {
 						$rates['USD_BTC'] = $obj->result->Last;
 					}
 				}
@@ -814,11 +861,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( 'poloniex' == $provider ) {
 				$url = 'https://poloniex.com/public?command=returnTicker';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					foreach ( $obj as $market_name => $market ) {
-						$m = str_replace( 'BCC', 'BCH', $market_name );
-						$rates[ $m ] = $market->last;
+					if ( is_object( $obj ) ) {
+						foreach ( $obj as $market_name => $market ) {
+							$m = str_replace( 'BCC', 'BCH', $market_name );
+							$rates[ $m ] = $market->last;
+						}
 					}
 				}
 			}
@@ -828,9 +877,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_novaexchange( $rates, $provider ) {
 			if ( 'novaexchange' == $provider ) {
 				$json = self::file_get_contents( 'https://novaexchange.com/remote/v2/markets/' );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->status ) && 'success' == $obj->status ) {
+					if ( is_object( $obj ) && isset( $obj->status ) && 'success' == $obj->status ) {
 						if ( isset( $obj->markets ) && is_array( $obj->markets ) ) {
 							foreach ( $obj->markets as $market ) {
 								$rates[ $market->marketname ] = $market->last_price;
@@ -858,13 +907,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( $market_names ) {
 					$url = 'https://yobit.net/api/3/ticker/' . implode( '-', $market_names ) . '?ignore_invalid=1';
 					$json = self::file_get_contents( $url );
-					if ( false !== $json ) {
+					if ( is_string( $json ) ) {
 						$obj = json_decode( $json );
-						foreach ( $obj as $market_name => $market ) {
-							if ( preg_match( '/^([^_]+)_([^_]+)$/', $market_name, $matches ) ) {
-								$m = strtoupper( $matches[2] . '_' . $matches[1] );
-								$m = str_replace( 'BCC', 'BCH', $m );
-								$rates[ $m ] = $market->last;
+						if ( is_object( $obj ) ) {
+							foreach ( $obj as $market_name => $market ) {
+								if ( preg_match( '/^([^_]+)_([^_]+)$/', $market_name, $matches ) ) {
+									$m = strtoupper( $matches[2] . '_' . $matches[1] );
+									$m = str_replace( 'BCC', 'BCH', $m );
+									$rates[ $m ] = $market->last;
+								}
 							}
 						}
 					}
@@ -877,9 +928,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( 'cryptopia' == $provider ) {
 				$url = 'https://www.cryptopia.co.nz/api/GetMarkets';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) && ! is_null( $obj->Data ) ) {
+					if ( is_object( $obj ) && isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) && ! is_null( $obj->Data ) ) {
 						foreach ( $obj->Data as $market ) {
 							if ( preg_match( '/^(.+)\/(.+)$/', $market->Label, $matches ) ) {
 								$m = strtoupper( $matches[2] . '_' . $matches[1] );
@@ -896,9 +947,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( 'tradesatoshi' == $provider ) {
 				$url = 'https://tradesatoshi.com/api/public/getmarketsummaries';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( isset( $obj->success ) && $obj->success && isset( $obj->result ) && ! is_null( $obj->result ) ) {
+					if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result ) && ! is_null( $obj->result ) ) {
 						foreach ( $obj->result as $market ) {
 							if ( preg_match( '/^(.+)_(.+)$/', $market->market, $matches ) ) {
 								if ( self::is_crypto( $matches[2] ) ) {
@@ -917,9 +968,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( 'stocksexchange' == $provider ) {
 				$url = 'https://stocks.exchange/api2/ticker';
 				$json = self::file_get_contents( $url );
-				if ( false !== $json ) {
+				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( ! is_null( $obj ) ) {
+					if ( is_object( $obj ) ) {
 						foreach ( $obj as $market ) {
 							$m = str_replace( 'USDT', 'USD', $market->market_name );
 							$rates[ $m ] = $market->last;

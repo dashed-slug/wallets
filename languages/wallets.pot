@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.0.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-03-28 17:58:36+00:00\n"
+"POT-Creation-Date: 2018-04-04 15:51:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1049,9 +1049,9 @@ msgstr ""
 #: includes/json-api.php:383 includes/json-api.php:424
 #: includes/json-api.php:535 includes/json-api.php:614
 #: includes/json-api.php:662 includes/json-api.php:680
-#: includes/json-api.php:721 includes/php-api.php:141 includes/php-api.php:230
-#: includes/php-api.php:292 includes/php-api.php:389 includes/php-api.php:585
-#: includes/php-api.php:768 includes/transactions.php:779
+#: includes/json-api.php:721 includes/php-api.php:147 includes/php-api.php:236
+#: includes/php-api.php:298 includes/php-api.php:395 includes/php-api.php:591
+#: includes/php-api.php:774 includes/transactions.php:779
 #: includes/wallets-core.php:772
 msgid "Not allowed"
 msgstr ""
@@ -1127,7 +1127,7 @@ msgid "You have received funds from another user. - ###COMMENT###"
 msgstr ""
 
 #: includes/notifications.php:126
-msgid "You have performed a ###SYMBOL### deposit."
+msgid "You have received a ###SYMBOL### deposit."
 msgstr ""
 
 #: includes/notifications.php:149
@@ -1234,31 +1234,31 @@ msgid ""
 "transaction."
 msgstr ""
 
-#: includes/php-api.php:396
+#: includes/php-api.php:402
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:438
+#: includes/php-api.php:444
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/php-api.php:474 includes/php-api.php:637
+#: includes/php-api.php:480 includes/php-api.php:643
 msgid "Amount after deducting fees must be positive"
 msgstr ""
 
-#: includes/php-api.php:480 includes/php-api.php:644
+#: includes/php-api.php:486 includes/php-api.php:650
 msgid "Insufficient funds: %s > %s"
 msgstr ""
 
-#: includes/php-api.php:590
+#: includes/php-api.php:596
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/php-api.php:600
+#: includes/php-api.php:606
 msgid "Adapter for \"%s\" is not online for move action"
 msgstr ""
 
-#: includes/php-api.php:818
+#: includes/php-api.php:824
 msgid "Adapter for \"%s\" is not online for getting a deposit address"
 msgstr ""
 
@@ -1453,55 +1453,55 @@ msgstr ""
 msgid "Verified by user"
 msgstr ""
 
-#: includes/transactions-list.php:284
+#: includes/transactions-list.php:285
 msgid "Transaction will be CANCELLED."
 msgstr ""
 
-#: includes/transactions-list.php:285
+#: includes/transactions-list.php:286
 msgid "&#x1F5D9; Cancel"
 msgstr ""
 
-#: includes/transactions-list.php:304
+#: includes/transactions-list.php:306
 msgid "Transaction will be RETRIED."
 msgstr ""
 
-#: includes/transactions-list.php:305
+#: includes/transactions-list.php:307
 msgid "&#8635; Retry"
 msgstr ""
 
-#: includes/transactions-list.php:334
+#: includes/transactions-list.php:336
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: includes/transactions-list.php:335
+#: includes/transactions-list.php:337
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:351
+#: includes/transactions-list.php:353
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: includes/transactions-list.php:352
+#: includes/transactions-list.php:354
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: includes/transactions-list.php:387
+#: includes/transactions-list.php:389
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: includes/transactions-list.php:388
+#: includes/transactions-list.php:390
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:404
+#: includes/transactions-list.php:406
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: includes/transactions-list.php:405
+#: includes/transactions-list.php:407
 msgid "&#x2713; User accept"
 msgstr ""
 

@@ -77,8 +77,10 @@
 							return;
 						}
 						self.coins( response.coins );
-						if ( ! $.isEmptyObject( response.coins ) ) {
-							self.selectedCoin( Object.keys( response.coins )[ 0 ] );
+						if ( ! self.selectedCoin() ) {
+							if ( ! $.isEmptyObject( response.coins ) ) {
+								self.selectedCoin( Object.keys( response.coins )[ 0 ] );
+							}
 						}
 					},
 					complete: function( jqXHR, status ) {

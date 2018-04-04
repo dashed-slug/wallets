@@ -16,66 +16,10 @@
 	},
 
 	{
-		"name": "Dogecoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Dogecoin daemon (dogecoind).",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/dogecoin-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/dogecoin-rpc-adapter-extension-support/",
-		"slug": "wallets-dogecoin"
-	},
-
-	{
-		"name": "Electrum Bitcoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Bitcoin Electrum Bitcoin wallet.",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/electrum-bitcoin-rpc-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/electrum-bitcoin-rpc-adapter-extension-support/",
-		"slug": "wallets-electrum"
-	},
-
-	{
-		"name": "eMark RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Deutsche eMark wallet.",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/emark-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/emark-adapter-extension-support/",
-		"slug": "wallets-emark"
-	},
-
-	{
-		"name": "Feathercoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Feathercoin daemon (feathercoind).",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/feathercoin-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/feathercoin-rpc-adapter-extension-support/",
-		"slug": "wallets-feathercoin"
-	},
-
-	{
-		"name": "Goldcoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Goldcoin daemon (goldcoind).",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/goldcoin-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/goldcoin-rpc-coin-adapter-extension-support/",
-		"slug": "wallets-goldcoin"
-	},
-
-	{
-		"name": "Goshencoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Goshencoin wallet.",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/goshencoin-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/goshencoin-rpc-adapter-extension-support/",
-		"slug": "wallets-goshencoin"
-	},
-
-	{
-		"name": "Gridcoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Gridcoin daemon (gridcoinresearch).",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/gridcoin-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/gridcoin-rpc-coin-adapter-extension-support/",
-		"slug": "wallets-gridcoin"
-	},
-
-	{
-		"name": "Litecoin RPC Adapter",
-		"description": "Allows your Wallets plugin to interface with the Litecoin daemon (litecoind).",
-		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension",
-		"support": "https://www.dashed-slug.net/forums/forum/litecoin-rpc-adapter-extension-support/",
-		"slug": "wallets-litecoin"
+		"name": "Full Node Multi Coin Adapter",
+		"description": "Allows the Bitcoin and Altcoin Wallets WordPress plugin to connect to a large number of Bitcoin-like full node wallets via their JSON RPC API.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/full-node-multi-coin-adapter-extension-support/",
+		"slug": "wallets-multiadapter"
 	}
 ]

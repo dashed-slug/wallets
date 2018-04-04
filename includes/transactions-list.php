@@ -266,24 +266,26 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_status( $item ) {
 		$actions = array();
-		if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
-			if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
-				$actions['cancel_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
-					add_query_arg(
-						array(
-							'page' => 'wallets-menu-transactions',
-							'action' => 'cancel_tx',
-							'tx_id' => $item['id'],
-							'paged' => $this->get_pagenum(),
-							'order' => $this->order,
-							'orderby' => $this->orderby,
-							'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] )
+		if ( ! ( 'deposit' == $item['category'] ) ) { // cannot cancel incoming deposits
+			if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
+				if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
+					$actions['cancel_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+						add_query_arg(
+							array(
+								'page' => 'wallets-menu-transactions',
+								'action' => 'cancel_tx',
+								'tx_id' => $item['id'],
+								'paged' => $this->get_pagenum(),
+								'order' => $this->order,
+								'orderby' => $this->orderby,
+								'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] )
+							),
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
-						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
-					),
-					__( 'Transaction will be CANCELLED.', 'wallets' ),
-					__( '&#x1F5D9; Cancel', 'wallets' )
-				);
+						__( 'Transaction will be CANCELLED.', 'wallets' ),
+						__( '&#x1F5D9; Cancel', 'wallets' )
+					);
+				}
 			}
 		}
 

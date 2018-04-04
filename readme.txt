@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.4
+Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,7 +90,7 @@ The dashed-slug is a social slug:
 - Google+: [https://plus.google.com/103549774963556626441](https://plus.google.com/103549774963556626441)
 - RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
 - SteemIt: [https://steemit.com/@dashed-slug.net](https://steemit.com/@dashed-slug.net)
-- Youtube channel: [https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA](https://www.youtube.com/channel/UCZ1XhSSWnzvB2B_-Cy1tTjA)
+- Youtube channel: [https://www.youtube.com/dashedslugnet](https://www.youtube.com/dashedslugnet)
 - GitHub: [https://github.com/dashed-slug](https://github.com/dashed-slug)
 
 == Installation ==
@@ -309,6 +309,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.0.2 =
+- Add: Exchange rates can now be pulled from the CoinMarketCap API.
+- Add: Coin icons are now displayed in the front-end UIs.
+- Fix: Safer exchange rates code in case of connectivity issues.
+- Fix: No longer display "cancel" button next to deposits, since these cannot be cancelled.
+- Fix: No longer reset the default coin in the frontend whenever the coin info is reloaded.
+- Change: The readme now points to the new SEO-frinedly name for the YouTube channel.
 
 = 3.0.1 =
 - Fix: Do not throw an alert box error in frontend when an AJAX request is cancelled by the browser, if the user clicks on a new link while the request is in transit.
@@ -755,7 +763,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.0.1 fixes an issue with the frontend that was introduced in 3.0.0.
+Version, 3.0.2 introduces exchange rates from CoinMarketCap, coin icons displayed in the frontend plus some minor improvements.
 
 == Donating ==
 
