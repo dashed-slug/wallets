@@ -12,6 +12,7 @@ $translation_array = array(
 	'deposit' => apply_filters( 'wallets_ui_text_deposit', __( 'deposit', 'wallets-front' ) ),
 	'withdraw' => apply_filters( 'wallets_ui_text_withdraw', __( 'withdraw', 'wallets-front' ) ),
 	'move' => apply_filters( 'wallets_ui_text_move', __( 'transfer', 'wallets-front' ) ),
+	'trade' => apply_filters( 'wallets_ui_text_trade', __( 'trade', 'wallets-front' ) ),
 
 	'unconfirmed' => apply_filters( 'wallets_ui_text_unconfirmed', __( 'unconfirmed', 'wallets-front' ) ),
 	'pending' => apply_filters( 'wallets_ui_text_pending', __( 'pending', 'wallets-front' ) ),

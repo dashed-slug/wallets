@@ -78,7 +78,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 							'It will stop showing once the daemon can be contacted.',
 							'wallets' ),
 							sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) . '-api-down'
-						);
+					);
 				}
 			}
 		}

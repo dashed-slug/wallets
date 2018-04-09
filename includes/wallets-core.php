@@ -66,7 +66,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
-			add_action( 'shutdown', 'Dashed_Slug_Wallets::flush_rules' );
 			add_action( 'delete_blog', array( &$this, 'action_delete_blog' ), 10, 2 );
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 				add_filter( 'network_admin_plugin_action_links', array( &$this, 'filter_network_admin_plugin_action_links' ), 10, 2 );
@@ -172,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.0.2',
+					'3.0.3',
 					true
 				);
 
@@ -207,7 +206,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.0.2',
+					'3.0.3',
 					true
 				);
 
@@ -221,7 +220,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.0.2'
+					'3.0.3'
 				);
 			}
 		}
@@ -261,7 +260,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision = 12;
+			$current_db_revision = 13;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 				error_log( sprintf( 'Upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
@@ -279,7 +278,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$sql = "CREATE TABLE {$table_name_txs} (
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'useful in multisite installs only if plugin is not network activated',
-				category enum('deposit','move','withdraw') NOT NULL COMMENT 'type of transaction',
+				category enum('deposit','move','withdraw','trade') NOT NULL COMMENT 'type of transaction',
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
@@ -292,7 +291,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				comment TEXT DEFAULT NULL COMMENT 'transaction comment',
 				created_time datetime NOT NULL COMMENT 'when transaction was entered into the system in GMT',
 				updated_time datetime NOT NULL COMMENT 'when transaction was last updated in GMT (e.g. for update to confirmations count)',
-				confirmations mediumint unsigned DEFAULT 0 COMMENT 'amount of confirmations received from blockchain, or null for category==move',
+				confirmations mediumint unsigned DEFAULT 0 COMMENT 'amount of confirmations received from blockchain, or null for category IN (move,trade)',
 				status enum('unconfirmed','pending','done','failed','cancelled') NOT NULL DEFAULT 'unconfirmed' COMMENT 'state of transaction',
 				retries tinyint unsigned NOT NULL DEFAULT 1 COMMENT 'retries left before a pending transaction status becomes failed',
 				admin_confirm tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 if an admin has confirmed this transaction',
@@ -511,25 +510,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-other-minconf', '6' );
 
-			// flush json api rules
-			self::flush_rules();
 		}
 
 		/** @internal */
 		public static function action_deactivate() {
 			// will not remove DB tables for safety
 
-			// flush json api rules
-			self::flush_rules();
-
 			// remove db revision so that reactivating repairs the sql tables
 			Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
-		}
-
-		/** @internal */
-		public static function flush_rules() {
-			$is_apache = strpos( $_SERVER['SERVER_SOFTWARE'], 'pache' ) !== false;
-			flush_rewrite_rules( $is_apache );
 		}
 
 		/** @internal */
@@ -560,8 +548,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '3.0.2';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '56b453f';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '3.0.3';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'cbac594';
+			$data[ __( 'Web Server', 'wallets' ) ] = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
 			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );

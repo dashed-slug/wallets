@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -309,6 +309,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.0.3 =
+- Fix: Better logic that controls flushing of JSON API rewrite rules. This had caused incompatibility with "multilanguage" plugin by BestWebSoft.
+- Improve: The `[wallets_transactions]` UI no longer displays an empty table if there are no transactions to display. A dash is shown instead.
+- Add: The debug info widget in the admin dashboard now reports the web server name and version.
+- Change: Internal support for "trade" transactions. These will be needed for the upcoming exchange extension.
 
 = 3.0.2 =
 - Add: Exchange rates can now be pulled from the CoinMarketCap API.
@@ -763,7 +769,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.0.2 introduces exchange rates from CoinMarketCap, coin icons displayed in the frontend plus some minor improvements.
+Version, 3.0.3 fixes some minor issues and includes a design improvement in the `[wallets_transactions]` UI.
 
 == Donating ==
 

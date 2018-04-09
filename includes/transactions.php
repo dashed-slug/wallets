@@ -135,6 +135,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				WHERE
 					( blog_id = %d || %d ) AND
 					status = 'pending' AND
+					category IN ( 'withdraw', 'move' ) AND
 					retries < 1
 				",
 				current_time( 'mysql', true ),

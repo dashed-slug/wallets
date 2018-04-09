@@ -208,6 +208,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		} elseif ( 'move' == $item['category'] ) {
 			return $this->user_link( $item['account_name'] );
+		} elseif ( 'trade' == $item['category'] ) {
+			return $item['amount'] < 0 ? $this->user_link( $item['account_name'] ) : '';
 		}
 	}
 
@@ -230,6 +232,10 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		} elseif ( 'move' == $item['category'] ) {
 			return $this->user_link( $item['other_account_name'] );
+		} elseif ( 'trade' == $item['category'] ) {
+			return '';
+		} elseif ( 'trade' == $item['category'] ) {
+			return $item['amount'] > 0 ? $this->user_link( $item['account_name'] ) : '';
 		}
 	}
 
@@ -266,7 +272,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_status( $item ) {
 		$actions = array();
-		if ( ! ( 'deposit' == $item['category'] ) ) { // cannot cancel incoming deposits
+		if ( ! ( 'deposit' == $item['category'] || 'trade' == $item['category'] ) ) { // cannot cancel incoming deposits or trades with other people
 			if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
 				if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
 					$actions['cancel_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
@@ -289,23 +295,25 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			}
 		}
 
-		if ( 'cancelled' == $item['status'] || 'failed' == $item['status'] ) {
-			$actions['retry_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
-				add_query_arg(
-					array(
-						'page' => 'wallets-menu-transactions',
-						'action' => 'retry_tx',
-						'tx_id' => $item['id'],
-						'paged' => $this->get_pagenum(),
-						'order' => $this->order,
-						'orderby' => $this->orderby,
-						'_wpnonce' => wp_create_nonce( 'wallets-retry-tx-' . $item['id'] )
+		if ( 'trade' !== $item['category'] ) {
+			if ( 'cancelled' == $item['status'] || 'failed' == $item['status'] ) { // cannot retry trades
+				$actions['retry_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					add_query_arg(
+						array(
+							'page' => 'wallets-menu-transactions',
+							'action' => 'retry_tx',
+							'tx_id' => $item['id'],
+							'paged' => $this->get_pagenum(),
+							'order' => $this->order,
+							'orderby' => $this->orderby,
+							'_wpnonce' => wp_create_nonce( 'wallets-retry-tx-' . $item['id'] )
+						),
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 					),
-					call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
-				),
-				__( 'Transaction will be RETRIED.', 'wallets' ),
-				__( '&#8635; Retry', 'wallets' )
-			);
+					__( 'Transaction will be RETRIED.', 'wallets' ),
+					__( '&#8635; Retry', 'wallets' )
+				);
+			}
 		}
 		return $item['status'] . '<br />' . $this->row_actions( $actions, true );
 	}

@@ -327,7 +327,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 							( blog_id = %d || %d ) AND
 							txs.account = %d AND
 							txs.symbol = %s AND
-							( txs.confirmations >= %d OR txs.category = 'move' )
+							( txs.confirmations >= %d OR txs.category NOT IN ( 'deposit', 'withdraw' ) )
 						ORDER BY
 							created_time DESC
 						LIMIT

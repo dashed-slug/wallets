@@ -8,7 +8,10 @@
 		<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.values( coins() ), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
 		<label class="rows"><?php echo apply_filters( 'wallets_ui_text_rowsperpage', esc_html__( 'Rows per page', 'wallets-front' ) ); ?>: <select data-bind="options: [10,20,50,100], value: rowsPerPage, valueUpdate: ['afterkeydown', 'input']"></select></label>
 		<label class="page"><?php echo apply_filters( 'wallets_ui_text_page', esc_html__( 'Page', 'wallets-front' ) ); ?>: <input type="number" min="1" step="1" data-bind="numeric, value: currentPage, valueUpdate: ['afterkeydown', 'input', 'oninput', 'change', 'onchange', 'blur']"/></label>
-		<table>
+		<p style="text-align: center;" data-bind="if: ! transactions().length, visible: ! transactions().length">
+				&mdash;
+		</p>
+		<table data-bind="if: transactions().length, visible: transactions().length">
 			<thead>
 				<tr>
 					<th class="type"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?></th>
@@ -106,6 +109,24 @@
 					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
 					<?php endif; ?>
 				</tr>
+
+				<tr data-bind="if: ( category == 'trade' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
+					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
+					<td class="tags" data-bind="text: tags"></td>
+					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
+					<td class="from user" data-bind="text: (amount >= 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
+					<td class="to user" data-bind="text: (amount < 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
+					<td class="txid" data-bind="text: txid"></td>
+					<td class="comment" data-bind="text: comment"></td>
+					<td class="confirmations"></td>
+					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
+					<td class="retries"></td>
+					<td class="admin_confirm"></td>
+					<td class="user_confirm"></td>
+				</tr>
+
 			</tbody>
 		</table>
 		<?php

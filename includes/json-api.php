@@ -7,7 +7,7 @@
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) && ! is_admin() ) {
+if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 	// check for SSL
 	if ( ! is_ssl() ) {
@@ -95,6 +95,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) && ! is_admin() ) {
 				'__wallets_apiversion=2',
 				'top'
 			);
+
+			$rules = get_option( 'rewrite_rules' );
+
+			$wallets_rules_count = 0;
+			foreach ( $rules as $regex => $uri ) {
+				if ( '^wallets/' == substr( $regex, 0, 9 ) ) {
+					$wallets_rules_count++;
+				}
+			}
+
+			if ( $wallets_rules_count < 8 ) {
+				add_action( 'shutdown', 'Dashed_Slug_Wallets_JSON_API::flush_rules' );
+			}
+		}
+
+		public static function flush_rules() {
+			$is_apache = strpos( $_SERVER['SERVER_SOFTWARE'], 'pache' ) !== false;
+			flush_rewrite_rules( $is_apache );
 		}
 
 		public function json_api_query_vars( $vars ) {
