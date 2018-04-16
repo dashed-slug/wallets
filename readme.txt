@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -304,6 +304,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.1.1 =
+- Fix: Non-default DB table prefix in old transaction aggregation cron job, introduced in 3.1.0.
 
 = 3.1.0 =
 - Add: Old transaction aggregation cron job to save DB space.
@@ -769,7 +772,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.0.3 fixes some minor issues and includes a design improvement in the `[wallets_transactions]` UI.
+Version, 3.1.1 fixes an SQL bug in 3.1.0 that prevented the old transaction aggregation code from executing when the DB prefix was not `wp_`..
 
 == Donating ==
 

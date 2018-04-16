@@ -190,7 +190,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					"SELECT
 							YEARWEEK( MIN( created_time ) ) AS earliest_week
 						FROM
-							wp_wallets_txs
+							$table_name_txs
 						WHERE
 							status = 'done'
 							AND category = 'move'
