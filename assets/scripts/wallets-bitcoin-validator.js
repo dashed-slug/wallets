@@ -8,6 +8,9 @@
 			$.fn.walletsBindWithdrawAddressValidator(
 				'BTC',
 				function ( val ) {
+					if ( 'undefined' === typeof( val ) ) {
+						return true;
+					}
 
 					if ( '' === val.trim() ) {
 						return true;

@@ -19,7 +19,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				add_filter( 'pre_update_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
 			}
 			add_filter( 'cron_schedules', array( &$this, 'filter_cron_schedules' ) );
-			add_action( 'wallets_periodic_checks', array( &$this, 'cron') );
+			add_action( 'wallets_periodic_checks', array( &$this, 'cron' ) );
+
 			if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
 				$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
 				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
@@ -60,6 +61,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move', 1 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_secrets_retain_minutes', 0 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_aggregating', 'never' );
+
+
 		}
 
 		public static function action_deactivate() {
@@ -78,6 +82,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_move', filter_input( INPUT_POST, 'wallets_retries_move', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size', filter_input( INPUT_POST, 'wallets_cron_batch_size', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_secrets_retain_minutes', filter_input( INPUT_POST, 'wallets_secrets_retain_minutes', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_aggregating', filter_input( INPUT_POST, 'wallets_cron_aggregating', FILTER_SANITIZE_STRING ) );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-cron', network_admin_url( 'admin.php' ) ) );
 			exit;
@@ -140,7 +145,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			return $new_value;
 		}
 
-
 		/**
 		 * Trigger the cron function of each adapter.
 		 *
@@ -150,6 +154,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 */
 		public function cron( ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
+
+			add_action( 'shutdown', array( &$this, 'old_transactions_aggregating' ) );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 				global $wpdb;
@@ -161,6 +167,154 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			} else {
 				$this->call_cron_on_all_adapters();
 			}
+		}
+
+		public function old_transactions_aggregating() {
+			global $wpdb;
+
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'wallets' );
+
+			if ( 'never' == $aggregating_interval ) {
+				return;
+			}
+
+			// start db transaction and lock tables
+			$wpdb->query( 'SET autocommit=0' );
+
+			try {
+
+				// STEP 1: Determine first week with multiple done internal transactions that have not yet been batched into aggregates
+
+				$query =
+					"SELECT
+							YEARWEEK( MIN( created_time ) ) AS earliest_week
+						FROM
+							wp_wallets_txs
+						WHERE
+							status = 'done'
+							AND category = 'move'
+							AND LOCATE( 'aggregate', tags ) = 0";
+
+				$earliest_week = $wpdb->get_var( $query );
+				if ( false === $earliest_week ) {
+					throw new Exception( "Could not aggregate transactions because the earliest applicable interval was not found: " . $wpdb->last_error );
+				}
+				$earliest_week = absint( $earliest_week );
+
+				if ( ! $earliest_week ) {
+					return;
+				}
+
+				// STEP 2: Batch transactions for that week into aggregates.
+
+				error_log( "Attempting to aggregate transactions for yearweek $earliest_week" );
+
+				$query = $wpdb->prepare( "
+					INSERT INTO
+					$table_name_txs(
+						blog_id,
+						category,
+						tags,
+						account,
+						other_account,
+						address,
+						extra,
+						txid,
+						symbol,
+						amount,
+						fee,
+						comment,
+						created_time,
+						updated_time,
+						confirmations,
+						status,
+						retries,
+						admin_confirm,
+						user_confirm,nonce
+					)
+					SELECT
+						blog_id,
+						'move' as category,
+						CONCAT( 'aggregate ', tags ) as tags,
+						account,
+						other_account,
+						'' as address,
+						'' as extra,
+						NULL as txid,
+						symbol,
+						SUM(amount) as amount,
+						SUM(fee) as fee,
+						CONCAT( 'Sum of ', COUNT(id), ' txs for week ', WEEK( MIN(created_time) ) + 1, ' of year ', YEAR( MIN(created_time) ) ) as comment,
+						MIN( created_time ) as created_time,
+						MAX( created_time ) as updated_time,
+						NULL as confirmations,
+						'done' as status,
+						0 as retries,
+						0 as admin_confirm,
+						0 as user_confirm,
+						NULL as nonce
+					FROM
+						$table_name_txs
+					WHERE
+						status = 'done'
+						AND category = 'move'
+						AND LOCATE( 'aggregate', tags ) = 0
+						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
+						AND YEARWEEK( created_time ) = %d
+						GROUP BY
+						blog_id,
+						tags,
+						account,
+						other_account,
+						symbol
+						ORDER BY
+						created_time
+					",
+					$earliest_week
+				);
+
+				$result = $wpdb->query( $query );
+				if ( false === $result ) {
+					throw new Exception( sprintf( 'Could not aggregate transactions for yearweek %d: %s ', $earliest_week, $wpdb->last_error ) );
+				} else {
+					error_log( sprintf( 'Created %d aggregate transactions for yearweek %s', $result, $earliest_week ) );
+				}
+
+				// STEP 3: Delete old non-aggregated internal transactions for that week, plus any failed or cancelled internal transactions during that week.
+
+				$query = $wpdb->prepare( "
+					DELETE FROM
+						$table_name_txs
+					WHERE
+						status IN ( 'done', 'failed', 'cancelled' )
+						AND category = 'move'
+						AND LOCATE( 'aggregate', tags ) = 0
+						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
+						AND YEARWEEK( created_time ) = %d
+					",
+					$earliest_week
+				);
+
+				$result = $wpdb->query( $query );
+
+				if ( false === $result ) {
+					throw new Exception( "Could not delete transactions for yearweek {$earliest_week}: " . $wpdb->last_error );
+				} else {
+					error_log( sprintf( 'Deleted %d aggregated internal transactions or failed/cancelled transactions for yearweek %s', $result, $earliest_week ) );
+				}
+
+			} catch ( Exception $e ) {
+				$wpdb->query( 'ROLLBACK' );
+				$wpdb->query( 'SET autocommit=1' );
+				error_log( __FUNCTION__ . '() error:' . $e->getMessage() );
+				return;
+			}
+
+			$wpdb->query( 'COMMIT' );
+			$wpdb->query( 'SET autocommit=1' );
+
+			error_log( sprintf( 'Transactions for yearweek %d aggregated.', $earliest_week ) );
 		}
 
 		private function call_cron_on_all_adapters() {
@@ -272,12 +426,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets_retries_move'
 			);
 
+
+			add_settings_section(
+				'wallets_cron_withdrawals_section',
+				__( 'Withdrawal locks', 'wallets' ),
+				array( &$this, 'wallets_cron_withdrawals_section_cb' ),
+				'wallets-menu-cron'
+			);
+
 			add_settings_field(
 				'wallets_secrets_retain_minutes',
 				__( 'Time to retain withdrawal secrets', 'wallets' ),
 				array( &$this, 'settings_integer_cb'),
 				'wallets-menu-cron',
-				'wallets_cron_settings_section',
+				'wallets_cron_withdrawals_section',
 				array(
 					'label_for' => 'wallets_secrets_retain_minutes',
 					'description' => __( 'Most coin adapters require a secret passphrase or PIN code to unlock wallet withdrawals. ' .
@@ -296,6 +458,35 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets-menu-cron',
 				'wallets_secrets_retain_minutes'
 			);
+
+			add_settings_section(
+				'wallets_cron_aggregating_section',
+				__( 'Old transaction aggregation', 'wallets' ),
+				array( &$this, 'wallets_cron_aggregating_section_cb' ),
+				'wallets-menu-cron'
+			);
+
+			add_settings_field(
+				'wallets_cron_aggregating',
+				__( 'Batch old transactions', 'wallets' ),
+				array( &$this, 'settings_select_cb' ),
+				'wallets-menu-cron',
+				'wallets_cron_aggregating_section',
+				array(
+					'label_for' => 'wallets_cron_aggregating',
+					'description' => __( 'Choose how to aggregate similar past internal transactions that are in a "done" state.', 'wallets' ),
+					'options' => array(
+						'never' => __( 'Never', 'wallets' ),
+						'weekly' => __( 'Weekly', 'wallets' ),
+					)
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_cron_aggregating'
+			);
+
 		}
 
 		public function action_admin_menu() {
@@ -352,6 +543,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			?></p><?php
 		}
 
+		public function wallets_cron_withdrawals_section_cb() {
+			?><p><?php esc_html_e( 'You can control how wallet secrets are stored. Wallet secrets are needed for performing withdrawals.', 'wallets');
+			?></p><?php
+		}
+
+		public function wallets_cron_aggregating_section_cb() {
+			?><p><?php esc_html_e( 'You can control whether similar old internal transactions are aggregated. Aggregating past transactions saves space on the DB. Aggregation is performed in batches so as not to overwhelm the DB.  Old "failed" or "cancelled" internal transactions will be deleted.', 'wallets');
+			?></p><?php
+		}
+
 		public function settings_integer_cb( $arg ) {
 			?>
 			<input
@@ -372,14 +573,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			?><select name="<?php echo esc_attr( $arg['label_for'] ) ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" ><?php
 
-					foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ):
-						if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
-							?><option value="<?php echo esc_attr( $cron_interval_slug ) ?>"<?php if ( $cron_interval_slug == $selected_value ) { echo ' selected="selected" '; }; ?>><?php echo $cron_interval['display']; ?></option><?php
-						endif;
-					endforeach;
+				foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ):
+					if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
+						?><option value="<?php echo esc_attr( $cron_interval_slug ) ?>"<?php if ( $cron_interval_slug == $selected_value ) { echo ' selected="selected" '; }; ?>><?php echo $cron_interval['display']; ?></option><?php
+					endif;
+				endforeach;
 
-			?></select><?php
+			?></select>
+			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<?php
 		}
+
+		public function settings_select_cb( $arg ) {
+			$selected_value = Dashed_Slug_Wallets::get_option( $arg['label_for'] );
+
+			?><select name="<?php echo esc_attr( $arg['label_for'] ) ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" ><?php
+
+				foreach ( $arg['options'] as $key => $value ): ?>
+					<option value="<?php echo esc_attr( $key ) ?>"<?php if ( $key == $selected_value ) { echo ' selected="selected" '; }; ?>><?php echo $value ?></option>
+				<?php endforeach;
+
+			?></select>
+			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<?php
+		}
+
+
 	}
 	new Dashed_Slug_Wallets_Cron();
 }

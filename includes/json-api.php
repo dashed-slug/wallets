@@ -96,12 +96,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				'top'
 			);
 
-			$rules = get_option( 'rewrite_rules' );
+			$rules = get_option( 'rewrite_rules', array() );
 
 			$wallets_rules_count = 0;
-			foreach ( $rules as $regex => $uri ) {
-				if ( '^wallets/' == substr( $regex, 0, 9 ) ) {
-					$wallets_rules_count++;
+			if ( is_array( $rules ) ) {
+				foreach ( $rules as $regex => $uri ) {
+					if ( '^wallets/' == substr( $regex, 0, 9 ) ) {
+						$wallets_rules_count++;
+					}
 				}
 			}
 

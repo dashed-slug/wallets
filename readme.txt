@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.0.3
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -244,17 +244,12 @@ Refer to the [PHP API documentation](https://www.dashed-slug.net/bitcoin-altcoin
 
 = I want to replace an adapter with another one. =
 
-You can only have one coin adapter enabled per each coin. The plugin will warn you about this.
+You can only have one coin adapter enabled per each coin. The plugin will warn you about this. To replace the adapter for a coin with a new adapter:
 
-Suppose you wish to replace the internal *Bitcoin core adapter* with the *block.io BTC adapter*. You would have to:
-
-1. Wait for pending deposits and withdrawals to execute. They should be in *'done'* state.
-2. Disable your original coin adapter.
-3. Delete the deposit addresses from your database with:
-
-	`DELETE FROM wp_wallets_adds WHERE symbol = 'BTC';`
-
-4. Activate and configure the new adapter.
+1. Deactivate the old adapter.
+2. Install and configure the new adapter.
+3. Enable the new adapter.
+4. Got to *Wallets* &rarr; *Adapters*. Under the new adapter, select *Renew deposit addresses*. This will renew any user deposit addresses, as well as the cold storage deposit address for that coin.
 
 = Can you add XYZ coin for me? =
 
@@ -309,6 +304,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.1.0 =
+- Add: Old transaction aggregation cron job to save DB space.
+- Add: Easily refresh deposit addresses via the adapters list screen.
+- Fix: Better guard clause in Bitcoin withdrawal address validator JavaScript.
 
 = 3.0.3 =
 - Fix: Better logic that controls flushing of JSON API rewrite rules. This had caused incompatibility with "multilanguage" plugin by BestWebSoft.

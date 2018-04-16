@@ -544,7 +544,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 * 		'amount => 10,
 		 * 		'from_user_id' => 2,
 		 * 		'to_user_id' => 3,
-		 *		'fee' => 1,
+		 *  	'fee' => 1,
 		 * 		'comment' => 'WOW such off-chain transaction, much internal transfer !!!1',
 		 * 		'skip_confirm' => true,
 		 * 	) );
@@ -795,7 +795,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					WHERE
 						( blog_id = %d || %d ) AND
 						account = %d AND
-						symbol = %s
+						symbol = %s AND
+						status = 'current'
 					ORDER BY
 						created_time DESC
 					LIMIT 1

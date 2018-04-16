@@ -39,6 +39,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_cron_batch_size' );
 	wallets_delete_option( 'wallets_last_cron_run' );
 	wallets_delete_option( 'wallets_secrets_retain_minutes' );
+	wallets_delete_option( 'wallets_cron_aggregating' );
 
 	// remove notification settings
 	wallets_delete_option( 'wallets_email_enabled' );

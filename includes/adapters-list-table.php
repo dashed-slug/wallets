@@ -189,19 +189,31 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 		if ( $item['settings_url'] ) {
 			$actions['settings'] = '<a href="' . esc_attr( $item['settings_url'] ) . '" title="' .
-				esc_attr__( 'Settings specific to this adapter', 'wallets') . '">' .
-				__( 'Settings', 'wallets' ) . '</a>';
+			esc_attr__( 'Settings specific to this adapter', 'wallets') . '">' .
+			__( 'Settings', 'wallets' ) . '</a>';
 		}
 
 		$actions['export'] = sprintf(
-				'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
-				esc_attr__( 'Export transactions to .csv', 'wallets') . '">' .
-				__( 'Export transactions to .csv', 'wallets' ) . '</a>',
+			'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
+			esc_attr__( 'Export transactions to .csv', 'wallets') . '">' .
+			__( 'Export', 'wallets' ) . '</a>',
 
-				esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
-				'export',
-				esc_attr( $item['symbol'] ),
-				wp_create_nonce( 'wallets-export-tx-' . $item['symbol'] ) );
+			esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
+			'export',
+			esc_attr( $item['symbol'] ),
+			wp_create_nonce( 'wallets-export-tx-' . $item['symbol'] )
+		);
+
+		$actions['new_deposits'] = sprintf(
+			'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" title="' .
+			esc_attr__( 'Creates new deposit addresses. Use this after switching to a different adapter.', 'wallets') . '">' .
+			__( 'Renew deposit addresses', 'wallets' ) . '</a>',
+
+			esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ),
+			'new_deposits',
+			esc_attr( $item['symbol'] ),
+			wp_create_nonce( 'wallets-new-deposits-' . $item['symbol'] )
+		);
 
 		return sprintf('%1$s %2$s', $item['adapter_name'], $this->row_actions( $actions ) );
 	}

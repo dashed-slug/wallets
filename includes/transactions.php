@@ -741,7 +741,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				'account' => $address->account,
 				'symbol' => $address->symbol,
 				'created_time' => $address->created_time,
-				'address' => $address->address
+				'address' => $address->address,
+				'status' => 'current',
 			);
 
 			$address_row['extra'] = isset( $address->extra ) && $address->extra ? $address->extra : '';
@@ -749,7 +750,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$wpdb->insert(
 				$table_name_adds,
 				$address_row,
-				array( '%d', '%d', '%s', '%s', '%s', '%s' )
+				array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' )
 			);
 
 			$wpdb->suppress_errors( $suppress_errors );
