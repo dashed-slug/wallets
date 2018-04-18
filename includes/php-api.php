@@ -541,10 +541,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 * 	do_action( 'wallets_api_move', array(
 		 * 		'symbol' => 'DOGE',
-		 * 		'amount => 10,
+		 * 		'amount' => 10,
 		 * 		'from_user_id' => 2,
 		 * 		'to_user_id' => 3,
-		 *  	'fee' => 1,
+		 * 		'fee' => 1,
 		 * 		'comment' => 'WOW such off-chain transaction, much internal transfer !!!1',
 		 * 		'skip_confirm' => true,
 		 * 	) );

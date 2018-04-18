@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			global $wpdb;
 
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'wallets' );
+			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'wallets', 'never' );
 
 			if ( 'never' == $aggregating_interval ) {
 				return;
@@ -208,8 +208,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 				// STEP 2: Batch transactions for that week into aggregates.
 
-				error_log( "Attempting to aggregate transactions for yearweek $earliest_week" );
-
 				$query = $wpdb->prepare( "
 					INSERT INTO
 					$table_name_txs(
@@ -235,25 +233,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					)
 					SELECT
 						blog_id,
-						'move' as category,
-						CONCAT( 'aggregate ', tags ) as tags,
+						'move' AS category,
+						CONCAT( 'aggregate ', tags ) AS tags,
 						account,
 						other_account,
 						'' as address,
 						'' as extra,
 						NULL as txid,
 						symbol,
-						SUM(amount) as amount,
-						SUM(fee) as fee,
-						CONCAT( 'Sum of ', COUNT(id), ' txs for week ', WEEK( MIN(created_time) ) + 1, ' of year ', YEAR( MIN(created_time) ) ) as comment,
-						MIN( created_time ) as created_time,
-						MAX( created_time ) as updated_time,
-						NULL as confirmations,
-						'done' as status,
-						0 as retries,
-						0 as admin_confirm,
-						0 as user_confirm,
-						NULL as nonce
+						SUM( amount ) AS amount,
+						SUM( fee ) AS fee,
+						CONCAT( 'Sum of ', COUNT( id ), ' txs for week ', WEEK( MIN( created_time ) ) + 1, ' of year ', YEAR( MIN( created_time ) ) ) AS comment,
+						MIN( created_time ) AS created_time,
+						MAX( created_time ) AS updated_time,
+						NULL AS confirmations,
+						'done' AS status,
+						0 AS retries,
+						0 AS admin_confirm,
+						0 AS user_confirm,
+						NULL AS nonce
 					FROM
 						$table_name_txs
 					WHERE
@@ -262,13 +260,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 						AND LOCATE( 'aggregate', tags ) = 0
 						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
 						AND YEARWEEK( created_time ) = %d
-						GROUP BY
+					GROUP BY
 						blog_id,
 						tags,
 						account,
 						other_account,
 						symbol
-						ORDER BY
+					ORDER BY
 						created_time
 					",
 					$earliest_week
@@ -278,7 +276,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				if ( false === $result ) {
 					throw new Exception( sprintf( 'Could not aggregate transactions for yearweek %d: %s ', $earliest_week, $wpdb->last_error ) );
 				} else {
-					error_log( sprintf( 'Created %d aggregate transactions for yearweek %s', $result, $earliest_week ) );
+					if ( $result > 0 ) {
+						error_log( sprintf( 'Created %d aggregate transactions for yearweek %s', $result, $earliest_week ) );
+					}
 				}
 
 				// STEP 3: Delete old non-aggregated internal transactions for that week, plus any failed or cancelled internal transactions during that week.
@@ -301,7 +301,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				if ( false === $result ) {
 					throw new Exception( "Could not delete transactions for yearweek {$earliest_week}: " . $wpdb->last_error );
 				} else {
-					error_log( sprintf( 'Deleted %d aggregated internal transactions or failed/cancelled transactions for yearweek %s', $result, $earliest_week ) );
+					if ( $result > 0 ) {
+						error_log( sprintf( 'Deleted %d aggregated internal transactions or failed/cancelled transactions for yearweek %s', $result, $earliest_week ) );
+					}
 				}
 
 			} catch ( Exception $e ) {
@@ -313,8 +315,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'SET autocommit=1' );
-
-			error_log( sprintf( 'Transactions for yearweek %d aggregated.', $earliest_week ) );
 		}
 
 		private function call_cron_on_all_adapters() {

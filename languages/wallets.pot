@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.1.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-04-16 20:22:32+00:00\n"
+"POT-Creation-Date: 2018-04-18 09:29:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -113,9 +113,9 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:157 includes/adapters-list.php:176
-#: includes/caps.php:90 includes/cold-storage.php:115 includes/json-api.php:409
-#: includes/json-api.php:450 includes/json-api.php:706
-#: includes/json-api.php:747 includes/transactions.php:827
+#: includes/caps.php:90 includes/cold-storage.php:115 includes/json-api.php:406
+#: includes/json-api.php:447 includes/json-api.php:702
+#: includes/json-api.php:743 includes/transactions.php:827
 #: includes/transactions.php:1006 includes/transactions.php:1026
 #: includes/transactions.php:1046 includes/transactions.php:1065
 #: includes/transactions.php:1085 includes/transactions.php:1109
@@ -1099,47 +1099,47 @@ msgstr ""
 msgid "\"QR Code\" is a registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
-#: includes/json-api.php:210 includes/json-api.php:540
+#: includes/json-api.php:210 includes/json-api.php:537
 msgid "Could not process notification."
 msgstr ""
 
-#: includes/json-api.php:214 includes/json-api.php:544
+#: includes/json-api.php:214 includes/json-api.php:541
 msgid "Must be logged in"
 msgstr ""
 
-#: includes/json-api.php:228 includes/json-api.php:258
-#: includes/json-api.php:337 includes/json-api.php:385
-#: includes/json-api.php:403 includes/json-api.php:444
-#: includes/json-api.php:555 includes/json-api.php:634
-#: includes/json-api.php:682 includes/json-api.php:700
-#: includes/json-api.php:741 includes/php-api.php:147 includes/php-api.php:236
+#: includes/json-api.php:227 includes/json-api.php:256
+#: includes/json-api.php:335 includes/json-api.php:382
+#: includes/json-api.php:400 includes/json-api.php:441
+#: includes/json-api.php:551 includes/json-api.php:630
+#: includes/json-api.php:678 includes/json-api.php:696
+#: includes/json-api.php:737 includes/php-api.php:147 includes/php-api.php:236
 #: includes/php-api.php:298 includes/php-api.php:395 includes/php-api.php:591
 #: includes/php-api.php:774 includes/transactions.php:781
 #: includes/wallets-core.php:762
 msgid "Not allowed"
 msgstr ""
 
-#: includes/json-api.php:245
+#: includes/json-api.php:244
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:354 includes/json-api.php:651
+#: includes/json-api.php:352 includes/json-api.php:647
 msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
-#: includes/json-api.php:370 includes/json-api.php:667
+#: includes/json-api.php:368 includes/json-api.php:663
 msgid "Could not get \"%s\" transactions"
 msgstr ""
 
-#: includes/json-api.php:428 includes/json-api.php:725
+#: includes/json-api.php:425 includes/json-api.php:721
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:470 includes/json-api.php:786
+#: includes/json-api.php:467 includes/json-api.php:782
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:769
+#: includes/json-api.php:765
 msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 

@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						header( "Expires: $ts" );
 						header( "Last-Modified: $ts" );
 						header( "Pragma: no-cache" );
-						header( "Cache-Control: no-cache, must-revalidate" );
+						header( "Cache-Control: no-store, must-revalidate" );
 
 						wp_send_json( $response, 403 );
 					}
@@ -218,7 +218,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					$seconds_to_cache = 600;
 					$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
 					header( "Expires: $ts" );
-					header( "Pragma: cache" );
 					header( "Cache-Control: max-age=$seconds_to_cache" );
 
 					if (
@@ -251,7 +250,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					$seconds_to_cache = 30;
 					$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
 					header( "Expires: $ts" );
-					header( "Pragma: cache" );
 					header( "Cache-Control: max-age=$seconds_to_cache" );
 
 					if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )  ) {
@@ -376,7 +374,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					$seconds_to_cache = 30;
 					$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
 					header( "Expires: $ts" );
-					header( "Pragma: cache" );
 					header( "Cache-Control: max-age=$seconds_to_cache" );
 
 					if (
@@ -394,7 +391,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( "Expires: $ts" );
 					header( "Last-Modified: $ts" );
 					header( "Pragma: no-cache" );
-					header( "Cache-Control: no-cache, must-revalidate" );
+					header( "Cache-Control: no-store, must-revalidate" );
 
 					if (
 						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
@@ -435,7 +432,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( "Expires: $ts" );
 					header( "Last-Modified: $ts" );
 					header( "Pragma: no-cache" );
-					header( "Cache-Control: no-cache, must-revalidate" );
+					header( "Cache-Control: no-store, must-revalidate" );
 
 					if (
 						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
@@ -548,7 +545,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					$seconds_to_cache = 30;
 					$ts = gmdate( "D, d M Y H:i:s", time() + $seconds_to_cache ) . " GMT";
 					header( "Expires: $ts" );
-					header( "Pragma: cache" );
 					header( "Cache-Control: max-age=$seconds_to_cache" );
 
 					if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )  ) {

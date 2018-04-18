@@ -57,6 +57,9 @@
 		function WalletsViewModel() {
 			var self = this;
 
+			// count of currently ongoing ajax requests
+			self.ajaxSemaphore = ko.observable( 0 );
+
 			// currently selected coin. all views are synchronized to show this coin.
 			self.selectedCoin = ko.observable();
 
@@ -64,6 +67,8 @@
 			self.coins = ko.observable( {} );
 
 			self.loadCoins = function() {
+				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+
 				$.ajax({
 					dataType: 'json',
 					cache: true,
@@ -84,6 +89,7 @@
 						}
 					},
 					complete: function( jqXHR, status ) {
+						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
 						removeSelect2();
 						self.updateQrCode();
 					},
@@ -96,6 +102,8 @@
 			self.nonces = ko.observable( {} );
 
 			self.loadNonces = function() {
+				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+
 				$.ajax({
 					dataType: 'json',
 					cache: false,
@@ -110,6 +118,9 @@
 						}
 						self.nonces( response.nonces );
 
+					},
+					complete: function( jqXHR, status ) {
+						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
 					},
 					error: xhrErrorHandler
 				});
@@ -244,6 +255,8 @@
 					tags = $( 'input[name=__wallets_move_tags]', form ).val(),
 					nonce = self.nonces().do_move;
 
+				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+
 				$.ajax({
 					dataType: 'json',
 					cache: false,
@@ -267,6 +280,9 @@
 						] );
 
 						self.loadTransactions();
+					},
+					complete: function( jqXHR, status ) {
+						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
 					},
 					error: xhrErrorHandler
 				});
@@ -375,6 +391,8 @@
 					extra = self.withdrawExtra(),
 					nonce = self.nonces().do_withdraw;
 
+				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+
 				$.ajax({
 					dataType: 'json',
 					cache: false,
@@ -399,6 +417,9 @@
 						] );
 
 						self.loadTransactions();
+					},
+					complete: function( jqXHR, status ) {
+						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
 					},
 					error: xhrErrorHandler
 				});
@@ -435,6 +456,8 @@
 				if ( isNaN( from ) ) {
 					return;
 				}
+
+				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
 
 				$.ajax({
 					dataType: 'json',
@@ -496,6 +519,9 @@
 							}
 						}
 						self.transactions( transactions );
+					},
+					complete: function( jqXHR, status ) {
+						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
 					},
 					error: xhrErrorHandler
 				});

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -304,6 +304,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.1.2 =
+- Fix: Incompatibility with frontend JavaScript code and Internet Explorer 11.
+- Improve: Old transaction aggregation is less verbose in the logs. Does not write anything if there are no transactions to aggregate.
+- Improve: Frontend form submit buttons are not clickable while there are other pending queries. This prevents accidental multiple submits of the same tx.
 
 = 3.1.1 =
 - Fix: Non-default DB table prefix in old transaction aggregation cron job, introduced in 3.1.0.
@@ -772,7 +777,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.1.1 fixes an SQL bug in 3.1.0 that prevented the old transaction aggregation code from executing when the DB prefix was not `wp_`..
+Version, 3.1.2 fixes a few minor bugs.
 
 == Donating ==
 
@@ -780,7 +785,7 @@ This is a free plugin.
 
 The dashed-slug is a [heroic (or maybe foolish?) one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against the odds :-)
 
-Showing your support helps the dashed-slug purchase the necessary coffee and energy drinks necessary for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
+Showing your support helps the dashed-slug purchase the necessary coffee and energy drinks needed for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
 
 These are all the ways you can show your support, if you so choose:
 
