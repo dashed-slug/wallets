@@ -192,7 +192,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	public function column_from( $item ) {
 		if ( 'deposit' == $item['category'] ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
-			if ( $uri_pattern ) {
+			if ( $uri_pattern && preg_match( '/^[\w\d]+$/', $item['address'] ) ) {
 				$uri = sprintf( $uri_pattern, $item[ 'address' ] );
 				$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
 			} else {
@@ -219,7 +219,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		} elseif ( 'withdraw' == $item['category'] ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
-			if ( $uri_pattern ) {
+			if ( $uri_pattern && preg_match( '/^[\w\d]+$/', $item['address'] ) ) {
 				$uri = sprintf( $uri_pattern, $item[ 'address' ] );
 				$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
 			} else {
@@ -240,7 +240,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_txid( $item ) {
-		if ( 'move' != $item['category'] ) {
+		if ( 'move' != $item['category'] && preg_match( '^/[\w\d]+$/', $item['txid'] ) ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_tx_' . $item['symbol'], '' );
 			if ( $uri_pattern ) {
 				$uri = sprintf( $uri_pattern, $item[ 'txid' ] );

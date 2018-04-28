@@ -44,10 +44,20 @@
 					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
 					<td class="from user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
 					<td class="to user">
-						<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+						<div data-bind="if: address_uri">
+							<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+						</div>
+						<div data-bind="if: ! address_uri">
+							<span  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
+						</div>
 					</td>
 					<td class="txid">
-						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+						<div  data-bind="if: tx_uri">
+							<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+						</div>
+						<div  data-bind="if: ! tx_uri">
+							<span data-bind="text: txid"></span>
+						</div>
 					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>
@@ -69,11 +79,21 @@
 					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
 					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
 					<td class="from user">
-						<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+						<div  data-bind="if: address_uri">
+							<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+						</div>
+						<div  data-bind="if: ! address_uri">
+							<span  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
+						</div>
 					</td>
 					<td class="to user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
 					<td class="txid">
-						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+						<div data-bind="if: tx_uri">
+							<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+						</div>
+						<div data-bind="if: ! tx_uri">
+							<span data-bind="text: txid"></span>
+						</div>
 					</td>
 					<td class="comment" data-bind="text: comment"></td>
 					<td class="confirmations" data-bind="text: confirmations"></td>

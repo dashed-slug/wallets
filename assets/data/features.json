@@ -1,5 +1,13 @@
 [
 	{
+		"name": "Airdrop extension",
+		"description": "Distribute coins to your users by performing airdrops.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/airdrop-extension-support",
+		"slug": "wallets-airdrop"
+	},
+
+	{
 		"name": "ShapeShift Exchange extension",
 		"description": "Lets your users exchange cryptocurrencies using ShapeShift.io from within your website.",
 		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension",

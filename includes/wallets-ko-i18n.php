@@ -45,4 +45,7 @@ if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) 
 	);
 }
 
+// coin adapter localizable strings
+__( 'Destination address label (optional)', 'wallets-front' );
+
 wp_localize_script( 'wallets_ko', 'wallets_ko_i18n', $translation_array );

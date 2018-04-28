@@ -13,6 +13,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			register_widget( 'Dashed_Slug_Wallets_Widget_Move' );
 			register_widget( 'Dashed_Slug_Wallets_Widget_Balance' );
 			register_widget( 'Dashed_Slug_Wallets_Widget_Transactions' );
+			register_widget( 'Dashed_Slug_Wallets_Widget_AccountValue' );
 		}
 
 		/**
@@ -49,6 +50,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				case 'Transactions':
 					$title = __( 'Wallet transactions', 'wallets-front' );
+					break;
+
+				case 'AccountValue':
+					$title = __( 'Account value', 'wallets-front' );
 					break;
 			}
 
@@ -151,6 +156,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 				'wallets_transactions',
 				__( 'An interactive table that shows past deposits, withdrawals and transfers for the user.', 'wallets' ),
 				array( 'has_wallets', 'list_wallet_transactions' ),
+				__CLASS__
+			);
+		}
+	}
+
+	class Dashed_Slug_Wallets_Widget_AccountValue extends Dashed_Slug_Wallets_Widget {
+		public function __construct( ) {
+			parent::__construct(
+				'wallets_account_value',
+				__( 'Shows the account\'s total value expressed in the default fiat currency.', 'wallets' ),
+				array( 'has_wallets' ),
 				__CLASS__
 			);
 		}

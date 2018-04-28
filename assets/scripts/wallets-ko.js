@@ -126,6 +126,18 @@
 				});
 			};
 
+			// computes total account value expressed in the default fiat currency
+			self.accountValue = ko.computed( function() {
+				var total = 0;
+				var coins = self.coins();
+
+				for ( var c in coins ) {
+					var coin = coins[ c ];
+					total += coin.rate * coin.balance;
+				}
+				return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( total ) );
+			} );
+
 			// balance of the currently selected coin, string-formatted for that coin
 			self.currentCoinBalance = ko.computed( function() {
 				var coins = self.coins();
@@ -509,11 +521,15 @@
 									}
 
 									if ( 'string' === typeof ( transactions[ t ].txid ) ) {
-										transactions[ t ].tx_uri = sprintf( coins[ coin ].explorer_uri_tx, transactions[ t ].txid );
+										if ( transactions[ t ].txid.match( /^[\w\d]+$/ ) ) {
+											transactions[ t ].tx_uri = sprintf( coins[ coin ].explorer_uri_tx, transactions[ t ].txid );
+										}
 									}
 
 									if ( 'string' === typeof ( transactions[t].address ) ) {
-										transactions[ t ].address_uri = sprintf( coins[ coin ].explorer_uri_address, transactions[ t ].address );
+										if ( transactions[ t ].address.match( /^[\w\d]+$/ ) ) {
+											transactions[ t ].address_uri = sprintf( coins[ coin ].explorer_uri_address, transactions[ t ].address );
+										}
 									}
 								}
 							}
@@ -545,7 +561,7 @@
 		};
 
 		// bind the viewmodel
-		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions' ).each( function( i, el ) {
+		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value' ).each( function( i, el ) {
 			ko.applyBindings( walletsViewModel, el );
 		} );
 

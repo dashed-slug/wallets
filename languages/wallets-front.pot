@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.1.2\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.1.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-04-18 09:29:05+00:00\n"
+"POT-Creation-Date: 2018-04-28 12:27:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,48 +13,56 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n1.0.1\n"
 
-#: includes/sidebar-widgets.php:35
+#: includes/sidebar-widgets.php:36
 msgid "Deposit to wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:39
+#: includes/sidebar-widgets.php:40
 msgid "Withdraw from wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:43
+#: includes/sidebar-widgets.php:44
 msgid "Transfer to user wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:47
+#: includes/sidebar-widgets.php:48
 msgid "Wallet balance"
 msgstr ""
 
-#: includes/sidebar-widgets.php:51
+#: includes/sidebar-widgets.php:52
 msgid "Wallet transactions"
 msgstr ""
 
-#: includes/sidebar-widgets.php:108
+#: includes/sidebar-widgets.php:56 includes/views/account_value.php:8
+msgid "Account value"
+msgstr ""
+
+#: includes/sidebar-widgets.php:113
 msgid ""
 "A form that will let the user know which address they can send coins to if "
 "they wish to make a deposit."
 msgstr ""
 
-#: includes/sidebar-widgets.php:119
+#: includes/sidebar-widgets.php:124
 msgid "A form that will let the user withdraw funds."
 msgstr ""
 
-#: includes/sidebar-widgets.php:130
+#: includes/sidebar-widgets.php:135
 msgid "A form that lets the user transfer coins to other users on your site."
 msgstr ""
 
-#: includes/sidebar-widgets.php:141
+#: includes/sidebar-widgets.php:146
 msgid "The current user's balances in all enabled coins."
 msgstr ""
 
-#: includes/sidebar-widgets.php:152
+#: includes/sidebar-widgets.php:157
 msgid ""
 "An interactive table that shows past deposits, withdrawals and transfers "
 "for the user."
+msgstr ""
+
+#: includes/sidebar-widgets.php:168
+msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
 #: includes/views/balance.php:8 includes/views/deposit.php:8
@@ -160,9 +168,9 @@ msgstr ""
 msgid "User&nbsp;confirm"
 msgstr ""
 
-#: includes/views/transactions.php:45 includes/views/transactions.php:74
-#: includes/views/transactions.php:97 includes/views/transactions.php:98
-#: includes/views/transactions.php:119 includes/views/transactions.php:120
+#: includes/views/transactions.php:45 includes/views/transactions.php:89
+#: includes/views/transactions.php:117 includes/views/transactions.php:118
+#: includes/views/transactions.php:139 includes/views/transactions.php:140
 msgid "me"
 msgstr ""
 
@@ -240,6 +248,10 @@ msgstr ""
 
 #: includes/wallets-ko-i18n.php:44
 msgid "Successfully submitted a withdrawal request of %s %s."
+msgstr ""
+
+#: includes/wallets-ko-i18n.php:49
+msgid "Destination address label (optional)"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

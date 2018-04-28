@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.1.2
+Stable tag: 3.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -301,9 +301,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 10. **Frontend - withdraw** - The \[wallets_withdraw\] shortcode displays a UI element that lets your users withdraw coins from their account to an external address.
 11. **Frontend - balance** - The \[wallets_balance\] shortcode displays your users' account balances.
 12. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
+13. **Frontend - account value** - The \[wallets_account_value\] shortcode shows the account's total value expressed in the default fiat currency.
 
 
 == Changelog ==
+
+= 3.1.3 =
+- Add: New shortcode `[wallets_account_value]` displays the total account value in the selected fiat currency.
+- Improve: Display TXIDs and addresses as links only if they are alphanumeric, in frontent and backend transaction lists.
+- Fix: Some strings now made translatable.
 
 = 3.1.2 =
 - Fix: Incompatibility with frontend JavaScript code and Internet Explorer 11.
@@ -777,7 +783,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.1.2 fixes a few minor bugs.
+Version, 3.1.3 addresses a couple of user requests.
 
 == Donating ==
 

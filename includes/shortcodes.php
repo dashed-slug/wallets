@@ -12,6 +12,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 	class Dashed_Slug_Wallets_Shortcodes {
 
 		private $shortcodes_caps = array(
+			'wallets_account_value' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
 			'wallets_balance' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
 			'wallets_transactions' => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
 			'wallets_deposit' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
