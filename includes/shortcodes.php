@@ -48,8 +48,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		}
 
 		public function shortcode( $atts, $content = '', $tag ) {
-			$template = preg_replace( '/^wallets_/', '', $tag );
-			$views_dir = rtrim( apply_filters( 'wallets_views_dir', __DIR__ . '/views' ) , '/\\' );
+			$view = preg_replace( '/^wallets_/', '', $tag );
+
+			$atts = shortcode_atts( array(
+				'template' => 'default',
+				'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
+			), $atts, "wallets_$view" );
 
 			if ( ! (
 				isset( $this->shortcodes_caps[ $tag ] ) &&
@@ -62,13 +66,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 
 			ob_start();
 			try {
-				include "$views_dir/$template.php";
+				include trailingslashit( $atts['views_dir'] ) . "$view/$atts[template].php";
 			} catch ( Exception $e ) {
 				ob_end_clean();
 
 				return
 					"<div class=\"dashed-slug-wallets $template error\">" .
-					sprintf( esc_html( 'Error while rendering <code>%s</code> template in <code>%s</code>: ' ), $template, $views_dir ) .
+					sprintf( esc_html( 'Error while rendering <code>%s</code> template in <code>%s</code>: ' ), $atts['template'], $atts['views_dir'] ) .
 					$e->getMessage() .
 					'</div>';
 			}

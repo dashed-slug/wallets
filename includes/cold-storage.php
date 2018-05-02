@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.1.3',
+				'3.2.0',
 				true
 			);
 		}
@@ -136,8 +136,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
+			$network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
 			$balance_sums = Dashed_Slug_Wallets::get_balance_totals_per_coin();
-
 			$adapters = apply_filters( 'wallets_api_adapters', array() );
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets: Transfer to and from cold storage', 'wallets' ); ?></h1>
@@ -148,13 +148,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				<div>
 					<h2><?php esc_html_e( 'Cold storage state for your online wallets:', 'wallets' ); ?></h2>
 					<table style="white-space: nowrap;">
-						<thead>
+						<thead><tr>
 							<th><?php esc_html_e( 'Adapter', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Currency', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Sum of User Balances', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Online Wallet Balance', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Actions', 'wallets' ); ?></th>
-						</thead>
+						</tr></thead>
 						<tbody style="vertical-align: top;"><?php
 
 
@@ -203,12 +203,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								<td>
 									<a
 										class="button"
-										href="<?php echo esc_attr( admin_url( "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$symbol" ) ); ?>"><?php
+										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$symbol" ) ); ?>"><?php
 											esc_html_e( 'Deposit' ); ?></a>
 
 									<a
 										class="button"
-										href="<?php echo esc_attr( admin_url( "admin.php?page=wallets-menu-cold-storage&tab=withdraw&symbol=$symbol" ) ); ?>"><?php
+										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=withdraw&symbol=$symbol" ) ); ?>"><?php
 											esc_html_e( 'Withdraw' ); ?></a>
 
 								</td>

@@ -8,6 +8,9 @@ $translation_array = array(
 	'op_failed_msg' => apply_filters( 'wallets_ui_text_op_failed_msg', __( 'Wallet operation failed: %s', 'wallets-front' ) ),
 	'contact_fail' => apply_filters( 'wallets_ui_text_contact_fail', __( 'Could not contact server. Status: %s Error: %s', 'wallets-front' ) ),
 	'invalid_add' => apply_filters( 'wallets_ui_text_invalid_add', __( 'Check to see if you have typed the address correctly!', 'wallets-front' ) ),
+	'amount_positive' => apply_filters( 'wallets_ui_text_amount_positive', __( 'Amount must be positive', 'wallets-front' ) ),
+	'insufficient_balance' => apply_filters( 'wallets_ui_text_insufficient_balance', __( 'Insufficient balance', 'wallets-front' ) ),
+	'minimum_withdraw' => apply_filters( 'wallets_ui_text_minimum_withdraw', __( 'Amount is less than minimum withdrawal amount for this coin', 'wallets-front' ) ),
 
 	'deposit' => apply_filters( 'wallets_ui_text_deposit', __( 'deposit', 'wallets-front' ) ),
 	'withdraw' => apply_filters( 'wallets_ui_text_withdraw', __( 'withdraw', 'wallets-front' ) ),

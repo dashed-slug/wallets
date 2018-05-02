@@ -240,7 +240,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_txid( $item ) {
-		if ( 'move' != $item['category'] && preg_match( '^/[\w\d]+$/', $item['txid'] ) ) {
+		if ( 'move' != $item['category'] && preg_match( '/^[\w\d]+$/', $item['txid'] ) ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_tx_' . $item['symbol'], '' );
 			if ( $uri_pattern ) {
 				$uri = sprintf( $uri_pattern, $item[ 'txid' ] );

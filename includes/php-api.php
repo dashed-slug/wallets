@@ -408,6 +408,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
 			$adapter = $adapters[ $args['symbol'] ];
 
+			$minwithdraw = $adapter->get_minwithdraw();
+			if ( $args['amount'] < $minwithdraw ) {
+				throw new Exception(
+					sprintf(
+						__( 'Minimum witdrawal amount for "%s" is %f', 'wallets' ),
+						$args['symbol'],
+						$minwithdraw
+					),
+					self::ERR_DO_WITHDRAW
+				);
+			}
+
 			global $wpdb;
 
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;

@@ -436,6 +436,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						continue;
 					}
 
+					$minwithdraw = $adapter->get_minwithdraw();
+					if ( abs( $wd_tx->amount ) < $minwithdraw ) {
+						throw new Exception(
+							sprintf(
+								__( 'Minimum witdrawal amount for "%s" is %f', 'wallets' ),
+								$wd_tx->symbol,
+								$minwithdraw
+							),
+							Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW
+						);
+					}
+
 					$txid = $adapter->do_withdraw(
 						$wd_tx->address,
 						- $wd_tx->amount - $wd_tx->fee,

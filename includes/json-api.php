@@ -597,6 +597,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$coin_info->withdraw_fee = $adapter->get_withdraw_fee();
 							$coin_info->withdraw_fee_proportional = $adapter->get_withdraw_fee_proportional();
+							$coin_info->min_withdraw = $adapter->get_minwithdraw();
 
 							$address = apply_filters( 'wallets_api_deposit_address', null, array( 'symbol' => $symbol ) );
 							if ( is_string( $address ) ) {
@@ -614,6 +615,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							error_log( "Could not get info about coin with symbol $symbol: " . $e->getMessage() );
 						}
 					}
+					uasort( $response['coins'], array( &$this, 'coin_comparator' ) );
 					$response['result'] = 'success';
 
 				} elseif ( 'get_transactions' == $action ) {
@@ -826,6 +828,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			return $nonces;
 		}
 
+		// helpers
+
+		private function coin_comparator( $a, $b ) {
+			return strcmp( $a->name, $b->name );
+		}
 
 	} // end class
 	new Dashed_Slug_Wallets_JSON_API();

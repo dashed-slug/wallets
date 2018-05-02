@@ -98,6 +98,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 				"{$this->option_slug}-general-enabled"
 			);
 
+			add_settings_field(
+				"{$this->option_slug}-general-minwithdraw",
+				__( 'Min withdraw', 'wallets' ),
+				array( &$this, 'settings_currency_cb'),
+				$this->menu_slug,
+				"{$this->option_slug}-general",
+				array(
+					'label_for' => "{$this->option_slug}-general-minwithdraw",
+					'description' => __( 'Minimum withdrawal amount for this coin.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-general-minwithdraw"
+			);
+
+
 			// Fees settings
 
 			add_settings_section(
@@ -545,6 +563,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 */
 		public function get_minconf() {
 			return intval( $this->get_adapter_option( 'other-minconf', 1 ) );
+		}
+
+		/**
+		 * Minimum withdrawal amount allowed for this coin.
+		 *
+		 * @api
+		 * @return number The minimal withdrawal allowed
+		 */
+		public function get_minwithdraw() {
+			return floatval( $this->get_adapter_option( 'general-minwithdraw', 0 ) );
 		}
 
 		/**

@@ -212,7 +212,29 @@
 			self.moveUser = ko.observable();
 
 			// amount to transact, for the move form
-			self.moveAmount = ko.observable();
+			self.moveAmount = ko.observable().extend( {
+				validation: [
+					{
+						validator: function( val ) {
+							return val > 0;
+						},
+						message: wallets_ko_i18n.amount_positive
+					},
+					{
+						validator: function( val ) {
+							var coins = self.coins();
+							var coin = self.selectedCoin();
+							if ( coin ) {
+								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
+									return coins[ coin ].balance >= val;
+								}
+							}
+							return true;
+						},
+						message: wallets_ko_i18n.insufficient_balance
+					}
+				]
+			} );
 
 			// amount to transact, string-formatted in the user's choice of fiat currency
 			self.moveBaseAmount = ko.computed( function( ) {
@@ -317,8 +339,8 @@
 			};
 
 			// withdraw address, used in the [wallets_withdraw] form
-			self.withdrawAddress = ko.observable().extend({
-				validation: [{
+			self.withdrawAddress = ko.observable().extend( {
+				validation: [ {
 						validator: function( val ) {
 							for ( var i in validators ) {
 								if ( self.selectedCoin() == validators[ i ].symbol && 'function' == typeof( validators[ i ].validatorFunction ) ) {
@@ -331,11 +353,46 @@
 							return true;
 						},
 						message: wallets_ko_i18n.invalid_add
-				}]
+				} ]
 			});
 
 			// withdraw amount, used in the [wallets_withdraw] form
-			self.withdrawAmount = ko.observable();
+			self.withdrawAmount = ko.observable().extend({
+				validation: [
+					{
+						validator: function( val ) {
+							return val > 0;
+						},
+						message: wallets_ko_i18n.amount_positive
+					},
+					{
+						validator: function( val ) {
+							var coins = self.coins();
+							var coin = self.selectedCoin();
+							if ( coin ) {
+								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
+									return coins[ coin ].balance >= val;
+								}
+							}
+							return true;
+						},
+						message: wallets_ko_i18n.insufficient_balance
+					},
+					{
+						validator: function( val ) {
+							var coins = self.coins();
+							var coin = self.selectedCoin();
+							if ( coin ) {
+								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
+									return coins[ coin ].min_withdraw <= val;
+								}
+							}
+							return true;
+						},
+						message: wallets_ko_i18n.minimum_withdraw
+					}
+				]
+			});
 
 			// withdraw amount in user's choice of fiat currency, string-formatted. used in the [wallets_withdraw] form
 			self.withdrawBaseAmount = ko.computed( function( ) {

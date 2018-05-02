@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.1.3\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-04-28 12:27:38+00:00\n"
+"POT-Creation-Date: 2018-05-02 08:52:15+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,7 @@ msgstr ""
 msgid "Wallet transactions"
 msgstr ""
 
-#: includes/sidebar-widgets.php:56 includes/views/account_value.php:8
+#: includes/sidebar-widgets.php:56 includes/views/account_value/default.php:8
 msgid "Account value"
 msgstr ""
 
@@ -65,116 +65,149 @@ msgstr ""
 msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
-#: includes/views/balance.php:8 includes/views/deposit.php:8
-#: includes/views/move.php:8 includes/views/transactions.php:8
-#: includes/views/withdraw.php:8
+#: includes/views/balance/default.php:8 includes/views/balance/list.php:12
+#: includes/views/deposit/default.php:8 includes/views/deposit/list.php:12
+#: includes/views/move/default.php:8 includes/views/transactions/default.php:8
+#: includes/views/transactions/rows.php:8 includes/views/withdraw/default.php:8
 msgid "Coin"
 msgstr ""
 
-#: includes/views/balance.php:9
+#: includes/views/balance/default.php:9 includes/views/balance/list.php:13
 msgid "Balance"
 msgstr ""
 
-#: includes/views/deposit.php:10
+#: includes/views/deposit/default.php:10 includes/views/deposit/list.php:13
 msgid "Deposit address"
 msgstr ""
 
-#: includes/views/move.php:9
+#: includes/views/move/default.php:9
 msgid "Recipient user"
 msgstr ""
 
-#: includes/views/move.php:9
+#: includes/views/move/default.php:9
 msgid "Enter a valid username, login name or email"
 msgstr ""
 
-#: includes/views/move.php:10 includes/views/withdraw.php:10
+#: includes/views/move/default.php:10 includes/views/withdraw/default.php:10
 msgid "Amount"
 msgstr ""
 
-#: includes/views/move.php:11 includes/views/withdraw.php:11
+#: includes/views/move/default.php:11 includes/views/withdraw/default.php:11
 msgid "Fee (deducted from amount)"
 msgstr ""
 
-#: includes/views/move.php:12 includes/views/transactions.php:25
-#: includes/views/withdraw.php:12
+#: includes/views/move/default.php:12
+#: includes/views/transactions/default.php:25
+#: includes/views/withdraw/default.php:12
 msgid "Comment"
 msgstr ""
 
-#: includes/views/move.php:16 includes/views/withdraw.php:15
+#: includes/views/move/default.php:16 includes/views/withdraw/default.php:15
 msgid "Send"
 msgstr ""
 
-#: includes/views/move.php:17 includes/views/withdraw.php:16
+#: includes/views/move/default.php:17 includes/views/withdraw/default.php:16
 msgid "Reset form"
 msgstr ""
 
-#: includes/views/transactions.php:9
+#: includes/views/transactions/default.php:9
+#: includes/views/transactions/rows.php:9
 msgid "Rows per page"
 msgstr ""
 
-#: includes/views/transactions.php:10
+#: includes/views/transactions/default.php:10
+#: includes/views/transactions/rows.php:10
 msgid "Page"
 msgstr ""
 
-#: includes/views/transactions.php:17
+#: includes/views/transactions/default.php:17
+#: includes/views/transactions/rows.php:16
+#: includes/views/transactions/rows.php:54
+#: includes/views/transactions/rows.php:90
+#: includes/views/transactions/rows.php:111
 msgid "Type"
 msgstr ""
 
-#: includes/views/transactions.php:18
+#: includes/views/transactions/default.php:18
+#: includes/views/transactions/rows.php:22
+#: includes/views/transactions/rows.php:60
+#: includes/views/transactions/rows.php:95
+#: includes/views/transactions/rows.php:116
 msgid "Tags"
 msgstr ""
 
-#: includes/views/transactions.php:19
+#: includes/views/transactions/default.php:19
 msgid "Time"
 msgstr ""
 
-#: includes/views/transactions.php:20
+#: includes/views/transactions/default.php:20
 msgid "Amount (+fee)"
 msgstr ""
 
-#: includes/views/transactions.php:21
+#: includes/views/transactions/default.php:21
 msgid "Fee"
 msgstr ""
 
-#: includes/views/transactions.php:22
+#: includes/views/transactions/default.php:22
 msgid "From"
 msgstr ""
 
-#: includes/views/transactions.php:23
+#: includes/views/transactions/default.php:23
 msgid "To"
 msgstr ""
 
-#: includes/views/transactions.php:24
+#: includes/views/transactions/default.php:24
+#: includes/views/transactions/rows.php:29
+#: includes/views/transactions/rows.php:65
+#: includes/views/transactions/rows.php:100
 msgid "Tx ID"
 msgstr ""
 
-#: includes/views/transactions.php:26
+#: includes/views/transactions/default.php:26
+#: includes/views/transactions/rows.php:20
+#: includes/views/transactions/rows.php:58
 msgid "Confirmations"
 msgstr ""
 
-#: includes/views/transactions.php:27
+#: includes/views/transactions/default.php:27
+#: includes/views/transactions/rows.php:19
+#: includes/views/transactions/rows.php:57
+#: includes/views/transactions/rows.php:93
+#: includes/views/transactions/rows.php:114
 msgid "Status"
 msgstr ""
 
-#: includes/views/transactions.php:28
+#: includes/views/transactions/default.php:28
+#: includes/views/transactions/rows.php:23
+#: includes/views/transactions/rows.php:96
+#: includes/views/transactions/rows.php:117
 msgid "Retries&nbsp;left"
 msgstr ""
 
-#: includes/views/transactions.php:31
+#: includes/views/transactions/default.php:31
 msgid "Admin&nbsp;confirm"
 msgstr ""
 
-#: includes/views/transactions.php:34
+#: includes/views/transactions/default.php:34
 msgid "User&nbsp;confirm"
 msgstr ""
 
-#: includes/views/transactions.php:45 includes/views/transactions.php:89
-#: includes/views/transactions.php:117 includes/views/transactions.php:118
-#: includes/views/transactions.php:139 includes/views/transactions.php:140
+#: includes/views/transactions/default.php:45
+#: includes/views/transactions/default.php:89
+#: includes/views/transactions/default.php:117
+#: includes/views/transactions/default.php:118
+#: includes/views/transactions/default.php:139
+#: includes/views/transactions/default.php:140
+#: includes/views/transactions/rows.php:38
+#: includes/views/transactions/rows.php:82
+#: includes/views/transactions/rows.php:102
+#: includes/views/transactions/rows.php:103
+#: includes/views/transactions/rows.php:123
+#: includes/views/transactions/rows.php:124
 msgid "me"
 msgstr ""
 
-#: includes/views/withdraw.php:9
+#: includes/views/withdraw/default.php:9
 msgid "Withdraw to address"
 msgstr ""
 
@@ -194,63 +227,75 @@ msgstr ""
 msgid "Check to see if you have typed the address correctly!"
 msgstr ""
 
+#: includes/wallets-ko-i18n.php:11
+msgid "Amount must be positive"
+msgstr ""
+
 #: includes/wallets-ko-i18n.php:12
-msgid "deposit"
+msgid "Insufficient balance"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:13
-msgid "withdraw"
-msgstr ""
-
-#: includes/wallets-ko-i18n.php:14
-msgid "transfer"
+msgid "Amount is less than minimum withdrawal amount for this coin"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:15
-msgid "trade"
+msgid "deposit"
+msgstr ""
+
+#: includes/wallets-ko-i18n.php:16
+msgid "withdraw"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:17
-msgid "unconfirmed"
+msgid "transfer"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:18
-msgid "pending"
-msgstr ""
-
-#: includes/wallets-ko-i18n.php:19
-msgid "done"
+msgid "trade"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:20
-msgid "failed"
+msgid "unconfirmed"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:21
+msgid "pending"
+msgstr ""
+
+#: includes/wallets-ko-i18n.php:22
+msgid "done"
+msgstr ""
+
+#: includes/wallets-ko-i18n.php:23
+msgid "failed"
+msgstr ""
+
+#: includes/wallets-ko-i18n.php:24
 msgid "cancelled"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:27
+#: includes/wallets-ko-i18n.php:30
 msgid ""
 "Successfully submitted a transaction request of %s %s. Please check your "
 "e-mail for confirmation instructions."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:32
+#: includes/wallets-ko-i18n.php:35
 msgid "Successfully submitted a transaction request of %s %s."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:39
+#: includes/wallets-ko-i18n.php:42
 msgid ""
 "Successfully submitted a withdrawal request of %s %s to %s. Please check "
 "your e-mail for confirmation instructions."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:44
+#: includes/wallets-ko-i18n.php:47
 msgid "Successfully submitted a withdrawal request of %s %s."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:49
+#: includes/wallets-ko-i18n.php:52
 msgid "Destination address label (optional)"
 msgstr ""
 

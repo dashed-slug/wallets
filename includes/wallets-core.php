@@ -171,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.1.3',
+					'3.2.0',
 					true
 				);
 
@@ -206,7 +206,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.1.3',
+					'3.2.0',
 					true
 				);
 
@@ -220,7 +220,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.1.3'
+					'3.2.0'
 				);
 			}
 		}
@@ -313,7 +313,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
 				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
 				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
-				status enum('current','old') NOT NULL DEFAULT 'old' COMMENT 'all addresses are used to perform deposits, but only the current one is displayed',
+				status enum('old','current') NOT NULL COMMENT 'all addresses are used to perform deposits, but only the current one is displayed',
 				PRIMARY KEY  (id),
 				INDEX retrieve_idx (account,symbol),
 				INDEX lookup_idx (address),
@@ -549,8 +549,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '3.1.3';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '58bccfb';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '3.2.0';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '9030d9c';
 			$data[ __( 'Web Server', 'wallets' ) ] = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );

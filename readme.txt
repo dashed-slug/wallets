@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.1.3
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,7 +227,7 @@ You can also use a special menu item to display the user balances as part of a n
 Use the `wallets_views_dir` filter to override the directory where the views are stored (the default is `wallets/includes/views`).
 Most people will not need to do this.
 
-Read the *Shortcodes* section of this manual for more details.
+Read the *Frontend* &rarr; *Alternative knockout templates* section of the user manual for more details.
 
 = I want to do transactions from JavaScript. I don’t want to use the provided shortcodes and their associated forms. =
 
@@ -296,15 +296,29 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 5. **E-mails** - Use a simple templating format to edit the email notifications that users receive about their transactions.
 6. **QR-Codes** - Turn on or off the display of QR-codes for deposit addresses.
 7. **Bitcoin adapter settings** - Settings for communicating with the Bitcoin RPC API. If you install other coin adapters they will have similar panels with settings.
-8. **Frontend - deposit** - The \[wallets_deposit\] shortcode displays a UI element that lets your users know which address they can send coins to if they wish to deposit to their account.
-9. **Frontend - move** - The \[wallets_move\] shortcode displays a UI element that lets your users transfer coins to other users on the site.
-10. **Frontend - withdraw** - The \[wallets_withdraw\] shortcode displays a UI element that lets your users withdraw coins from their account to an external address.
-11. **Frontend - balance** - The \[wallets_balance\] shortcode displays your users' account balances.
-12. **Frontend - transactions** - The \[wallets_transactions\] shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
-13. **Frontend - account value** - The \[wallets_account_value\] shortcode shows the account's total value expressed in the default fiat currency.
+8. **Frontend - deposit** - The `[wallets_deposit]` shortcode displays a UI element that lets your users know which address they can send coins to if they wish to deposit to their account.
+9. **Frontend - move** - The `[wallets_move]` shortcode displays a UI element that lets your users transfer coins to other users on the site.
+10. **Frontend - withdraw** - The `[wallets_withdraw]` shortcode displays a UI element that lets your users withdraw coins from their account to an external address.
+11. **Frontend - balance** - The `[wallets_balance]` shortcode displays your users' account balances.
+12. **Frontend - transactions** - The `[wallets_transactions]` shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
+13. **Frontend - account value** - The `[wallets_account_value]` shortcode shows the account's total value expressed in the default fiat currency.
+14. **Frontend - deposit as list** - Use `[wallets_deposit template="list"]` to display user deposit addresses as a list.
+15. **Frontend - balances as list** - Use `[wallets_balance template="list"]` to display user balances as a list.
+16. **Frontend - transactions as a list** - Use `[wallets_transactions template="rows"]` to display transactions as a list rather than a table.
 
 
 == Changelog ==
+
+= 3.2.0 =
+- Add: Shortcodes now take extra attribute, allow for choosing alternative UI templates.
+- Add: Alternative transactions view with `[wallets_transactions template="rows"]`.
+- Add: Alternative balances view as list with `[wallets_balance template="list"]`.
+- Add: Alternative deposit addresses view as list with `[wallets_deposit template="list"]`.
+- Add: Can now set minimum withdrawal amount as a coin adapter setting. Enforced in frontend validation and backend processing.
+- Improve: Frontend withdraw and move UIs now validate amounts against max user balance.
+- Change: `get_coins_info` JSON API now returns the list of coins sorted by name.
+- Fix: Bug in cold storage admin screens for multisite intstallations.
+- Fix: More cross-compatible DDL phrasing for enum value in SQL schema.
 
 = 3.1.3 =
 - Add: New shortcode `[wallets_account_value]` displays the total account value in the selected fiat currency.
@@ -783,7 +797,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.1.3 addresses a couple of user requests.
+Version, 3.2.0 introduces alternative UI templates and includes bug fixes and improvements.
 
 == Donating ==
 
