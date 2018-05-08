@@ -56,6 +56,9 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			'created_time' => array( 'created_time', true ),
 			'amount' => array( 'amount', false ),
 			'confirmations' => array( 'confirmations', false ),
+			'status' => array( 'status', false ),
+			'admin_confirm' => array( 'admin_confirm', false ),
+			'user_confirm' => array( 'user_confirm', false ),
 			'retries' => array( 'retries', false ),
         );
     }
@@ -208,9 +211,11 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		} elseif ( 'move' == $item['category'] ) {
 			return $this->user_link( $item['account_name'] );
+
 		} elseif ( 'trade' == $item['category'] ) {
-			return $item['amount'] < 0 ? $this->user_link( $item['account_name'] ) : '';
+			return $this->user_link( $item['account_name'] );
 		}
+
 	}
 
 	public function column_to( $item ) {
@@ -232,10 +237,9 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		} elseif ( 'move' == $item['category'] ) {
 			return $this->user_link( $item['other_account_name'] );
+
 		} elseif ( 'trade' == $item['category'] ) {
-			return '';
-		} elseif ( 'trade' == $item['category'] ) {
-			return $item['amount'] > 0 ? $this->user_link( $item['account_name'] ) : '';
+			return $this->user_link( $item['other_account_name'] );
 		}
 	}
 
@@ -257,6 +261,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	public function column_confirmations( $item ) {
 		if ( 'move' == $item['category'] ) {
 			return  '';
+		} elseif ( 'trade' == $item['category'] ) {
+			return '';
 		} else {
 			return esc_html( $item[ 'confirmations' ] );
 		}
@@ -264,6 +270,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_retries( $item ) {
 		if ( 'deposit' == $item['category'] ) {
+			return '';
+		} elseif ( 'trade' == $item['category'] ) {
 			return '';
 		} else {
 			return esc_html( $item[ 'retries' ] );
@@ -319,6 +327,9 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_admin_confirm( $item ) {
+		if ( 'trade' == $item['category'] ) {
+			return '';
+		}
 
 		$actions = array();
 
@@ -372,6 +383,9 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function column_user_confirm( $item ) {
+		if ( 'trade' == $item['category'] ) {
+			return '';
+		}
 
 		$actions = array();
 

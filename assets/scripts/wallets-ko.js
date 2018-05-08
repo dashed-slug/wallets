@@ -24,7 +24,7 @@
 		};
 
 		var serverErrorHandler = function( response ) {
-			if ( 'undefined' != typeof(response.code) ) {
+			if ( 'undefined' != typeof( response.code ) ) {
 				if ( -107 == response.code ) {
 					// do not report permission errors via alert boxes
 					return;
@@ -42,7 +42,7 @@
 
 		// fault-tolerant way of making sure that select2 is not applied to the dropdowns of this plugin
 		function removeSelect2() {
-			$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function (i, el ) {
+			$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function ( i, el ) {
 				if ( $( el ).data( 'select2' ) ) {
 					$( el ).select2( 'destroy' );
 				} else {
@@ -325,6 +325,7 @@
 			self.resetMove = function() {
 				self.moveAmount( '' );
 				self.moveComment( '' );
+				self.moveUser( '' );
 			};
 
 			// [wallets_withdraw] shortcode

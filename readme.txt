@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.2.0
+Stable tag: 3.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.3.0 =
+- Add: Suggests a text fragment for inclusion into the site's privacy policy (GDPR requirement).
+- Add: Hooks into the personal data exporter tool and exports a user's deposit addresses and transaction IDs (GDPR requirement).
+- Add: Hooks into the personal data eraser tool and deletes a user's deposit addresses and transaction IDs (GDPR requirement).
+- Add: Admin transactions list can now be sorted by: status, admin confirmation, user confirmation. Thanks to James (Tiranad @ BTCDraft) for providing patch.
+- Fix: When the `[wallets_move]` form fields are reset to empty, after a successful transaction request, the user field is also reset to empty.
+- Improve: Hides some columns from upcoming "trade" transactions that will become relevant when the trading extension is released.
 
 = 3.2.0 =
 - Add: Shortcodes now take extra attribute, allow for choosing alternative UI templates.
@@ -797,7 +805,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.2.0 introduces alternative UI templates and includes bug fixes and improvements.
+Version, 3.3.0 assists website administrators towards GDPR compliance.
 
 == Donating ==
 

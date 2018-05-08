@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.2.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-05-02 08:52:15+00:00\n"
+"POT-Creation-Date: 2018-05-08 14:08:54+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1107,6 +1107,66 @@ msgstr ""
 msgid "\"QR Code\" is a registered trademark of DENSO WAVE INCORPORATED"
 msgstr ""
 
+#: includes/gdpr.php:43 includes/gdpr.php:57
+msgid "Bitcoin and Altcoin Wallets deposit addresses"
+msgstr ""
+
+#: includes/gdpr.php:48 includes/gdpr.php:62
+msgid "Bitcoin and Altcoin Wallets transactions"
+msgstr ""
+
+#: includes/gdpr.php:106 includes/gdpr.php:176
+msgid "Coin symbol"
+msgstr ""
+
+#: includes/gdpr.php:110
+msgid "Address"
+msgstr ""
+
+#: includes/gdpr.php:117 includes/gdpr.php:187
+msgid "Address extra field"
+msgstr ""
+
+#: includes/gdpr.php:125
+msgid "Bitcoin and Altcoin Wallets blockchain deposit addresses"
+msgstr ""
+
+#: includes/gdpr.php:180
+msgid "Blockchain address"
+msgstr ""
+
+#: includes/gdpr.php:193
+msgid "Blockchain TXID"
+msgstr ""
+
+#: includes/gdpr.php:200
+msgid "Bitcoin and Altcoin Wallets blockchain transactions"
+msgstr ""
+
+#: includes/gdpr.php:223
+msgid "Could not delete cryptocurrency deposit addresses for %s"
+msgstr ""
+
+#: includes/gdpr.php:243
+msgid "Cryptocurrency deposit addresses for %s deleted"
+msgstr ""
+
+#: includes/gdpr.php:246
+msgid "Could not delete cryptocurrency deposit addresses for %s: %s"
+msgstr ""
+
+#: includes/gdpr.php:270
+msgid "Could not delete cryptocurrency transactions for %s"
+msgstr ""
+
+#: includes/gdpr.php:290
+msgid "Cryptocurrency transactions for %s deleted"
+msgstr ""
+
+#: includes/gdpr.php:293
+msgid "Could not delete cryptocurrency transactions for %s: %s"
+msgstr ""
+
 #: includes/json-api.php:210 includes/json-api.php:537
 msgid "Could not process notification."
 msgstr ""
@@ -1536,55 +1596,55 @@ msgstr ""
 msgid "Verified by user"
 msgstr ""
 
-#: includes/transactions-list.php:291
+#: includes/transactions-list.php:299
 msgid "Transaction will be CANCELLED."
 msgstr ""
 
-#: includes/transactions-list.php:292
+#: includes/transactions-list.php:300
 msgid "&#x1F5D9; Cancel"
 msgstr ""
 
-#: includes/transactions-list.php:313
+#: includes/transactions-list.php:321
 msgid "Transaction will be RETRIED."
 msgstr ""
 
-#: includes/transactions-list.php:314
+#: includes/transactions-list.php:322
 msgid "&#8635; Retry"
 msgstr ""
 
-#: includes/transactions-list.php:344
+#: includes/transactions-list.php:355
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: includes/transactions-list.php:345
+#: includes/transactions-list.php:356
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:361
+#: includes/transactions-list.php:372
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: includes/transactions-list.php:362
+#: includes/transactions-list.php:373
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: includes/transactions-list.php:397
+#: includes/transactions-list.php:411
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: includes/transactions-list.php:398
+#: includes/transactions-list.php:412
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:414
+#: includes/transactions-list.php:428
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: includes/transactions-list.php:415
+#: includes/transactions-list.php:429
 msgid "&#x2713; User accept"
 msgstr ""
 

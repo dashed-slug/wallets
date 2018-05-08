@@ -71,7 +71,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				ob_end_clean();
 
 				return
-					"<div class=\"dashed-slug-wallets $template error\">" .
+					"<div class=\"dashed-slug-wallets $view error\">" .
 					sprintf( esc_html( 'Error while rendering <code>%s</code> template in <code>%s</code>: ' ), $atts['template'], $atts['views_dir'] ) .
 					$e->getMessage() .
 					'</div>';
