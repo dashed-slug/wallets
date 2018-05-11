@@ -32,11 +32,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_from', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_from_name', '' );
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_subject', __( 'You have performed a withdrawal. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_message', __( <<<NOTIFICATION
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_subject', __( 'You have performed a withdrawal. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_message', __( <<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -44,7 +46,7 @@ You have withdrawn ###AMOUNT### ###SYMBOL### to address ###ADDRESS###.
 
 Fees paid: ###FEE###
 Transaction ID: ###TXID###
-Transaction created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
@@ -62,7 +64,7 @@ You have attempted to withdraw ###AMOUNT### ###SYMBOL### to address ###ADDRESS##
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Last error message: ###LAST_ERROR###
-Transaction created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
@@ -80,7 +82,7 @@ You have sent ###AMOUNT### ###SYMBOL### from your account to the ###OTHER_ACCOUN
 
 Fees paid: ###FEE###
 Transaction ID: ###TXID###
-Transaction created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -98,7 +100,7 @@ You have attempted to send ###AMOUNT### ###SYMBOL### from your account to the ##
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Transaction ID: ###TXID###
-Transaction created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -115,7 +117,7 @@ NOTIFICATION
 You have received ###AMOUNT### ###SYMBOL### from ###OTHER_ACCOUNT###.
 
 Transaction ID: ###TXID###
-Transaction created at: ###CREATED_TIME###
+Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -133,7 +135,7 @@ You have deposited ###AMOUNT### ###SYMBOL### from address ###ADDRESS###.
 Please note that the funds may not be yet available to you before the required amount of network confirmations is reached.
 
 Transaction ID: ###TXID###
-Transaction seen at: ###CREATED_TIME###
+Transaction seen at: ###CREATED_TIME_LOCAL###
 Extra transaction info (optional): ###EXTRA###
 
 NOTIFICATION
@@ -167,6 +169,41 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_enabled'
 			);
+
+			add_settings_field(
+				'wallets_email_from',
+				__( 'Originating e-mail address', 'wallets' ),
+				array( &$this, 'email_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for' => 'wallets_email_from',
+					'description' => __( 'Email address to send notifications and confirmations from, or leave empty to use a default address.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_email_from'
+			);
+
+			add_settings_field(
+				'wallets_email_from_name',
+				__( 'Originating e-mail full name', 'wallets' ),
+				array( &$this, 'text_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for' => 'wallets_email_from_name',
+					'description' => __( 'A full name to send email notifications and confirmations from, or leave empty if you do not wish to specify a name.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_email_from_name'
+			);
+
 
 			add_settings_field(
 				'wallets_buddypress_enabled',
@@ -605,8 +642,10 @@ NOTIFICATION
 						<dd><?php esc_html_e( 'For withdrawals and transfers, the fees paid to the site.', 'wallets' ); ?></dd>
 						<dt><code>###SYMBOL###</code></dt>
 						<dd><?php esc_html_e( 'The coin symbol for this transaction (e.g. "BTC" for Bitcoin)', 'wallets' ); ?></dd>
+						<dt><code>###CREATED_TIME_LOCAL###</code></dt>
+						<dd><?php esc_html_e( 'The date and time of the transaction in the local timezone. Format: YYYY-MM-DD hh:mm:ss', 'wallets' ); ?></dd>
 						<dt><code>###CREATED_TIME###</code></dt>
-						<dd><?php esc_html_e( 'The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:ssZZZZ', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'The UTC date and time of the transaction. Format: YYYY-MM-DD hh:mm:ss', 'wallets' ); ?></dd>
 						<dt><code>###COMMENT###</code></dt>
 						<dd><?php esc_html_e( 'The comment attached to the transaction.', 'wallets' ); ?></dd>
 						<dt><code>###ADDRESS###</code></dt>
@@ -668,6 +707,14 @@ NOTIFICATION
 
 		public function text_cb( $arg ) {
 			?><input style="width:100%;" type="text"
+			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
+			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
+			echo esc_html( $arg['description'] ); ?></p><?php
+		}
+
+		public function email_cb( $arg ) {
+			?><input style="width:100%;" type="email"
 			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
 			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
@@ -893,6 +940,8 @@ NOTIFICATION
 				$msg_data->extra = 'n/a';
 			}
 
+			$msg_data->created_time_local = get_date_from_gmt( $msg_data->created_time );
+
 			// use pattern for displaying amounts
 			if ( isset( $msg_data->symbol ) ) {
 				$adapters = apply_filters( 'wallets_api_adapters', array() );
@@ -920,12 +969,23 @@ NOTIFICATION
 		}
 
 		private function notify_user_by_email( $email, $subject, $message ) {
+			$headers = array();
+
+			$email_from = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+			$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+
+			if ( $email_from && $email_from_name ) {
+				$headers[] = "From: $email_from_name <$email_from>";
+			} elseif ( $email_from ) {
+				$headers[] = "From: $email_from";
+			}
 
 			try {
 				wp_mail(
 					$email,
 					$subject,
-					$message
+					$message,
+					$headers
 				);
 			} catch ( Exception $e ) {
 				$this->_notices->error(

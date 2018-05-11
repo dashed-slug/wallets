@@ -42,7 +42,7 @@ If you want the withdrawal to proceed, please click on this link to confirm:
 ###LINK###
 
 Fees to be paid: ###FEE###
-Transacton requested at: ###CREATED_TIME###
+Transacton requested at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
@@ -67,7 +67,7 @@ If you want the transaction to proceed, please click on this link to confirm:
 
 Fees to be paid: ###FEE###
 Transaction ID: ###TXID###
-Transacton created at: ###CREATED_TIME###
+Transacton created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -266,6 +266,8 @@ EMAIL
 				unset( $row['category'] );
 				unset( $row['updated_time'] );
 
+				// localize time based on wp timezone
+				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
 
 				// use pattern for displaying amounts
 				if ( isset( $row['symbol'] ) ) {
@@ -298,12 +300,24 @@ EMAIL
 					$message = str_replace( '###' . strtoupper( $field ) . '###', $val, $message );
 				}
 
+				$headers = array();
+
+				$email_from = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+
+				if ( $email_from && $email_from_name ) {
+					$headers[] = "From: $email_from_name <$email_from>";
+				} elseif ( $email_from ) {
+					$headers[] = "From: $email_from";
+				}
+
 				try {
 					wp_mail(
 						$email,
 						$subject,
-						$message
-						);
+						$message,
+						$headers
+					);
 				} catch ( Exception $e ) {
 					$this->_notices->error(
 						__( "The following errors occured while sending confirmation request email to $email: ", 'wallets' ) .
@@ -386,8 +400,10 @@ EMAIL
 						<dd><?php esc_html_e( 'For withdrawals and transfers, the fees paid to the site.', 'wallets' ); ?></dd>
 						<dt><code>###SYMBOL###</code></dt>
 						<dd><?php esc_html_e( 'The coin symbol for this transaction (e.g. "BTC" for Bitcoin)', 'wallets' ); ?></dd>
+						<dt><code>###CREATED_TIME_LOCAL###</code></dt>
+						<dd><?php esc_html_e( 'The date and time of the transaction in the local timezone. Format: YYYY-MM-DD hh:mm:ss', 'wallets' ); ?></dd>
 						<dt><code>###CREATED_TIME###</code></dt>
-						<dd><?php esc_html_e( 'The date and time of the transaction in ISO-8601 notation. YYYY-MM-DDThh:mm:ssZZZZ', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'The UTC date and time of the transaction. Format: YYYY-MM-DD hh:mm:ss', 'wallets' ); ?></dd>
 						<dt><code>###COMMENT###</code></dt>
 						<dd><?php esc_html_e( 'The comment attached to the transaction.', 'wallets' ); ?></dd>
 						<dt><code>###ADDRESS###</code></dt>

@@ -161,7 +161,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			case 'comment':
 			case 'tags':
 			case 'status':
-			case 'created_time':
 			case 'from':
 			case 'to':
 				return esc_html( $item[ $column_name ] );
@@ -190,6 +189,10 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			// TODO bulk actions
 		);
 		return $actions;
+	}
+
+	public function column_created_time( $item ) {
+		return get_date_from_gmt( $item['created_time'] );
 	}
 
 	public function column_from( $item ) {

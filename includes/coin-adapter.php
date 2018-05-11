@@ -302,8 +302,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 		/** @internal */
 		public function settings_percent_cb( $arg ) {
-			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" max=\"0.5\" step=\"0.001\" value=\"";
-			echo esc_attr( sprintf( "%01.3f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
+			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" max=\"0.5\" step=\"0.00001\" value=\"";
+			echo esc_attr( sprintf( "%01.5f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 

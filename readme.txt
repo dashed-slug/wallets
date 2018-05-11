@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.5
 Requires PHP: 5.6
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.3.1 =
+- Change: Transaction time in *Admin* &rarr; *Transactions* list is now shown in local timezone, not UTC.
+- Add: Transaction time in email notifications can now be shown in local timezone with value ###CREATED_TIME_LOCAL###.
+- Add: Transaction time in email confirmations can now be shown in local timezone ###CREATED_TIME_LOCAL###.
+- Add: Widgets can now be used with alternative UI templates.
+- Add: The sender's name and address for email notifications and confirmations can now be set in the admin settings. If set, it overrides the default.
+- Change: Proportional fees in all RPC adapters (including the multiadapter extension) now have five decimal places instead of three.
 
 = 3.3.0 =
 - Add: Suggests a text fragment for inclusion into the site's privacy policy (GDPR requirement).
@@ -805,7 +813,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.3.0 assists website administrators towards GDPR compliance.
+Version, 3.3.1 is a patch release with some tweaks requested by users.
 
 == Donating ==
 

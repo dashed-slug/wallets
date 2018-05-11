@@ -43,6 +43,8 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 	// remove notification settings
 	wallets_delete_option( 'wallets_email_enabled' );
+	wallets_delete_option( 'wallets_email_from' );
+	wallets_delete_option( 'wallets_email_from_name' );
 	wallets_delete_option( 'wallets_buddypress_enabled' );
 
 	wallets_delete_option( 'wallets_email_withdraw_enabled' );
