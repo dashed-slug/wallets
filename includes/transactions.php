@@ -569,7 +569,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							return;
 						}
 
-						$where = array( 'txid' => $tx->txid );
+						$where = array(
+							'txid' => $tx->txid,
+							'address' => $tx->address,
+							'symbol' => $tx->symbol,
+						);
 						$where_format = array( '%s' );
 
 
@@ -598,7 +602,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									{$table_name_txs}
 								WHERE
 									txid = %s
-								",  $tx->txid
+									AND address = %s
+									AND symbol = %s
+								",
+								$tx->txid,
+								$tx->address,
+								$tx->symbol
 							) );
 
 							if ( ! $row_exists ) {
