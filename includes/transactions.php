@@ -574,7 +574,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							'address' => $tx->address,
 							'symbol' => $tx->symbol,
 						);
-						$where_format = array( '%s' );
+						$where_format = array( '%s', '%s', '%s' );
 
 
 						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
@@ -601,10 +601,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								FROM
 									{$table_name_txs}
 								WHERE
-									txid = %s
+									( blog_id = %d || %d )
+									AND txid = %s
 									AND address = %s
 									AND symbol = %s
 								",
+								get_current_blog_id(),
+								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
 								$tx->txid,
 								$tx->address,
 								$tx->symbol
@@ -650,9 +653,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$where = array(
 							'address' => $tx->address,
 							'txid' => $tx->txid,
+							'symbol' => $tx->symbol,
 						);
 
-						$where_format = array( '%s', '%s' );
+						$where_format = array( '%s', '%s', '%s' );
 
 						if ( isset( $tx->extra ) && $tx->extra ) {
 							$where['extra'] = $tx->extra;
@@ -691,8 +695,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								FROM
 									{$table_name_txs}
 								WHERE
-									txid = %s
-								",  $tx->txid
+									( blog_id = %d || %d )
+									AND txid = %s
+									AND address = %s
+									AND symbol = %s
+								",
+								get_current_blog_id(),
+								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
+								$tx->txid,
+								$tx->address,
+								$tx->symbol
 							) );
 
 							if ( ! $row_exists ) {

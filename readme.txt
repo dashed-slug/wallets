@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.3.3
+Stable tag: 3.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.3.4 =
+- Fix: Bug that prevented updating confirmation counts of deposits coming from transactions with multiple outputs, introduced in 3.3.2.
 
 = 3.3.3 =
 - Improve: Front-end performance increase due to deferred updates in knockout framework.
@@ -823,7 +826,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.3.3 addresses a number of user requests.
+Version, 3.3.4 fixes a bug introduced in 3.3.2.
 
 == Donating ==
 
