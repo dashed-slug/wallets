@@ -430,7 +430,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public function fiat_cb( $arg ) {
-			$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+			$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			$fiats = array_unique( Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array( 'USD' ) ) ); ?>
 
 			<select
@@ -439,7 +439,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				<?php foreach ( $fiats as $fiat ): ?>
 				<option
-					<?php if ( $fiat == $base_symbol): ?> selected="selected"<?php endif; ?>
+					<?php if ( $fiat == $fiat_symbol): ?> selected="selected"<?php endif; ?>
 					value="<?php echo esc_attr( $fiat ); ?>">
 					<?php echo esc_html( $fiat ); ?>
 				</option>

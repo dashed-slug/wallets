@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.5
+Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.3.2
+Stable tag: 3.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.3.3 =
+- Improve: Front-end performance increase due to deferred updates in knockout framework.
+- Fix: Erroneous "Insufficient Balance" validator message in frontend when balance is actually sufficient.
+- Fix: A CSS issue with the frontend validator messages that would cause visual elements to jump up and down on the page.
+- Improve: Updated packages moment.js library to the latest version.
+- Improve: If a transaction cannot be inserted to the DB, also print out the last DB error message in the logs to assist debugging.
 
 = 3.3.2 =
 - Fix: Allow incoming transactions with multiple outputs, where the outputs are deposit addresses for more than one users of the plugin.
@@ -816,7 +823,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.3.2 allows for deposits from incoming batch transactions.
+Version, 3.3.3 addresses a number of user requests.
 
 == Donating ==
 

@@ -22,9 +22,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 		public function action_user_profile( $profileuser ) {
 			$dsw = Dashed_Slug_Wallets::get_instance();
 
-			$base_symbol = get_the_author_meta( 'wallets_base_symbol', $profileuser->ID, true );
-			if ( ! $base_symbol ) {
-				$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+			$fiat_symbol = get_the_author_meta( 'wallets_base_symbol', $profileuser->ID, true );
+			if ( ! $fiat_symbol ) {
+				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			}
 			$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array() );
 
@@ -35,16 +35,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 					<tr>
 						<th>
 							<label
-								for="wallets_base_symbol"><?php esc_html_e( 'Base currency', 'wallets' ); ?></label>
+								for="wallets_fiat_symbol"><?php esc_html_e( 'Base currency', 'wallets' ); ?></label>
 						</th>
 
 						<td>
 							<select
-								id="wallets_base_symbol"
+								id="wallets_fiat_symbol"
 								name="wallets_base_symbol">
 								<?php foreach ( $fiats as $fiat ): ?>
 									<option
-										<?php if ( $fiat == $base_symbol): ?> selected="selected"<?php endif; ?>
+										<?php if ( $fiat == $fiat_symbol): ?> selected="selected"<?php endif; ?>
 										value="<?php echo esc_attr( $fiat ); ?>">
 										<?php echo esc_html( $fiat ); ?>
 									</option>

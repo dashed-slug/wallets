@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.3.2\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.3.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-05-15 10:37:54+00:00\n"
+"POT-Creation-Date: 2018-05-22 06:15:50+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -105,20 +105,20 @@ msgstr ""
 #: includes/confirmations.php:345 includes/cron.php:509
 #: includes/frontend-settings.php:186 includes/notifications.php:598
 #: includes/rates.php:265 includes/transactions.php:92
-#: includes/transactions.php:842 includes/transactions.php:1023
-#: includes/transactions.php:1043 includes/transactions.php:1063
-#: includes/transactions.php:1082 includes/transactions.php:1102
-#: includes/transactions.php:1126
+#: includes/transactions.php:844 includes/transactions.php:1025
+#: includes/transactions.php:1045 includes/transactions.php:1065
+#: includes/transactions.php:1084 includes/transactions.php:1104
+#: includes/transactions.php:1128
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:157 includes/adapters-list.php:176
 #: includes/caps.php:90 includes/cold-storage.php:115 includes/json-api.php:406
 #: includes/json-api.php:447 includes/json-api.php:704
-#: includes/json-api.php:745 includes/transactions.php:848
-#: includes/transactions.php:1027 includes/transactions.php:1047
-#: includes/transactions.php:1067 includes/transactions.php:1086
-#: includes/transactions.php:1106 includes/transactions.php:1130
+#: includes/json-api.php:745 includes/transactions.php:850
+#: includes/transactions.php:1029 includes/transactions.php:1049
+#: includes/transactions.php:1069 includes/transactions.php:1088
+#: includes/transactions.php:1108 includes/transactions.php:1132
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -1186,7 +1186,7 @@ msgstr ""
 #: includes/json-api.php:680 includes/json-api.php:698
 #: includes/json-api.php:739 includes/php-api.php:147 includes/php-api.php:236
 #: includes/php-api.php:298 includes/php-api.php:395 includes/php-api.php:603
-#: includes/php-api.php:786 includes/transactions.php:802
+#: includes/php-api.php:786 includes/transactions.php:804
 #: includes/wallets-core.php:744
 msgid "Not allowed"
 msgstr ""
@@ -1698,17 +1698,17 @@ msgid ""
 "system."
 msgstr ""
 
-#: includes/transactions.php:831
+#: includes/transactions.php:833
 msgid "Could not get account for %s address %s"
 msgstr ""
 
-#: includes/transactions.php:868
+#: includes/transactions.php:870
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:876
+#: includes/transactions.php:878
 msgid "Failed to import file : %s"
 msgstr ""
 

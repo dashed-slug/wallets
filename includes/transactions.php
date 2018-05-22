@@ -638,6 +638,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								if ( ! $affected ) {
 									error_log( __FUNCTION__ . " Transaction $x->txid could not be inserted! " . print_r( $new_tx_data, true ) );
+									error_log( __FUNCTION__ . ' Last DB error: ' . $wpdb->last_error );
 								} else {
 									// row was inserted, not updated
 									do_action( 'wallets_deposit', $tx );
@@ -720,6 +721,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								if ( ! $affected ) {
 									error_log( __FUNCTION__ . " Transaction $tx->txid was not inserted! " . print_r( $tx, true ) );
+									error_log( __FUNCTION__ . ' Last DB error: ' . $wpdb->last_error );
 								}
 							}
 						} // end if ! affected && isset tx->account

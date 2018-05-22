@@ -90,6 +90,7 @@
 					},
 					complete: function( jqXHR, status ) {
 						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
+						ko.tasks.runEarly();
 						removeSelect2();
 						self.updateQrCode();
 					},
@@ -135,7 +136,7 @@
 					var coin = coins[ c ];
 					total += coin.rate * coin.balance;
 				}
-				return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( total ) );
+				return sprintf( walletsUserData.fiatSymbol + ' %01.2f', parseFloat( total ) );
 			} );
 
 			// balance of the currently selected coin, string-formatted for that coin
@@ -149,13 +150,13 @@
 			});
 
 			// balance of the currently selected coin, in a fiat currency, string-formatted for that currency
-			self.currentCoinBaseBalance = ko.computed( function() {
-				if ( walletsUserData.baseSymbol ) {
+			self.currentCoinFiatBalance = ko.computed( function() {
+				if ( walletsUserData.fiatSymbol ) {
 					var coins = self.coins();
 					var coin = self.selectedCoin();
 					if ( 'object' == typeof( coins[ coin ] ) ) {
 						if ( coins[ coin ].rate ) {
-							return sprintf( walletsUserData.baseSymbol + ' %01.2f', coins[ coin ].balance * coins[ coin ].rate );
+							return sprintf( walletsUserData.fiatSymbol + ' %01.2f', coins[ coin ].balance * coins[ coin ].rate );
 						}
 					}
 				}
@@ -226,7 +227,7 @@
 							var coin = self.selectedCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
-									return coins[ coin ].balance >= val;
+									return coins[ coin ].balance >= parseFloat( val );
 								}
 							}
 							return true;
@@ -237,16 +238,16 @@
 			} );
 
 			// amount to transact, string-formatted in the user's choice of fiat currency
-			self.moveBaseAmount = ko.computed( function( ) {
+			self.moveFiatAmount = ko.computed( function( ) {
 				var amount = parseFloat( self.moveAmount() );
 
 				if ( ! isNaN( amount ) ) {
-					if ( walletsUserData.baseSymbol ) {
+					if ( walletsUserData.fiatSymbol ) {
 						var coins = self.coins();
 						var coin = self.selectedCoin();
 						if ( 'object' == typeof( coins[ coin ] ) ) {
 							if ( coins[ coin ].rate ) {
-								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( amount ) * coins[ coin ].rate );
+								return sprintf( walletsUserData.fiatSymbol + ' %01.2f', parseFloat( amount ) * coins[ coin ].rate );
 							}
 						}
 					}
@@ -268,10 +269,10 @@
 
 					if ( ! isNaN( fee ) ) {
 						var feeString = sprintf( coins[ coin ].sprintf, fee );
-						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+						var feeFiatString = sprintf( walletsUserData.fiatSymbol + ' %01.2f', fee * coins[ coin ].rate );
 
-						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-							return [ feeString, feeBaseString ];
+						if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
+							return [ feeString, feeFiatString ];
 						} else {
 							return [ feeString, '' ];
 						}
@@ -372,7 +373,7 @@
 							var coin = self.selectedCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
-									return coins[ coin ].balance >= val;
+									return coins[ coin ].balance >= parseFloat( val );
 								}
 							}
 							return true;
@@ -385,7 +386,7 @@
 							var coin = self.selectedCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
-									return coins[ coin ].min_withdraw <= val;
+									return coins[ coin ].min_withdraw <= parseFloat( val );
 								}
 							}
 							return true;
@@ -396,16 +397,16 @@
 			});
 
 			// withdraw amount in user's choice of fiat currency, string-formatted. used in the [wallets_withdraw] form
-			self.withdrawBaseAmount = ko.computed( function( ) {
+			self.withdrawFiatAmount = ko.computed( function( ) {
 				var amount = parseFloat( self.withdrawAmount() );
 
 				if ( ! isNaN( amount ) ) {
-					if ( walletsUserData.baseSymbol ) {
+					if ( walletsUserData.fiatSymbol ) {
 						var coins = self.coins();
 						var coin = self.selectedCoin();
 						if ( 'object' == typeof( coins[ coin ] ) ) {
 							if ( coins[ coin ].rate ) {
-								return sprintf( walletsUserData.baseSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
+								return sprintf( walletsUserData.fiatSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
 							}
 						}
 					}
@@ -440,10 +441,10 @@
 
 					if ( ! isNaN( fee ) ) {
 						var feeString = sprintf( coins[ coin ].sprintf, fee );
-						var feeBaseString = sprintf( walletsUserData.baseSymbol + ' %01.2f', fee * coins[ coin ].rate );
+						var feeFiatString = sprintf( walletsUserData.fiatSymbol + ' %01.2f', fee * coins[ coin ].rate );
 
-						if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-							return [ feeString, feeBaseString ];
+						if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
+							return [ feeString, feeFiatString ];
 						} else {
 							return [ feeString, '' ];
 						}
@@ -553,7 +554,7 @@
 							transactions = response.transactions;
 
 							var coins = self.coins();
-							var baseSprintf = walletsUserData.baseSymbol + ' %01.2f';
+							var fiatSprintf = walletsUserData.fiatSymbol + ' %01.2f';
 
 							for ( var t in transactions ) {
 
@@ -571,11 +572,11 @@
 										transactions[ t ].fee_string = sprintf( coins[ coin ].sprintf, transactions[ t ].fee );
 									}
 
-									if ( walletsUserData.baseSymbol && coins[ coin ].rate ) {
-										transactions[ t ].amount_base = sprintf( baseSprintf, transactions[ t ].amount * coins[ coin ].rate );
-										transactions[ t ].fee_base = sprintf( baseSprintf, transactions[ t ].fee * coins[ coin ].rate );
+									if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
+										transactions[ t ].amount_fiat = sprintf( fiatSprintf, transactions[ t ].amount * coins[ coin ].rate );
+										transactions[ t ].fee_fiat = sprintf( fiatSprintf, transactions[ t ].fee * coins[ coin ].rate );
 									} else {
-										transactions[ t ].amount_base = transactions[ t ].fee_base = '';
+										transactions[ t ].amount_fiat = transactions[ t ].fee_fiat = '';
 									}
 
 									if ( 'string' === typeof ( transactions[ t ].txid ) ) {
@@ -607,6 +608,7 @@
 		}
 
 		// init the viewmodel
+		ko.options.deferUpdates = true;
 		var walletsViewModel = new WalletsViewModel();
 		// let's pollute the global wp object a bit!!1
 		if ( 'undefined' == typeof wp ) {

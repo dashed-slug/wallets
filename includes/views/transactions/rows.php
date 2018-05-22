@@ -22,8 +22,8 @@
 				<div class="tags label" data-bind="if: tags"><?php echo apply_filters( 'wallets_ui_text_tags', esc_html__( 'Tags', 'wallets-front' ) ); ?>: <span data-bind="text: tags"></span></div>
 				<div class="retries label" data-bind="if: ( 'unconfirmed' == status || 'pending' == status ) && retries"><?php echo apply_filters( 'wallets_ui_text_retriesleft', esc_html__( 'Retries&nbsp;left', 'wallets-front' ) ); ?>: <span data-bind="text: retries"></span></div>
 
-				<div class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></div>
-				<div class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></div>
+				<div class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></div>
+				<div class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></div>
 
 				<div class="txid label" data-bind="visible: txid">
 					<?php echo apply_filters( 'wallets_ui_text_txid', esc_html__( 'Tx ID', 'wallets-front' ) ); ?>:
@@ -59,8 +59,8 @@
 
 				<div class="tags label" data-bind="if: tags"><?php echo apply_filters( 'wallets_ui_text_tags', esc_html__( 'Tags', 'wallets-front' ) ); ?>: <span data-bind="text: tags"></span></div>
 
-				<div class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></div>
-				<div class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></div>
+				<div class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></div>
+				<div class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></div>
 				<div class="txid label" data-bind="visible: txid">
 					<?php echo apply_filters( 'wallets_ui_text_txid', esc_html__( 'Tx ID', 'wallets-front' ) ); ?>:
 					<span data-bind="if: tx_uri">
@@ -95,8 +95,8 @@
 				<div class="tags label" data-bind="if: tags"><?php echo apply_filters( 'wallets_ui_text_tags', esc_html__( 'Tags', 'wallets-front' ) ); ?>: <span data-bind="text: tags"></span></div>
 				<div class="retries label" data-bind="if: ( 'unconfirmed' == status || 'pending' == status ) && retries"><?php echo apply_filters( 'wallets_ui_text_retriesleft', esc_html__( 'Retries&nbsp;left', 'wallets-front' ) ); ?>: <span data-bind="text: retries"></span></div>
 
-				<div class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></div>
-				<div class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></div>
+				<div class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></div>
+				<div class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></div>
 				<div class="txid label" data-bind="visible: txid"><?php echo apply_filters( 'wallets_ui_text_txid', esc_html__( 'Tx ID', 'wallets-front' ) ); ?>:<span data-bind="text: txid"></span></div>
 
 				<div class="from user" data-bind="text: (amount>= 0 ? other_account_name : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></div>
@@ -116,8 +116,8 @@
 				<div class="tags label" data-bind="if: tags"><?php echo apply_filters( 'wallets_ui_text_tags', esc_html__( 'Tags', 'wallets-front' ) ); ?>: <span data-bind="text: tags"></span></div>
 				<div class="retries label" data-bind="if: ( 'unconfirmed' == status || 'pending' == status ) && retries"><?php echo apply_filters( 'wallets_ui_text_retriesleft', esc_html__( 'Retries&nbsp;left', 'wallets-front' ) ); ?>: <span data-bind="text: retries"></span></div>
 
-				<div class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></div>
-				<div class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></div>
+				<div class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></div>
+				<div class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></div>
 				<div class="txid" data-bind="text: txid, visible: txid"></div>
 
 				<div class="from user" data-bind="text: (amount >= 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></div>

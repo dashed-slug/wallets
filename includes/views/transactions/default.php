@@ -40,8 +40,8 @@
 					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
 					<td class="from user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
 					<td class="to user">
 						<div data-bind="if: address_uri">
@@ -76,8 +76,8 @@
 					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
 					<td class="from user">
 						<div  data-bind="if: address_uri">
 							<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
@@ -112,8 +112,8 @@
 					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
 					<td class="from user" data-bind="text: (amount>= 0 ? other_account_name : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
 					<td class="to user" data-bind="text: (amount < 0 ? other_account_name : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
 					<td class="txid" data-bind="text: txid"></td>
@@ -134,8 +134,8 @@
 					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
 					<td class="tags" data-bind="text: tags"></td>
 					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_base }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_base }"></td>
+					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
+					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
 					<td class="from user" data-bind="text: (amount >= 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
 					<td class="to user" data-bind="text: (amount < 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
 					<td class="txid" data-bind="text: txid"></td>

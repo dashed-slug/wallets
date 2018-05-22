@@ -149,7 +149,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'momentjs',
 					plugins_url( 'moment.min.js', "wallets/assets/scripts/moment.min.js" ),
 					array(),
-					'2.17.1',
+					'2.22.1',
 					true
 				);
 
@@ -171,7 +171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.3.2',
+					'3.3.3',
 					true
 				);
 
@@ -180,15 +180,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				// attach user preferences data to frontend knockout script
 				if ( 'none' == Dashed_Slug_Wallets::get_option( 'wallets_rates_provider', 'none' ) ) {
-					$base_symbol = false;
+					$fiat_symbol = false;
 				} else {
-					$base_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
+					$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
 				}
-				if ( ! $base_symbol ) {
-					$base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+				if ( ! $fiat_symbol ) {
+					$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 				}
 				wp_localize_script( 'wallets_ko', 'walletsUserData', array(
-					'baseSymbol' => $base_symbol,
+					'fiatSymbol' => $fiat_symbol,
 					'pollIntervalCoinInfo' => absint( Dashed_Slug_wallets::get_option( 'wallets_poll_interval_coin_info', 5 ) ),
 					'pollIntervalTransactions' => absint( Dashed_Slug_wallets::get_option( 'wallets_poll_interval_transactions', 5 ) ),
 					'walletsVisibilityCheckEnabled' => Dashed_Slug_wallets::get_option( 'wallets_visibility_check_enabled', 1 ) ? 1 : 0,
@@ -206,7 +206,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.3.2',
+					'3.3.3',
 					true
 				);
 
@@ -220,7 +220,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.3.2'
+					'3.3.3'
 				);
 			}
 		}
@@ -330,7 +330,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					WHERE
 						{$table_name_txs}.id > t2.id AND
 						{$table_name_txs}.txid = t2.txid AND
-						{$table_name_txs}.symbol = t2.symbol
+						{$table_name_txs}.symbol = t2.symbol AND
 						{$table_name_txs}.address = t2.address;" );
 
 				// make sure that index is on ascii columns only to avoid "Specified key was too long" error
@@ -446,12 +446,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '4.9.5' ) < 0 ) {
+			if ( version_compare( $wp_version, '4.9.6' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %s. This plugin has been tested with %s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'4.9.5' ),
+						'4.9.6' ),
 					'old-wp-ver' );
 			}
 
@@ -531,8 +531,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '3.3.2';
-			$data[ __( 'Git SHA', 'wallets' ) ] = 'd622cd3';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '3.3.3';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '3a8c695';
 			$data[ __( 'Web Server', 'wallets' ) ] = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );

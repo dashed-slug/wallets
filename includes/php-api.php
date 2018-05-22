@@ -183,7 +183,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					if ( ! isset( ${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ] ) ) {
 						${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ] = new stdClass();
 					}
-					${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ]->{ $user_balance_row->symbol } = $user_balance_row->balance;
+					${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ]->{ $user_balance_row->symbol } = floatval( $user_balance_row->balance );
 				}
 			}
 

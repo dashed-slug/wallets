@@ -25,13 +25,24 @@
 	width: 34%;
 }
 
-.dashed-slug-wallets .base-amount {
+.dashed-slug-wallets .base-amount,
+.dashed-slug-wallets .fiat-amount {
 	font-size: smaller;
 	text-align: right;
 	font-style: oblique;
 	list-style: none;
 	display: list-item;
 	color: gray;
+	padding: 5px;
+}
+
+.dashed-slug-wallets .fiat-amount:after {
+	content: "\00A0";
+}
+
+.dashed-slug-wallets .validationMessage {
+	font-size: smaller;
+	float: left;
 }
 
 .dashed-slug-wallets.transactions table {
