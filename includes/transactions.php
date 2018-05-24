@@ -20,8 +20,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 
 			// these actions record a transaction or address to the DB
-			add_action( 'wallets_transaction',	array( &$this, 'action_wallets_transaction' ) );
-			add_action( 'wallets_address',	array( &$this, 'action_wallets_address' ) );
+			add_action( 'wallets_transaction', array( &$this, 'action_wallets_transaction' ) );
+			add_action( 'wallets_address', array( &$this, 'action_wallets_address' ) );
 
 			// these are attached to the cron job and process transactions
 			add_action( 'wallets_periodic_checks', array( &$this, 'cron' ) );
@@ -369,7 +369,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$wpdb->users u READ
 				" );
 
-
 				$txid = null;
 				try {
 					$deposit_address = $wpdb->get_row( $wpdb->prepare(
@@ -448,6 +447,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						);
 					}
 
+					// set withdrawal as succeeded. will set to failed after the call if actually failed
+					// this prevents double spends in case communication with wallet API fails exactly after withdrawal
+					$wpdb->update(
+						$table_name_txs,
+						array( 'status' => 'done' ),
+						array( 'id' => $wd_tx->id ),
+						array( '%s' ),
+						array( '%d' )
+					);
+
+					// actually perform withdrawal
 					$txid = $adapter->do_withdraw(
 						$wd_tx->address,
 						- $wd_tx->amount - $wd_tx->fee,
@@ -456,25 +466,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					);
 
 					if ( ! is_string( $txid ) ) {
-						throw new Exception( 'Adapter did not return with transaction ID' );
+						throw new Exception( sprintf( 'Coin adapter did not return a transaction ID for withdrawal %d', $wd_tx->id ) );
 					}
 
-					$success_query = $wpdb->prepare(
-						"
-						UPDATE
-							{$table_name_txs}
-						SET
-							status = 'done',
-							txid = %s
-						WHERE
-							id = %d
-						",
-						$txid,
-						$wd_tx->id
+					// set withdrawal txid
+					$wpdb->update(
+						$table_name_txs,
+						array( 'txid' => $txid ),
+						array( 'id' => $wd_tx->id ),
+						array( '%s' ),
+						array( '%d' )
 					);
 
-					$wpdb->query( $success_query );
-
+					$wpdb->query( 'COMMIT' );
 					$wpdb->query( "UNLOCK TABLES" );
 
 					$wd_tx->txid = $txid;
@@ -534,7 +538,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					throw new Exception();
 				}
 			} catch ( Exception $e ) {
-				error_log( __FUNCTION__ . ": Adapter for {$tx->symbol} transaction {$tx->txid} is not online" );
 				return;
 			}
 
@@ -586,7 +589,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$table_name_txs,
 							array(
 								'updated_time' => $current_time_gmt,
-								'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
+								'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
 								'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
 							),
 							$where,
@@ -626,7 +629,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'fee' => isset( $tx->fee ) ? $tx->fee : 0,
 									'created_time' => $tx->created_time,
 									'updated_time' => $current_time_gmt,
-									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
+									'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
 									'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
 									'retries' => 255
 								);
@@ -669,8 +672,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 
 						$new_tx_data = array(
-							'updated_time'	=> $current_time_gmt,
-							'confirmations'	=> $tx->confirmations,
+							'updated_time' => $current_time_gmt,
+							'confirmations' => $tx->confirmations,
 						);
 
 						if ( isset( $tx->status ) ) {
@@ -720,7 +723,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'fee' => number_format( $tx->fee, 10, '.', '' ),
 									'comment' => $tx->comment,
 									'created_time' => $tx->created_time,
-									'confirmations'	=> isset( $tx->confirmations ) ? $tx->confirmations : 0,
+									'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
 									'status' => 'unconfirmed',
 									'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 )
 								);
@@ -1041,7 +1044,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(	"
+						$affected_rows = $wpdb->query( "
 							UPDATE
 								$table_name_txs
 							SET
@@ -1061,7 +1064,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(	"
+						$affected_rows = $wpdb->query( "
 							UPDATE
 								$table_name_txs
 							SET
@@ -1081,7 +1084,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(	"
+						$affected_rows = $wpdb->query( "
 							UPDATE
 								$table_name_txs
 							SET
@@ -1100,7 +1103,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(	"
+						$affected_rows = $wpdb->query( "
 							UPDATE
 								$table_name_txs
 							SET
@@ -1120,7 +1123,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(	"
+						$affected_rows = $wpdb->query( "
 							UPDATE
 								$table_name_txs
 							SET
@@ -1144,7 +1147,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(	$wpdb->prepare( "
+						$affected_rows = $wpdb->query( $wpdb->prepare( "
 							UPDATE
 								$table_name_txs
 							SET

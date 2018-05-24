@@ -472,7 +472,7 @@ CFG;
 
 				foreach ( $result['details'] as $row ) {
 					$tx = new stdClass();
-					$tx->symbol	 = $this->get_symbol();
+					$tx->symbol = $this->get_symbol();
 					$tx->txid = $txid;
 					$tx->address = $row['address'];
 					$tx->amount = $row['amount'];

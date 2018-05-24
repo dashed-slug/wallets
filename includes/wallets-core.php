@@ -64,7 +64,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// wp actions
 			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
+			add_action( 'admin_init', array( &$this, 'db_schema_checks' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
+
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
 			add_action( 'delete_blog', array( &$this, 'action_delete_blog' ), 10, 2 );
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
@@ -161,8 +163,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko.min.js' ) ) {
-					$script = 'wallets-ko.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.3.5.min.js' ) ) {
+					$script = 'wallets-ko-3.3.5.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -171,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.3.4',
+					'3.3.5',
 					true
 				);
 
@@ -196,8 +198,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.3.5.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.3.5.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -206,12 +208,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.3.4',
+					'3.3.5',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets.min.css' ) ) {
-					$front_styles = 'wallets.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.3.5.min.css' ) ) {
+					$front_styles = 'wallets-3.3.5.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -220,7 +222,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.3.4'
+					'3.3.5'
 				);
 			}
 		}
@@ -358,6 +360,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @internal
 		 */
 		public function db_schema_checks() {
+			self::db_schema();
+
 			global $wpdb;
 			$table_name_txs = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
@@ -377,63 +381,65 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			}
 
-			$tx_indexes = $wpdb->get_col( $wpdb->prepare( "
-				SELECT
-					DISTINCT index_name
-				FROM
-					information_schema.statistics
-				WHERE
-					table_schema = %s AND
-					table_name = %s
-			", $wpdb->dbname, $table_name_txs ) );
-
-			$diff = array_diff(
-				array( 'PRIMARY', 'uq_tx_idx', 'account_idx', 'blogid_idx' ),
-				$tx_indexes
+			// count indexes from transactions table
+			$actual_indexes = $wpdb->get_results( "SHOW INDEXES FROM $table_name_txs" );
+			$expected_indexes = array(
+				array( 'K' => 'uq_tx_idx', 'C' => 'txid' ),
+				array( 'K' => 'uq_tx_idx', 'C' => 'address' ),
+				array( 'K' => 'uq_tx_idx', 'C' => 'symbol' ),
+				array( 'K' => 'account_idx', 'C' => 'account' ),
+				array( 'K' => 'blogid_idx', 'C' => 'blog_id' ),
 			);
-
-			if ( $diff ) {
-				$this->_notices->error( sprintf(
-					__( 'The plugin may not function properly because the following transaction indexes are not set: %s. ' .
-						'If this error message persists, please contact support.', 'wallets'),
-					implode( ', ', $diff )
-					) );
-				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
+			$count = count( $expected_indexes );
+			foreach ( $expected_indexes as $e ) {
+				foreach ( $actual_indexes as $a ) {
+					if ( $a->Table == $table_name_txs && $a->Key_name == $e['K'] && $a->Column_name == $e['C'] ) {
+						$count--;
+					}
+				}
 			}
-
-			$tx_indexes = $wpdb->get_col( $wpdb->prepare( "
-				SELECT
-					DISTINCT index_name
-				FROM
-					information_schema.statistics
-				WHERE
-					table_schema = %s AND
-					table_name = %s
-			", $wpdb->dbname, $table_name_adds ) );
-
-			$diff = array_diff(
-				array( 'PRIMARY', 'uq_ad_idx', 'retrieve_idx', 'lookup_idx' ),
-				$tx_indexes
-			);
-
-			if ( $diff ) {
+			if ( $count ) {
 				$this->_notices->error( sprintf(
-					__( 'The plugin may not function properly because the following deposit address indexes are not set: %s. ' .
-						'If this error message persists, please contact support.', 'wallets'),
-					implode( ', ', $diff )
-					) );
+					__( 'The plugin may not function properly because at least one DB index was not found on the %s table. ' .
+						'If this error message persists, please contact support and report this: %s.', 'wallets'),
+					$table_name_txs,
+					print_r( $actual_indexes, true )
+				) );
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 
 			}
 
+			// count indexes from addresses table
+			$actual_indexes = $wpdb->get_results( "SHOW INDEXES FROM $table_name_adds" );
+			$expected_indexes = array(
+				array( 'K' => 'uq_ad_idx', 'C' => 'address' ),
+				array( 'K' => 'uq_ad_idx', 'C' => 'symbol' ),
+				array( 'K' => 'uq_ad_idx', 'C' => 'extra' ),
+				array( 'K' => 'retrieve_idx', 'C' => 'account' ),
+				array( 'K' => 'retrieve_idx', 'C' => 'symbol' ),
+				array( 'K' => 'lookup_idx', 'C' => 'address' ),
+			);
+			$count = count( $expected_indexes );
+			foreach ( $expected_indexes as $e ) {
+				foreach ( $actual_indexes as $a ) {
+					if ( $a->Table == $table_name_adds && $a->Key_name == $e['K'] && $a->Column_name == $e['C'] ) {
+						$count--;
+					}
+				}
+			}
+			if ( $count ) {
+				$this->_notices->error( sprintf(
+					__( 'The plugin may not function properly because at least one DB index was not found on the %s table. ' .
+						'If this error message persists, please contact support and report this: %s.', 'wallets'),
+					$table_name_adds,
+					print_r( $actual_indexes, true )
+				) );
+				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
+			}
 		}
 
 		/** @internal */
 		public function action_admin_init() {
-			self::db_schema();
-
-			$this->db_schema_checks();
-
 			// Check for PHP version
 			if ( version_compare( PHP_VERSION, '5.5' ) <= 0 ) {
 				$this->_notices->info(
@@ -531,8 +537,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '3.3.4';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '7d51516';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '3.3.5';
+			$data[ __( 'Git SHA', 'wallets' ) ] = 'bcd1dc2';
 			$data[ __( 'Web Server', 'wallets' ) ] = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
@@ -699,7 +705,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param int $expiration Time until expiration in seconds from now, or 0 for never expires.
 		 * @return bool The result of the wrapped function.
 		 */
-		public static function set_transient( $transient, $value, $expiration ) {
+		public static function set_transient( $transient, $value, $expiration = 0 ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'set_site_transient' : 'set_transient', $transient, $value, $expiration );
 		}
 
@@ -723,10 +729,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @link https://codex.wordpress.org/Function_Reference/get_site_transient
 		 * @link https://codex.wordpress.org/Function_Reference/get_transient
 		 * @param string $option The transient name.
+		 * @param mixed $default The default value to return if transient was not found.
 		 * @return bool The result of the wrapped function.
 		 */
-		public static function get_transient( $transient ) {
-			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_transient' : 'get_transient', $transient );
+		public static function get_transient( $transient, $default = false ) {
+			$val = call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_transient' : 'get_transient', $transient );
+			return false === $val ? $default : $val;
 		}
 
 		//////// other helpers ////////

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.3.4
+Stable tag: 3.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.3.5 =
+- Fix: Prevent browser caches from retrieving old assets (js,css). Plugin version is now part of filenames as well as in the `ver` GET parameter. Solves problems with some CDNs and plugins that discard the version parameter.
+- Add: Better schema index checks. Will report an error to the admin if any DB constraint is not in place.
+- Improve: Withdrawals are now first marked as done and then actually performed. If wallet returns error then withdrawal is marked as failed. Prevents double spend in the very unlikely event of a network disconnect while the transaction is being sent to the wallet.
+- Fix: Division by zero error fixed in the Cold Storage deposit screens.
+- Fix: For coins that have extra info (e.g. Monero Payment ID, Ripple Destination Tag), display both in Cold Storage deposit screen.
 
 = 3.3.4 =
 - Fix: Bug that prevented updating confirmation counts of deposits coming from transactions with multiple outputs, introduced in 3.3.2.
@@ -826,7 +833,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.3.4 fixes a bug introduced in 3.3.2.
+Version, 3.3.5 brings some minor bug fixes.
 
 == Donating ==
 

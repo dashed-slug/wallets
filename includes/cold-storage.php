@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage.min.js' ) ) {
-				$script = 'wallets-cold-storage.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.3.5.min.js' ) ) {
+				$script = 'wallets-cold-storage-3.3.5.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.3.4',
+				'3.3.5',
 				true
 			);
 		}
@@ -294,13 +294,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 						style="text-align: center;"
 						data-address="<?php echo esc_attr( $adapter->address_to_qrcode_uri(  $deposit_address ) ); ?>"></div>
 
+					<?php if ( is_array( $deposit_address ) ): ?>
+					<input
+						type="text"
+						readonly="readonly"
+						onClick="this.select();"
+						value="<?php echo esc_attr( $deposit_address[ 0 ] ); ?>"
+						style="width: 100%; text-align: center;" />
+
+					<input
+						type="text"
+						readonly="readonly"
+						onClick="this.select();"
+						value="<?php echo esc_attr( $deposit_address[ 1 ] ); ?>"
+						style="width: 100%; text-align: center;" />
+
+					<?php elseif ( is_string( $deposit_address) ): ?>
 					<input
 						type="text"
 						readonly="readonly"
 						onClick="this.select();"
 						value="<?php echo esc_attr( $deposit_address ); ?>"
 						style="width: 100%; text-align: center;" />
-
+					<?php endif; ?>
 					</div>
 
 				<?php endif;
@@ -365,32 +381,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					$user_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 					$cold_storage_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 
-					for ( $r = 10; $r <= 100; $r += 10 ):
+					if ( isset( $user_balances[ $symbol ] ) ):
+						for ( $r = 10; $r <= 100; $r += 10 ):
 
-						$target = $user_balances[ $symbol ] * $r / 100;
-						$delta = $target - $wallet_balance;
+							$target = $user_balances[ $symbol ] * $r / 100;
+							$delta = $target - $wallet_balance;
 
-						if (
-							( $delta > 0 && 'deposit' == $cold_storage_tab ) ||
-							( $delta < 0 && 'withdraw' == $cold_storage_tab )
-						):
+							if (
+								( $delta > 0 && 'deposit' == $cold_storage_tab ) ||
+								( $delta < 0 && 'withdraw' == $cold_storage_tab )
+							):
+
+							?><p><?php echo sprintf(
+								__( 'To have <code>%d%%</code> online (<code>%s</code>), %s %s.', 'wallets' ),
+								$r,
+								sprintf( $adapter->get_sprintf(), $target ),
+								$delta > 0 ? __( 'deposit', 'wallets' ) : __( 'withdraw', 'wallets' ),
+								'<input type="text" readonly="readonly" onClick="this.select();" size="10" value="' . number_format( abs( $delta ), 8, '.', '' ) . '" />'
+							); ?></p><?php
+
+							endif;
+						endfor;
 
 						?><p><?php echo sprintf(
-							__( 'To have <code>%d%%</code> online (<code>%s</code>), %s %s.', 'wallets' ),
-							$r,
-							sprintf( $adapter->get_sprintf(), $target ),
-							$delta > 0 ? __( 'deposit', 'wallets' ) : __( 'withdraw', 'wallets' ),
-							'<input type="text" readonly="readonly" onClick="this.select();" size="10" value="' . number_format( abs( $delta ), 8, '.', '' ) . '" />'
+							__( 'You currently have <code>%01.2f%%</code> online (<code>%s</code>).', '/* echo slug &/' ),
+							$user_balances[ $symbol ] ? 100 * ( $wallet_balance / $user_balances[ $symbol ] ) : 0,
+							sprintf( $adapter->get_sprintf(), $wallet_balance )
 						); ?></p><?php
-
-						endif;
-					endfor;
-
-					?><p><?php echo sprintf(
-						__( 'You currently have <code>%01.2f%%</code> online (<code>%s</code>).', '/* echo slug &/' ),
-						100 * ( $wallet_balance / $user_balances[ $symbol ] ),
-						sprintf( $adapter->get_sprintf(), $wallet_balance )
-					); ?></p><?php
+					endif;
 				}
 			}
 		}
