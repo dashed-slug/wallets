@@ -277,15 +277,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									UPDATE
 										{$table_name_txs}
 									SET
-										status = %s,
-										retries = retries - 1,
+										retries = IF( retries >= 1, retries - 1, 0 ),
+										status = IF( retries, 'pending', 'failed' ),
 										updated_time = %s
 									WHERE
 										( blog_id = %d || %d ) AND
 										status = 'pending' AND
 										txid IN ( %s, %s )
 									",
-									$move_tx_send->retries > 1 ? 'pending' : 'failed',
 									$current_time_gmt,
 									get_current_blog_id(),
 									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
@@ -491,12 +490,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						UPDATE
 							{$table_name_txs}
 						SET
-							status = %s,
-							retries = retries - 1
+							retries = IF( retries >= 1, retries - 1, 0 ),
+							status = IF( retries, 'pending', 'failed' )
 						WHERE
 							id = %d
 						",
-						$wd_tx->retries > 1 ? 'pending' : 'failed',
 						$wd_tx->id
 					);
 

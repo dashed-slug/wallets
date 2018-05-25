@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.3.5
+Stable tag: 3.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.3.6
+- Fix: Prevent SQL error on failed transactions "BIGINT UNSIGNED value is out of range".
 
 = 3.3.5 =
 - Fix: Prevent browser caches from retrieving old assets (js,css). Plugin version is now part of filenames as well as in the `ver` GET parameter. Solves problems with some CDNs and plugins that discard the version parameter.
@@ -833,7 +836,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.3.5 brings some minor bug fixes.
+Version, 3.3.6 fixes a non-critical SQL error.
 
 == Donating ==
 
