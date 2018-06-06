@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.3.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-05-25 14:38:41+00:00\n"
+"POT-Creation-Date: 2018-06-06 06:48:29+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -104,7 +104,7 @@ msgstr ""
 #: includes/coin-adapter.php:336 includes/cold-storage.php:136
 #: includes/confirmations.php:345 includes/cron.php:509
 #: includes/frontend-settings.php:186 includes/notifications.php:598
-#: includes/rates.php:265 includes/transactions.php:92
+#: includes/rates.php:288 includes/transactions.php:92
 #: includes/transactions.php:857 includes/transactions.php:1038
 #: includes/transactions.php:1058 includes/transactions.php:1078
 #: includes/transactions.php:1097 includes/transactions.php:1117
@@ -155,7 +155,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:78 includes/cold-storage.php:336
-#: includes/cold-storage.php:349 includes/rates.php:350
+#: includes/cold-storage.php:349 includes/rates.php:359
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -1421,92 +1421,98 @@ msgstr ""
 msgid "Adapter for \"%s\" is not online for getting a deposit address"
 msgstr ""
 
-#: includes/rates.php:71
+#: includes/rates.php:75
 msgid "Exchange rates settings"
 msgstr ""
 
-#: includes/rates.php:78
-msgid "Rates provider"
+#: includes/rates.php:82
+msgid "Exchange rates providers"
 msgstr ""
 
-#: includes/rates.php:84
-msgid "Pick the API that you wish to use as a source of exchange rates. "
+#: includes/rates.php:88
+msgid ""
+"Pick the APIs that you wish to use as sources of exchange rates between "
+"cryptocurrencies. "
 msgstr ""
 
-#: includes/rates.php:95
-msgid "Rates cache expiry (minutes)"
+#: includes/rates.php:99
+msgid "Fixer API key"
 msgstr ""
 
-#: includes/rates.php:116
+#: includes/rates.php:119
+msgid "Rates refresh rate (minutes)"
+msgstr ""
+
+#: includes/rates.php:140
 msgid "Default fiat currency"
 msgstr ""
 
-#: includes/rates.php:135
+#: includes/rates.php:159
 msgid "Use tor to pull exchange rates"
 msgstr ""
 
-#: includes/rates.php:141
+#: includes/rates.php:165
 msgid ""
 "Enable this to pull exchange rates via tor. Does not work with Poloniex. "
 "You need to set up a tor proxy first. Only useful if setting up a hidden "
 "service. (Default: disabled)"
 msgstr ""
 
-#: includes/rates.php:152
+#: includes/rates.php:176
 msgid "Tor proxy IP"
 msgstr ""
 
-#: includes/rates.php:158
+#: includes/rates.php:182
 msgid "This is the IP of your tor proxy. (Default: 127.0.0.1)"
 msgstr ""
 
-#: includes/rates.php:169
+#: includes/rates.php:193
 msgid "Tor proxy TCP port"
 msgstr ""
 
-#: includes/rates.php:178
+#: includes/rates.php:202
 msgid ""
 "This is the TCP port of your tor proxy. (Default: 9050, some newer tor "
 "bundles use 9150)"
 msgstr ""
 
-#: includes/rates.php:191
+#: includes/rates.php:215
 msgid "Exchange rates debug views"
 msgstr ""
 
-#: includes/rates.php:198
+#: includes/rates.php:222
 msgid "Known fiat currencies"
 msgstr ""
 
-#: includes/rates.php:204
-msgid "View a list of fiat currencies reported by fixer.io (for debugging). "
+#: includes/rates.php:228
+msgid "View a list of known fiat currencies (for debugging). "
 msgstr ""
 
-#: includes/rates.php:216
+#: includes/rates.php:240
 msgid "Known cryptocurrencies"
 msgstr ""
 
-#: includes/rates.php:222
+#: includes/rates.php:246
 msgid ""
-"View a list of cryptocurrencies reported by the selected provider (for "
-"debugging). "
+"View a list of all known cryptocurrencies reported by the selected "
+"providers (for debugging). "
 msgstr ""
 
-#: includes/rates.php:233
+#: includes/rates.php:257
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/rates.php:270
+#: includes/rates.php:263
+msgid ""
+"View a list of all exhange rates reported by the selected providers (for "
+"debugging)."
+msgstr ""
+
+#: includes/rates.php:293
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: includes/rates.php:319
-msgid ""
-"Disabled. (New exchange rate data will not be downloaded. Some plugin "
-"extensions may not work as expected.)"
-msgstr ""
-
-#: includes/rates.php:468
+#: includes/rates.php:479
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."

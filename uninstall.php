@@ -84,7 +84,8 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_confirm_redirect_seconds' );
 
 	// remove exchange rate providers settings
-	wallets_delete_option( 'wallets_rates_provider' );
+	wallets_delete_option( 'wallets_rates_fixer_key' );
+	wallets_delete_option( 'wallets_rates_providers' );
 	wallets_delete_option( 'wallets_rates_cache_expiry' );
 	wallets_delete_option( 'wallets_rates_tor_enabled' );
 	wallets_delete_option( 'wallets_rates_tor_ip' );

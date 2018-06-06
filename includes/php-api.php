@@ -267,7 +267,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		  * 	) );
 		  *
 		  * @api
-		 * @since 3.0.0
+		  * @since 3.0.0
 		  * @param array $txs The transactions. Initialize to empty array before the filter call.
 		  * @param array $args Array of arguments to this filter:
 		  *		- string 'symbol' &rarr; The coin to get transactions of.

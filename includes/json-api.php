@@ -287,7 +287,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							}
 
 							$coin_info->rate = false;
-							if ( 'none' != Dashed_Slug_Wallets::get_option( 'wallets_rates_provider', 'none' ) ) {
+							if ( Dashed_Slug_Wallets::get_option( 'wallets_rates_providers' ) ) {
 								try {
 									$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
 										$fiat_symbol,
@@ -582,7 +582,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							}
 
 							$coin_info->rate = false;
-							if ( 'none' != Dashed_Slug_Wallets::get_option( 'wallets_rates_provider', 'none' ) ) {
+							if ( Dashed_Slug_Wallets::get_option( 'wallets_rates_providers' ) ) {
 								try {
 									$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
 										$fiat_symbol,

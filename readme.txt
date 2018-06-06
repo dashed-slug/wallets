@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.3.6
+Stable tag: 3.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,8 +106,9 @@ If you are interested in installing a **full node**, then follow the instruction
 = Cloud wallets =
 
 **Cloud wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
-  - If you are interested in installing the CoinPayments adapter, then the installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
-  - If you prefer to install the block.io coin adapter then the installation instructions are on that other [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
+
+- If you are interested in installing the CoinPayments adapter, then the installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
+- If you prefer to install the block.io coin adapter then the installation instructions are on that other [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
 
 There is a troubleshooting section on the coin adapter pages.
 
@@ -308,6 +309,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.4.0
+- Change: To use the fixer.io service users must now provide an API key. This is now possible.
+- Change: The fixer.io service is accessed at most once per hour.
+- Improve: Can now enable multiple exchange rates providers simultaneously.
+- Change: Simplified hooks for adding exchange rates manually. See https://gist.github.com/alex-georgiou/492196184f206002c864225180ca8fbb
+- Improve: When an exchange rates provider is disabled, its data remains on the DB, while any data that comes from enabled providers is kept updated.
+- Improve: Exchange rates admin page now displays data counts to aid debugging.
 
 = 3.3.6
 - Fix: Prevent SQL error on failed transactions "BIGINT UNSIGNED value is out of range".
@@ -836,7 +845,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.3.6 fixes a non-critical SQL error.
+Version, 3.4.0 addresses changes to the fixer.io API and lets users provide the necesary API key to continue using the service.
 
 == Donating ==
 
