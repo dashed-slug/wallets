@@ -163,8 +163,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.4.0.min.js' ) ) {
-					$script = 'wallets-ko-3.4.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.4.1.min.js' ) ) {
+					$script = 'wallets-ko-3.4.1.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.4.0',
+					'3.4.1',
 					true
 				);
 
@@ -181,11 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				include __DIR__ . '/wallets-ko-i18n.php';
 
 				// attach user preferences data to frontend knockout script
-				if ( false !== array_search( 'fixer', Dashed_Slug_Wallets::get_option( 'wallets_rates_providers', array() ) ) ) {
-					$fiat_symbol = false;
-				} else {
-					$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
-				}
+				$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
 				if ( ! $fiat_symbol ) {
 					$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 				}
@@ -198,8 +194,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.4.0.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.4.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.4.1.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.4.1.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -208,12 +204,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.4.0',
+					'3.4.1',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.4.0.min.css' ) ) {
-					$front_styles = 'wallets-3.4.0.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.4.1.min.css' ) ) {
+					$front_styles = 'wallets-3.4.1.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -222,7 +218,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.4.0'
+					'3.4.1'
 				);
 			}
 		}
@@ -537,8 +533,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '3.4.0';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '0b8f21f';
+			$data[ __( 'Plugin version', 'wallets' ) ] = '3.4.1';
+			$data[ __( 'Git SHA', 'wallets' ) ] = '8bc57d7';
 			$data[ __( 'Web Server', 'wallets' ) ] = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );

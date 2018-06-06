@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.4.0
+Stable tag: 3.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -310,7 +310,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
-= 3.4.0
+= 3.4.1 =
+- Fix: Admin can now select to not use any exchange rates if not needed.
+- Fix: More correct algorithm for calculating exchange rate between any two currencies. Does graph traversal and finds a path between known exchange rates.
+- Change: If a fiat currency has the same symbol as a known cryptocurrency, its exchange rate data is discarded to avoid confusing the rate calculations.
+- Fix: User preference for a fiat currency now takes precedence again over site-wide default.
+
+= 3.4.0 =
 - Change: To use the fixer.io service users must now provide an API key. This is now possible.
 - Change: The fixer.io service is accessed at most once per hour.
 - Improve: Can now enable multiple exchange rates providers simultaneously.
@@ -318,7 +324,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 - Improve: When an exchange rates provider is disabled, its data remains on the DB, while any data that comes from enabled providers is kept updated.
 - Improve: Exchange rates admin page now displays data counts to aid debugging.
 
-= 3.3.6
+= 3.3.6 =
 - Fix: Prevent SQL error on failed transactions "BIGINT UNSIGNED value is out of range".
 
 = 3.3.5 =
@@ -845,7 +851,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.4.0 addresses changes to the fixer.io API and lets users provide the necesary API key to continue using the service.
+Version, 3.4.1 addresses some obscure bugs introduced to the exchange rates system in 3.4.0.
 
 == Donating ==
 

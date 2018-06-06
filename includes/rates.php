@@ -27,7 +27,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			// bind any enabled data filters
 			$enabled_providers = Dashed_Slug_wallets::get_option( 'wallets_rates_providers', array() );
 			foreach ( self::$providers as $provider ) {
-				if ( false !== array_search( $provider, $enabled_providers ) ) {
+				if ( is_array( $enabled_providers ) && false !== array_search( $provider, $enabled_providers ) ) {
 					add_filter( 'wallets_rates', array( __CLASS__, "filter_rates_$provider" ) );
 					if ( 'fixer' == $provider ) {
 						add_filter( 'wallets_rates_fiats', array( __CLASS__,'filter_rates_fiats_fixer' ) );
@@ -329,8 +329,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public function provider_checkboxes_cb( $arg ) {
-			foreach ( self::$providers as $provider ): ?>
+			$enabled_providers = Dashed_Slug_Wallets::get_option( $arg['label_for'], array() );
+			if ( ! $enabled_providers ) {
+				$enabled_providers = array();
+			}
 
+			foreach ( self::$providers as $provider ): ?>
 
 				<input
 					type="checkbox"
@@ -338,7 +342,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					name="<?php echo esc_attr( $arg['label_for'] ); ?>[]"
 					value="<?php echo esc_attr( $provider ); ?>"
 
-						<?php checked( false !== array_search( $provider, Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ); ?> />
+						<?php checked( false !== array_search( $provider, $enabled_providers ) ); ?> />
 
 				<?php
 				switch ( $provider ) {
@@ -480,13 +484,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public function filter_pre_update_option( $new, $old ) {
-			// if enabled providers changed
-			if ( array_diff( $new, $old ) ) {
-				// trigger data refresh on next shutdown
-				Dashed_Slug_Wallets::delete_transient( 'wallets_rates' );
-				Dashed_Slug_Wallets::delete_transient( 'wallets_rates_fiats' );
-				Dashed_Slug_Wallets::delete_transient( 'wallets_rates_cryptos' );
-			}
+			Dashed_Slug_Wallets::delete_transient( 'wallets_rates_last_run' );
 			return $new;
 		}
 
@@ -511,13 +509,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( time() > $last_run + $interval * MINUTE_IN_SECONDS ) {
 				self::load_data();
 
-				self::$fiats = array_unique( apply_filters( 'wallets_rates_fiats', self::$fiats ) );
-				Dashed_Slug_Wallets::update_option( 'wallets_rates_fiats', self::$fiats );
-
 				self::$cryptos = array_unique( apply_filters( 'wallets_rates_cryptos', self::$cryptos ) );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates_cryptos', self::$cryptos );
 
-				self::$rates = array_unique( apply_filters( 'wallets_rates', self::$rates  ) );
+				self::$fiats = array_unique( apply_filters( 'wallets_rates_fiats', self::$fiats ) );
+				Dashed_Slug_Wallets::update_option( 'wallets_rates_fiats', self::$fiats );
+
+				self::$rates = apply_filters( 'wallets_rates', self::$rates  );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates', self::$rates );
 
 				Dashed_Slug_Wallets::set_transient( 'wallets_rates_last_run', time() );
@@ -583,22 +581,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $result;
 		}
 
-		private static function get_stored_exchange_rate( $from, $to ) {
-			if ( $from == $to ) {
-				return 1;
-			}
-
-			if( isset( self::$rates["{$to}_{$from}"] ) ) {
-				return floatval( self::$rates["{$to}_{$from}"] );
-
-			} elseif ( isset( self::$rates["{$from}_{$to}"] ) ) {
-				return 1 / floatval( self::$rates["{$from}_{$to}"] );
-			}
-
-			return false;
-		}
-
-
 		// filters that pull exchange rates
 
 		public static function filter_rates_fiats_fixer( $fiats ) {
@@ -612,7 +594,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					if ( is_object( $obj ) && isset( $obj->rates ) ) {
 						foreach ( $obj->rates as $fixer_symbol => $rate ) {
 							if ( 'BTC' != $fixer_symbol ) {
-								$fiats[] = $fixer_symbol;
+								if ( ! self::is_crypto( $fixer_symbol ) ) {
+									$fiats[] = $fixer_symbol;
+								}
 							}
 						}
 					}
@@ -766,7 +750,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) && ! isset( $obj->error ) && isset( $obj->rates ) ) {
 						foreach ( $obj->rates as $s => $r ) {
-							$rates["{$s}_{$obj->base}"] = $r;
+							if ( ! self::is_crypto( $s ) ) {
+								$rates["{$s}_{$obj->base}"] = $r;
+							}
 						}
 					}
 				}
@@ -948,6 +934,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		// API
 
+		private static $memoize_rates = array();
 
 		/**
 		 * Returns the exchange rate between two currencies.
@@ -963,55 +950,68 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function get_exchange_rate( $from, $to ) {
 			self::load_data();
 
-			$from = strtoupper( $from );
-			$to = strtoupper( $to );
-
-			$rate = self::get_stored_exchange_rate( $from, $to );
-
-			if ( !$rate ) {
-				if ( self::is_fiat( $from ) ) {
-
-					if ( self::is_fiat( $to ) ) {
-						$rate1 = self::get_stored_exchange_rate( $from, 'USD' );
-						$rate2 = self::get_stored_exchange_rate( 'USD', $to );
-						$rate = $rate1 * $rate2;
-
-					} elseif ( self::is_crypto( $to ) ) {
-						$rate1 = self::get_stored_exchange_rate( $from, 'USD' );
-						$rate2 = self::get_stored_exchange_rate( 'USD', 'BTC' );
-						$rate3 = self::get_stored_exchange_rate( 'BTC', $to );
-						$rate = $rate1 * $rate2 * $rate3;
-					} else {
-						$rate = false;
-					}
-
-				} elseif ( self::is_crypto( $from ) ) {
-
-					if ( self::is_fiat( $to ) ) {
-						$rate1 = self::get_stored_exchange_rate( $from, 'BTC' );
-						$rate2 = self::get_stored_exchange_rate( 'BTC', 'USD' );
-						$rate3 = self::get_stored_exchange_rate( 'USD', $to );
-						$rate = $rate1 * $rate2 * $rate3;
-
-					} elseif ( self::is_crypto( $to ) ) {
-						$rate1 = self::get_stored_exchange_rate( $from, 'BTC' );
-						$rate2 = self::get_stored_exchange_rate( 'BTC', $to );
-						$rate = $rate1 * $rate2;
-					} else {
-						$rate = false;
-					}
-				} else {
-					$rate = false;
-				}
+			if ( isset( $memoize_rates["{$from}_{$to}"] ) ) {
+				return $memoize_rates["{$from}_{$to}"];
 			}
 
-			if ( ! $rate ) {
+			$memoize_rates["{$from}_{$to}"] = self::get_exchange_rate_recursion( $from, $to );
+
+			return $memoize_rates["{$from}_{$to}"];
+		}
+
+		/**
+		 * Return value rate such that from * rate = to.
+		 */
+		private static function get_exchange_rate_recursion( $from, $to, $visited = array() ) {
+
+			if ( $from == $to ) {
+				return 1;
+			}
+
+			if( isset( self::$rates["{$to}_{$from}"] ) ) {
+				return 1 / floatval( self::$rates["{$to}_{$from}"] );
+			}
+
+			if ( isset( self::$rates["{$from}_{$to}"] ) ) {
+				return floatval( self::$rates["{$from}_{$to}"] );
+			}
+
+			if ( false !== array_search( $from, $visited ) ) {
 				return false;
 			}
 
-			return 1 / $rate;
-		}
+			$depth = count( $visited );
+			if ( $depth > 5 ) {
+				return false;
+			}
 
+			$new_visited = $visited;
+			$new_visited[] = $from;
+
+			foreach ( self::$rates as $market => $rate ) {
+				$market_split = explode( '_', $market );
+				$t = $market_split[ 0 ];
+				$f = $market_split[ 1 ];
+
+				if ( $from == $f ) {
+					$new_visited[] = $from;
+					$rate2 = self::get_exchange_rate_recursion( $t, $to, $new_visited );
+					if ( $rate && $rate2 ) {
+						return $rate2 / $rate;
+					}
+				}
+				elseif ( $from == $t ) {
+					$new_visited[] = $to;
+
+					$rate2 = self::get_exchange_rate_recursion( $f, $to, $new_visited );
+					if ( $rate && $rate2 ) {
+						return $rate * $rate2;
+					}
+				}
+			}
+
+			return false;
+		}
 		public static function is_fiat( $symbol ) {
 			self::load_data();
 			return false !== array_search( $symbol, self::$fiats );
