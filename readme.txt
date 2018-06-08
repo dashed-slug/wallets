@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -309,6 +309,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.4.2 =
+Fix: Race condition hazard that could compromise the security of this plugin now fixed. This is an IMPORTANT SECURITY UPDATE.
 
 = 3.4.1 =
 - Fix: Admin can now select to not use any exchange rates if not needed.
@@ -851,7 +854,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Upgrade Notice ==
 
-Version, 3.4.1 addresses some obscure bugs introduced to the exchange rates system in 3.4.0.
+Please upgrade to 3.4.2 as soon as possible. This patch fixes an important bug that has security implications.
 
 == Donating ==
 

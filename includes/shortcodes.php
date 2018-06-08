@@ -31,8 +31,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.4.1.min.js' ) ) {
-					$script = 'bs58check-3.4.1.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.4.2.min.js' ) ) {
+					$script = 'bs58check-3.4.2.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}

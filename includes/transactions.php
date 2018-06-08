@@ -157,6 +157,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
+			$wpdb->query( "
+				LOCK TABLES
+				$table_name_txs WRITE,
+				$table_name_options WRITE,
+				$table_name_adds READ,
+				$wpdb->users READ,
+				$wpdb->usermeta READ
+			" );
+
 			$move_txs_send_query = $wpdb->prepare(
 				"
 				SELECT
@@ -212,17 +221,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					if ( ! is_null( $move_tx_receive ) ) {
 						$current_time_gmt = current_time( 'mysql', true );
 
-						$wpdb->query( "
-							LOCK TABLES
-								$table_name_txs WRITE,
-								$table_name_options WRITE,
-								$table_name_adds READ
-						" );
-
 						$balance_query = $wpdb->prepare(
 							"
 							SELECT
-								SUM(amount)
+								SUM( amount )
 							FROM
 								{$table_name_txs}
 							WHERE
@@ -265,8 +267,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								$wpdb->query( $success_update_query );
 
-								$wpdb->query( "UNLOCK TABLES" );
-
 								do_action( 'wallets_move_send', $move_tx_send );
 								do_action( 'wallets_move_receive', $move_tx_receive );
 
@@ -294,17 +294,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								$wpdb->query( $fail_update_query );
 
-								$wpdb->query( "UNLOCK TABLES" );
 
 								if ( $move_tx_send->retries == 1 ) {
 									do_action( 'wallets_move_send_failed', $move_tx_send );
 								}
-							}
-						}
-					}
-				}
-			}
-		}
+							} // end if not enough balance
+
+						} // end if user balance was retrieved successfully
+					} // end if found move with receive tag
+				} // end if move has send tag
+			} // end foreach move
+
+			$wpdb->query( "UNLOCK TABLES" );
+
+		} // end function execute_pending_moves
 
 		public function execute_pending_withdrawals() {
 			// if this option does not exist, uninstall script might be already running.
@@ -316,8 +319,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
-
-			$dsw = Dashed_Slug_Wallets::get_instance();
 
 			$withdrawal_symbols = array();
 			$adapters = apply_filters( 'wallets_api_adapters', array() );
@@ -331,6 +332,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			if ( ! $withdrawal_symbols ) {
 				return;
 			}
+
+			$wpdb->query( "
+				LOCK TABLES
+				$table_name_txs WRITE,
+				$table_name_options WRITE,
+				$table_name_adds READ,
+				$wpdb->users READ,
+				$wpdb->usermeta READ
+			" );
 
 			$in_symbols = "'" . implode( "','", $withdrawal_symbols ) ."'";
 
@@ -359,14 +369,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$wd_txs =  $wpdb->get_results( $wd_txs_query );
 
 			foreach ( $wd_txs as $wd_tx ) {
-
-				$wpdb->query( "
-					LOCK TABLES
-						$table_name_txs WRITE,
-						$table_name_options WRITE,
-						$table_name_adds READ,
-						$wpdb->users u READ
-				" );
 
 				$txid = null;
 				try {
@@ -477,9 +479,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						array( '%d' )
 					);
 
-					$wpdb->query( 'COMMIT' );
-					$wpdb->query( "UNLOCK TABLES" );
-
 					$wd_tx->txid = $txid;
 					do_action( 'wallets_withdraw', $wd_tx );
 
@@ -500,14 +499,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 					$wpdb->query( $fail_query );
 
-					$wpdb->query( "UNLOCK TABLES" );
-
 					if ( $wd_tx->retries <= 1 ) {
 						$wd_tx->last_error = $e->getMessage();
 						do_action( 'wallets_withdraw_failed', $wd_tx );
 					}
 				}
-			}
+			} // end foreach withdrawal
+			$wpdb->query( "UNLOCK TABLES" );
 		}
 
 		/**
@@ -824,7 +822,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					SELECT
 						account
 					FROM
-						$table_name_adds a
+						$table_name_adds
 					WHERE
 						( blog_id = %d || %d ) AND
 						symbol = %s AND

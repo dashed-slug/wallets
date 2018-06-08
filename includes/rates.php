@@ -986,7 +986,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			}
 
 			$new_visited = $visited;
-			$new_visited[] = $from;
 
 			foreach ( self::$rates as $market => $rate ) {
 				$market_split = explode( '_', $market );
