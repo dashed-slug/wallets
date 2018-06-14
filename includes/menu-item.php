@@ -6,7 +6,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 	class Dashed_Slug_Wallets_Frontend_Menu {
@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 		public function action_admin_init() {
 			if ( current_user_can( 'manage_wallets' ) ) {
 				global $pagenow;
-				if ( 'nav-menus.php' !== $pagenow ){
+				if ( 'nav-menus.php' !== $pagenow ) {
 					return;
 				}
 
@@ -36,7 +36,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 
 				add_meta_box(
 					'wallets_nav_balance_box_item_meta_box',
-					__( 'Bitcoin and Altcoin Wallets balances', 'wallets'),
+					__( 'Bitcoin and Altcoin Wallets balances', 'wallets' ),
 					array( $this, 'balance_meta_box_render' ),
 					'nav-menus',
 					'side',
@@ -47,8 +47,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-3.4.2.min.js' ) ) {
-				$script = 'wallets-admin-menu-item-3.4.2.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-3.5.0.min.js' ) ) {
+				$script = 'wallets-admin-menu-item-3.5.0.min.js';
 			} else {
 				$script = 'wallets-admin-menu-item.js';
 			}
@@ -57,37 +57,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.4.2',
+				'3.5.0',
 				true
 			);
 		}
 
-		public function wp_setup_nav_menu_item( $menu_item ){
-			if( isset( $menu_item->type ) && 'balances' == $menu_item->type ){
+		public function wp_setup_nav_menu_item( $menu_item ) {
+			if ( isset( $menu_item->type ) && 'balances' == $menu_item->type ) {
 				$menu_item->type_label = __( 'Wallet balances', 'wallets' );
 			}
 			return $menu_item;
 		}
 
-		public function on_customize_nav_menu_available_item_types( $item_types ){
+		public function on_customize_nav_menu_available_item_types( $item_types ) {
 			$item_types[] = array(
-				'title'=>__( 'Wallet balances', 'wallets' ),
-				'type'=>'balances',
-				'object' => 'wallets_nav_balances_box'
+				'title'  => __( 'Wallet balances', 'wallets' ),
+				'type'   => 'balances',
+				'object' => 'wallets_nav_balances_box',
 			);
 			return $item_types;
 		}
 
-		public function on_customize_nav_menu_available_items( $items, $type, $object, $page ){
+		public function on_customize_nav_menu_available_items( $items, $type, $object, $page ) {
 			if ( 'bop_nav_search_box' === $type ) {
 				$items[] = array(
-					'id' => 'wallets_nav_balances_box',
-					'title' => __( 'Balances box', 'wallets' ),
-					'type' => 'balances',
+					'id'         => 'wallets_nav_balances_box',
+					'title'      => __( 'Balances box', 'wallets' ),
+					'type'       => 'balances',
 					'type_label' => __( 'Balances box', 'wallets' ),
-					'object' => '',
-					'url' => '#',
-					'classes' => 'wallets-nav-balances'
+					'object'     => '',
+					'url'        => '#',
+					'classes'    => 'wallets-nav-balances',
 				);
 			}
 			return $items;
@@ -104,9 +104,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 					<ul class="categorychecklist">
 						<li>
 							<input type="hidden" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-type]" value="balances">
-							<input type="hidden" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-type_label]" value="<?php echo __( 'Crypto Wallet Balances', 'wallets' ) ?>">
+							<input type="hidden" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-type_label]" value="<?php echo __( 'Crypto Wallet Balances', 'wallets' ); ?>">
 
-							<input type="hidden" class="menu-item-title" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-title]" value="<?php echo __( 'Balance', 'wallets') ?>">
+							<input type="hidden" class="menu-item-title" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-title]" value="<?php echo __( 'Balance', 'wallets' ); ?>">
 							<input type="hidden" class="menu-item-url" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-url]" value="#">
 							<input type="hidden" class="menu-item-classes" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-classes]" value="wallets-nav-balance">
 
@@ -121,18 +121,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 						<span class="spinner"></span>
 					</span>
 				</p>
-			</div><?php
+			</div>
+			<?php
 		}
 
 		public function walker_nav_menu_start_el( $item_output, $item, $depth, $args ) {
 
-			if( 'balances' == $item->type && is_user_logged_in() ) {
+			if ( 'balances' == $item->type && is_user_logged_in() ) {
 
 				ob_start();
-				?><a href="#"><?php echo esc_html( $item->title ); ?></a>
-				<ul class="sub-menu"><?php
+				?>
+				<a href="#"><?php echo esc_html( $item->title ); ?></a>
+				<ul class="sub-menu">
+				<?php
 					$adapters = apply_filters( 'wallets_api_adapters', array() );
-					foreach ( $adapters as $symbol => &$adapter ):
+					foreach ( $adapters as $symbol => &$adapter ) :
 						try {
 							$balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => $symbol ) );
 						} catch ( Exception $e ) {
@@ -140,26 +143,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 						}
 
 						$coin_name_str = esc_html( $adapter->get_name() );
-						$pattern = apply_filters( 'wallets_sprintf_pattern_' . $symbol, $adapter->get_sprintf() );
-						$balance_str = esc_html( sprintf( $pattern, $balance ) );
-						$icon_url = $adapter->get_icon_url();
+						$pattern       = apply_filters( 'wallets_sprintf_pattern_' . $symbol, $adapter->get_sprintf() );
+						$balance_str   = esc_html( sprintf( $pattern, $balance ) );
+						$icon_url      = $adapter->get_icon_url();
 
-					?>
-					<li class="menu-item">
+						?>
+						<li class="menu-item">
 						<?php echo $args->link_before; ?>
 						<a
 							href="#"
 							class="wallets-menu-icon"
 							style="background-image: url(<?php echo esc_attr( $icon_url ); ?>)">
 							<?php echo $args->before; ?>
-							<div class="wallets-coin-name"><?php echo $coin_name_str; ?></div>
-							<div class="wallets-balance"><?php echo $balance_str; ?></div>
+							<span class="wallets-coin-name"><?php echo $coin_name_str; ?></span>
+							<span class="wallets-balance"><?php echo $balance_str; ?></span>
 							<?php echo $args->after; ?>
 						</a>
 						<?php echo $args->link_after; ?>
-					</li>
-				<?php endforeach; ?>
-				</ul><?php
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<?php
 				$item_output = ob_get_clean();
 
 			} // end if balances

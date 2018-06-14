@@ -6,7 +6,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
@@ -51,9 +51,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 		public function action_admin_enqueue_scripts() {
 			wp_enqueue_script(
 				'wallets-notify',
-				plugins_url( 'assets/scripts/wallets-notify-3.4.2.min.js', DSWALLETS_PATH . '/wallets.php' ),
+				plugins_url( 'assets/scripts/wallets-notify-3.5.0.min.js', DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'3.4.2'
+				'3.5.0'
 			);
 
 		}
@@ -66,22 +66,28 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 			foreach ( explode( ',', self::TYPES ) as $type ) {
 				foreach ( $this->admin_notices->{$type} as $admin_notice ) {
 
-					$dismiss_url = add_query_arg( array(
-						'wallets_dismiss' => $admin_notice->dismiss_option
-					), call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url' ) );
+					$dismiss_url = add_query_arg(
+						array(
+							'wallets_dismiss' => $admin_notice->dismiss_option,
+						), call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url' )
+					);
 
 					if ( ! Dashed_Slug_Wallets::get_option( "wallets_dismissed_$admin_notice->dismiss_option" ) ) {
-						?><div
-							class="notice wallets-notice notice-<?php echo $type;
+						?><div class="notice wallets-notice notice-
+							<?php
+							echo $type;
 
 							if ( $admin_notice->dismiss_option ) {
 								echo ' is-dismissible" data-dismiss-url="' . esc_url( $dismiss_url );
-							} ?>">
+							}
+							?>
+						">
 
 							<h2><?php echo "Bitcoin and Altcoin Wallets $type"; ?></h2>
 							<p><?php echo $admin_notice->message; ?></p>
 
-						</div><?php
+						</div>
+						<?php
 					}
 				}
 			}
@@ -104,8 +110,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 		}
 
 		private function notice( $type, $message, $dismiss_option ) {
-			$notice = new stdClass();
-			$notice->message = $message;
+			$notice                 = new stdClass();
+			$notice->message        = $message;
 			$notice->dismiss_option = $dismiss_option;
 
 			$this->admin_notices->{$type}[] = $notice;
@@ -117,10 +123,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				return;
 			}
 
-			$message = "errstr: $errstr, errfile: $errfile, errline: $errline, PHP: " . PHP_VERSION . " OS: " . PHP_OS;
+			$message = "errstr: $errstr, errfile: $errfile, errline: $errline, PHP: " . PHP_VERSION . ' OS: ' . PHP_OS;
 
 			$self = self::get_instance();
-			switch ($errno) {
+			switch ( $errno ) {
 				case E_USER_ERROR:
 					$self->error( $message );
 					break;

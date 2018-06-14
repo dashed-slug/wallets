@@ -1,7 +1,7 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( 'wallets-menu-transactions' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
 	include_once( 'transactions-list.php' );
@@ -18,7 +18,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			add_action( 'admin_init', array( &$this, 'actions_handler' ) );
 			add_action( 'admin_init', array( &$this, 'redirect_if_no_sort_params' ) );
 
-
 			// these actions record a transaction or address to the DB
 			add_action( 'wallets_transaction', array( &$this, 'action_wallets_transaction' ) );
 			add_action( 'wallets_address', array( &$this, 'action_wallets_address' ) );
@@ -32,7 +31,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			}
 		}
 
-		public function custom_upload_mimes( $existing_mimes=array() ) {
+		public function custom_upload_mimes( $existing_mimes = array() ) {
 			$existing_mimes['csv'] = 'text/csv';
 			return $existing_mimes;
 		}
@@ -62,8 +61,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					wp_redirect(
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-transactions',
-								'order' => 'desc',
+								'page'    => 'wallets-menu-transactions',
+								'order'   => 'desc',
 								'orderby' => 'created_time',
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
@@ -82,13 +81,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					'Transactions',
 					'manage_wallets',
 					'wallets-menu-transactions',
-					array( &$this, "wallets_txs_page_cb" )
+					array( &$this, 'wallets_txs_page_cb' )
 				);
 			}
 		}
 
 		public function wallets_txs_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -96,24 +95,36 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Transactions', 'wallets' ); ?></h1>
 
-			<?php if ( isset( $_GET['updated'] ) ):
-			?><div class="updated notice is-dismissible"><p><?php
+			<?php
+			if ( isset( $_GET['updated'] ) ) :
+			?>
+			<div class="updated notice is-dismissible"><p>
+			<?php
 				esc_html_e( 'Transaction updated.', 'wallets' );
-			?></p></div><?php endif; ?>
+			?>
+			</p></div><?php endif; ?>
 
-			<div class="wrap"><?php
+			<div class="wrap">
+			<?php
 				$txs_list->prepare_items();
 				$txs_list->display();
-			?></div>
+			?>
+			</div>
 
-			<h2><?php echo esc_html_e( 'Import transactions from csv', 'wallets' ) ?></h2>
+			<h2><?php echo esc_html_e( 'Import transactions from csv', 'wallets' ); ?></h2>
 			<form class="card" method="post" enctype="multipart/form-data">
-				<p><?php esc_html_e( 'You can use this form to upload transactions that you have exported previously. ' .
-					'Pending transactions will be skipped if they have not been assigned a blockchain TXID. ' .
-					'Transactions that are completed will be imported, unless if they already exist in your DB.', 'wallets' ); ?></p>
+				<p>
+				<?php
+					esc_html_e(
+						'You can use this form to upload transactions that you have exported previously. ' .
+						'Pending transactions will be skipped if they have not been assigned a blockchain TXID. ' .
+						'Transactions that are completed will be imported, unless if they already exist in your DB.', 'wallets'
+					);
+				?>
+				</p>
 				<input type="hidden" name="action" value="import" />
 				<input type="file" name="txfile" />
-				<input type="submit" value="<?php esc_attr_e( 'Import', 'wallets' ) ?>" />
+				<input type="submit" value="<?php esc_attr_e( 'Import', 'wallets' ); ?>" />
 				<?php wp_nonce_field( 'wallets-import' ); ?>
 			</form>
 
@@ -153,18 +164,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 0 );
 
 			global $wpdb;
-			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
+			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
+			$table_name_adds    = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
-			$wpdb->query( "
+			$wpdb->query(
+				"
 				LOCK TABLES
 				$table_name_txs WRITE,
 				$table_name_options WRITE,
 				$table_name_adds READ,
 				$wpdb->users READ,
 				$wpdb->usermeta READ
-			" );
+			"
+			);
 
 			$move_txs_send_query = $wpdb->prepare(
 				"
@@ -188,7 +201,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				$batch_size
 			);
 
-			$move_txs_send =  $wpdb->get_results( $move_txs_send_query );
+			$move_txs_send = $wpdb->get_results( $move_txs_send_query );
+
+			$pending_actions_move_send = array();
+			$pending_actions_move_send_failed = array();
+			$pending_actions_move_receive = array();
 
 			foreach ( $move_txs_send as $move_tx_send ) {
 
@@ -247,16 +264,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								$success_update_query = $wpdb->prepare(
 									"
-										UPDATE
-											{$table_name_txs}
-										SET
-											status = 'done',
-											retries = retries - 1,
-											updated_time = %s
-										WHERE
-											( blog_id = %d || %d ) AND
-											status = 'pending' AND
-											txid IN ( %s, %s )
+									UPDATE
+										{$table_name_txs}
+									SET
+										status = 'done',
+										retries = retries - 1,
+										updated_time = %s
+									WHERE
+										( blog_id = %d || %d ) AND
+										status = 'pending' AND
+										txid IN ( %s, %s )
 									",
 									$current_time_gmt,
 									get_current_blog_id(),
@@ -267,8 +284,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								$wpdb->query( $success_update_query );
 
-								do_action( 'wallets_move_send', $move_tx_send );
-								do_action( 'wallets_move_receive', $move_tx_receive );
+								$move_tx_send->user             = get_userdata( $move_tx_send->account );
+								$move_tx_send->other_user       = get_userdata( $move_tx_send->other_account );
+								$pending_actions_move_send[]    = $move_tx_send;
+
+								unset( $move_tx_receive->fee );
+								$move_tx_receive->user          = get_userdata( $move_tx_receive->account );
+								$move_tx_receive->other_user    = get_userdata( $move_tx_receive->other_account );
+								$pending_actions_move_receive[] = $move_tx_receive;
 
 							} else {
 
@@ -294,18 +317,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								$wpdb->query( $fail_update_query );
 
-
-								if ( $move_tx_send->retries == 1 ) {
-									do_action( 'wallets_move_send_failed', $move_tx_send );
+								if ( 1 == $move_tx_send->retries ) {
+									$move_tx_send->user                 = get_userdata( $move_tx_send->account );
+									$move_tx_send->other_user           = get_userdata( $move_tx_send->other_account );
+									$pending_actions_move_send_failed[] = $move_tx_send;
 								}
 							} // end if not enough balance
-
 						} // end if user balance was retrieved successfully
 					} // end if found move with receive tag
 				} // end if move has send tag
 			} // end foreach move
 
-			$wpdb->query( "UNLOCK TABLES" );
+			$wpdb->query( 'UNLOCK TABLES' );
+
+			foreach ( $pending_actions_move_send as $move_tx_send ) {
+				do_action( 'wallets_move_send', $move_tx_send );
+			}
+
+			foreach ( $pending_actions_move_receive as $move_tx_receive ) {
+				do_action( 'wallets_move_receive', $move_tx_receive );
+			}
+
+			foreach ( $pending_actions_move_send_failed as $move_tx_send ) {
+				do_action( 'wallets_move_send_failed', $move_tx_send );
+			}
 
 		} // end function execute_pending_moves
 
@@ -316,12 +351,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 			global $wpdb;
 
-			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
+			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
+			$table_name_adds    = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
 			$withdrawal_symbols = array();
-			$adapters = apply_filters( 'wallets_api_adapters', array() );
+			$adapters           = apply_filters( 'wallets_api_adapters', array() );
 
 			foreach ( $adapters as $a ) {
 				if ( $a->is_enabled() && $a->is_unlocked() ) {
@@ -333,16 +368,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				return;
 			}
 
-			$wpdb->query( "
+			$wpdb->query(
+				"
 				LOCK TABLES
 				$table_name_txs WRITE,
 				$table_name_options WRITE,
 				$table_name_adds READ,
 				$wpdb->users READ,
 				$wpdb->usermeta READ
-			" );
+			"
+			);
 
-			$in_symbols = "'" . implode( "','", $withdrawal_symbols ) ."'";
+			$in_symbols = "'" . implode( "','", $withdrawal_symbols ) . "'";
 
 			$wd_txs_query = $wpdb->prepare(
 				"
@@ -366,14 +403,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				$batch_size
 			);
 
-			$wd_txs =  $wpdb->get_results( $wd_txs_query );
+			$wd_txs = $wpdb->get_results( $wd_txs_query );
+
+			$pending_actions_withdraw = array();
+			$pending_actions_withdraw_failed = array();
 
 			foreach ( $wd_txs as $wd_tx ) {
 
 				$txid = null;
 				try {
-					$deposit_address = $wpdb->get_row( $wpdb->prepare(
-						"
+					$deposit_address = $wpdb->get_row(
+						$wpdb->prepare(
+							"
 						SELECT
 							account
 						FROM
@@ -386,19 +427,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							created_time DESC
 						LIMIT 1
 						",
-						get_current_blog_id(),
-						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-						$wd_tx->symbol,
-						$wd_tx->address
-					) );
+							get_current_blog_id(),
+							is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+							$wd_tx->symbol,
+							$wd_tx->address
+						)
+					);
 
 					if ( ! is_null( $deposit_address ) ) {
 
 						throw new Exception(
 							sprintf(
 								__( 'Cannot withdraw to address %s because it is a deposit address on this system.', 'wallets' ),
-								$wd_tx->address ),
-							Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW );
+								$wd_tx->address
+							),
+							Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW
+						);
 					}
 
 					$balance_query = $wpdb->prepare(
@@ -440,7 +484,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					if ( abs( $wd_tx->amount ) < $minwithdraw ) {
 						throw new Exception(
 							sprintf(
-								__( 'Minimum witdrawal amount for "%s" is %f', 'wallets' ),
+								__( 'Minimum witdrawal amount for "%1$s" is %2$f', 'wallets' ),
 								$wd_tx->symbol,
 								$minwithdraw
 							),
@@ -480,7 +524,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					);
 
 					$wd_tx->txid = $txid;
-					do_action( 'wallets_withdraw', $wd_tx );
+					$wd_tx->user = get_userdata( $wd_tx->account );
+
+					$pending_actions_withdraw[] = $wd_tx;
 
 				} catch ( Exception $e ) {
 
@@ -501,11 +547,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 					if ( $wd_tx->retries <= 1 ) {
 						$wd_tx->last_error = $e->getMessage();
-						do_action( 'wallets_withdraw_failed', $wd_tx );
+						$wd_tx->user = get_userdata( $wd_tx->account );
+						$pending_actions_withdraw_failed[] = $wd_tx;
 					}
 				}
 			} // end foreach withdrawal
-			$wpdb->query( "UNLOCK TABLES" );
+			$wpdb->query( 'UNLOCK TABLES' );
+
+			foreach ( $pending_actions_withdraw as $wd_tx ) {
+				do_action( 'wallets_withdraw', $wd_tx );
+			}
+
+			foreach ( $pending_actions_withdraw_failed as $wd_tx ) {
+				do_action( 'wallets_withdraw_failed', $wd_tx );
+			}
 		}
 
 		/**
@@ -550,7 +605,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				}
 
 				$current_time_gmt = current_time( 'mysql', true );
-				$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+				$table_name_txs   = Dashed_Slug_Wallets::$table_name_txs;
 
 				global $wpdb;
 
@@ -568,25 +623,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							return;
 						}
 
-						$where = array(
-							'txid' => $tx->txid,
+						$where        = array(
+							'txid'    => $tx->txid,
 							'address' => $tx->address,
-							'symbol' => $tx->symbol,
+							'symbol'  => $tx->symbol,
 						);
 						$where_format = array( '%s', '%s', '%s' );
 
-
 						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 							$where['blog_id'] = get_current_blog_id();
-							$where_format[] = '%d';
+							$where_format[]   = '%d';
 						}
 
 						$affected = $wpdb->update(
 							$table_name_txs,
 							array(
-								'updated_time' => $current_time_gmt,
+								'updated_time'  => $current_time_gmt,
 								'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
-								'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
+								'status'        => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
 							),
 							$where,
 							$where_format
@@ -594,7 +648,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						if ( ! $affected ) {
 
-							$row_exists = $wpdb->get_var( $wpdb->prepare( "
+							$row_exists = $wpdb->get_var(
+								$wpdb->prepare(
+									"
 								SELECT
 									count(1)
 								FROM
@@ -605,36 +661,50 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									AND address = %s
 									AND symbol = %s
 								",
-								get_current_blog_id(),
-								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
-								$tx->txid,
-								$tx->address,
-								$tx->symbol
-							) );
+									get_current_blog_id(),
+									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
+									$tx->txid,
+									$tx->address,
+									$tx->symbol
+								)
+							);
 
 							if ( ! $row_exists ) {
 								$new_tx_data = array(
-									'blog_id' => get_current_blog_id(),
-									'category' => 'deposit',
-									'account' => $tx->account,
-									'address' => $tx->address,
-									'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
-									'txid' => $tx->txid,
-									'symbol' => $tx->symbol,
-									'amount' => number_format( $tx->amount, 10, '.', '' ),
-									'fee' => isset( $tx->fee ) ? $tx->fee : 0,
-									'created_time' => $tx->created_time,
-									'updated_time' => $current_time_gmt,
+									'blog_id'       => get_current_blog_id(),
+									'category'      => 'deposit',
+									'account'       => $tx->account,
+									'address'       => $tx->address,
+									'extra'         => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
+									'txid'          => $tx->txid,
+									'symbol'        => $tx->symbol,
+									'amount'        => number_format( $tx->amount, 10, '.', '' ),
+									'fee'           => isset( $tx->fee ) ? $tx->fee : 0,
+									'created_time'  => $tx->created_time,
+									'updated_time'  => $current_time_gmt,
 									'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
-									'status' => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
-									'retries' => 255
+									'status'        => $adapter->get_minconf() > $tx->confirmations ? 'pending' : 'done',
+									'retries'       => 255,
 								);
 
 								$affected = $wpdb->insert(
 									$table_name_txs,
 									$new_tx_data,
 									array(
-										'%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d',
+										'%d',
+										'%s',
+										'%d',
+										'%s',
+										'%s',
+										'%s',
+										'%s',
+										'%s',
+										'%s',
+										'%s',
+										'%s',
+										'%d',
+										'%s',
+										'%d',
 									)
 								);
 
@@ -643,16 +713,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									error_log( __FUNCTION__ . ' Last DB error: ' . $wpdb->last_error );
 								} else {
 									// row was inserted, not updated
+									$tx->user = get_userdata( $tx->account );
 									do_action( 'wallets_deposit', $tx );
 								}
 							}
 						}
-
 					} elseif ( 'withdraw' == $tx->category ) {
 						$where = array(
 							'address' => $tx->address,
-							'txid' => $tx->txid,
-							'symbol' => $tx->symbol,
+							'txid'    => $tx->txid,
+							'symbol'  => $tx->symbol,
 						);
 
 						$where_format = array( '%s', '%s', '%s' );
@@ -664,11 +734,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 							$where['blog_id'] = get_current_blog_id();
-							$where_format[] = '%d';
+							$where_format[]   = '%d';
 						}
 
 						$new_tx_data = array(
-							'updated_time' => $current_time_gmt,
+							'updated_time'  => $current_time_gmt,
 							'confirmations' => $tx->confirmations,
 						);
 
@@ -684,44 +754,47 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$where_format
 						);
 
-						if ( ! $affected && isset( $tx->account ) )  {
+						if ( ! $affected && isset( $tx->account ) ) {
 							// Old transactions that are rediscovered via cron do not normally have an account id and cannot be inserted.
 							// Will now try to record as new withdrawal since this is not an existing transaction.
 
-							$row_exists = $wpdb->get_var( $wpdb->prepare( "
-								SELECT
-									count(1)
-								FROM
-									{$table_name_txs}
-								WHERE
-									( blog_id = %d || %d )
-									AND txid = %s
-									AND address = %s
-									AND symbol = %s
-								",
-								get_current_blog_id(),
-								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
-								$tx->txid,
-								$tx->address,
-								$tx->symbol
-							) );
+							$row_exists = $wpdb->get_var(
+								$wpdb->prepare(
+									"
+									SELECT
+										count(1)
+									FROM
+										{$table_name_txs}
+									WHERE
+										( blog_id = %d || %d )
+										AND txid = %s
+										AND address = %s
+										AND symbol = %s
+									",
+									get_current_blog_id(),
+									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
+									$tx->txid,
+									$tx->address,
+									$tx->symbol
+								)
+							);
 
 							if ( ! $row_exists ) {
 								$new_tx_data = array(
-									'blog_id' => get_current_blog_id(),
-									'category' => 'withdraw',
-									'account' => $tx->account,
-									'address' => $tx->address,
-									'extra' => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
-									'txid' => $tx->txid,
-									'symbol' => $tx->symbol,
-									'amount' => number_format( $tx->amount, 10, '.', '' ),
-									'fee' => number_format( $tx->fee, 10, '.', '' ),
-									'comment' => $tx->comment,
-									'created_time' => $tx->created_time,
+									'blog_id'       => get_current_blog_id(),
+									'category'      => 'withdraw',
+									'account'       => $tx->account,
+									'address'       => $tx->address,
+									'extra'         => isset( $tx->extra ) && $tx->extra ? $tx->extra : '',
+									'txid'          => $tx->txid,
+									'symbol'        => $tx->symbol,
+									'amount'        => number_format( $tx->amount, 10, '.', '' ),
+									'fee'           => number_format( $tx->fee, 10, '.', '' ),
+									'comment'       => $tx->comment,
+									'created_time'  => $tx->created_time,
 									'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
-									'status' => 'unconfirmed',
-									'retries' => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 )
+									'status'        => 'unconfirmed',
+									'retries'       => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
 								);
 
 								$affected = $wpdb->insert(
@@ -771,12 +844,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$wpdb->suppress_errors();
 
 			$address_row = array(
-				'blog_id' => get_current_blog_id(),
-				'account' => $address->account,
-				'symbol' => $address->symbol,
+				'blog_id'      => get_current_blog_id(),
+				'account'      => $address->account,
+				'symbol'       => $address->symbol,
 				'created_time' => $address->created_time,
-				'address' => $address->address,
-				'status' => 'current',
+				'address'      => $address->address,
+				'status'       => 'current',
 			);
 
 			$address_row['extra'] = isset( $address->extra ) && $address->extra ? $address->extra : '';
@@ -813,51 +886,53 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 				) {
 					throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
-				}
+			}
 
 				$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
 
-				$account = $wpdb->get_var( $wpdb->prepare(
-					"
-					SELECT
-						account
-					FROM
-						$table_name_adds
-					WHERE
-						( blog_id = %d || %d ) AND
-						symbol = %s AND
-						address = %s AND
-						( extra = %s || %d )
-					ORDER BY
-						created_time DESC
-					LIMIT 1
-					",
-					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-					$symbol,
-					$address,
-					$extra,
-					$extra ? 0 : 1
-				) );
+				$account = $wpdb->get_var(
+					$wpdb->prepare(
+						"
+						SELECT
+							account
+						FROM
+							$table_name_adds
+						WHERE
+							( blog_id = %d || %d ) AND
+							symbol = %s AND
+							address = %s AND
+							( extra = %s || %d )
+						ORDER BY
+							created_time DESC
+						LIMIT 1
+						",
+						get_current_blog_id(),
+						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+						$symbol,
+						$address,
+						$extra,
+						$extra ? 0 : 1
+					)
+				);
 
-				if ( is_null( $account ) ) {
-					throw new Exception( sprintf( __( 'Could not get account for %s address %s', 'wallets' ), $symbol, $address ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
-				}
+			if ( is_null( $account ) ) {
+				throw new Exception( sprintf( __( 'Could not get account for %1$s address %2$s', 'wallets' ), $symbol, $address ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
+			}
 
-				return intval( $account );
+				return absint( $account );
 		}
 
 		public function import_handler() {
 			$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
 
 			if ( 'import' == $action && isset( $_FILES['txfile'] ) ) {
-				if ( ! current_user_can( 'manage_wallets' ) )  {
+				if ( ! current_user_can( 'manage_wallets' ) ) {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 				}
 
 				$nonce = filter_input( INPUT_POST, '_wpnonce', FILTER_SANITIZE_STRING );
 
-				if ( ! wp_verify_nonce( $nonce, "wallets-import" ) ) {
+				if ( ! wp_verify_nonce( $nonce, 'wallets-import' ) ) {
 					wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 				}
 
@@ -867,9 +942,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					require_once( ABSPATH . 'wp-admin/includes/file.php' );
 				}
 
-				$uploaded_file = $_FILES[ 'txfile' ];
+				$uploaded_file    = $_FILES['txfile'];
 				$upload_overrides = array( 'action' => 'import' );
-				$moved_file = wp_handle_upload( $uploaded_file, $upload_overrides );
+				$moved_file       = wp_handle_upload( $uploaded_file, $upload_overrides );
 				if ( $moved_file && ! isset( $moved_file['error'] ) ) {
 					$moved_file_name = $moved_file['file'];
 
@@ -879,15 +954,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$notices->success(
 							sprintf(
 								__( '<code>%1$d</code> transactions out of <code>%2$d</code> found in <code>%3$s</code> were imported successfully.', 'wallets' ),
-								$result['total_rows_affected'], $result['total_rows'], basename( $moved_file_name ) ) );
+								$result['total_rows_affected'], $result['total_rows'], basename( $moved_file_name )
+							)
+						);
 					}
-
 				} else {
 
 					// Error generated by _wp_handle_upload()
-					$notices->error( sprintf(
-					__( 'Failed to import file : %s', 'wallets' ),
-					$moved_file['error'] ) );
+					$notices->error(
+						sprintf(
+							__( 'Failed to import file : %s', 'wallets' ),
+							$moved_file['error']
+						)
+					);
 				}
 
 				// Finally delete the uploaded .csv file
@@ -898,7 +977,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 		private function csv_import( $filename ) {
 			try {
-				$total_rows = 0;
+				$total_rows          = 0;
 				$total_rows_affected = 0;
 
 				// see http://php.net/manual/en/function.fgetcsv.php
@@ -912,39 +991,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				if ( ( $fh = fopen( $filename, 'r' ) ) !== false ) {
 					global $wpdb;
 					$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-					$headers = fgetcsv( $fh, $len );
+					$headers        = fgetcsv( $fh, $len );
 
-					while (( $data = fgetcsv( $fh, $len )) !== false ) {
+					while ( ( $data = fgetcsv( $fh, $len ) ) !== false ) {
 
 						$total_rows++;
 
 						if ( $data[4] ) { // only insert rows with a TXID
-							$rows_affected = $wpdb->query( $wpdb->prepare(
-								"
+							$rows_affected = $wpdb->query(
+								$wpdb->prepare(
+									"
 								INSERT INTO
 								$table_name_txs(" . Dashed_Slug_Wallets_TXs::$tx_columns . ")
 									VALUES
 										( %s, %d, NULLIF(%d, ''), %s, %s, %s, %s, %s, NULLIF(%s, ''), %s, %s, %d, %s, %d, %s, %d, %d, %d )
 								",
-								$data[0],
-								$data[1],
-								$data[2],
-								$data[3],
-								$data[4],
-								$data[5],
-								number_format( $data[6], 10, '.', '' ),
-								number_format( $data[7], 10, '.', '' ),
-								$data[8],
-								$data[9],
-								$data[10],
-								$data[11],
-								$data[12],
-								$data[13],
-								$data[14],
-								$data[15],
-								$data[16],
-								$data[17]
-							) );
+									$data[0],
+									$data[1],
+									$data[2],
+									$data[3],
+									$data[4],
+									$data[5],
+									number_format( $data[6], 10, '.', '' ),
+									number_format( $data[7], 10, '.', '' ),
+									$data[8],
+									$data[9],
+									$data[10],
+									$data[11],
+									$data[12],
+									$data[13],
+									$data[14],
+									$data[15],
+									$data[16],
+									$data[17]
+								)
+							);
 
 							if ( false !== $rows_affected ) {
 								$total_rows_affected += $rows_affected;
@@ -952,7 +1033,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 					}
 					return array(
-						'total_rows' => $total_rows,
+						'total_rows'          => $total_rows,
 						'total_rows_affected' => $total_rows_affected,
 					);
 				}
@@ -967,53 +1048,59 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 		public function actions_handler() {
 
-			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); // slug of action in transactions admin panel
-			$id = filter_input( INPUT_GET, 'tx_id', FILTER_SANITIZE_NUMBER_INT ); // primary key to the clicked transaction row
-			$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING ); // the _wpnonce coming from the action link
+			$action       = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); // slug of action in transactions admin panel
+			$id           = filter_input( INPUT_GET, 'tx_id', FILTER_SANITIZE_NUMBER_INT ); // primary key to the clicked transaction row
+			$nonce        = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING ); // the _wpnonce coming from the action link
 			$custom_nonce = md5( uniqid( NONCE_KEY, true ) ); // new nonce, in case of unconfirming
 
 			global $wpdb;
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$affected_rows = 0;
+			$affected_rows  = 0;
 
 			if ( $action && $id && $nonce ) {
 
 				$ids = array( $id => null );
 
-				$tx_data = $wpdb->get_row( $wpdb->prepare(
-					"
-					SELECT
-						*
-					FROM
-						$table_name_txs
-					WHERE
-						id = %d
-					", $id
-				) );
+				$tx_data = $wpdb->get_row(
+					$wpdb->prepare(
+						"
+						SELECT
+							*
+						FROM
+							$table_name_txs
+						WHERE
+							id = %d
+						",
+						$id
+					)
+				);
 
 				if ( 'move' == $tx_data->category ) {
 					if ( preg_match( '/^(move-.*-)(send|receive)$/', $tx_data->txid, $matches ) ) {
 						$txid_prefix = $matches[1];
 
-						$tx_group = $wpdb->get_results( $wpdb->prepare(
-							"
-							SELECT
-								*
-							FROM
-								$table_name_txs
-							WHERE
-								txid LIKE %s
-							",
-							"$txid_prefix%" ) );
+						$tx_group = $wpdb->get_results(
+							$wpdb->prepare(
+								"
+								SELECT
+									*
+								FROM
+									$table_name_txs
+								WHERE
+									txid LIKE %s
+								",
+								"$txid_prefix%"
+							)
+						);
 
 						if ( $tx_group ) {
 							foreach ( $tx_group as $tx ) {
-								$ids[ intval( $tx->id ) ] = null;
+								$ids[ absint( $tx->id ) ] = null;
 
 								// send new confirmation email
 								if ( 'user_unconfirm' == $action && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) && preg_match( '/send$/', $tx->txid ) ) {
-										$tx->nonce = $custom_nonce;
-										do_action( 'wallets_send_user_confirm_email', $tx );
+									$tx->nonce = $custom_nonce;
+									do_action( 'wallets_send_user_confirm_email', $tx );
 								}
 							}
 						}
@@ -1032,7 +1119,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				switch ( $action ) {
 
 					case 'user_unconfirm':
-						if ( ! current_user_can( 'manage_wallets' ) )  {
+						if ( ! current_user_can( 'manage_wallets' ) ) {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
@@ -1040,19 +1127,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( "
-							UPDATE
-								$table_name_txs
-							SET
-								user_confirm = 0,
-								nonce = '$custom_nonce'
-							WHERE
-								id IN ( $set_of_ids )
-							");
+						$affected_rows = $wpdb->query(
+							"
+								UPDATE
+									$table_name_txs
+								SET
+									user_confirm = 0,
+									nonce = '$custom_nonce'
+								WHERE
+									id IN ( $set_of_ids )
+							"
+						);
 						break;
 
 					case 'user_confirm':
-						if ( ! current_user_can( 'manage_wallets' ) )  {
+						if ( ! current_user_can( 'manage_wallets' ) ) {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
@@ -1060,7 +1149,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( "
+						$affected_rows = $wpdb->query(
+							"
 							UPDATE
 								$table_name_txs
 							SET
@@ -1068,11 +1158,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								nonce = NULL
 							WHERE
 								id IN ( $set_of_ids )
-							");
+							"
+						);
 						break;
 
 					case 'admin_unconfirm':
-						if ( ! current_user_can( 'manage_wallets' ) )  {
+						if ( ! current_user_can( 'manage_wallets' ) ) {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
@@ -1080,18 +1171,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( "
+						$affected_rows = $wpdb->query(
+							"
 							UPDATE
 								$table_name_txs
 							SET
 								admin_confirm = 0
 							WHERE
 								id IN ( $set_of_ids )
-							");
+							"
+						);
 						break;
 
 					case 'admin_confirm':
-						if ( ! current_user_can( 'manage_wallets' ) )  {
+						if ( ! current_user_can( 'manage_wallets' ) ) {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
@@ -1099,19 +1192,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( "
+						$affected_rows = $wpdb->query(
+							"
 							UPDATE
 								$table_name_txs
 							SET
 								admin_confirm = 1
 							WHERE
 								id IN ( $set_of_ids )
-							");
+							"
+						);
 						break;
 
 					case 'cancel_tx':
-
-						if ( ! current_user_can( 'manage_wallets' ) )  {
+						if ( ! current_user_can( 'manage_wallets' ) ) {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
@@ -1119,7 +1213,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( "
+						$affected_rows = $wpdb->query(
+							"
 							UPDATE
 								$table_name_txs
 							SET
@@ -1134,8 +1229,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						break;
 
 					case 'retry_tx':
-
-						if ( ! current_user_can( 'manage_wallets' ) )  {
+						if ( ! current_user_can( 'manage_wallets' ) ) {
 							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 						}
 
@@ -1143,27 +1237,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query( $wpdb->prepare( "
-							UPDATE
-								$table_name_txs
-							SET
-								retries = IF( category='withdraw', %d, %d ),
-								status = 'unconfirmed'
-							WHERE
-								id IN ( $set_of_ids ) AND
-								status IN ( 'cancelled', 'failed' )
-							",
-							Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
-							Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 )
-						) );
+						$affected_rows = $wpdb->query(
+							$wpdb->prepare(
+								"
+								UPDATE
+									$table_name_txs
+								SET
+									retries = IF( category='withdraw', %d, %d ),
+									status = 'unconfirmed'
+								WHERE
+									id IN ( $set_of_ids ) AND
+									status IN ( 'cancelled', 'failed' )
+								",
+								Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
+								Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 )
+							)
+						);
 
 						break;
 				}
 
 				$redirect_args = array(
-					'page' => 'wallets-menu-transactions',
-					'paged' => filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT ),
-					'order' => filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING ),
+					'page'    => 'wallets-menu-transactions',
+					'paged'   => filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT ),
+					'order'   => filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING ),
 					'orderby' => filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING ),
 				);
 

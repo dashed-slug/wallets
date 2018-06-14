@@ -5,7 +5,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 	class Dashed_Slug_Wallets_Admin_Menu {
@@ -24,7 +24,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-3.4.2.min.js', "wallets/assets/scripts/pay-now-button-3.4.2.min.js" ),
+				plugins_url( 'pay-now-button-3.5.0.min.js', 'wallets/assets/scripts/pay-now-button-3.5.0.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -55,37 +55,69 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 		}
 
 		public function wallets_page_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			} ?>
 
 
-			<h1><?php echo 'Bitcoin and Altcoin Wallets' ?></h1>
+			<h1><?php echo 'Bitcoin and Altcoin Wallets'; ?></h1>
 
-			<div class="notice notice-warning"><h2><?php
-			esc_html_e( 'IMPORTANT SECURITY DISCLAIMER:', 'wallets' ); ?></h2>
+			<div class="notice notice-warning"><h2>
+			<?php
+				esc_html_e( 'IMPORTANT SECURITY DISCLAIMER:', 'wallets' );
+			?>
+			</h2>
 
-			<p><?php esc_html_e( 'By using this free plugin you accept all responsibility for handling ' .
-			'the account balances for all your users. Under no circumstances is dashed-slug.net ' .
-			'or any of its affiliates responsible for any damages incurred by the use of this plugin. ' .
-			'Every effort has been made to harden the security of this plugin, ' .
-			'but its safe operation is your responsibility and depends on your site being secure overall. ' .
-			'You, the administrator, must take all necessary precautions to secure your WordPress installation ' .
-			'before you connect it to any live wallets. ' .
-			'You are strongly advised to take the following actions (at a minimum):', 'wallets'); ?></p>
-			<ol><li><a href="https://codex.wordpress.org/Hardening_WordPress" target="_blank"><?php
-			esc_html_e( 'educate yourself about hardening WordPress security', 'wallets' ); ?></a></li>
-			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank" title="<?php esc_attr_e(
-				'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets' );
-			?>"><?php esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li>
-			<li><?php esc_html_e( 'Enable SSL on your site, if you have not already done.', 'wallets' );
-			?></li><li><?php esc_html_e( 'If you are connecting to an RPC API on a different machine than that ' .
-			'of your WordPress server over an untrusted network, make sure to tunnel your connection via ssh or stunnel.',
-			'wallets' ); ?> <a href="https://en.bitcoin.it/wiki/Enabling_SSL_on_original_client_daemon"><?php
-			esc_html_e( 'See more here', 'wallets' ); ?></a>.</li></ol><p><?php
-			esc_html_e( 'By continuing to use the Bitcoin and Altcoin Wallets plugin, ' .
-			'you indicate that you have understood and agreed to this disclaimer.', 'wallets' );
-			?></p></div>
+			<p>
+			<?php
+				esc_html_e(
+					'By using this free plugin you accept all responsibility for handling ' .
+					'the account balances for all your users. Under no circumstances is dashed-slug.net ' .
+					'or any of its affiliates responsible for any damages incurred by the use of this plugin. ' .
+					'Every effort has been made to harden the security of this plugin, ' .
+					'but its safe operation is your responsibility and depends on your site being secure overall. ' .
+					'You, the administrator, must take all necessary precautions to secure your WordPress installation ' .
+					'before you connect it to any live wallets. ' .
+					'You are strongly advised to take the following actions (at a minimum):', 'wallets'
+				);
+			?>
+			</p>
+			<ol><li><a href="https://codex.wordpress.org/Hardening_WordPress" target="_blank" rel="noopener noreferrer">
+			<?php
+				esc_html_e( 'educate yourself about hardening WordPress security', 'wallets' );
+			?>
+			</a></li>
+			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank" rel="noopener noreferrer" title="
+			<?php
+				esc_attr_e(
+					'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets'
+				);
+			?>
+			"><?php esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li>
+			<li>
+			<?php
+				esc_html_e( 'Enable SSL on your site, if you have not already done.', 'wallets' );
+			?>
+			</li><li>
+			<?php
+				esc_html_e(
+					'If you are connecting to an RPC API on a different machine than that ' .
+					'of your WordPress server over an untrusted network, make sure to tunnel your connection via ssh or stunnel.',
+					'wallets'
+				);
+			?>
+			<a href="https://en.bitcoin.it/wiki/Enabling_SSL_on_original_client_daemon">
+			<?php
+				esc_html_e( 'See more here', 'wallets' );
+			?>
+			</a>.</li></ol><p>
+			<?php
+				esc_html_e(
+					'By continuing to use the Bitcoin and Altcoin Wallets plugin, ' .
+					'you indicate that you have understood and agreed to this disclaimer.', 'wallets'
+				);
+			?>
+			</p></div>
 
 			<div class="card">
 				<h2><?php esc_html_e( 'Follow the slime:', 'wallets' ); ?></h2>
@@ -112,8 +144,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<h2><?php esc_html_e( 'Get the free PDF manual!', 'wallets' ); ?></h2>
 				<ol>
 					<li><?php echo __( 'Visit the dashed-slug <a href="https://dashed-slug.net/downloads">download area</a>.', 'wallets' ); ?></li>
-					<li><?php echo __( 'Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>. ' .
-						'You will find the PDF file inside the ZIP download. ', 'wallets' ); ?></li>
+					<li>
+					<?php
+						echo __(
+							'Download the <strong>Bitcoin and Altcoin Wallets bundle</strong>. ' .
+							'You will find the PDF file inside the ZIP download. ', 'wallets'
+						);
+						?>
+					</li>
 					<li><?php echo __( 'RTFM! :-)', 'wallets' ); ?></li>
 				</ol>
 			</div>
@@ -135,8 +173,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 				<ol>
 					<li><?php echo __( 'Donate via <a href="https://flattr.com/profile/dashed-slug">flattr</a>', 'wallets' ); ?>.</li>
-					<li><?php echo __( 'Donate a few shatoshi to the dashed-slug Bitcoin address: ' .
-						'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', 'wallets' ); ?>
+					<li>
+					<?php
+						echo __(
+							'Donate a few shatoshi to the dashed-slug Bitcoin address: ' .
+							'<a href="bitcoin:1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy?label=dashed-slug&message=donation">1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy</a>.', 'wallets'
+						);
+					?>
 
 						<div
 							style="font-size:16px;margin:0 auto;width:300px"
@@ -149,38 +192,38 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 								<img
 									src="https://blockchain.info/Resources/buttons/donate_64.png" />
-						    </div>
+							</div>
 
-						    <div
+							<div
 								class="blockchain stage-loading"
 								style="text-align:center">
 
-						        <img
+								<img
 									src="https://blockchain.info/Resources/loading-large.gif" />
-						    </div>
+							</div>
 
-						    <div
+							<div
 								class="blockchain stage-ready">
 
-							     <p
+								<p
 									align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
 
 								<p
 									align="center"
 									class="qr-code"></p>
-						    </div>
+							</div>
 
-						    <div
+							<div
 								class="blockchain stage-paid">
 								Donation of <b>[[value]] BTC</b> Received. Thank You.
-						    </div>
+							</div>
 
-						    <div
+							<div
 								class="blockchain stage-error">
 
-						        <font
+								<font
 									color="red">[[error]]</font>
-						    </div>
+							</div>
 						</div>
 					</li>
 				</ol>
@@ -211,27 +254,36 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 		}
 
 		private function showcase_plugin_extensions( $extensions_data_file ) {
-			$extensions = json_decode( file_get_contents( $extensions_data_file ) ); ?>
+			$extensions = json_decode( file_get_contents( $extensions_data_file ) );
+			?>
 
 			<ul class="wallets-extension">
 
-			<?php foreach ( $extensions as $extension ):
-				$active = is_plugin_active( "{$extension->slug}/{$extension->slug}.php"); ?>
+			<?php
+			foreach ( $extensions as $extension ) :
+				$active = is_plugin_active( "{$extension->slug}/{$extension->slug}.php" );
+				?>
 				<li>
-					<?php if ( $active ): ?><strong><?php endif; ?>
+					<?php
+					if ( $active ) :
+?>
+<strong><?php endif; ?>
 					<a
-						href="<?php echo esc_attr( $extension->homepage ); ?>?utm_source=dashedslug&utm_medium=plugin&utm_campaign=about">
+						href="<?php echo esc_attr( $extension->homepage ); ?>?utm_source=wallets&utm_medium=plugin&utm_campaign=about">
 
-						<?php echo esc_html( $extension->name); ?></a>
+						<?php echo esc_html( $extension->name ); ?></a>
 
-					<?php if ( $active ): ?></strong> (<?php esc_attr_e( 'Installed', 'wallets' ); ?>)<?php endif; ?>
+					<?php
+					if ( $active ) :
+?>
+</strong> (<?php esc_attr_e( 'Installed', 'wallets' ); ?>)<?php endif; ?>
 
 					<a
 						class="button"
 						style="float: right;"
-						href="<?php echo esc_attr( $extension->support ); ?>?utm_source=dashedslug&utm_medium=plugin&utm_campaign=about">
+						href="<?php echo esc_attr( $extension->support ); ?>?utm_source=wallets&utm_medium=plugin&utm_campaign=about">
 
-						<?php echo esc_html( 'Support Forum' )?>
+						<?php echo esc_html( 'Support Forum' ); ?>
 					</a>
 
 					<p
@@ -242,7 +294,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 					<div style="clear: right;"></div>
 				</li>
-			<?php endforeach;
+			<?php endforeach; ?>
+			</ul>
+			<?php
 		}
 
 	}

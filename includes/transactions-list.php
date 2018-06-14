@@ -5,7 +5,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -22,28 +22,28 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		parent::__construct( $args );
 
 		// sorting vars
-		$this->order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
+		$this->order   = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
 		$this->orderby = filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
 	}
 
 	public function get_columns() {
 		return array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
-			'txid' => esc_html__( 'Transaction ID', 'wallets' ),
-			'category' => esc_html__( 'Type', 'wallets' ),
-			'symbol' => esc_html__( 'Coin', 'wallets' ),
-			'amount' => esc_html__( 'Amount (+fee)', 'wallets' ),
-			'fee' => esc_html__( 'Fee', 'wallets' ),
-			'from' => esc_html__( 'From', 'wallets' ),
-			'to' => esc_html__( 'To', 'wallets' ),
-			'comment' => esc_html__( 'Comment', 'wallets' ),
-			'tags' => esc_html__( 'Tags', 'wallets' ),
-			'created_time' => esc_html__( 'Time', 'wallets' ),
+			'txid'          => esc_html__( 'Transaction ID', 'wallets' ),
+			'category'      => esc_html__( 'Type', 'wallets' ),
+			'symbol'        => esc_html__( 'Coin', 'wallets' ),
+			'amount'        => esc_html__( 'Amount (+fee)', 'wallets' ),
+			'fee'           => esc_html__( 'Fee', 'wallets' ),
+			'from'          => esc_html__( 'From', 'wallets' ),
+			'to'            => esc_html__( 'To', 'wallets' ),
+			'comment'       => esc_html__( 'Comment', 'wallets' ),
+			'tags'          => esc_html__( 'Tags', 'wallets' ),
+			'created_time'  => esc_html__( 'Time', 'wallets' ),
 			'confirmations' => esc_html__( 'Confirmations', 'wallets' ),
-			'status' => esc_html__( 'Status', 'wallets' ),
-			'retries' => esc_html__( 'Retries left', 'wallets' ),
+			'status'        => esc_html__( 'Status', 'wallets' ),
+			'retries'       => esc_html__( 'Retries left', 'wallets' ),
 			'admin_confirm' => esc_html__( 'Accepted by admin', 'wallets' ),
-			'user_confirm' => esc_html__( 'Verified by user', 'wallets' ),
+			'user_confirm'  => esc_html__( 'Verified by user', 'wallets' ),
 		);
 	}
 
@@ -52,18 +52,18 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	}
 
 	public function get_sortable_columns() {
-        return array(
-			'created_time' => array( 'created_time', true ),
-			'amount' => array( 'amount', false ),
+		return array(
+			'created_time'  => array( 'created_time', true ),
+			'amount'        => array( 'amount', false ),
 			'confirmations' => array( 'confirmations', false ),
-			'status' => array( 'status', false ),
+			'status'        => array( 'status', false ),
 			'admin_confirm' => array( 'admin_confirm', false ),
-			'user_confirm' => array( 'user_confirm', false ),
-			'retries' => array( 'retries', false ),
-        );
-    }
+			'user_confirm'  => array( 'user_confirm', false ),
+			'retries'       => array( 'retries', false ),
+		);
+	}
 
-    public function prepare_items() {
+	public function prepare_items() {
 
 		$this->_column_headers = array(
 			$this->get_columns(),
@@ -76,8 +76,9 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		// pagination
 		$current_page = $this->get_pagenum();
-		$total_items = $wpdb->get_var( $wpdb->prepare(
-			"
+		$total_items  = $wpdb->get_var(
+			$wpdb->prepare(
+				"
 			SELECT
 				COUNT(*)
 			FROM
@@ -85,17 +86,20 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			WHERE
 				( blog_id = %d || %d )
 			",
-			get_current_blog_id(),
-			is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
-		) );
+				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+			)
+		);
 
-		$this->set_pagination_args( array(
-			'total_items' => $total_items,
-			'per_page' => self::PER_PAGE
-		) );
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page'    => self::PER_PAGE,
+			)
+		);
 
 		// get data
-		$sql_query = $wpdb->prepare(
+		$sql_query   = $wpdb->prepare(
 			"
 			SELECT
 				txs.id,
@@ -135,26 +139,9 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		$this->items = $wpdb->get_results( $sql_query, ARRAY_A );
 	}
 
-	private function user_link( $user_login ) {
-		static $memoize = array();
-
-		if ( ! isset( $memoize[ $user_login ] ) ) {
-			$network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
-
-			$user = get_user_by( 'login', $user_login );
-			if ( $user ) {
-				$link = call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "user-edit.php?user_id={$user->ID}" );
-				$memoize[ $user_login ] = "<a href=\"$link\">$user_login</a>";
-			} else {
-				$memoize[ $user_login ] = $user_login;
-			}
-		}
-		return $memoize[ $user_login ];
-	}
-
 	public function column_default( $item, $column_name ) {
 
-		switch( $column_name ) {
+		switch ( $column_name ) {
 
 			case 'category':
 			case 'symbol':
@@ -199,7 +186,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		if ( 'deposit' == $item['category'] ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
 			if ( $uri_pattern && preg_match( '/^[\w\d]+$/', $item['address'] ) ) {
-				$uri = sprintf( $uri_pattern, $item[ 'address' ] );
+				$uri          = sprintf( $uri_pattern, $item['address'] );
 				$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
 			} else {
 				$address_html = $item['address'];
@@ -210,25 +197,25 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			return $address_html;
 
 		} elseif ( 'withdraw' == $item['category'] ) {
-			return $this->user_link( $item['account_name'] );
+			return Dashed_Slug_Wallets::user_link( $item['account_name'] );
 
 		} elseif ( 'move' == $item['category'] ) {
-			return $this->user_link( $item['account_name'] );
+			return Dashed_Slug_Wallets::user_link( $item['account_name'] );
 
 		} elseif ( 'trade' == $item['category'] ) {
-			return $this->user_link( $item['account_name'] );
+			return Dashed_Slug_Wallets::user_link( $item['account_name'] );
 		}
 
 	}
 
 	public function column_to( $item ) {
 		if ( 'deposit' == $item['category'] ) {
-			return  $this->user_link( $item['account_name'] );
+			return  Dashed_Slug_Wallets::user_link( $item['account_name'] );
 
 		} elseif ( 'withdraw' == $item['category'] ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_add_' . $item['symbol'], '' );
 			if ( $uri_pattern && preg_match( '/^[\w\d]+$/', $item['address'] ) ) {
-				$uri = sprintf( $uri_pattern, $item[ 'address' ] );
+				$uri          = sprintf( $uri_pattern, $item['address'] );
 				$address_html = '<a href="' . esc_attr( $uri ) . '">' . $item['address'] . '</a>';
 			} else {
 				$address_html = $item['address'];
@@ -239,10 +226,10 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			return $address_html;
 
 		} elseif ( 'move' == $item['category'] ) {
-			return $this->user_link( $item['other_account_name'] );
+			return Dashed_Slug_Wallets::user_link( $item['other_account_name'] );
 
 		} elseif ( 'trade' == $item['category'] ) {
-			return $this->user_link( $item['other_account_name'] );
+			return Dashed_Slug_Wallets::user_link( $item['other_account_name'] );
 		}
 	}
 
@@ -250,7 +237,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		if ( 'move' != $item['category'] && preg_match( '/^[\w\d]+$/', $item['txid'] ) ) {
 			$uri_pattern = apply_filters( 'wallets_explorer_uri_tx_' . $item['symbol'], '' );
 			if ( $uri_pattern ) {
-				$uri = sprintf( $uri_pattern, $item[ 'txid' ] );
+				$uri = sprintf( $uri_pattern, $item['txid'] );
 				return '<a href ="' . esc_attr( $uri ) . '">' . $item['txid'] . '</a>';
 			}
 		}
@@ -267,7 +254,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		} elseif ( 'trade' == $item['category'] ) {
 			return '';
 		} else {
-			return esc_html( $item[ 'confirmations' ] );
+			return esc_html( $item['confirmations'] );
 		}
 	}
 
@@ -277,7 +264,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		} elseif ( 'trade' == $item['category'] ) {
 			return '';
 		} else {
-			return esc_html( $item[ 'retries' ] );
+			return esc_html( $item['retries'] );
 		}
 	}
 
@@ -286,16 +273,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		if ( ! ( 'deposit' == $item['category'] || 'trade' == $item['category'] ) ) { // cannot cancel incoming deposits or trades with other people
 			if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
 				if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
-					$actions['cancel_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					$actions['cancel_tx'] = sprintf(
+						'<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-transactions',
-								'action' => 'cancel_tx',
-								'tx_id' => $item['id'],
-								'paged' => $this->get_pagenum(),
-								'order' => $this->order,
-								'orderby' => $this->orderby,
-								'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] )
+								'page'     => 'wallets-menu-transactions',
+								'action'   => 'cancel_tx',
+								'tx_id'    => $item['id'],
+								'paged'    => $this->get_pagenum(),
+								'order'    => $this->order,
+								'orderby'  => $this->orderby,
+								'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] ),
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
@@ -308,16 +296,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 		if ( 'trade' !== $item['category'] ) {
 			if ( 'cancelled' == $item['status'] || 'failed' == $item['status'] ) { // cannot retry trades
-				$actions['retry_tx'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+				$actions['retry_tx'] = sprintf(
+					'<a class="button" href="%s" title="%s">%s</a>',
 					add_query_arg(
 						array(
-							'page' => 'wallets-menu-transactions',
-							'action' => 'retry_tx',
-							'tx_id' => $item['id'],
-							'paged' => $this->get_pagenum(),
-							'order' => $this->order,
-							'orderby' => $this->orderby,
-							'_wpnonce' => wp_create_nonce( 'wallets-retry-tx-' . $item['id'] )
+							'page'     => 'wallets-menu-transactions',
+							'action'   => 'retry_tx',
+							'tx_id'    => $item['id'],
+							'paged'    => $this->get_pagenum(),
+							'order'    => $this->order,
+							'orderby'  => $this->orderby,
+							'_wpnonce' => wp_create_nonce( 'wallets-retry-tx-' . $item['id'] ),
 						),
 						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 					),
@@ -342,16 +331,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				( 'move' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ) ) {
 
 				if ( $item['admin_confirm'] ) {
-					$actions['admin_unconfirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					$actions['admin_unconfirm'] = sprintf(
+						'<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-transactions',
-								'action' => 'admin_unconfirm',
-								'tx_id' => $item['id'],
-								'paged' => $this->get_pagenum(),
-								'order' => $this->order,
-								'orderby' => $this->orderby,
-								'_wpnonce' => wp_create_nonce( 'wallets-admin-unconfirm-' . $item['id'] )
+								'page'     => 'wallets-menu-transactions',
+								'action'   => 'admin_unconfirm',
+								'tx_id'    => $item['id'],
+								'paged'    => $this->get_pagenum(),
+								'order'    => $this->order,
+								'orderby'  => $this->orderby,
+								'_wpnonce' => wp_create_nonce( 'wallets-admin-unconfirm-' . $item['id'] ),
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
@@ -359,16 +349,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 						__( '&#x2717; Admin unaccept', 'wallets' )
 					);
 				} else {
-					$actions['admin_confirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					$actions['admin_confirm'] = sprintf(
+						'<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-transactions',
-								'action' => 'admin_confirm',
-								'tx_id' => $item['id'],
-								'paged' => $this->get_pagenum(),
-								'order' => $this->order,
-								'orderby' => $this->orderby,
-								'_wpnonce' => wp_create_nonce( 'wallets-admin-confirm-' . $item['id'] )
+								'page'     => 'wallets-menu-transactions',
+								'action'   => 'admin_confirm',
+								'tx_id'    => $item['id'],
+								'paged'    => $this->get_pagenum(),
+								'order'    => $this->order,
+								'orderby'  => $this->orderby,
+								'_wpnonce' => wp_create_nonce( 'wallets-admin-confirm-' . $item['id'] ),
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
@@ -379,7 +370,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			}
 		}
 
-		$checkbox = $item[ 'admin_confirm' ] ? '&#x2611;' : '&#x2610;';
+		$checkbox = $item['admin_confirm'] ? '&#x2611;' : '&#x2610;';
 
 		return sprintf( '%s %s', $checkbox, $this->row_actions( $actions, true ) );
 
@@ -398,16 +389,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				( 'move' == $item['category'] && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) ) {
 
 				if ( $item['user_confirm'] ) {
-					$actions['user_unconfirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					$actions['user_unconfirm'] = sprintf(
+						'<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-transactions',
-								'action' => 'user_unconfirm',
-								'tx_id' => $item['id'],
-								'paged' => $this->get_pagenum(),
-								'order' => $this->order,
-								'orderby' => $this->orderby,
-								'_wpnonce' => wp_create_nonce( 'wallets-user-unconfirm-' . $item['id'] )
+								'page'     => 'wallets-menu-transactions',
+								'action'   => 'user_unconfirm',
+								'tx_id'    => $item['id'],
+								'paged'    => $this->get_pagenum(),
+								'order'    => $this->order,
+								'orderby'  => $this->orderby,
+								'_wpnonce' => wp_create_nonce( 'wallets-user-unconfirm-' . $item['id'] ),
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
@@ -415,16 +407,17 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 						__( '&#x2717; User unaccept', 'wallets' )
 					);
 				} else {
-					$actions['user_confirm'] = sprintf( '<a class="button" href="%s" title="%s">%s</a>',
+					$actions['user_confirm'] = sprintf(
+						'<a class="button" href="%s" title="%s">%s</a>',
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-transactions',
-								'action' => 'user_confirm',
-								'tx_id' => $item['id'],
-								'paged' => $this->get_pagenum(),
-								'order' => $this->order,
-								'orderby' => $this->orderby,
-								'_wpnonce' => wp_create_nonce( 'wallets-user-confirm-' . $item['id'] )
+								'page'     => 'wallets-menu-transactions',
+								'action'   => 'user_confirm',
+								'tx_id'    => $item['id'],
+								'paged'    => $this->get_pagenum(),
+								'order'    => $this->order,
+								'orderby'  => $this->orderby,
+								'_wpnonce' => wp_create_nonce( 'wallets-user-confirm-' . $item['id'] ),
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
@@ -435,7 +428,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			}
 		}
 
-		$checkbox = $item[ 'user_confirm' ] ? '&#x2611;' : '&#x2610;';
+		$checkbox = $item['user_confirm'] ? '&#x2611;' : '&#x2610;';
 
 		return sprintf( '%s %s', $checkbox, $this->row_actions( $actions, true ) );
 

@@ -8,10 +8,10 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Bitcoin' ) ) {
-	include_once ( DSWALLETS_PATH . '/includes/third-party/easybitcoin.php' );
+	include_once( DSWALLETS_PATH . '/includes/third-party/easybitcoin.php' );
 }
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
@@ -32,7 +32,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" ),
 					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-password" ),
 					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-ip" ),
-					intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) ),
+					absint( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) ),
 					Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-path" )
 				);
 
@@ -63,7 +63,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 						sprintf(
 							__( 'You need to make sure that your <a href="%1$s">%2$s RPC settings</a> are correctly configured. ', 'wallets' ),
 							esc_attr( $settings_url ),
-							$this->get_name() ) .
+							$this->get_name()
+						) .
 						'</li><li><p>' .
 
 						__( 'Then edit your <code>.conf</code> file and append the following:', 'wallets' ) . '</p>' .
@@ -74,10 +75,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 
 						__( 'Finally, start the daemon.', 'wallets' ) . '</li></ol><p>' .
 
-						__( 'You are advised to not dismiss this error manually. ' .
+						__(
+							'You are advised to not dismiss this error manually. ' .
 							'It will stop showing once the daemon can be contacted.',
-							'wallets' ),
-							sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) . '-api-down'
+							'wallets'
+						),
+						sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) . '-api-down'
 					);
 				}
 			}
@@ -99,11 +102,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-ip",
 				__( 'IP', 'wallets' ),
-				array( &$this, 'settings_text_cb'),
+				array( &$this, 'settings_text_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-ip",
+					'label_for'   => "{$this->option_slug}-rpc-ip",
 					'description' => __( 'The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you are running the daemon on the same machine as WordPress.', 'wallets' ),
 				)
 			);
@@ -116,11 +119,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-port",
 				__( 'Port', 'wallets' ),
-				array( &$this, 'settings_int16_cb'),
+				array( &$this, 'settings_int16_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-port",
+					'label_for'   => "{$this->option_slug}-rpc-port",
 					'description' => __( 'The TCP port where the daemon listens for JSON-RPC connections. It should match the <code>rpcport</code> setting in your daemon.', 'wallets' ),
 				)
 			);
@@ -133,11 +136,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-user",
 				__( 'User', 'wallets' ),
-				array( &$this, 'settings_text_cb'),
+				array( &$this, 'settings_text_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-user",
+					'label_for'   => "{$this->option_slug}-rpc-user",
 					'description' => __( 'The username part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcuser</code> setting in your daemon.', 'wallets' ),
 				)
 			);
@@ -150,11 +153,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-password",
 				__( 'Password', 'wallets' ),
-				array( &$this, 'settings_pw_cb'),
+				array( &$this, 'settings_pw_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-password",
+					'label_for'   => "{$this->option_slug}-rpc-password",
 					'description' => __( 'The password part of the credentials to connect to the JSON-RPC port. It should match the <code>rpcpassword</code> setting in your daemon. Note that this password will be stored on your MySQL DB.', 'wallets' ),
 				)
 			);
@@ -167,11 +170,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-passphrase",
 				__( 'Wallet passphrase', 'wallets' ),
-				array( &$this, 'settings_secret_cb'),
+				array( &$this, 'settings_secret_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-passphrase",
+					'label_for'   => "{$this->option_slug}-rpc-passphrase",
 					'description' => __( 'The passphrase used to unlock your wallet. Only needed for withdrawals. Leave empty if withdrawals are not needed or if the wallet is not encrypted with a passphrase. Note that this passphrase will be stored on your MySQL DB.', 'wallets' ),
 				)
 			);
@@ -184,11 +187,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-path",
 				__( 'Path', 'wallets' ),
-				array( &$this, 'settings_text_cb'),
+				array( &$this, 'settings_text_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-path",
+					'label_for'   => "{$this->option_slug}-rpc-path",
 					'description' => __( 'The path location of the JSON-RPC API endpoint. Normally you will want to leave this empty.', 'wallets' ),
 				)
 			);
@@ -201,11 +204,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-rpc-ssl-enabled",
 				__( 'SSL enabled', 'wallets' ),
-				array( &$this, 'settings_checkbox_cb'),
+				array( &$this, 'settings_checkbox_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-rpc",
 				array(
-					'label_for' => "{$this->option_slug}-rpc-ssl-enabled",
+					'label_for'   => "{$this->option_slug}-rpc-ssl-enabled",
 					'description' => __( 'Check to enable RPC communication over SSL. This is deprecated in Bitcoin core but other coins may use it. Only use it if you have specified <code>rpcssl=1</code> in your configuration.', 'wallets' ),
 				)
 			);
@@ -222,11 +225,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 
 		protected function get_recommended_config() {
 			$wallet_url = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/wallet/%s' );
-			$block_url = site_url( 'wallets/api2/notify/' . $this->get_symbol(). '/block/%s' );
-			$alert_url = site_url( 'wallets/api2/notify/' . $this->get_symbol(). '/alert/%s' );
-			$wp_ip = self::server_ip();
-			$user = $this->get_adapter_option( 'rpc-user');
-			$port = intval( $this->get_adapter_option( 'rpc-port') );
+			$block_url  = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/block/%s' );
+			$alert_url  = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/alert/%s' );
+			$wp_ip      = self::server_ip();
+			$user       = $this->get_adapter_option( 'rpc-user' );
+			$port       = absint( $this->get_adapter_option( 'rpc-port' ) );
 
 			return <<<CFG
 server=1
@@ -249,18 +252,23 @@ CFG;
 
 		/** @internal */
 		public function settings_rpc_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			?><p><?php
-				echo esc_html( sprintf(
-					__( 'The %1$s adapter needs to know the location and credentials to the RPC API of the %2$s daemon.', 'wallets' ),
-					$this->get_adapter_name(),
-					$this->get_name()
-					) );
-			?></p><?php
-
+			?>
+			<p>
+			<?php
+				echo esc_html(
+					sprintf(
+						__( 'The %1$s adapter needs to know the location and credentials to the RPC API of the %2$s daemon.', 'wallets' ),
+						$this->get_adapter_name(),
+						$this->get_name()
+					)
+				);
+			?>
+			</p>
+			<?php
 		}
 
 		// input field callbacks
@@ -290,7 +298,7 @@ CFG;
 			$result = $this->rpc->getbalance( '*', $this->get_minconf() );
 
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 			return floatval( $result );
 		}
@@ -303,7 +311,7 @@ CFG;
 			$result = $this->rpc->getnewaddress();
 
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 			return $result;
 		}
@@ -311,19 +319,23 @@ CFG;
 		public function do_withdraw( $address, $amount, $comment = '', $comment_to = '' ) {
 
 			if ( ! $this->get_adapter_option( 'general-enabled' ) ) {
-				throw new Exception( sprintf(
-					__( '%s->%s() failed to withdraw because the adapter is disabled.', 'wallets' ),
-					__CLASS__,
-					__FUNCTION__
-				) );
+				throw new Exception(
+					sprintf(
+						__( '%1$s->%2$s() failed to withdraw because the adapter is disabled.', 'wallets' ),
+						__CLASS__,
+						__FUNCTION__
+					)
+				);
 			}
 
 			if ( ! $this->is_unlocked() ) {
-				throw new Exception( sprintf(
-					__( '%s->%s() failed to withdraw because the wallet is locked.', 'wallets' ),
-					__CLASS__,
-					__FUNCTION__
-				) );
+				throw new Exception(
+					sprintf(
+						__( '%1$s->%2$s() failed to withdraw because the wallet is locked.', 'wallets' ),
+						__CLASS__,
+						__FUNCTION__
+					)
+				);
 			}
 
 			$amount = number_format( (float) $amount, 8, '.', '' );
@@ -336,7 +348,7 @@ CFG;
 			);
 
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed to send with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed to send with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 			return $result;
 		}
@@ -346,7 +358,7 @@ CFG;
 				return false;
 			}
 
-			$retain_minutes = intval( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
+			$retain_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
 
 			if ( ! $retain_minutes ) {
 				// passphrase is saved with no time limit. unlock the wallet for one minute.
@@ -358,7 +370,7 @@ CFG;
 			}
 
 			$is_unlocked = false;
-			$result = $this->rpc->getwalletinfo();
+			$result      = $this->rpc->getwalletinfo();
 
 			if ( $result ) {
 				if ( ! isset( $result['unlocked_until'] ) || $result['unlocked_until'] > 0 ) {
@@ -376,7 +388,6 @@ CFG;
 				}
 			}
 
-
 			if ( ! $is_unlocked ) {
 				// if wallet is locked make sure the db state reflects this
 				Dashed_Slug_Wallets::delete_option( "{$this->option_slug}-rpc-passphrase" );
@@ -386,36 +397,42 @@ CFG;
 		}
 
 		protected function set_secret( $secret ) {
-			$retain_minutes = intval( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
+			$retain_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
 			if ( ! $retain_minutes ) {
 				$retain_minutes = 1;
 			}
 
 			$result = $this->rpc->walletpassphrase(
 				$secret,
-				intval( $retain_minutes ) * MINUTE_IN_SECONDS
+				absint( $retain_minutes ) * MINUTE_IN_SECONDS
 			);
 
 			if ( false === $result ) {
-				throw new Exception( sprintf(
-					__( '%s->%s() failed to send with status="%s" and error="%s"', 'wallets' ),
-					__CLASS__,
-					__FUNCTION__,
-					$this->rpc->status,
-					$this->rpc->error
-				) );
+				throw new Exception(
+					sprintf(
+						__( '%1$s->%2$s() failed to send with status="%3$s" and error="%4$s"', 'wallets' ),
+						__CLASS__,
+						__FUNCTION__,
+						$this->rpc->status,
+						$this->rpc->error
+					)
+				);
 			} else {
 				if ( $retain_minutes ) {
-					error_log( sprintf(
-						'Unlocked coin adapter "%s" for withdrawals using wallet passphrase for %d minutes.',
-						$this->get_adapter_name(),
-						$retain_minutes
-					) );
+					error_log(
+						sprintf(
+							'Unlocked coin adapter "%s" for withdrawals using wallet passphrase for %d minutes.',
+							$this->get_adapter_name(),
+							$retain_minutes
+						)
+					);
 				} else {
-					error_log( sprintf(
-						'Unlocked coin adapter "%s" for withdrawals using wallet passphrase indefinitely.',
-						$this->get_adapter_name()
-					) );
+					error_log(
+						sprintf(
+							'Unlocked coin adapter "%s" for withdrawals using wallet passphrase indefinitely.',
+							$this->get_adapter_name()
+						)
+					);
 				}
 			}
 		}
@@ -425,15 +442,17 @@ CFG;
 				try {
 					$this->set_secret( $new_value );
 				} catch ( Exception $e ) {
-					error_log( sprintf(
-						'Could not unlock RPC wallet %s with secret passphrase: %s',
-						$this->get_adapter_name(),
-						$e->getMessage()
-					) );
+					error_log(
+						sprintf(
+							'Could not unlock RPC wallet %s with secret passphrase: %s',
+							$this->get_adapter_name(),
+							$e->getMessage()
+						)
+					);
 				}
 			}
 
-			$retain_minutes = intval( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
+			$retain_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
 			if ( $retain_minutes ) {
 				return false; // do not save the secret to the database
 			} else {
@@ -461,7 +480,7 @@ CFG;
 			$result = $this->rpc->gettransaction( $txid );
 
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 
 			// A txid coming from the wallet corresponds to a blockchain transaction that can have potentially
@@ -471,13 +490,13 @@ CFG;
 			if ( isset( $result['details'] ) && is_array( $result['details'] ) && count( $result['details'] ) ) {
 
 				foreach ( $result['details'] as $row ) {
-					$tx = new stdClass();
-					$tx->symbol = $this->get_symbol();
-					$tx->txid = $txid;
-					$tx->address = $row['address'];
-					$tx->amount = $row['amount'];
+					$tx                = new stdClass();
+					$tx->symbol        = $this->get_symbol();
+					$tx->txid          = $txid;
+					$tx->address       = $row['address'];
+					$tx->amount        = $row['amount'];
 					$tx->confirmations = $result['confirmations'];
-					$tx->created_time = $result['time'];
+					$tx->created_time  = $result['time'];
 
 					if ( isset( $result['comment'] ) && is_string( $result['comment'] ) ) {
 						$tx->comment = $result['comment'];
@@ -491,9 +510,11 @@ CFG;
 
 					switch ( $row['category'] ) {
 						case 'send':
-							$tx->category = 'withdraw'; break;
+							$tx->category = 'withdraw';
+							break;
 						case 'receive':
-							$tx->category = 'deposit'; break;
+							$tx->category = 'deposit';
+							break;
 						default:
 							return;
 					}
@@ -505,12 +526,12 @@ CFG;
 
 		public function action_wallets_notify_block( $blockhash ) {
 
-			$result = new stdClass();
+			$result         = new stdClass();
 			$result->symbol = $this->get_symbol();
-			$result->block = $this->rpc->getblock( $blockhash );
+			$result->block  = $this->rpc->getblock( $blockhash );
 
 			if ( false === $result->block ) {
-				throw new Exception( sprintf( __( '%s::%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s::%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			} else {
 
 				do_action( 'wallets_block', $result );
@@ -532,9 +553,9 @@ CFG;
 		 */
 		public function action_wallets_notify_alert( $message ) {
 
-			$result = new stdClass();
+			$result          = new stdClass();
 			$result->message = $message;
-			$result->symbol = $this->get_symbol();
+			$result->symbol  = $this->get_symbol();
 
 			do_action( 'wallets_alert', $result );
 		}
@@ -556,7 +577,7 @@ CFG;
 		protected function cron_scrape_listtransactions() {
 			$result = $this->rpc->listtransactions( '*', 32 );
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 
 			foreach ( $result as &$transaction ) {
@@ -569,7 +590,7 @@ CFG;
 		protected function cron_scrape_listreceivedbyaddress() {
 			$result = $this->rpc->listreceivedbyaddress();
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 
 			if ( is_array( $result ) ) {
@@ -586,7 +607,7 @@ CFG;
 		protected function cron_scrape_listunspent() {
 			$result = $this->rpc->listunspent();
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%s->%s() failed with status="%s" and error="%s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 
 			if ( is_array( $result ) ) {

@@ -1,7 +1,7 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 	class Dashed_Slug_Wallets_Frontend_Settings {
@@ -45,7 +45,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets-menu-frontend-settings',
 				'wallets_qrcode_section',
 				array(
-					'label_for' => 'wallets_qrcode_enabled',
+					'label_for'   => 'wallets_qrcode_enabled',
 					'description' => __( 'Controls whether a QR Code is displayed.', 'wallets ' ),
 				)
 			);
@@ -65,16 +65,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			add_settings_field(
 				'wallets_poll_interval_coin_info',
 				__( 'Coin info poll interval (minutes)', 'wallets' ),
-				array( &$this, 'integer_cb' ),
+				array( &$this, 'number_cb' ),
 				'wallets-menu-frontend-settings',
 				'wallets_live_section',
 				array(
-					'label_for' => 'wallets_poll_interval_coin_info',
+					'label_for'   => 'wallets_poll_interval_coin_info',
 					'description' => __( 'How often information about coins, including user balances, is refreshed. (0 = no refresh)', 'wallets' ),
-					'min' => 0,
-					'max' => 15,
-					'step' => 0.25,
-					'default' => 5,
+					'min'         => 0,
+					'max'         => 15,
+					'step'        => 0.25,
+					'default'     => 5,
+					'required'    => true,
 				)
 			);
 
@@ -90,9 +91,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets-menu-frontend-settings',
 				'wallets_live_section',
 				array(
-					'label_for' => 'wallets_visibility_check_enabled',
-					'description' => __( 'Information about coins and balances is also loaded whenever the wallets page gains visibility, according to the ' .
-						'Page Visibility API. Uncheck this box to disable this behavior.', 'wallets ' ),
+					'label_for'   => 'wallets_visibility_check_enabled',
+					'description' => __(
+						'Information about coins and balances is also loaded whenever the wallets page gains visibility, according to the ' .
+						'Page Visibility API. Uncheck this box to disable this behavior.', 'wallets '
+					),
 				)
 			);
 
@@ -104,16 +107,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			add_settings_field(
 				'wallets_poll_interval_transactions',
 				__( 'Transaction list poll interval (minutes)', 'wallets' ),
-				array( &$this, 'integer_cb' ),
+				array( &$this, 'number_cb' ),
 				'wallets-menu-frontend-settings',
 				'wallets_live_section',
 				array(
-					'label_for' => 'wallets_poll_interval_transactions',
+					'label_for'   => 'wallets_poll_interval_transactions',
 					'description' => __( 'How often user transaction data is refreshed. (0 = no refresh).', 'wallets' ),
-					'min' => 0,
-					'max' => 15,
-					'step' => 0.25,
-					'default' => 5,
+					'min'         => 0,
+					'max'         => 15,
+					'step'        => 0.25,
+					'default'     => 5,
+					'required'    => true,
 				)
 			);
 
@@ -136,9 +140,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets-menu-frontend-settings',
 				'wallets_json_api_section',
 				array(
-					'label_for' => 'wallets_zlib_disabled',
-					'description' => __( 'The JSON output of the wallets API is compressed if the PHP zlib module is available. ' .
-						'Check this to disable compression, only if you experience problems on the frontend.', 'wallets' ),
+					'label_for'   => 'wallets_zlib_disabled',
+					'description' => __(
+						'The JSON output of the wallets API is compressed if the PHP zlib module is available. ' .
+						'Check this to disable compression, only if you experience problems on the frontend.', 'wallets'
+					),
 				)
 			);
 
@@ -154,9 +160,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets-menu-frontend-settings',
 				'wallets_json_api_section',
 				array(
-					'label_for' => 'wallets_legacy_json_apis',
-					'description' => __( 'As the plugin is further developed, new versions of the JSON API are introduced. ' .
-						'Check this only if you wish to enable older versions of the JSON API, to provide compatibility with other components.', 'wallets' ),
+					'label_for'   => 'wallets_legacy_json_apis',
+					'description' => __(
+						'As the plugin is further developed, new versions of the JSON API are introduced. ' .
+						'Check this only if you wish to enable older versions of the JSON API, to provide compatibility with other components.', 'wallets'
+					),
 				)
 			);
 
@@ -175,14 +183,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 					'Frontend settings',
 					'manage_wallets',
 					'wallets-menu-frontend-settings',
-					array( &$this, "wallets_frontend_settings_page_cb" )
+					array( &$this, 'wallets_frontend_settings_page_cb' )
 				);
 			}
 		}
 
 
 		public function wallets_frontend_settings_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -190,25 +198,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 			<p><?php echo __( 'These settings affect the way the frontend UIs are displayed.', 'wallets' ); ?></p>
 
-				<form method="post" action="<?php
+				<form method="post" action="
+					<?php
 
-						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-							echo esc_url(
-								add_query_arg(
-									'action',
-									'wallets-menu-frontend-settings',
-									network_admin_url( 'edit.php' )
-								)
-							);
-						} else {
-							echo 'options.php';
-						}
+					if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+						echo esc_url(
+							add_query_arg(
+								'action',
+								'wallets-menu-frontend-settings',
+								network_admin_url( 'edit.php' )
+							)
+						);
+					} else {
+						echo 'options.php';
+					}
 
-					?>"><?php
-					settings_fields( 'wallets-menu-frontend-settings' );
-					do_settings_sections( 'wallets-menu-frontend-settings' );
-					submit_button();
-				?></form><?php
+					?>
+					">
+					<?php
+						settings_fields( 'wallets-menu-frontend-settings' );
+						do_settings_sections( 'wallets-menu-frontend-settings' );
+						submit_button();
+					?>
+				</form>
+			<?php
 		}
 
 
@@ -229,18 +242,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 		}
 
 		public function checkbox_cb( $arg ) {
-			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
+			?>
+			<input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
 			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
-			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p><?php
+			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<?php
 		}
 
-		public function integer_cb( $arg ) {
+		public function number_cb( $arg ) {
 			?>
 			<input
 				type="number"
 				required="required"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
-				value="<?php echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'], $arg['default'] ) ) ); ?>"
+				value="<?php echo esc_attr( absint( Dashed_Slug_Wallets::get_option( $arg['label_for'], $arg['default'] ) ) ); ?>"
+				<?php if ( isset( $arg['required'] ) && $arg['required'] ) : ?>required="required"<?php endif; ?>
 				min="<?php echo floatval( $arg['min'] ); ?>"
 				max="<?php echo floatval( $arg['max'] ); ?>"
 				step="<?php echo floatval( $arg['step'] ); ?>" />
@@ -250,25 +266,46 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 		}
 
 		public function wallets_qrcode_section_cb() {
-			?><p><?php echo __( 'The <code>[wallets_deposit]</code> shortcode displays deposit addresses. ' .
-			'Here you can control whether these deposit addresses are also rendered as QR Codes.', 'wallets' ); ?></p>
+			?>
+			<p>
+			<?php
+				echo __(
+					'The <code>[wallets_deposit]</code> shortcode displays deposit addresses. ' .
+					'Here you can control whether these deposit addresses are also rendered as QR Codes.', 'wallets'
+				);
+			?>
+			</p>
 			<p style="font-size: smaller;"><?php esc_html_e( '"QR Code" is a registered trademark of DENSO WAVE INCORPORATED', 'wallets' ); ?></p>
 			<?php
 		}
 
 		public function wallets_live_section_cb() {
-			?><p><?php esc_html_e( 'Frontend UIs can refresh the on-screen information displayed every so often. ' .
-				'Because WordPress does not allow for permanent connections such as Web Sockets, this is implemented via polling ' .
-				'the JSON API at regular intervals. This can cause additional overhead on your server. Polling is only done when the user browser ' .
-				'displays your page, not when the browser is minimized or displays another tab. Here you can control the time '.
-				'interval between polling requests.', 'wallets' ); ?></p>
+			?>
+			<p>
+			<?php
+				esc_html_e(
+					'Frontend UIs can refresh the on-screen information displayed every so often. ' .
+					'Because WordPress does not allow for permanent connections such as Web Sockets, this is implemented via polling ' .
+					'the JSON API at regular intervals. This can cause additional overhead on your server. Polling is only done when the user browser ' .
+					'displays your page, not when the browser is minimized or displays another tab. Here you can control the time ' .
+					'interval between polling requests.', 'wallets'
+				);
+				?>
+				</p>
 			<?php
 		}
 
 		public function wallets_json_api_section_cb() {
-			?><p><?php esc_html_e( 'Frontend UIs use a JSON API to communicate with the plugin. ' .
-				'This same API can also be used by third party components that need to interact with the plugin. ' .
-				'The API is documented in the accompanying PDF manual for this plugin.', 'wallets' ); ?></p>
+			?>
+			<p>
+			<?php
+				esc_html_e(
+					'Frontend UIs use a JSON API to communicate with the plugin. ' .
+					'This same API can also be used by third party components that need to interact with the plugin. ' .
+					'The API is documented in the accompanying PDF manual for this plugin.', 'wallets'
+				);
+				?>
+				</p>
 			<?php
 		}
 

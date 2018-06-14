@@ -5,15 +5,15 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
 		private static $providers = array( 'fixer', 'coinmarketcap', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
-		private static $rates = array();
-		private static $cryptos = array();
-		private static $fiats = array();
+		private static $rates     = array();
+		private static $cryptos   = array();
+		private static $fiats     = array();
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
@@ -30,7 +30,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( is_array( $enabled_providers ) && false !== array_search( $provider, $enabled_providers ) ) {
 					add_filter( 'wallets_rates', array( __CLASS__, "filter_rates_$provider" ) );
 					if ( 'fixer' == $provider ) {
-						add_filter( 'wallets_rates_fiats', array( __CLASS__,'filter_rates_fiats_fixer' ) );
+						add_filter( 'wallets_rates_fiats', array( __CLASS__, 'filter_rates_fiats_fixer' ) );
 					} else {
 						add_filter( 'wallets_rates_cryptos', array( __CLASS__, "filter_rates_cryptos_$provider" ) );
 					}
@@ -84,8 +84,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'label_for' => 'wallets_rates_providers',
-					'description' => __( 'Pick the APIs that you wish to use as sources of exchange rates between cryptocurrencies. ', 'wallets' )
+					'label_for'   => 'wallets_rates_providers',
+					'description' => __( 'Pick the APIs that you wish to use as sources of exchange rates between cryptocurrencies. ', 'wallets' ),
 				)
 			);
 
@@ -101,11 +101,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'label_for' => 'wallets_rates_fixer_key',
+					'label_for'   => 'wallets_rates_fixer_key',
 					'description' =>
-					__( 'The fixer.io service needs to be enabled for any kind of conversion between fiat currencies and cryptocurrencies. ' .
-						'You will need to <a href="https://fixer.io/product" target="_blank">sign up here for an API key</a>. ' .
-						'You can then provide the API key in this field.', 'wallets' )
+					__(
+						'The fixer.io service needs to be enabled for any kind of conversion between fiat currencies and cryptocurrencies. ' .
+						'You will need to <a href="https://fixer.io/product" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
+						'You can then provide the API key in this field.', 'wallets'
+					),
 				)
 			);
 
@@ -121,12 +123,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'label_for' => 'wallets_rates_cache_expiry',
-					'description' => __( 'The exchange rates will be cached for this many minutes before being updated. ' .
-						'Currency symbols are always cached for one hour.', 'wallets' ),
-					'min' => 1,
-					'max' => 30,
-					'step' => 1
+					'label_for'   => 'wallets_rates_cache_expiry',
+					'description' => __(
+						'The exchange rates will be cached for this many minutes before being updated. ' .
+						'Currency symbols are always cached for one hour.', 'wallets'
+					),
+					'min'         => 1,
+					'max'         => 30,
+					'step'        => 1,
+					'required'    => true,
 				)
 			);
 
@@ -142,10 +147,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'label_for' => 'wallets_default_base_symbol',
-					'description' => __( 'Users will be shown all cryptocurrency amounts in a fiat currency too for convenience. ' .
+					'label_for'   => 'wallets_default_base_symbol',
+					'description' => __(
+						'Users will be shown all cryptocurrency amounts in a fiat currency too for convenience. ' .
 						'Here you can change the default fiat currency. ' .
-						'Users can override this setting in their WordPress profile pages.', 'wallets' ),
+						'Users can override this setting in their WordPress profile pages.', 'wallets'
+					),
 				)
 			);
 
@@ -161,8 +168,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'label_for' => 'wallets_rates_tor_enabled',
-					'description' => __( 'Enable this to pull exchange rates via tor. Does not work with Poloniex. You need to set up a tor proxy first. Only useful if setting up a hidden service. (Default: disabled)', 'wallets' )
+					'label_for'   => 'wallets_rates_tor_enabled',
+					'description' => __( 'Enable this to pull exchange rates via tor. Does not work with Poloniex. You need to set up a tor proxy first. Only useful if setting up a hidden service. (Default: disabled)', 'wallets' ),
 				)
 			);
 
@@ -178,8 +185,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'label_for' => 'wallets_rates_tor_ip',
-					'description' => __( 'This is the IP of your tor proxy. (Default: 127.0.0.1)', 'wallets' )
+					'label_for'   => 'wallets_rates_tor_ip',
+					'description' => __( 'This is the IP of your tor proxy. (Default: 127.0.0.1)', 'wallets' ),
 				)
 			);
 
@@ -195,11 +202,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_section',
 				array(
-					'min' => 1,
-					'max' => 65535,
-					'step' => 1,
-					'label_for' => 'wallets_rates_tor_port',
-					'description' => __( 'This is the TCP port of your tor proxy. (Default: 9050, some newer tor bundles use 9150)', 'wallets' )
+					'min'         => 1,
+					'max'         => 65535,
+					'step'        => 1,
+					'label_for'   => 'wallets_rates_tor_port',
+					'description' => __( 'This is the TCP port of your tor proxy. (Default: 9050, some newer tor bundles use 9150)', 'wallets' ),
 				)
 			);
 
@@ -224,8 +231,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_debug_section',
 				array(
-					'label_for' => 'wallets_rates_fiats',
-					'description' => __( 'View a list of known fiat currencies (for debugging). ', 'wallets' )
+					'label_for'   => 'wallets_rates_fiats',
+					'description' => __( 'View a list of known fiat currencies (for debugging). ', 'wallets' ),
 				)
 			);
 
@@ -234,7 +241,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets_rates_fiats'
 			);
 
-
 			add_settings_field(
 				'wallets_rates_cryptos',
 				__( 'Known cryptocurrencies', 'wallets' ),
@@ -242,8 +248,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_debug_section',
 				array(
-					'label_for' => 'wallets_rates_cryptos',
-					'description' => __( 'View a list of all known cryptocurrencies reported by the selected providers (for debugging). ', 'wallets' )
+					'label_for'   => 'wallets_rates_cryptos',
+					'description' => __( 'View a list of all known cryptocurrencies reported by the selected providers (for debugging). ', 'wallets' ),
 				)
 			);
 
@@ -259,8 +265,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_debug_section',
 				array(
-					'label_for' => 'wallets_rates',
-					'description' => __( 'View a list of all exhange rates reported by the selected providers (for debugging).', 'wallets' )
+					'label_for'   => 'wallets_rates',
+					'description' => __( 'View a list of all exhange rates reported by the selected providers (for debugging).', 'wallets' ),
 				)
 			);
 
@@ -278,13 +284,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					'Exchange rates',
 					'manage_wallets',
 					'wallets-menu-rates',
-					array( &$this, "wallets_rates_page_cb" )
+					array( &$this, 'wallets_rates_page_cb' )
 				);
 			}
 		}
 
 		public function wallets_rates_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -294,32 +300,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				<p><?php esc_html_e( '', 'wallets' ); ?></p>
 
-				<form method="post" action="<?php
+				<form method="post" action="
+				<?php
 
-						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-							echo esc_url(
-								add_query_arg(
-									'action',
-									'wallets-menu-rates',
-									network_admin_url( 'edit.php' )
-								)
-							);
-						} else {
-							echo 'options.php';
-						}
+				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					echo esc_url(
+						add_query_arg(
+							'action',
+							'wallets-menu-rates',
+							network_admin_url( 'edit.php' )
+						)
+					);
+				} else {
+					echo 'options.php';
+				}
 
-					?>"><?php
+					?>
+					">
+					<?php
 					settings_fields( 'wallets-menu-rates' );
 					do_settings_sections( 'wallets-menu-rates' );
 					submit_button();
-				?></form><?php
+				?>
+				</form>
+				<?php
 		}
 
 
 		public function update_network_options() {
 			check_admin_referer( 'wallets-menu-rates-options' );
 
-			Dashed_Slug_Wallets::update_option( 'wallets_rates_fixer_key', filter_input( INPUT_POST, 'wallets_rates_fixer_key', FILTER_SANITIZE_STRING )  );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_fixer_key', filter_input( INPUT_POST, 'wallets_rates_fixer_key', FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_rates_providers', $_POST['wallets_rates_providers'] );
 			Dashed_Slug_Wallets::update_option( 'wallets_rates_cache_expiry', filter_input( INPUT_POST, 'wallets_rates_cache_expiry', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_default_base_symbol', filter_input( INPUT_POST, 'wallets_default_base_symbol', FILTER_SANITIZE_STRING ) );
@@ -334,7 +345,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				$enabled_providers = array();
 			}
 
-			foreach ( self::$providers as $provider ): ?>
+			foreach ( self::$providers as $provider ) :
+			?>
 
 				<input
 					type="checkbox"
@@ -347,25 +359,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				<?php
 				switch ( $provider ) {
 					case 'novaexchange':
-						$ref_link = 'https://novaexchange.com/?re=oalb1eheslpu6bjvd6lh'; break;
+						$ref_link = 'https://novaexchange.com/?re=oalb1eheslpu6bjvd6lh';
+						break;
 					case 'yobit':
-						$ref_link = 'https://yobit.io/?bonus=mwPLi'; break;
+						$ref_link = 'https://yobit.io/?bonus=mwPLi';
+						break;
 					case 'cryptopia':
-						$ref_link = 'https://www.cryptopia.co.nz/Register?referrer=dashed_slug'; break;
+						$ref_link = 'https://www.cryptopia.co.nz/Register?referrer=dashed_slug';
+						break;
 					default:
-						$ref_link = false; break;
-				} ?>
+						$ref_link = false;
+						break;
+				}
+				?>
 
-				<?php if ( $ref_link ): ?>
+				<?php if ( $ref_link ) : ?>
 					<a
-						target="_blank"
+						target="_blank" rel="noopener noreferrer"
 						href="<?php echo esc_attr( $ref_link ); ?>"
 						title="<?php echo esc_attr_e( 'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets' ); ?>">
 
 						<?php echo esc_html( ucfirst( $provider ) ); ?>
 					</a>
 
-				<?php else: ?>
+				<?php else : ?>
 
 					<label
 						for="<?php echo esc_attr( $arg['label_for'] . "_{$provider}_radio" ); ?>">
@@ -374,9 +391,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				<?php endif; ?>
 
-				<br /><?php
+				<br />
+				<?php
 
-			endforeach; ?>
+			endforeach;
+			?>
 
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
@@ -388,9 +407,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				type="number"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>"
-				min="<?php echo intval( $arg['min'] ); ?>"
-				max="<?php echo intval( $arg['max'] ); ?>"
-				step="<?php echo intval( $arg['step'] ); ?>" />
+				<?php if ( isset( $arg['required'] ) && $arg['required'] ) : ?>
+				required="required"
+				<?php endif; ?>
+				min="<?php echo absint( $arg['min'] ); ?>"
+				max="<?php echo absint( $arg['max'] ); ?>"
+				step="<?php echo absint( $arg['step'] ); ?>" />
 
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
@@ -400,16 +422,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			$data = Dashed_Slug_Wallets::get_option( $arg['label_for'], array() );
 
-			?><p class="count"><?php echo sprintf( esc_html( 'Number of records: %d', 'wallets' ), count( $data ) ); ?></p>
+			?>
+			<p class="count"><?php echo sprintf( esc_html( 'Number of records: %d', 'wallets' ), count( $data ) ); ?></p>
 			<textarea
 				rows="8"
 				cols="32"
 				disabled="disabled"
-				name="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_html( print_r( $data, true ) ); ?></textarea>
 
-					echo esc_html( print_r( $data, true ) );
-
-			?></textarea>
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
 		}
@@ -426,6 +446,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				class="description"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
 				<?php echo $arg['description']; ?></p>
+
 			<?php
 		}
 
@@ -441,20 +462,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				class="description"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
 				<?php echo $arg['description']; ?></p>
+
 			<?php
 		}
 
 		public function fiat_cb( $arg ) {
 			$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
-			$fiats = array_unique( Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array( 'USD' ) ) ); ?>
+			$fiats       = array_unique( Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array( 'USD' ) ) );
+			?>
 
 			<select
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>">
 
-				<?php foreach ( $fiats as $fiat ): ?>
+				<?php foreach ( $fiats as $fiat ) : ?>
 				<option
-					<?php if ( $fiat == $fiat_symbol): ?> selected="selected"<?php endif; ?>
+					<?php if ( $fiat == $fiat_symbol ) : ?>
+					selected="selected"
+					<?php endif; ?>
 					value="<?php echo esc_attr( $fiat ); ?>">
 					<?php echo esc_html( $fiat ); ?>
 				</option>
@@ -465,22 +490,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				class="description"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
 				<?php echo $arg['description']; ?></p>
-			<?php
 
+			<?php
 		}
 
 		public function wallets_rates_section_cb() {
-			?><p><?php echo sprintf(
-					__( 'App extensions, such as the <a href="%s">WooCommerce</a> and <a href="%s">Events Manager</a> payment gateways, use exchange rates for price calculation. ' .
-					'Choose which API or APIs will be used to pull exchange rates between various cryptocurrencies.', 'wallets' ),
-
+			?>
+			<p>
+			<?php
+				echo sprintf(
+					__(
+						'App extensions, such as the <a href="%s">WooCommerce</a> and <a href="%s">Events Manager</a> payment gateways, use exchange rates for price calculation. ' .
+						'Choose which API or APIs will be used to pull exchange rates between various cryptocurrencies.', 'wallets'
+					),
 					'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/',
 					'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/'
-				); ?></p><?php
+				);
+			?>
+			</p>
+			<?php
 		}
 
 		public function wallets_rates_debug_section_cb() {
-			?><p><?php esc_html_e( 'Use these views to verify that data is being pulled correctly from your exchange rates provider.', 'wallets' ); ?></p><?php
+			?>
+			<p><?php esc_html_e( 'Use these views to verify that data is being pulled correctly from your exchange rates provider.', 'wallets' ); ?></p>
+			<?php
 		}
 
 		public function filter_pre_update_option( $new, $old ) {
@@ -515,7 +549,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				self::$fiats = array_unique( apply_filters( 'wallets_rates_fiats', self::$fiats ) );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates_fiats', self::$fiats );
 
-				self::$rates = apply_filters( 'wallets_rates', self::$rates  );
+				self::$rates = apply_filters( 'wallets_rates', self::$rates );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates', self::$rates );
 
 				Dashed_Slug_Wallets::set_transient( 'wallets_rates_last_run', time() );
@@ -528,12 +562,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		private static $cache = array();
 
 		private static function file_get_contents( $url, $cache_seconds = false ) {
-			$cache_seconds = intval( $cache_seconds );
-			if ( ! $cache_seconds) {
+			$cache_seconds = absint( $cache_seconds );
+			if ( ! $cache_seconds ) {
 				$cache_seconds = Dashed_Slug_Wallets::get_option( 'wallets_rates_cache_expiry', 5 ) * MINUTE_IN_SECONDS;
 			}
 
-			$hash = "wallets_rates_" . md5( $url );
+			$hash            = 'wallets_rates_' . md5( $url );
 			$cached_response = Dashed_Slug_Wallets::get_transient( $hash );
 			if ( false !== $cached_response ) {
 				return $cached_response;
@@ -548,7 +582,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				if ( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_enabled', false ) ) {
 					$tor_host = Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_ip', '127.0.0.1' );
-					$tor_port = intval( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_port', 9050 ) );
+					$tor_port = absint( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_port', 9050 ) );
 
 					curl_setopt( $ch, CURLOPT_PROXY, $tor_host );
 					curl_setopt( $ch, CURLOPT_PROXYPORT, $tor_port );
@@ -557,22 +591,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				}
 
 				$result = curl_exec( $ch );
-				$msg = curl_error( $ch );
+				$msg    = curl_error( $ch );
 				curl_close( $ch );
 
 				if ( false === $result ) {
 					error_log( "PHP curl returned error while pulling rates: $msg" );
 				}
-
 			} else {
 
 				$result = file_get_contents(
 					"compress.zlib://$url",
 					false,
-					stream_context_create( array(
-						'http' => array(
-							'header' => "Accept-Encoding: gzip\r\n"
-						) ) ) );
+					stream_context_create(
+						array(
+							'http' => array(
+								'header' => "Accept-Encoding: gzip\r\n",
+							),
+						)
+					)
+				);
 			}
 
 			if ( is_string( $result ) ) {
@@ -586,10 +623,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_fiats_fixer( $fiats ) {
 			$apikey = trim( Dashed_Slug_Wallets::get_option( 'wallets_rates_fixer_key' ) );
 			if ( $apikey ) {
-				$url = 'http://data.fixer.io/latest?access_key=' . $apikey;
+				$url  = 'http://data.fixer.io/latest?access_key=' . $apikey;
 				$json = self::file_get_contents( $url, HOUR_IN_SECONDS );
 				if ( is_string( $json ) ) {
-					$obj = json_decode( $json );
+					$obj     = json_decode( $json );
 					$fiats[] = $obj->base;
 					if ( is_object( $obj ) && isset( $obj->rates ) ) {
 						foreach ( $obj->rates as $fixer_symbol => $rate ) {
@@ -606,7 +643,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_coinmarketcap( $cryptos ) {
-			$url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+			$url  = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
@@ -622,7 +659,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_bittrex( $cryptos ) {
-			$url = 'https://bittrex.com/api/v1.1/public/getmarkets';
+			$url  = 'https://bittrex.com/api/v1.1/public/getmarkets';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
@@ -641,7 +678,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_poloniex( $cryptos ) {
-			$url = 'https://poloniex.com/public?command=returnTicker';
+			$url  = 'https://poloniex.com/public?command=returnTicker';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
@@ -659,7 +696,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_novaexchange( $cryptos ) {
-			$url = 'https://novaexchange.com/remote/v2/markets/';
+			$url  = 'https://novaexchange.com/remote/v2/markets/';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
@@ -713,7 +750,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			$json = self::file_get_contents( 'https://tradesatoshi.com/api/public/getcurrencies' );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result) ) {
+				if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result ) ) {
 					foreach ( $obj->result as $market ) {
 						$s = $market->currency;
 						if ( 'USD' != $s && 'USDT' != $s ) {
@@ -726,7 +763,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_stocksexchange( $cryptos ) {
-			$url = 'https://stocks.exchange/api2/markets';
+			$url  = 'https://stocks.exchange/api2/markets';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
@@ -744,14 +781,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_fixer( $rates ) {
 			$apikey = trim( Dashed_Slug_Wallets::get_option( 'wallets_rates_fixer_key' ) );
 			if ( $apikey ) {
-				$url = 'http://data.fixer.io/latest?access_key=' . $apikey;
+				$url  = 'http://data.fixer.io/latest?access_key=' . $apikey;
 				$json = self::file_get_contents( $url, HOUR_IN_SECONDS );
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) && ! isset( $obj->error ) && isset( $obj->rates ) ) {
 						foreach ( $obj->rates as $s => $r ) {
 							if ( ! self::is_crypto( $s ) ) {
-								$rates["{$s}_{$obj->base}"] = $r;
+								$rates[ "{$s}_{$obj->base}" ] = $r;
 							}
 						}
 					}
@@ -764,17 +801,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 
 		public static function filter_rates_coinmarketcap( $rates ) {
-			$url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+			$url  = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_array( $obj ) ) {
 					foreach ( $obj as $market ) {
 						if ( isset( $market->price_usd ) ) {
-							$rates["USD_{$market->symbol}"] = $market->price_usd;
+							$rates[ "USD_{$market->symbol}" ] = $market->price_usd;
 						}
 						if ( isset( $market->price_btc ) ) {
-							$rates["BTC_{$market->symbol}"] = $market->price_btc;
+							$rates[ "BTC_{$market->symbol}" ] = $market->price_btc;
 						}
 					}
 				}
@@ -786,15 +823,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public static function filter_rates_bittrex( $rates ) {
 
-			$url = "https://bittrex.com/api/v1.1/public/getmarketsummaries";
+			$url  = 'https://bittrex.com/api/v1.1/public/getmarketsummaries';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) && isset( $obj->success ) && $obj->success ) {
 					foreach ( $obj->result as $market ) {
-						$m = str_replace( '-', '_', $market->MarketName );
-						$m = str_replace( 'USDT', 'USD', $m );
-						$m = str_replace( 'BCC', 'BCH', $m );
+						$m           = str_replace( '-', '_', $market->MarketName );
+						$m           = str_replace( 'BCC', 'BCH', $m );
 						$rates[ $m ] = $market->Last;
 					}
 				}
@@ -802,7 +838,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			// make sure the usd_btc exchange rate is available
 			if ( ! isset( $rates['USD_BTC'] ) ) {
-				$url = 'https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC';
+				$url  = 'https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC';
 				$json = self::file_get_contents( $url );
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
@@ -820,13 +856,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_poloniex( $rates ) {
-			$url = 'https://poloniex.com/public?command=returnTicker';
+			$url  = 'https://poloniex.com/public?command=returnTicker';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) ) {
 					foreach ( $obj as $market_name => $market ) {
-						$m = str_replace( 'BCC', 'BCH', $market_name );
+						$m           = str_replace( 'BCC', 'BCH', $market_name );
 						$rates[ $m ] = $market->last;
 					}
 				}
@@ -851,7 +887,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public static function filter_rates_yobit( $rates ) {
 			$market_names = array();
-			$adapters = apply_filters( 'wallets_api_adapters', array() );
+			$adapters     = apply_filters( 'wallets_api_adapters', array() );
 
 			foreach ( array_keys( $adapters ) as $symbol ) {
 				if ( 'BCH' == $symbol ) {
@@ -862,15 +898,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			}
 
 			if ( $market_names ) {
-				$url = 'https://yobit.net/api/3/ticker/' . implode( '-', $market_names ) . '?ignore_invalid=1';
+				$url  = 'https://yobit.net/api/3/ticker/' . implode( '-', $market_names ) . '?ignore_invalid=1';
 				$json = self::file_get_contents( $url );
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) ) {
 						foreach ( $obj as $market_name => $market ) {
 							if ( preg_match( '/^([^_]+)_([^_]+)$/', $market_name, $matches ) ) {
-								$m = strtoupper( $matches[2] . '_' . $matches[1] );
-								$m = str_replace( 'BCC', 'BCH', $m );
+								$m           = strtoupper( $matches[2] . '_' . $matches[1] );
+								$m           = str_replace( 'BCC', 'BCH', $m );
 								$rates[ $m ] = $market->last;
 							}
 						}
@@ -881,14 +917,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptopia( $rates ) {
-			$url = 'https://www.cryptopia.co.nz/api/GetMarkets';
+			$url  = 'https://www.cryptopia.co.nz/api/GetMarkets';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) && isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) && ! is_null( $obj->Data ) ) {
 					foreach ( $obj->Data as $market ) {
 						if ( preg_match( '/^(.+)\/(.+)$/', $market->Label, $matches ) ) {
-							$m = strtoupper( $matches[2] . '_' . $matches[1] );
+							$m           = strtoupper( $matches[2] . '_' . $matches[1] );
 							$rates[ $m ] = $market->LastPrice;
 						}
 					}
@@ -898,7 +934,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_tradesatoshi( $rates ) {
-			$url = 'https://tradesatoshi.com/api/public/getmarketsummaries';
+			$url  = 'https://tradesatoshi.com/api/public/getmarketsummaries';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
@@ -906,7 +942,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					foreach ( $obj->result as $market ) {
 						if ( preg_match( '/^(.+)_(.+)$/', $market->market, $matches ) ) {
 							if ( self::is_crypto( $matches[2] ) ) {
-								$m = strtoupper( $matches[2] . '_' . $matches[1] );
+								$m           = strtoupper( $matches[2] . '_' . $matches[1] );
 								$rates[ $m ] = $market->last;
 							}
 						}
@@ -917,13 +953,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_stocksexchange( $rates ) {
-			$url = 'https://stocks.exchange/api2/ticker';
+			$url  = 'https://stocks.exchange/api2/ticker';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) ) {
 					foreach ( $obj as $market ) {
-						$m = str_replace( 'USDT', 'USD', $market->market_name );
+						$m           = str_replace( 'USDT', 'USD', $market->market_name );
 						$rates[ $m ] = $market->last;
 					}
 				}
@@ -950,13 +986,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function get_exchange_rate( $from, $to ) {
 			self::load_data();
 
-			if ( isset( $memoize_rates["{$from}_{$to}"] ) ) {
-				return $memoize_rates["{$from}_{$to}"];
+			if ( isset( $memoize_rates[ "{$from}_{$to}" ] ) ) {
+				return $memoize_rates[ "{$from}_{$to}" ];
 			}
 
-			$memoize_rates["{$from}_{$to}"] = self::get_exchange_rate_recursion( $from, $to );
+			$memoize_rates[ "{$from}_{$to}" ] = self::get_exchange_rate_recursion( $from, $to );
 
-			return $memoize_rates["{$from}_{$to}"];
+			return $memoize_rates[ "{$from}_{$to}" ];
 		}
 
 		/**
@@ -968,12 +1004,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				return 1;
 			}
 
-			if( isset( self::$rates["{$to}_{$from}"] ) ) {
-				return 1 / floatval( self::$rates["{$to}_{$from}"] );
+			if ( isset( self::$rates[ "{$to}_{$from}" ] ) ) {
+				return 1 / floatval( self::$rates[ "{$to}_{$from}" ] );
 			}
 
-			if ( isset( self::$rates["{$from}_{$to}"] ) ) {
-				return floatval( self::$rates["{$from}_{$to}"] );
+			if ( isset( self::$rates[ "{$from}_{$to}" ] ) ) {
+				return floatval( self::$rates[ "{$from}_{$to}" ] );
 			}
 
 			if ( false !== array_search( $from, $visited ) ) {
@@ -989,17 +1025,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			foreach ( self::$rates as $market => $rate ) {
 				$market_split = explode( '_', $market );
-				$t = $market_split[ 0 ];
-				$f = $market_split[ 1 ];
+				$t            = $market_split[0];
+				$f            = $market_split[1];
 
 				if ( $from == $f ) {
 					$new_visited[] = $from;
-					$rate2 = self::get_exchange_rate_recursion( $t, $to, $new_visited );
+					$rate2         = self::get_exchange_rate_recursion( $t, $to, $new_visited );
 					if ( $rate && $rate2 ) {
 						return $rate2 / $rate;
 					}
-				}
-				elseif ( $from == $t ) {
+				} elseif ( $from == $t ) {
 					$new_visited[] = $to;
 
 					$rate2 = self::get_exchange_rate_recursion( $f, $to, $new_visited );
@@ -1018,7 +1053,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public static function is_crypto( $symbol ) {
 			self::load_data();
-			return false !== array_search( $symbol, self::$cryptos);
+			return false !== array_search( $symbol, self::$cryptos );
 		}
 	}
 

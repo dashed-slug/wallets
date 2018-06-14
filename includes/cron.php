@@ -1,7 +1,7 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 	class Dashed_Slug_Wallets_Cron {
@@ -28,23 +28,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
 				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
-				$notices->warning( __( 'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
-					'Until you fix this, transactions will not be executed. ' .
-					'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'),
-					'wallets-cron-disabled' );
+				$notices->warning(
+					__(
+						'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
+						'Until you fix this, transactions will not be executed. ' .
+						'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'
+					),
+					'wallets-cron-disabled'
+				);
 			} else {
-				$last_cron_run = intval( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
+				$last_cron_run = absint( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
 
-				$schedules = $this->filter_cron_schedules( array() );
+				$schedules     = $this->filter_cron_schedules( array() );
 				$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-				$interval = $schedules[ $cron_interval ]['interval'];
+				$interval      = $schedules[ $cron_interval ]['interval'];
 
-				if ( $last_cron_run < ( time() - $interval * 1.5 ) ) {
+				if ( time() - $last_cron_run > 4 * HOUR_IN_SECONDS ) {
 					Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
-						__( 'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
+						__(
+							'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
 							'Triggering a cron run now. Check the Troubleshooting section in the accompanying PDF manual for ways to debug and solve the issue.',
-							'wallets' ),
-						'wallets-cron-not-running' );
+							'wallets'
+						),
+						'wallets-cron-not-running'
+					);
 
 					add_action( 'shutdown', 'Dashed_Slug_Wallets_Cron::trigger_cron' );
 				}
@@ -62,7 +69,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_secrets_retain_minutes', 0 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_aggregating', 'never' );
-
 
 		}
 
@@ -152,7 +158,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 * @since 2.0.0
 		 *
 		 */
-		public function cron( ) {
+		public function cron() {
 			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
 			add_action( 'shutdown', array( &$this, 'old_transactions_aggregating' ) );
@@ -172,7 +178,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		public function old_transactions_aggregating() {
 			global $wpdb;
 
-			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+			$table_name_txs       = Dashed_Slug_Wallets::$table_name_txs;
 			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'wallets', 'never' );
 
 			if ( 'never' == $aggregating_interval ) {
@@ -186,19 +192,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 				// STEP 1: Determine first week with multiple done internal transactions that have not yet been batched into aggregates
 
-				$query =
-					"SELECT
-							YEARWEEK( MIN( created_time ) ) AS earliest_week
-						FROM
-							$table_name_txs
-						WHERE
-							status = 'done'
-							AND category = 'move'
-							AND LOCATE( 'aggregate', tags ) = 0";
+				$query = "
+					SELECT
+						YEARWEEK( MIN( created_time ) ) AS earliest_week
+					FROM
+						$table_name_txs
+					WHERE
+						status = 'done'
+						AND category = 'move'
+						AND LOCATE( 'aggregate', tags ) = 0
+				";
 
 				$earliest_week = $wpdb->get_var( $query );
 				if ( false === $earliest_week ) {
-					throw new Exception( "Could not aggregate transactions because the earliest applicable interval was not found: " . $wpdb->last_error );
+					throw new Exception( 'Could not aggregate transactions because the earliest applicable interval was not found: ' . $wpdb->last_error );
 				}
 				$earliest_week = absint( $earliest_week );
 
@@ -208,7 +215,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 				// STEP 2: Batch transactions for that week into aggregates.
 
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
 					INSERT INTO
 					$table_name_txs(
 						blog_id,
@@ -283,7 +291,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 				// STEP 3: Delete old non-aggregated internal transactions for that week, plus any failed or cancelled internal transactions during that week.
 
-				$query = $wpdb->prepare( "
+				$query = $wpdb->prepare(
+					"
 					DELETE FROM
 						$table_name_txs
 					WHERE
@@ -305,7 +314,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 						error_log( sprintf( 'Deleted %d aggregated internal transactions or failed/cancelled transactions for yearweek %s', $result, $earliest_week ) );
 					}
 				}
-
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );
 				$wpdb->query( 'SET autocommit=1' );
@@ -318,16 +326,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		private function call_cron_on_all_adapters() {
-			$adapters = apply_filters( 'wallets_api_adapters', array(), array(
-				'online_only' => true,
-			) );
+			$adapters = apply_filters(
+				'wallets_api_adapters', array(), array(
+					'online_only' => true,
+				)
+			);
 
 			foreach ( $adapters as $adapter ) {
 				try {
 					$adapter->cron();
 				} catch ( Exception $e ) {
 					error_log(
-						sprintf( 'Function %s failed to run cron() on adapter %s and coin %s due to: %s',
+						sprintf(
+							'Function %s failed to run cron() on adapter %s and coin %s due to: %s',
 							__FUNCTION__,
 							$adapter->get_adapter_name(),
 							$adapter->get_name(),
@@ -352,11 +363,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_cron_interval',
 				__( 'Run every', 'wallets' ),
-				array( &$this, 'settings_interval_cb'),
+				array( &$this, 'settings_interval_cb' ),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
-					'label_for' => 'wallets_cron_interval',
+					'label_for'   => 'wallets_cron_interval',
 					'description' => __( 'How often to run the cron job.', 'wallets' ),
 				)
 			);
@@ -369,15 +380,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_cron_batch_size',
 				__( 'Max batch size', 'wallets' ),
-				array( &$this, 'settings_integer_cb'),
+				array( &$this, 'settings_integer_cb' ),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
-					'label_for' => 'wallets_cron_batch_size',
+					'label_for'   => 'wallets_cron_batch_size',
 					'description' => __( 'Up to this many transactions (withdrawals and internal transfers) will be attempted per run of the cron job.', 'wallets' ),
-					'min' => 1,
-					'max' => 100,
-					'step' => 1,
+					'min'         => 1,
+					'max'         => 100,
+					'step'        => 1,
+					'required'    => true,
 				)
 			);
 
@@ -389,15 +401,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_retries_withdraw',
 				__( 'Max retries for failed withdrawals', 'wallets' ),
-				array( &$this, 'settings_integer_cb'),
+				array( &$this, 'settings_integer_cb' ),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
-					'label_for' => 'wallets_retries_withdraw',
+					'label_for'   => 'wallets_retries_withdraw',
 					'description' => __( 'Failed withdrawals will be attempted up to this many times, while the adapter is unlocked.', 'wallets' ),
-					'min' => 1,
-					'max' => 10,
-					'step' => 1,
+					'min'         => 1,
+					'max'         => 10,
+					'step'        => 1,
+					'required'    => true,
 				)
 			);
 
@@ -409,15 +422,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_retries_move',
 				__( 'Max retries for failed transfers to other users', 'wallets' ),
-				array( &$this, 'settings_integer_cb'),
+				array( &$this, 'settings_integer_cb' ),
 				'wallets-menu-cron',
 				'wallets_cron_settings_section',
 				array(
-					'label_for' => 'wallets_retries_move',
+					'label_for'   => 'wallets_retries_move',
 					'description' => __( 'Failed transfers to other users will be attempted up to this many times.', 'wallets' ),
-					'min' => 1,
-					'max' => 10,
-					'step' => 1,
+					'min'         => 1,
+					'max'         => 10,
+					'step'        => 1,
+					'required'    => true,
 				)
 			);
 
@@ -425,7 +439,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets-menu-cron',
 				'wallets_retries_move'
 			);
-
 
 			add_settings_section(
 				'wallets_cron_withdrawals_section',
@@ -437,20 +450,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_settings_field(
 				'wallets_secrets_retain_minutes',
 				__( 'Time to retain withdrawal secrets', 'wallets' ),
-				array( &$this, 'settings_integer_cb'),
+				array( &$this, 'settings_integer_cb' ),
 				'wallets-menu-cron',
 				'wallets_cron_withdrawals_section',
 				array(
-					'label_for' => 'wallets_secrets_retain_minutes',
-					'description' => __( 'Most coin adapters require a secret passphrase or PIN code to unlock wallet withdrawals. ' .
+					'label_for'   => 'wallets_secrets_retain_minutes',
+					'description' => __(
+						'Most coin adapters require a secret passphrase or PIN code to unlock wallet withdrawals. ' .
 						'You can enter the secret in the coin adapter settings. ' .
 						'Specify here how long the coin adapter should retain the secret before deleting it, in minutes. ' .
 						'The cron mechanism only attempts withdrawals while the wallet is unlocked. ( 0 = retain secret forever ). ' .
 						'For more information read the section "Withdrawals and wallet locks" ' .
-						'in the "Transactions" chapter of the manual.', 'wallets' ),
-					'min' => 0,
-					'max' => DAY_IN_SECONDS / MINUTE_IN_SECONDS,
-					'step' => 1,
+						'in the "Transactions" chapter of the manual.', 'wallets'
+					),
+					'min'         => 0,
+					'max'         => DAY_IN_SECONDS / MINUTE_IN_SECONDS,
+					'step'        => 1,
+					'required'    => true,
 				)
 			);
 
@@ -473,12 +489,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets-menu-cron',
 				'wallets_cron_aggregating_section',
 				array(
-					'label_for' => 'wallets_cron_aggregating',
+					'label_for'   => 'wallets_cron_aggregating',
 					'description' => __( 'Choose how to aggregate similar past internal transactions that are in a "done" state.', 'wallets' ),
-					'options' => array(
-						'never' => __( 'Never', 'wallets' ),
+					'options'     => array(
+						'never'  => __( 'Never', 'wallets' ),
 						'weekly' => __( 'Weekly', 'wallets' ),
-					)
+					),
 				)
 			);
 
@@ -505,52 +521,78 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public function wallets_cron_page_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets cron settings', 'wallets' ); ?></h1>
-					<p><?php esc_html_e( 'You can set here the periodicity of all recurring tasks for this plugin. ' .
+			<p>
+			<?php
+				esc_html_e(
+					'You can set here the periodicity of all recurring tasks for this plugin. ' .
 					'Every time cron runs, a batch of transactions is attempted. You can choose ' .
 					'how large the batch is and how many retries to do on a failed transaction before it is aborted. ' .
 
 					'Also, coin adapters can have a cron() function that can discover missing/overlooked deposits, ' .
-					'or do other tasks that are specific to the adapter. The cron job calls the cron() function on all enabled adapters.', 'wallets' ); ?></p>
+					'or do other tasks that are specific to the adapter. The cron job calls the cron() function on all enabled adapters.', 'wallets'
+				);
+			?>
+			</p>
 
-					<form method="post" action="<?php
+			<form method="post" action="
+			<?php
 
-						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-							echo esc_url(
-								add_query_arg(
-									'action',
-									'wallets-menu-cron',
-									network_admin_url( 'edit.php' )
-								)
-							);
-						} else {
-							echo 'options.php';
-						}
+				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					echo esc_url(
+						add_query_arg(
+							'action',
+							'wallets-menu-cron',
+							network_admin_url( 'edit.php' )
+						)
+					);
+				} else {
+					echo 'options.php';
+				}
 
-					?>"><?php
-					settings_fields( 'wallets-menu-cron' );
-					do_settings_sections( 'wallets-menu-cron' );
-					submit_button();
-					?></form><?php
+			?>
+			">
+			<?php
+				settings_fields( 'wallets-menu-cron' );
+				do_settings_sections( 'wallets-menu-cron' );
+				submit_button();
+			?>
+			</form>
+			<?php
 		}
 
 		public function wallets_cron_section_cb() {
-			?><p><?php esc_html_e( 'You can set the frequency, batch size and number of retries for the cron job.', 'wallets');
-			?></p><?php
+			?>
+			<p>
+			<?php
+				esc_html_e( 'You can set the frequency, batch size and number of retries for the cron job.', 'wallets' );
+			?>
+			</p>
+			<?php
 		}
 
 		public function wallets_cron_withdrawals_section_cb() {
-			?><p><?php esc_html_e( 'You can control how wallet secrets are stored. Wallet secrets are needed for performing withdrawals.', 'wallets');
-			?></p><?php
+			?>
+			<p>
+			<?php
+				esc_html_e( 'You can control how wallet secrets are stored. Wallet secrets are needed for performing withdrawals.', 'wallets' );
+			?>
+			</p>
+			<?php
 		}
 
 		public function wallets_cron_aggregating_section_cb() {
-			?><p><?php esc_html_e( 'You can control whether similar old internal transactions are aggregated. Aggregating past transactions saves space on the DB. Aggregation is performed in batches so as not to overwhelm the DB.  Old "failed" or "cancelled" internal transactions will be deleted.', 'wallets');
-			?></p><?php
+			?>
+			<p>
+			<?php
+				esc_html_e( 'You can control whether similar old internal transactions are aggregated. Aggregating past transactions saves space on the DB. Aggregation is performed in batches so as not to overwhelm the DB.  Old "failed" or "cancelled" internal transactions will be deleted.', 'wallets' );
+			?>
+			</p>
+			<?php
 		}
 
 		public function settings_integer_cb( $arg ) {
@@ -559,9 +601,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				type="number"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>"
-				min="<?php echo intval( $arg['min'] ); ?>"
-				max="<?php echo intval( $arg['max'] ); ?>"
-				step="<?php echo intval( $arg['step'] ); ?>" />
+				<?php if ( isset( $arg['required'] ) && $arg['required'] ) : ?>required="required"<?php endif; ?>
+				min="<?php echo absint( $arg['min'] ); ?>"
+				max="<?php echo absint( $arg['max'] ); ?>"
+				step="<?php echo absint( $arg['step'] ); ?>" />
 
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
@@ -571,29 +614,45 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			$cron_intervals = apply_filters( 'cron_schedules', array() );
 			$selected_value = Dashed_Slug_Wallets::get_option( $arg['label_for'] );
 
-			?><select name="<?php echo esc_attr( $arg['label_for'] ) ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" ><?php
+			?>
+			<select name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" >
+			<?php
 
-				foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ):
-					if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
-						?><option value="<?php echo esc_attr( $cron_interval_slug ) ?>"<?php if ( $cron_interval_slug == $selected_value ) { echo ' selected="selected" '; }; ?>><?php echo $cron_interval['display']; ?></option><?php
-					endif;
-				endforeach;
+			foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ) :
+				if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
+					?>
+					<option value="<?php echo esc_attr( $cron_interval_slug ); ?>"
+						<?php if ( $cron_interval_slug == $selected_value ): ?>selected="selected"<?php endif; ?>>
 
-			?></select>
+						<?php echo $cron_interval['display']; ?>
+					</option>
+					<?php
+				endif;
+			endforeach;
+
+			?>
+			</select>
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
 		}
 
 		public function settings_select_cb( $arg ) {
 			$selected_value = Dashed_Slug_Wallets::get_option( $arg['label_for'] );
+			?>
 
-			?><select name="<?php echo esc_attr( $arg['label_for'] ) ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" ><?php
+			<select name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" >
+			<?php
 
-				foreach ( $arg['options'] as $key => $value ): ?>
-					<option value="<?php echo esc_attr( $key ) ?>"<?php if ( $key == $selected_value ) { echo ' selected="selected" '; }; ?>><?php echo $value ?></option>
-				<?php endforeach;
+				foreach ( $arg['options'] as $key => $value ) :
+					?>
+					<option value="<?php echo esc_attr( $key ); ?>"
+					<?php if ( $key == $selected_value ): ?>selected="selected"<?php endif; ?>>
 
-			?></select>
+					<?php echo $value; ?></option>
+					<?php
+				endforeach;
+			?>
+			</select>
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
 		}

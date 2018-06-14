@@ -1,4 +1,4 @@
-<?php defined( 'ABSPATH' ) || die( '-1' ); // don't load directly ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
 	<form class="dashed-slug-wallets transactions" data-bind="if: Object.keys( coins() ).length > 0" onsubmit="return false;">
 		<?php
@@ -27,10 +27,13 @@
 					<th class="status"><?php echo apply_filters( 'wallets_ui_text_status', esc_html__( 'Status', 'wallets-front' ) ); ?></th>
 					<th class="retries"><?php echo apply_filters( 'wallets_ui_text_retriesleft', esc_html__( 'Retries&nbsp;left', 'wallets-front' ) ); ?></th>
 					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
+					?>
 					<th class="admin_confirm"><?php echo apply_filters( 'wallets_ui_text_adminconfirm', esc_html__( 'Admin&nbsp;confirm', 'wallets-front' ) ); ?></th>
-					<?php endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ): ?>
+					<?php
+					endif;
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
+					?>
 					<th class="admin_confirm"><?php echo apply_filters( 'wallets_ui_text_userconfirm', esc_html__( 'User&nbsp;confirm', 'wallets-front' ) ); ?></th>
 					<?php endif; ?>
 				</tr>
@@ -45,17 +48,17 @@
 					<td class="from user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
 					<td class="to user">
 						<div data-bind="if: address_uri">
-							<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+							<a target="_blank" rel="noopener noreferrer" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
 						</div>
 						<div data-bind="if: ! address_uri">
-							<span  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
+							<span data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
 						</div>
 					</td>
 					<td class="txid">
-						<div  data-bind="if: tx_uri">
-							<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+						<div data-bind="if: tx_uri">
+							<a target="_blank" rel="noopener noreferrer" data-bind="text: txid, attr: { href: tx_uri }"></a>
 						</div>
-						<div  data-bind="if: ! tx_uri">
+						<div data-bind="if: ! tx_uri">
 							<span data-bind="text: txid"></span>
 						</div>
 					</td>
@@ -64,10 +67,13 @@
 					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
 					<td class="retries" data-bind="text: ( 'unconfirmed' == status || 'pending' == status ) ? retries : ''"></td>
 					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
+					?>
 					<td class="admin_confirm" data-bind="text: parseInt( admin_confirm ) ? '\u2611' : '\u2610' "></td>
-					<?php endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<?php
+					endif;
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
+					?>
 					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
 					<?php endif; ?>
 				</tr>
@@ -79,17 +85,17 @@
 					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
 					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
 					<td class="from user">
-						<div  data-bind="if: address_uri">
-							<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+						<div data-bind="if: address_uri">
+							<a target="_blank" rel="noopener noreferrer" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
 						</div>
-						<div  data-bind="if: ! address_uri">
-							<span  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
+						<div data-bind="if: ! address_uri">
+							<span data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
 						</div>
 					</td>
 					<td class="to user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
 					<td class="txid">
 						<div data-bind="if: tx_uri">
-							<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+							<a target="_blank" rel="noopener noreferrer" data-bind="text: txid, attr: { href: tx_uri }"></a>
 						</div>
 						<div data-bind="if: ! tx_uri">
 							<span data-bind="text: txid"></span>
@@ -100,10 +106,13 @@
 					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
 					<td class="retries"></td>
 					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
+					?>
 					<td class="admin_confirm"></td>
-					<?php endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<?php
+					endif;
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
+					?>
 					<td class="user_confirm"></td>
 					<?php endif; ?>
 				</tr>
@@ -122,10 +131,13 @@
 					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
 					<td class="retries"></td>
 					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' )): ?>
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
+					?>
 					<td class="admin_confirm" data-bind="text: admin_confirm ? '\u2611' : '\u2610' "></td>
-					<?php endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' )): ?>
+					<?php
+					endif;
+					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
+					?>
 					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
 					<?php endif; ?>
 				</tr>

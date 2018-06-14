@@ -1,7 +1,7 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( 'wallets-menu-adapters' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
 	include_once( 'adapters-list-table.php' );
@@ -11,17 +11,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 	class Dashed_Slug_Wallets_Adapter_List {
 
 		public function __construct() {
-			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
-			register_deactivation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_deactivate' ) );
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'actions_handler' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
-		}
-
-		public static function action_activate( $network_active ) {
-		}
-
-		public static function action_deactivate() {
 		}
 
 		public function action_admin_enqueue_scripts() {
@@ -37,32 +29,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 		private function csv_export( $symbols ) {
 			sort( $symbols );
 
-			$filename = 'wallet-transactions-' . implode(',', $symbols ) . '-' . date( DATE_RFC3339 ) . '.csv';
+			$filename = 'wallet-transactions-' . implode( ',', $symbols ) . '-' . date( DATE_RFC3339 ) . '.csv';
 			header( 'Content-Type: application/csv; charset=UTF-8' );
 			header( "Content-Disposition: attachment; filename=\"$filename\";" );
 
 			global $wpdb;
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$fh = fopen('php://output', 'w');
+			$fh             = fopen( 'php://output', 'w' );
 
 			$symbols_set = array();
 			foreach ( $symbols as $symbol ) {
 				$symbols_set[] = "'$symbol'";
 			}
-			$symbols_set = implode(',', $symbols_set );
+			$symbols_set = implode( ',', $symbols_set );
 
 			$tx_columns = Dashed_Slug_Wallets_TXs::$tx_columns;
 
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					"
-					SELECT
-						$tx_columns
-					FROM
-						{$table_name_txs}
-					WHERE
-						symbol IN ( $symbols_set ) AND
-						( blog_id = %d || %d )
+						SELECT
+							$tx_columns
+						FROM
+							{$table_name_txs}
+						WHERE
+							symbol IN ( $symbols_set ) AND
+							( blog_id = %d || %d )
 					",
 					get_current_blog_id(),
 					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
@@ -90,11 +82,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			try {
 				$new_cold_storage_deposit_address = $adapter->get_new_address();
 			} catch ( Exception $e ) {
-				$notices->error( sprintf(
-					__( 'Could not reset cold storage deposit address for %s: %s', 'wallets' ),
-					$symbol,
-					$e->getMessage()
-				) );
+				$notices->error(
+					sprintf(
+						__( 'Could not reset cold storage deposit address for %1$s: %2$s', 'wallets' ),
+						$symbol,
+						$e->getMessage()
+					)
+				);
 				return;
 			}
 
@@ -123,19 +117,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			$result = $wpdb->query( $query );
 
 			if ( false === $result ) {
-				$notices->error( sprintf(
-					__( 'Could not reset user deposit addresses for %s: %s', 'wallets' ),
-					$symbol,
-					$wpdb->last_error
-				) );
+				$notices->error(
+					sprintf(
+						__( 'Could not reset user deposit addresses for %1$s: %2$s', 'wallets' ),
+						$symbol,
+						$wpdb->last_error
+					)
+				);
 			}
 		}
 
 
 		public function actions_handler() {
 
-			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
-			$symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
+			$action   = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+			$symbol   = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
 			$adapters = apply_filters( 'wallets_api_adapters', array() );
 
 			if ( ! $symbol || ! isset( $adapters[ $symbol ] ) ) {
@@ -147,7 +143,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			switch ( $action ) {
 
 				case 'export':
-					if ( ! current_user_can( 'manage_wallets' ) )  {
+					if ( ! current_user_can( 'manage_wallets' ) ) {
 						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 					}
 
@@ -166,7 +162,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 					break;
 
 				case 'new_deposits':
-					if ( ! current_user_can( 'manage_wallets' ) )  {
+					if ( ! current_user_can( 'manage_wallets' ) ) {
 						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 					}
 
@@ -181,14 +177,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 					if ( is_object( $adapter ) ) {
 						$this->new_deposit_addresses( $adapter );
 					}
-					break;
+
+					wp_redirect(
+						add_query_arg(
+							array(
+								'page' => 'wallets-menu-adapters',
+							),
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						)
+					);
+					exit;
 			}
 		}
 
 		public function action_admin_menu() {
-
 			if ( current_user_can( 'manage_wallets' ) ) {
-
 				add_submenu_page(
 					'wallets-menu-wallets',
 					'Bitcoin and Altcoin Wallets Adapters list',
@@ -201,7 +204,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 		}
 
 		public function wallets_adapters_page_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -211,10 +214,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 				<p><?php esc_html_e( 'This plugin uses Coin Adapters to communicate with actual coin wallets. A Bitcoin core adapter is built-in, and you can download more coin adapters for free from the dashed-slug website.', 'wallets' ); ?></p>
 
 			<h2><?php esc_html_e( 'Coin adapters currently enabled:', 'wallets' ); ?></h2>
-			<div class="wrap"><?php
+			<div class="wrap">
+			<?php
 				$admin_adapter_list->prepare_items();
 				$admin_adapter_list->display();
-			?></div><?php
+			?>
+			</div>
+			<?php
 		}
 
 	}

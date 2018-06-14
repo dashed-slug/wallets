@@ -27,13 +27,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		 * Sets up the widgets name etc
 		 */
 		public function __construct( $widget, $title, $desc, $caps, $classname ) {
-			$this->widget = $widget;
-			$this->description = $desc;
+			$this->widget       = $widget;
+			$this->description  = $desc;
 			$this->capabilities = $caps;
 
 			$this->views_dir = apply_filters( 'wallets_views_dir', __DIR__ . '/views' );
-			$view = preg_replace( '/^wallets_/', '', $widget );
-			$templates_dir = trailingslashit( $this->views_dir ) . $view;
+			$view            = preg_replace( '/^wallets_/', '', $widget );
+			$templates_dir   = trailingslashit( $this->views_dir ) . $view;
 
 			$this->templates = array_diff( scandir( $templates_dir ), array( '.', '..', 'index.php' ) );
 			foreach ( $this->templates as &$template ) {
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			}
 
 			$widget_ops = array(
-				'classname' => $classname,
+				'classname'   => $classname,
 				'description' => $desc,
 			);
 
@@ -68,12 +68,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					$instance['template'] = 'default';
 				}
 
-				if ( $allowed ): ?>
+				if ( $allowed ) : ?>
 				<div class="widget widget-wallets widget-<?php echo str_replace( '_', '-', $this->widget ); ?>">
 					<h3 class="widget-heading"><?php esc_html_e( $this->name, 'wallets' ); ?></h3>
 					<?php echo do_shortcode( '[' . $this->widget . " template=\"{$instance['template']}\" views_dir=\"{$this->views_dir}\"]" ); ?>
 				</div>
-				<?php endif;
+				<?php
+				endif;
 			}
 		}
 
@@ -83,15 +84,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		 * @param array $instance The widget options
 		 */
 		public function form( $instance ) {
-			if ( !isset( $instance['template'] ) ) {
+			if ( ! isset( $instance['template'] ) ) {
 				$instance['template'] = 'default';
 			}
 
 			?>
 			<label>
 				<?php esc_html_e( 'Template', 'wallets' ); ?>
-				<select id="<?php echo $this->get_field_id('template'); ?>" name="<?php echo $this->get_field_name('template'); ?>" class="widefat" style="width:100%;">
-					<?php foreach ( $this->templates as $template ): ?>
+				<select id="<?php echo $this->get_field_id( 'template' ); ?>" name="<?php echo $this->get_field_name( 'template' ); ?>" class="widefat" style="width:100%;">
+					<?php foreach ( $this->templates as $template ) : ?>
 					<option <?php selected( $instance['template'], $template ); ?> value="<?php echo esc_attr( basename( $template ) ); ?>"><?php echo esc_html( $template ); ?></option>
 					<?php endforeach; ?>
 				</select>
@@ -112,7 +113,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 	}
 
 	class Dashed_Slug_Wallets_Widget_Deposit extends Dashed_Slug_Wallets_Widget {
-		public function __construct( ) {
+		public function __construct() {
 			parent::__construct(
 				'wallets_deposit',
 				__( 'Deposit to wallet', 'wallets-front' ),
@@ -124,7 +125,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 	}
 
 	class Dashed_Slug_Wallets_Widget_Withdraw extends Dashed_Slug_Wallets_Widget {
-		public function __construct( ) {
+		public function __construct() {
 			parent::__construct(
 				'wallets_withdraw',
 				__( 'Withdraw from wallet', 'wallets-front' ),
@@ -136,7 +137,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 	}
 
 	class Dashed_Slug_Wallets_Widget_Move extends Dashed_Slug_Wallets_Widget {
-		public function __construct( ) {
+		public function __construct() {
 			parent::__construct(
 				'wallets_move',
 				__( 'Transfer to user wallet', 'wallets-front' ),
@@ -148,7 +149,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 	}
 
 	class Dashed_Slug_Wallets_Widget_Balance extends Dashed_Slug_Wallets_Widget {
-		public function __construct( ) {
+		public function __construct() {
 			parent::__construct(
 				'wallets_balance',
 				__( 'Wallet balance', 'wallets-front' ),
@@ -160,7 +161,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 	}
 
 	class Dashed_Slug_Wallets_Widget_Transactions extends Dashed_Slug_Wallets_Widget {
-		public function __construct( ) {
+		public function __construct() {
 			parent::__construct(
 				'wallets_transactions',
 				__( 'Wallet transactions', 'wallets-front' ),
@@ -172,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 	}
 
 	class Dashed_Slug_Wallets_Widget_AccountValue extends Dashed_Slug_Wallets_Widget {
-		public function __construct( ) {
+		public function __construct() {
 			parent::__construct(
 				'wallets_account_value',
 				__( 'Account value', 'wallets-front' ),

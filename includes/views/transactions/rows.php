@@ -1,4 +1,4 @@
-<?php defined( 'ABSPATH' ) || die( '-1' ); // don't load directly ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
 	<form class="dashed-slug-wallets transactions transactions-rows" data-bind="if: Object.keys( coins() ).length > 0" onsubmit="return false;">
 		<?php
@@ -9,7 +9,7 @@
 		<label class="rows"><?php echo apply_filters( 'wallets_ui_text_rowsperpage', esc_html__( 'Rows per page', 'wallets-front' ) ); ?>: <select data-bind="options: [10,20,50,100], value: rowsPerPage, valueUpdate: ['afterkeydown', 'input']"></select></label>
 		<label class="page"><?php echo apply_filters( 'wallets_ui_text_page', esc_html__( 'Page', 'wallets-front' ) ); ?>: <input type="number" min="1" step="1" data-bind="numeric, value: currentPage, valueUpdate: ['afterkeydown', 'input', 'oninput', 'change', 'onchange', 'blur']"/></label>
 		<p style="text-align: center;" data-bind="if: ! transactions().length, visible: ! transactions().length">
-				&mdash;
+			&mdash;
 		</p>
 		<ul data-bind="visible: transactions().length, foreach: transactions()">
 			<li data-bind="if: category == 'withdraw', visible: category == 'withdraw', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
@@ -27,21 +27,21 @@
 
 				<div class="txid label" data-bind="visible: txid">
 					<?php echo apply_filters( 'wallets_ui_text_txid', esc_html__( 'Tx ID', 'wallets-front' ) ); ?>:
-					<span  data-bind="if: tx_uri">
-						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+					<span data-bind="if: tx_uri">
+						<a target="_blank" rel="noopener noreferrer" data-bind="text: txid, attr: { href: tx_uri }"></a>
 					</span>
-					<span  data-bind="if: ! tx_uri">
-						<div data-bind="text: txid"></div>
+					<span data-bind="if: ! tx_uri">
+						<span data-bind="text: txid"></span>
 					</span>
 				</div>
 
 				<div class="from user"><?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?></div>
 				<div class="to user">
 					<span data-bind="if: address_uri">
-						<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+						<a target="_blank" rel="noopener noreferrer" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
 					</span>
 					<span data-bind="if: ! address_uri">
-						<div  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address"></div>
+						<span data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
 					</span>
 				</div>
 				<div class="arrow">&rarr;</div>
@@ -51,7 +51,7 @@
 			</li>
 
 			<li data-bind="if: category == 'deposit', visible: category == 'deposit', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
-				<div  class="type label"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ category ]"></span></div>
+				<div class="type label"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ category ]"></span></div>
 				<div class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></div>
 
 				<div class="status label"><?php echo apply_filters( 'wallets_ui_text_status', esc_html__( 'Status', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ status ]"></span></div>
@@ -64,19 +64,19 @@
 				<div class="txid label" data-bind="visible: txid">
 					<?php echo apply_filters( 'wallets_ui_text_txid', esc_html__( 'Tx ID', 'wallets-front' ) ); ?>:
 					<span data-bind="if: tx_uri">
-						<a target="_blank" data-bind="text: txid, attr: { href: tx_uri }"></a>
+						<a target="_blank" rel="noopener noreferrer" data-bind="text: txid, attr: { href: tx_uri }"></a>
 					</span>
 					<span data-bind="if: ! tx_uri">
-						<div data-bind="text: txid"></div>
+						<span data-bind="text: txid"></span>
 					</span>
 				</div>
 
 				<div class="from user">
-					<span  data-bind="if: address_uri">
-						<a  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
+					<span data-bind="if: address_uri">
+						<a target="_blank" rel="noopener noreferrer" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
 					</span>
-					<span  data-bind="if: ! address_uri">
-						<div  target="_blank" data-bind="text: extra ? address + ' (' + extra + ')' : address"></div>
+					<span data-bind="if: ! address_uri">
+						<span data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
 					</span>
 				</div>
 				<div class="to user"><?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?></div>

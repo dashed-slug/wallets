@@ -8,7 +8,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 
@@ -19,7 +19,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 		public function __construct() {
 			parent::__construct();
 
-			$this->_default_reqargs['timeout'] = intval( $this->get_adapter_option( 'http-timeout' ) );
+			$this->_default_reqargs['timeout'] = absint( $this->get_adapter_option( 'http-timeout' ) );
 		}
 
 		public function action_wallets_admin_menu() {
@@ -37,11 +37,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-http-timeout",
 				__( 'HTTP request timeout (seconds)', 'wallets' ),
-				array( &$this, 'settings_int8_cb'),
+				array( &$this, 'settings_int8_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-http",
 				array(
-					'label_for' => "{$this->option_slug}-http-timeout",
+					'label_for'   => "{$this->option_slug}-http-timeout",
 					'description' => __( 'How long your server will wait for an answer from the remote API (in seconds).', 'wallets' ),
 				)
 			);
@@ -54,11 +54,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-http-cacheexpiry",
 				__( 'HTTP cache expiry (seconds)', 'wallets' ),
-				array( &$this, 'settings_int8_cb'),
+				array( &$this, 'settings_int8_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-http",
 				array(
-					'label_for' => "{$this->option_slug}-http-cacheexpiry",
+					'label_for'   => "{$this->option_slug}-http-cacheexpiry",
 					'description' => __( 'For how long cacheable requests are cached by your server rather than being fetched from the remote API (in seconds).', 'wallets' ),
 				)
 			);
@@ -71,7 +71,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 
 		/** @internal */
 		public function section_http_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -101,13 +101,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 		 * @return mixed JSON data, decoded
 		 */
 		public function get_json( $url, $data = array(), $headers = array() ) {
-			$url = add_query_arg( $data, $url );
-			$reqargs = wp_parse_args( array( 'headers' => $headers ), $this->_default_reqargs );
+			$url      = add_query_arg( $data, $url );
+			$reqargs  = wp_parse_args( array( 'headers' => $headers ), $this->_default_reqargs );
 			$response = wp_remote_get( $url, $reqargs );
 			if ( is_wp_error( $response ) ) {
 				throw new Exception( $response->get_error_message() );
 			}
-			if ( is_array( $response ) && isset( $response['response'] )  && isset( $response['response']['code'] ) ) {
+			if ( is_array( $response ) && isset( $response['response'] ) && isset( $response['response']['code'] ) ) {
 				$json_data = json_decode( $response['body'] );
 				if ( 200 == $response['response']['code'] ) {
 					if ( is_null( $json_data ) ) {
@@ -115,25 +115,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 					}
 					return $json_data;
 				} else {
-					throw new Exception( sprintf(
-						'Response was not 200 OK but %d. Response body: %s',
-						$response['response']['code'],
-						$response['body']
-					) );
+					throw new Exception(
+						sprintf(
+							'Response was not 200 OK but %d. Response body: %s',
+							$response['response']['code'],
+							$response['body']
+						)
+					);
 				}
 			}
 			throw new Exception( 'No response available from network!' );
 		}
 
 		protected function get_json_cached( $url, $data = array(), $headers = array() ) {
-			$hash = __FUNCTION__ . md5( $url . serialize( $data ) . serialize( $headers ) );
+			$hash            = __FUNCTION__ . md5( $url . serialize( $data ) . serialize( $headers ) );
 			$cached_response = get_transient( $hash );
 			if ( false === $cached_response ) {
 				$response = $this->get_json( $url, $data, $headers );
 			} else {
 				$response = $cached_response;
 			}
-			set_transient( $hash, $response, abs( intval( $this->get_adapter_option( 'http-cacheexpiry' ) ) ) );
+			set_transient( $hash, $response, absint( $this->get_adapter_option( 'http-cacheexpiry' ) ) );
 
 			return $response;
 		}
@@ -142,20 +144,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 		 * Do an HTTP POST and get back the JSON response.
 		 *
 		 * @param string $url The API URL
-         * @param array $data The request POST vars to pass in assoc array form
-         * @param array $headers The request headers in assoc array form
+		 * @param array $data The request POST vars to pass in assoc array form
+		 * @param array $headers The request headers in assoc array form
 		 * @throws Exception If things go wrong
 		 * @return mixed JSON data, decoded
 		 */
 		public function post_json( $url, $data = array(), $headers = array() ) {
 
-			if( ini_get( 'allow_url_fopen' ) ) {
+			if ( ini_get( 'allow_url_fopen' ) ) {
 				$options = array(
 					'http' => array(
 						'header'  => $headers,
 						'method'  => 'POST',
 						'content' => http_build_query( $data ),
-					)
+					),
 				);
 
 				$context = stream_context_create( $options );
@@ -168,7 +170,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 				if ( false === $result ) {
 					throw new Exception( 'file_get_contents() returned false' );
 				}
-
 			} elseif ( function_exists( 'curl_init' ) ) {
 				$ch = curl_init();
 				curl_setopt( $ch, CURLOPT_URL, $url );
@@ -178,13 +179,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
 				$result = curl_exec( $ch );
-				$msg = curl_error( $ch );
+				$msg    = curl_error( $ch );
 				curl_close( $ch );
 
 				if ( false === $result ) {
-					throw new Exception( "PHP curl returned error: $msg"  );
+					throw new Exception( "PHP curl returned error: $msg" );
 				}
-
 			} else {
 				throw new Exception( 'Cannot use either file_get_contents() or curl_init() on this system.' );
 			}
@@ -199,7 +199,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 
 		protected function post_json_cached( $url, $data = array(), $headers = array() ) {
 
-			$hash = __FUNCTION__ . md5( $url . serialize( $data ) . serialize( $headers ) );
+			$hash            = __FUNCTION__ . md5( $url . serialize( $data ) . serialize( $headers ) );
 			$cached_response = get_transient( $hash );
 			if ( false === $cached_response ) {
 				$response = $this->post_json( $url, $data, $headers );
@@ -208,7 +208,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 			}
 
 			// set last timestamp as transient
-			set_transient( $hash, $response, abs( intval( $this->get_adapter_option( 'http-cacheexpiry' ) ) ) );
+			set_transient( $hash, $response, absint( $this->get_adapter_option( 'http-cacheexpiry' ) ) );
 
 			return $response;
 		}

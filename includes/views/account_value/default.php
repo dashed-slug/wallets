@@ -1,4 +1,4 @@
-<?php defined( 'ABSPATH' ) || die( '-1' ); // don't load directly ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
 <div class="dashed-slug-wallets account-value">
 	<?php

@@ -1,7 +1,7 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 	class Dashed_Slug_Wallets_Cold_Storage {
@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.4.2.min.js' ) ) {
-				$script = 'wallets-cold-storage-3.4.2.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.5.0.min.js' ) ) {
+				$script = 'wallets-cold-storage-3.5.0.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.4.2',
+				'3.5.0',
 				true
 			);
 		}
@@ -70,13 +70,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 				if ( 'withdraw' == $cold_storage_action ) {
 
-					$cold_storage_nonce = filter_input( INPUT_POST, 'wallets_cs_nonce', FILTER_SANITIZE_STRING );
+					$cold_storage_nonce  = filter_input( INPUT_POST, 'wallets_cs_nonce', FILTER_SANITIZE_STRING );
 					$cold_storage_symbol = filter_input( INPUT_POST, 'wallets_cs_symbol', FILTER_SANITIZE_STRING );
 
 					if ( wp_verify_nonce( $cold_storage_nonce, "{$cold_storage_action}_{$cold_storage_symbol}" ) ) {
 
 						$cold_storage_address = filter_input( INPUT_POST, 'wallets_cs_address', FILTER_SANITIZE_STRING );
-						$cold_storage_amount = filter_input( INPUT_POST, 'wallets_cs_amount', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+						$cold_storage_amount  = filter_input( INPUT_POST, 'wallets_cs_amount', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 
 						if ( $cold_storage_address && $cold_storage_amount ) {
 							$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
@@ -90,7 +90,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 							}
 
 							$msg = sprintf(
-								__( 'Sent %s to cold storage address %s', 'wallets' ),
+								__( 'Sent %1$s to cold storage address %2$s', 'wallets' ),
 								sprintf( $adapter->get_sprintf(), $cold_storage_amount ),
 								$cold_storage_address
 							);
@@ -132,17 +132,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 		}
 
 		public function wallets_cold_storage_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
 			$network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
-			$balance_sums = Dashed_Slug_Wallets::get_balance_totals_per_coin();
-			$adapters = apply_filters( 'wallets_api_adapters', array() );
+			$balance_sums   = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+			$adapters       = apply_filters( 'wallets_api_adapters', array() );
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets: Transfer to and from cold storage', 'wallets' ); ?></h1>
 
-				<p><?php echo __( '<a href="https://en.bitcoin.it/wiki/Cold_storage" target="_blank">Cold storage</a> lets you remove part of your site\'s funds from the online wallet to mitigate risk in the event of a cyber-attack. ', 'wallets' ); ?></p>
+				<p><?php echo __( '<a href="https://en.bitcoin.it/wiki/Cold_storage" target="_blank" rel="noopener noreferrer">Cold storage</a> lets you remove part of your site\'s funds from the online wallet to mitigate risk in the event of a cyber-attack. ', 'wallets' ); ?></p>
 				<p><?php esc_html_e( 'Any funds you withdraw or deposit here will affect your total wallet balance but not any user balances. ', 'wallets' ); ?></p>
 
 				<div>
@@ -155,47 +155,54 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 							<th><?php esc_html_e( 'Online Wallet Balance', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Actions', 'wallets' ); ?></th>
 						</tr></thead>
-						<tbody style="vertical-align: top;"><?php
+						<tbody style="vertical-align: top;">
+						<?php
 
+						foreach ( $adapters as $symbol => $adapter ) :
 
-								foreach ( $adapters as $symbol => $adapter ):
+							// skip offline wallets
+							try {
+								$wallet_balance = $adapter->get_balance();
+							} catch ( Exception $e ) {
+								continue;
+							}
 
-									// skip offline wallets
-									try {
-										$wallet_balance = $adapter->get_balance();
-									} catch ( Exception $e ) {
-										continue;
-									}
-
-									if ( isset( $balance_sums[ $symbol ] ) ) {
-										$user_balances = $balance_sums[ $symbol ];
-									} else {
-										$user_balances = 0;
-									}
-						?><tr>
+							if ( isset( $balance_sums[ $symbol ] ) ) {
+								$user_balances = $balance_sums[ $symbol ];
+							} else {
+								$user_balances = 0;
+							}
+							?>
+							<tr>
 
 								<td><?php echo esc_html( $adapter->get_adapter_name() ); ?></td>
-								<td><?php echo esc_html( sprintf( "%s (%s)", $adapter->get_name(), $symbol ) ); ?></td>
+								<td><?php echo esc_html( sprintf( '%s (%s)', $adapter->get_name(), $symbol ) ); ?></td>
 								<td><?php echo esc_html( sprintf( $adapter->get_sprintf(), $user_balances ) ); ?></td>
 
-								<td><?php
-									if ( ! isset(  $balance_sums[ $symbol ] ) ) {
+								<td>
+									<?php
+									if ( ! isset( $balance_sums[ $symbol ] ) ) {
 
-										echo esc_html( sprintf(
-											$adapter->get_sprintf(),
-											$wallet_balance
-										) );
+										echo esc_html(
+											sprintf(
+												$adapter->get_sprintf(),
+												$wallet_balance
+											)
+										);
 									} else {
-										$progress  = 100 * $wallet_balance / $balance_sums[ $symbol ];
+										$progress = 100 * $wallet_balance / $balance_sums[ $symbol ];
 
-										echo esc_html( sprintf(
-											$adapter->get_sprintf() . ' (%01.2f%%)',
-											$wallet_balance,
-											number_format( $progress, 2, '.', '' )
-										) );
+										echo esc_html(
+											sprintf(
+												$adapter->get_sprintf() . ' (%01.2f%%)',
+												$wallet_balance,
+												number_format( $progress, 2, '.', '' )
+											)
+										);
 									?>
-										<br />
-										<progress max="100" value="<?php echo  min( 100, $progress ); ?>" ></progress><?php
+									<br />
+									<progress max="100" value="<?php echo  min( 100, $progress ); ?>" ></progress>
+									<?php
 									}
 									?>
 								</td>
@@ -203,34 +210,42 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								<td>
 									<a
 										class="button"
-										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$symbol" ) ); ?>"><?php
-											esc_html_e( 'Deposit' ); ?></a>
+										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$symbol" ) ); ?>">
+										<?php
+										esc_html_e( 'Deposit' );
+										?>
+									</a>
 
 									<a
 										class="button"
-										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=withdraw&symbol=$symbol" ) ); ?>"><?php
-											esc_html_e( 'Withdraw' ); ?></a>
+										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=withdraw&symbol=$symbol" ) ); ?>">
+										<?php
+										esc_html_e( 'Withdraw' );
+										?>
+									</a>
 
 								</td>
 
-							</tr><?php
-								endforeach;
-						?></tbody>
+							</tr>
+						<?php
+						endforeach;
+						?>
+						</tbody>
 					</table>
 				</div>
 
 				<?php
-					$cold_storage_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
+					$cold_storage_tab    = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 					$cold_storage_symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
 
-
-					if ( ! isset( $adapters[ $cold_storage_symbol ] ) ) {
-						return;
-					}
+				if ( ! isset( $adapters[ $cold_storage_symbol ] ) ) {
+					return;
+				}
 
 					$adapter = $adapters[ $cold_storage_symbol ];
 
-					if ( 'withdraw' == $cold_storage_tab ): ?>
+				if ( 'withdraw' == $cold_storage_tab ) :
+					?>
 
 				<form method="post" class="card" style="text-align:center;margin:10px auto;">
 					<h2><?php echo sprintf( __( 'Withdraw %s to cold storage:', 'wallets' ), $adapter->get_name() ); ?></h2>
@@ -276,9 +291,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 				<?php
 
-					elseif ( 'deposit' == $cold_storage_tab ):
+					elseif ( 'deposit' == $cold_storage_tab ) :
 
-					$deposit_address = Dashed_Slug_Wallets::get_option( "wallets_cs_address_$cold_storage_symbol" ); ?>
+						$deposit_address = Dashed_Slug_Wallets::get_option( "wallets_cs_address_$cold_storage_symbol" );
+					?>
 
 					<div class="card" style="text-align:center;margin:10px auto;">
 						<h2><?php echo sprintf( __( 'Deposit %s from cold storage:', 'wallets' ), $adapter->get_name() ); ?></h2>
@@ -292,24 +308,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					<div
 						class="qrcode"
 						style="text-align: center;"
-						data-address="<?php echo esc_attr( $adapter->address_to_qrcode_uri(  $deposit_address ) ); ?>"></div>
+						data-address="<?php echo esc_attr( $adapter->address_to_qrcode_uri( $deposit_address ) ); ?>"></div>
 
-					<?php if ( is_array( $deposit_address ) ): ?>
+					<?php if ( is_array( $deposit_address ) ) : ?>
 					<input
 						type="text"
 						readonly="readonly"
 						onClick="this.select();"
-						value="<?php echo esc_attr( $deposit_address[ 0 ] ); ?>"
+						value="<?php echo esc_attr( $deposit_address[0] ); ?>"
 						style="width: 100%; text-align: center;" />
 
 					<input
 						type="text"
 						readonly="readonly"
 						onClick="this.select();"
-						value="<?php echo esc_attr( $deposit_address[ 1 ] ); ?>"
+						value="<?php echo esc_attr( $deposit_address[1] ); ?>"
 						style="width: 100%; text-align: center;" />
 
-					<?php elseif ( is_string( $deposit_address) ): ?>
+					<?php elseif ( is_string( $deposit_address ) ) : ?>
 					<input
 						type="text"
 						readonly="readonly"
@@ -319,9 +335,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					<?php endif; ?>
 					</div>
 
-				<?php endif;
+				<?php
+				endif;
 
-				$this->affiliate_banners();
+					$this->affiliate_banners();
 		}
 
 		public function affiliate_banners() {
@@ -333,22 +350,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 					<a
 						href="https://www.ledgerwallet.com/r/fd5d"
-						title="<?php esc_attr_e(
-							'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
-							'wallets' ); ?>">
+						title="<?php
+							esc_attr_e(
+								'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
+								'wallets'
+							);
+					?>">
 
 						<img
 							width="728" height="90"
 							alt="Ledger Nano S - The secure hardware wallet"
 							src="https://www.ledgerwallet.com/images/promo/nano-s/ledger_nano-s_7-2-8x9-0.jpg">
-
 					</a>
 
 					<a
 						href="https://shop.trezor.io?a=dashed-slug.net"
-						title="<?php esc_attr_e(
+						title="<?php
+						esc_attr_e(
 							'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
-							'wallets' ); ?>">
+							'wallets'
+						);
+					?>">
 
 						<img
 							width="728" height="90"
@@ -360,13 +382,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					<p><?php esc_html_e( 'You are responsible for the money people deposit on your site. ', 'wallets' ); ?></p>
 					<p><?php esc_html_e( 'Get a hardware wallet and sleep easier!', 'wallets' ); ?></p>
 
-				</div><?php
+				</div>
+				<?php
 		}
 
 		public function helper_text( $symbol ) {
 			if ( is_string( $symbol ) ) {
-
-
 
 				$adapters = apply_filters( 'wallets_api_adapters', array() );
 
@@ -377,37 +398,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 				if ( $adapter ) {
 
-					$wallet_balance = $adapter->get_balance();
-					$user_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+					$wallet_balance   = $adapter->get_balance();
+					$user_balances    = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 					$cold_storage_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 
-					if ( isset( $user_balances[ $symbol ] ) ):
-						for ( $r = 10; $r <= 100; $r += 10 ):
+					if ( isset( $user_balances[ $symbol ] ) ) :
+						for ( $r = 10; $r <= 100; $r += 10 ) :
 
 							$target = $user_balances[ $symbol ] * $r / 100;
-							$delta = $target - $wallet_balance;
+							$delta  = $target - $wallet_balance;
 
 							if (
 								( $delta > 0 && 'deposit' == $cold_storage_tab ) ||
 								( $delta < 0 && 'withdraw' == $cold_storage_tab )
-							):
+							) :
 
-							?><p><?php echo sprintf(
-								__( 'To have <code>%d%%</code> online (<code>%s</code>), %s %s.', 'wallets' ),
-								$r,
-								sprintf( $adapter->get_sprintf(), $target ),
-								$delta > 0 ? __( 'deposit', 'wallets' ) : __( 'withdraw', 'wallets' ),
-								'<input type="text" readonly="readonly" onClick="this.select();" size="10" value="' . number_format( abs( $delta ), 8, '.', '' ) . '" />'
-							); ?></p><?php
+							?>
+							<p>
+							<?php
+								echo sprintf(
+									__( 'To have <code>%1$d%%</code> online (<code>%2$s</code>), %3$s %4$s.', 'wallets' ),
+									$r,
+									sprintf( $adapter->get_sprintf(), $target ),
+									$delta > 0 ? __( 'deposit', 'wallets' ) : __( 'withdraw', 'wallets' ),
+									'<input type="text" readonly="readonly" onClick="this.select();" size="10" value="' . number_format( abs( $delta ), 8, '.', '' ) . '" />'
+								);
+							?>
+							</p>
+							<?php
 
 							endif;
 						endfor;
 
-						?><p><?php echo sprintf(
-							__( 'You currently have <code>%01.2f%%</code> online (<code>%s</code>).', '/* echo slug &/' ),
-							$user_balances[ $symbol ] ? 100 * ( $wallet_balance / $user_balances[ $symbol ] ) : 0,
-							sprintf( $adapter->get_sprintf(), $wallet_balance )
-						); ?></p><?php
+						?>
+						<p>
+						<?php
+							echo sprintf(
+								__( 'You currently have <code>%1$01.2f%%</code> online (<code>%2$s</code>).', '/* echo slug &/' ),
+								$user_balances[ $symbol ] ? 100 * ( $wallet_balance / $user_balances[ $symbol ] ) : 0,
+								sprintf( $adapter->get_sprintf(), $wallet_balance )
+							);
+						?>
+						</p>
+						<?php
 					endif;
 				}
 			}

@@ -1,45 +1,101 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 	class Dashed_Slug_Wallets_Notifications {
 
-		private $emails_enabled = false;
-		private $buddypress_enabled = false;
+		private $emails_enabled             = false;
+		private $buddypress_enabled         = false;
+		private $simple_history_enabled     = false;
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
-			$this->emails_enabled = Dashed_Slug_Wallets::get_option( 'wallets_email_enabled' );
-			$this->buddypress_enabled = Dashed_Slug_Wallets::get_option( 'wallets_buddypress_enabled' );
+			$this->emails_enabled         = Dashed_Slug_Wallets::get_option( 'wallets_email_enabled', 'on' );
+			$this->buddypress_enabled     = Dashed_Slug_Wallets::get_option( 'wallets_buddypress_enabled' );
+			$this->simple_history_enabled = Dashed_Slug_Wallets::get_option( 'wallets_history_enabled', 'on' );
 
-			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
-			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
+			add_action( 'wallets_admin_menu', array( &$this, 'bind_admin_menu' ) );
+			add_action( 'admin_init', array( &$this, 'bind_settings' ) );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 				add_action( 'network_admin_edit_wallets-menu-notifications', array( &$this, 'update_network_options' ) );
 			}
 
-			add_action( 'wallets_withdraw', array( &$this, 'action_withdraw' ) );
-			add_action( 'wallets_move_send', array( &$this, 'action_move_send' ) );
-			add_action( 'wallets_move_receive', array( &$this, 'action_move_receive' ) );
-			add_action( 'wallets_deposit', array( &$this, 'action_deposit' ) );
+			// BIND NOTIFICATION HANDLERS FOR EMAIL AND BUDDYPRESS
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_enabled' ) ) {
+				if ( $this->emails_enabled ) {
+					add_action( 'wallets_withdraw', array( &$this, 'action_email_withdraw' ) );
+				}
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					add_action( 'wallets_withdraw', array( &$this, 'action_buddypress_withdraw' ) );
+				}
+			}
 
-			add_action( 'wallets_withdraw_failed', array( &$this, 'action_withdraw_failed' ) );
-			add_action( 'wallets_move_send_failed', array( &$this, 'action_move_send_failed' ) );
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_enabled' ) ) {
+				if ( $this->emails_enabled ) {
+					add_action( 'wallets_withdraw_failed', array( &$this, 'action_email_withdraw_failed' ) );
+				}
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					add_action( 'wallets_withdraw_failed', array( &$this, 'action_buddypress_withdraw_failed' ) );
+				}
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_enabled' ) ) {
+				if ( $this->emails_enabled ) {
+					add_action( 'wallets_move_send', array( &$this, 'action_email_move_send' ) );
+				}
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					add_action( 'wallets_move_send', array( &$this, 'action_buddypress_move_send' ) );
+				}
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_enabled' ) ) {
+				if ( $this->emails_enabled ) {
+					add_action( 'wallets_move_send_failed', array( &$this, 'action_email_move_send_failed' ) );
+				}
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					add_action( 'wallets_move_send_failed', array( &$this, 'action_buddypress_move_send_failed' ) );
+				}
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_enabled' ) ) {
+				if ( $this->emails_enabled ) {
+					add_action( 'wallets_move_receive', array( &$this, 'action_email_move_receive' ) );
+				}
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+					add_action( 'wallets_move_receive', array( &$this, 'action_buddypress_move_receive' ) );
+				}
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_enabled' ) ) {
+				if ( $this->emails_enabled ) {
+					add_action( 'wallets_deposit', array( &$this, 'action_email_deposit' ) );
+				}
+				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+
+				}
+			}
+
+			if ( $this->simple_history_enabled ) {
+				add_action('simple_history/add_custom_logger', array( &$this, 'bind_simple_history' ) );
+			}
+
 		}
 
 		public static function action_activate( $network_active ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_from', '' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_from_name', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_history_enabled', 'on' );
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_subject', __( 'You have performed a withdrawal. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_message', __( <<<NOTIFICATION
-
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_message', __(
+<<<NOTIFICATION
 ###ACCOUNT###,
 
 You have withdrawn ###AMOUNT### ###SYMBOL### to address ###ADDRESS###.
@@ -51,11 +107,15 @@ Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
 NOTIFICATION
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_subject', __( 'Your withdrawal request has FAILED permanently. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_withdraw_failed_message', __( <<<NOTIFICATION
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_failed_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_failed_subject', __( 'Your withdrawal request has FAILED permanently. - ###COMMENT###', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_failed_message', __(
+<<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -69,12 +129,15 @@ Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
 NOTIFICATION
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
-
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_subject', __( 'You have sent funds to another user. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_message', __( <<<NOTIFICATION
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_subject', __( 'You have sent funds to another user. - ###COMMENT###', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_message', __(
+<<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -87,11 +150,15 @@ Comment: ###COMMENT###
 Tags: ###TAGS###
 
 NOTIFICATION
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_subject', __( 'Your request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_send_failed_message', __( <<<NOTIFICATION
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_failed_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_failed_subject', __( 'Your request to send funds to another user has FAILED permanently. - ###COMMENT###', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_failed_message', __(
+<<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -105,12 +172,15 @@ Comment: ###COMMENT###
 Tags: ###TAGS###
 
 NOTIFICATION
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
-
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_subject', __( 'You have received funds from another user. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_move_receive_message', __( <<<NOTIFICATION
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_subject', __( 'You have received funds from another user. - ###COMMENT###', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_message', __(
+<<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -122,11 +192,15 @@ Comment: ###COMMENT###
 Tags: ###TAGS###
 
 NOTIFICATION
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_subject', __( 'You have received a ###SYMBOL### deposit.', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_email_deposit_message', __( <<<NOTIFICATION
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_deposit_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_deposit_subject', __( 'You have received a ###SYMBOL### deposit.', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_deposit_message', __(
+<<<NOTIFICATION
 
 ###ACCOUNT###,
 
@@ -139,11 +213,13 @@ Transaction seen at: ###CREATED_TIME_LOCAL###
 Extra transaction info (optional): ###EXTRA###
 
 NOTIFICATION
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
 		}
 
-		public function action_admin_init() {
+		public function bind_settings() {
 			// main
 
 			add_settings_section(
@@ -160,7 +236,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_main_section',
 				array(
-					'label_for' => 'wallets_email_enabled',
+					'label_for'   => 'wallets_email_enabled',
 					'description' => __( 'If checked, users will receive notifications over e-mail.', 'wallets' ),
 				)
 			);
@@ -177,7 +253,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_main_section',
 				array(
-					'label_for' => 'wallets_email_from',
+					'label_for'   => 'wallets_email_from',
 					'description' => __( 'Email address to send notifications and confirmations from, or leave empty to use a default address.', 'wallets' ),
 				)
 			);
@@ -194,7 +270,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_main_section',
 				array(
-					'label_for' => 'wallets_email_from_name',
+					'label_for'   => 'wallets_email_from_name',
 					'description' => __( 'A full name to send email notifications and confirmations from, or leave empty if you do not wish to specify a name.', 'wallets' ),
 				)
 			);
@@ -204,7 +280,6 @@ NOTIFICATION
 				'wallets_email_from_name'
 			);
 
-
 			add_settings_field(
 				'wallets_buddypress_enabled',
 				__( 'Notify users via BuddyPress private messages', 'wallets' ),
@@ -212,9 +287,12 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_main_section',
 				array(
-					'label_for' => 'wallets_buddypress_enabled',
-					'description' => __( 'If checked, users will receive notifications via BuddyPress private messages. ' .
-						'You must make sure that the "Private Messaging" BuddyPress component is enabled.', 'wallets' ),
+					'label_for'   => 'wallets_buddypress_enabled',
+					'disabled'    => ! function_exists( 'messages_new_message' ),
+					'description' => __(
+						'Send notifications to users as BuddyPress private messages. ' .
+						'You must first make sure that the "Private Messaging" BuddyPress component is enabled.', 'wallets'
+					),
 				)
 			);
 
@@ -223,6 +301,26 @@ NOTIFICATION
 				'wallets_buddypress_enabled'
 			);
 
+			add_settings_field(
+				'wallets_history_enabled',
+				__( 'Write to Simple History logs', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for'   => 'wallets_history_enabled',
+					'disabled'    => ! function_exists( 'SimpleLogger' ),
+					'description' => __(
+						'Write out wallet events to <a href="https://wordpress.org/plugins/simple-history/" target="_blank" rel="noopener noreferrer">Simple History</a> logs. ' .
+						'Simple History is a WordPress plugin that lets you keep an audit log of actions performed on your site.', 'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_history_enabled'
+			);
 
 			// withdrawal
 			add_settings_section(
@@ -239,7 +337,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_withdraw_section',
 				array(
-					'label_for' => 'wallets_email_withdraw_enabled',
+					'label_for'   => 'wallets_email_withdraw_enabled',
 					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
@@ -256,7 +354,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_withdraw_section',
 				array(
-					'label_for' => 'wallets_email_withdraw_subject',
+					'label_for'   => 'wallets_email_withdraw_subject',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -273,7 +371,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_withdraw_section',
 				array(
-					'label_for' => 'wallets_email_withdraw_message',
+					'label_for'   => 'wallets_email_withdraw_message',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -289,7 +387,7 @@ NOTIFICATION
 				__( 'Notification settings for FAILED withdrawals', 'wallets' ),
 				array( &$this, 'wallets_notification_section_cb' ),
 				'wallets-menu-notifications'
-				);
+			);
 
 			add_settings_field(
 				'wallets_email_withdraw_failed_enabled',
@@ -298,7 +396,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_section',
 				array(
-					'label_for' => 'wallets_email_withdraw_failed_enabled',
+					'label_for'   => 'wallets_email_withdraw_failed_enabled',
 					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
@@ -315,7 +413,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_section',
 				array(
-					'label_for' => 'wallets_email_withdraw_failed_subject',
+					'label_for'   => 'wallets_email_withdraw_failed_subject',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -332,7 +430,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_withdraw_failed_section',
 				array(
-					'label_for' => 'wallets_email_withdraw_failed_message',
+					'label_for'   => 'wallets_email_withdraw_failed_message',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -357,7 +455,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_deposit_section',
 				array(
-					'label_for' => 'wallets_email_deposit_enabled',
+					'label_for'   => 'wallets_email_deposit_enabled',
 					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
@@ -374,7 +472,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_deposit_section',
 				array(
-					'label_for' => 'wallets_email_deposit_subject',
+					'label_for'   => 'wallets_email_deposit_subject',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -391,7 +489,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_deposit_section',
 				array(
-					'label_for' => 'wallets_email_deposit_message',
+					'label_for'   => 'wallets_email_deposit_message',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -416,7 +514,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_send_section',
 				array(
-					'label_for' => 'wallets_email_move_send_enabled',
+					'label_for'   => 'wallets_email_move_send_enabled',
 					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
@@ -433,7 +531,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_send_section',
 				array(
-					'label_for' => 'wallets_email_move_send_subject',
+					'label_for'   => 'wallets_email_move_send_subject',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -450,7 +548,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_send_section',
 				array(
-					'label_for' => 'wallets_email_move_send_message',
+					'label_for'   => 'wallets_email_move_send_message',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -475,7 +573,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_section',
 				array(
-					'label_for' => 'wallets_email_move_send_failed_enabled',
+					'label_for'   => 'wallets_email_move_send_failed_enabled',
 					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
@@ -492,7 +590,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_section',
 				array(
-					'label_for' => 'wallets_email_move_send_failed_subject',
+					'label_for'   => 'wallets_email_move_send_failed_subject',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -509,7 +607,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_send_failed_section',
 				array(
-					'label_for' => 'wallets_email_move_send_failed_message',
+					'label_for'   => 'wallets_email_move_send_failed_message',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -534,7 +632,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_receive_section',
 				array(
-					'label_for' => 'wallets_email_move_receive_enabled',
+					'label_for'   => 'wallets_email_move_receive_enabled',
 					'description' => __( 'Check to enable this type of notification.', 'wallets' ),
 				)
 			);
@@ -551,7 +649,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_receive_section',
 				array(
-					'label_for' => 'wallets_email_move_receive_subject',
+					'label_for'   => 'wallets_email_move_receive_subject',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -568,7 +666,7 @@ NOTIFICATION
 				'wallets-menu-notifications',
 				'wallets_email_move_receive_section',
 				array(
-					'label_for' => 'wallets_email_move_receive_message',
+					'label_for'   => 'wallets_email_move_receive_message',
 					'description' => __( 'See the bottom of this page for variable substitutions.', 'wallets' ),
 				)
 			);
@@ -579,7 +677,7 @@ NOTIFICATION
 			);
 		}
 
-		public function action_admin_menu() {
+		public function bind_admin_menu() {
 			if ( current_user_can( 'manage_wallets' ) ) {
 				add_submenu_page(
 					'wallets-menu-wallets',
@@ -594,34 +692,44 @@ NOTIFICATION
 
 
 		public function wallets_notifications_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Notification settings', 'wallets' ); ?></h1>
 
-				<p><?php esc_html_e( 'Users can receive notifications when they perform deposits, withdrawals, ' .
-					'or internal transfers. ', 'wallets' ); ?></p>
+				<p>
+				<?php
+				esc_html_e(
+					'Users can receive notifications when they perform deposits, withdrawals, ' .
+					'or internal transfers. ', 'wallets'
+				);
+					?>
+					</p>
 
-				<form method="post" action="<?php
+				<form method="post" action="
+				<?php
 
-						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-							echo esc_url(
-								add_query_arg(
-									'action',
-									'wallets-menu-notifications',
-									network_admin_url( 'edit.php' )
-								)
-							);
-						} else {
-							echo 'options.php';
-						}
+				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					echo esc_url(
+						add_query_arg(
+							'action',
+							'wallets-menu-notifications',
+							network_admin_url( 'edit.php' )
+						)
+					);
+				} else {
+					echo 'options.php';
+				}
 
-					?>"><?php
+					?>
+					">
+					<?php
 					settings_fields( 'wallets-menu-notifications' );
 					do_settings_sections( 'wallets-menu-notifications' );
 					submit_button();
-				?></form>
+				?>
+				</form>
 
 				<div class="card">
 					<h2><?php esc_html_e( 'The following variables are substituted in notification templates:', 'wallets' ); ?></h2>
@@ -657,7 +765,8 @@ NOTIFICATION
 						<dt><code>###LAST_ERROR###</code></dt>
 						<dd><?php esc_html_e( 'Only for failed withdrawals, shows the last error occurred in a failed transaction.', 'wallets' ); ?></dd>
 					</dl>
-				</div><?php
+				</div>
+				<?php
 		}
 
 		public function update_network_options() {
@@ -672,6 +781,7 @@ NOTIFICATION
 				'wallets_email_deposit_enabled',
 				'wallets_email_enabled',
 				'wallets_buddypress_enabled',
+				'wallets_history_enabled',
 			) as $checkbox_option_slug ) {
 				Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			}
@@ -699,279 +809,325 @@ NOTIFICATION
 		}
 
 		public function checkbox_cb( $arg ) {
-			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
-			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+			?>
+			<input
+				type="checkbox"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				<?php if ( isset( $arg['disabled'] ) && $arg['disabled'] ): ?>disabled="disabled"<?php endif; ?>
+				<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo $arg['description']; ?>
+			</p>
+			<?php
 		}
 
 		public function text_cb( $arg ) {
-			?><input style="width:100%;" type="text"
-			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
-			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+			?>
+			<input
+				style="width:100%;"
+				type="text"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function email_cb( $arg ) {
-			?><input style="width:100%;" type="email"
-			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
-			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+			?>
+			<input
+				style="width:100%;"
+				type="email"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function textarea_cb( $arg ) {
-			?><textarea style="width:100%;" rows="8"
+			?>
+			<textarea
+				style="width:100%;"
+				rows="8"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
-				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php
-					echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function wallets_notification_all_section_cb() {
-			?><p><?php esc_html_e( 'Users can be notified by e-mail or BuddyPress private messages. ' .
-				'Consult the documentation on how to activate BuddyPress private messages.', 'wallets' ); ?></p><?php
+			?>
+			<p>
+			<?php
+				esc_html_e(
+					'Users can be notified by e-mail or BuddyPress private messages. ' .
+					'Consult the documentation on how to activate BuddyPress private messages.', 'wallets'
+				);
+			?>
+			</p>
+			<?php
 		}
 
 		public function wallets_notification_section_cb() {
-			?><p><?php esc_html_e( 'Here you can choose whether users receive notifications on this event. ' .
-				'You can also edit the templates for the subject line and message body. ' .
-				'You can use the available variable substitutions in both the subject line and the message body.', 'wallets' ); ?></p><?php
+			?>
+			<p>
+			<?php
+				esc_html_e(
+					'Here you can choose whether users receive notifications on this event. ' .
+					'You can also edit the templates for the subject line and message body. ' .
+					'You can use the available variable substitutions in both the subject line and the message body.', 'wallets'
+				);
+			?>
+			</p>
+			<?php
 		}
 
-		public function action_withdraw( $data ) {
-			$msg_data = clone $data;
+		public function bind_simple_history( $simple_history ) {
+			require_once 'simple-logger.php';
+			$simple_history->register_logger( 'Dashed_Slug_Wallets_Simple_Logger' );
+		}
 
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_enabled' ) ) {
-				$user = get_userdata( $msg_data->account );
-				$msg_data->account_id = $msg_data->account;
-				$msg_data->account = $user->user_login;
+		public function action_buddypress_withdraw( $tx_data ) {
 
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ), $msg_data );
-				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $msg_data );
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $tx_data );
 
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
-					messages_new_message ( array(
-						'sender_id' => $msg_data->account_id,
-						'recipients' => array( $msg_data->account_id ),
-						'subject' => $subject,
-						'content' => $message,
-					) );
-				}
+			messages_new_message(
+				array(
+					'sender_id'  => $tx_data->user->ID,
+					'recipients' => array( $tx_data->user->ID ),
+					'subject'    => $subject,
+					'content'    => $message,
+				)
+			);
 
-				if ( $this->emails_enabled ) {
-					$this->notify_user_by_email(
-						$user->user_email,
-						$subject,
-						$message
-					);
-				}
+		}
+		public function action_email_withdraw( $tx_data ) {
+
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $tx_data );
+
+			$this->notify_user_by_email(
+				$tx_data->user->user_email,
+				$subject,
+				$message
+			);
+		}
+
+		public function action_buddypress_withdraw_failed( $tx_data ) {
+
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ), $tx_data );
+
+			messages_new_message(
+				array(
+					'sender_id'  => $tx_data->user->ID,
+					'recipients' => array( $tx_data->user->ID ),
+					'subject'    => $subject,
+					'content'    => $message,
+				)
+			);
+
+		}
+
+		public function action_email_withdraw_failed( $tx_data ) {
+
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ), $tx_data );
+
+			if ( $this->emails_enabled ) {
+				$this->notify_user_by_email(
+					$tx_data->user->user_email,
+					$subject,
+					$message
+				);
 			}
 		}
 
-		public function action_withdraw_failed( $data ) {
-			$msg_data = clone $data;
+		public function action_buddypress_move_send( $tx_data ) {
 
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_enabled' ) ) {
-				$user = get_userdata( $msg_data->account );
-				$msg_data->account_id = $msg_data->account;
-				$msg_data->account = $user->user_login;
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ), $tx_data );
 
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ), $msg_data );
-				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ), $msg_data );
-
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
-					messages_new_message ( array(
-						'sender_id' => $msg_data->account_id,
-						'recipients' => array( $msg_data->account_id ),
-						'subject' => $subject,
-						'content' => $message,
-					) );
-				}
-
-				if ( $this->emails_enabled ) {
-					$this->notify_user_by_email(
-						$user->user_email,
-						$subject,
-						$message
-					);
-				}
-			}
+			messages_new_message(
+				array(
+					'sender_id'  => $tx_data->user->ID,
+					'recipients' => array( $tx_data->user->ID ),
+					'subject'    => $subject,
+					'content'    => $message,
+				)
+			);
 		}
 
-		public function action_move_send( $data ) {
-			$msg_data = clone $data;
+		public function action_email_move_send( $tx_data ) {
 
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_enabled' ) ) {
-				$sender = get_userdata( $msg_data->account );
-				$recipient = get_userdata( $msg_data->other_account );
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ), $tx_data );
 
-				$msg_data->account_id = $msg_data->account;
-				$msg_data->account = $sender->user_login;
-				$msg_data->other_account = $recipient->user_login;
-
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ), $msg_data );
-				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ), $msg_data );
-
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
-					messages_new_message ( array(
-						'sender_id' => $msg_data->account_id,
-						'recipients' => array( $msg_data->account_id ),
-						'subject' => $subject,
-						'content' => $message,
-					) );
-				}
-
-				if ( $this->emails_enabled ) {
-					$this->notify_user_by_email(
-						$sender->user_email,
-						$subject,
-						$message
-					);
-				}
-			}
+			$this->notify_user_by_email(
+				$tx_data->user->user_email,
+				$subject,
+				$message
+			);
 		}
 
-		public function action_move_send_failed( $data ) {
-			$msg_data = clone $data;
+		public function action_buddypress_move_send_failed( $tx_data ) {
 
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_enabled' ) ) {
-				$sender = get_userdata( $msg_data->account );
-				$recipient = get_userdata( $msg_data->other_account );
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ), $tx_data );
 
-				$msg_data->account_id = $msg_data->account;
-				$msg_data->account = $sender->user_login;
-				$msg_data->other_account_id = $msg_data->other_account;
-				$msg_data->other_account = $recipient->user_login;
-
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ), $msg_data );
-				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ), $msg_data );
-
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
-					messages_new_message ( array(
-						'sender_id' => $msg_data->account_id,
-						'recipients' => array( $msg_data->account_id ),
-						'subject' => $subject,
-						'content' => $message,
-					) );
-				}
-
-				if ( $this->emails_enabled ) {
-					$this->notify_user_by_email(
-						$sender->user_email,
-						$subject,
-						$message
-					);
-				}
-			}
+			messages_new_message(
+				array(
+					'sender_id'  => $tx_data->user->ID,
+					'recipients' => array( $tx_data->user->ID ),
+					'subject'    => $subject,
+					'content'    => $message,
+				)
+			);
 		}
 
-		public function action_move_receive( $data ) {
-			$msg_data = clone $data;
+		public function action_email_move_send_failed( $tx_data ) {
 
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_enabled' ) ) {
-				$recipient = get_userdata( $msg_data->account );
-				$sender = get_userdata( $msg_data->other_account );
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ), $tx_data );
 
-				$msg_data->account_id = $msg_data->account;
-				$msg_data->account = $recipient->user_login;
-				$msg_data->other_account_id = $msg_data->other_account;
-				$msg_data->other_account = $sender->user_login;
-				unset( $msg_data->fee );
-
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $msg_data );
-				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ), $msg_data );
-
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
-					messages_new_message ( array(
-						'sender_id' => $sender->ID,
-						'recipients' => array( $recipient->ID ),
-						'subject' => $subject,
-						'content' => $message,
-					) );
-				}
-
-				if ( $this->emails_enabled ) {
-					$this->notify_user_by_email(
-						$recipient->user_email,
-						$subject,
-						$message
-					);
-				}
-			}
+			$this->notify_user_by_email(
+				$tx_data->user->user_email,
+				$subject,
+				$message
+			);
 		}
 
-		public function action_deposit( $data ) {
-			$msg_data = clone $data;
+		public function action_buddypress_move_receive( $tx_data ) {
 
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_enabled' ) ) {
-				$user = get_userdata( $msg_data->account );
-				$msg_data->account_id = $msg_data->account;
-				$msg_data->account = $user->user_login;
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ), $tx_data );
 
-				$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ), $msg_data );
-				$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ), $msg_data );
-
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
-					messages_new_message ( array(
-						'sender_id' => $msg_data->account_id,
-						'recipients' => array( $msg_data->account_id ),
-						'subject' => $subject,
-						'content' => $message,
-					) );
-				}
-
-				if ( $this->emails_enabled ) {
-					$this->notify_user_by_email(
-						$user->user_email,
-						$subject,
-						$message
-					);
-				}
-			}
+			messages_new_message(
+				array(
+					'sender_id'  => $tx_data->other_user->ID,
+					'recipients' => array( $tx_data->user->ID ),
+					'subject'    => $subject,
+					'content'    => $message,
+				)
+			);
 		}
 
-		private function apply_substitutions( $string, $msg_data ) {
-			unset( $msg_data->category );
-			unset( $msg_data->updated_time );
-			if ( ! isset( $msg_data->extra ) ) {
-				$msg_data->extra = 'n/a';
+		public function action_email_move_receive( $tx_data ) {
+
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ), $tx_data );
+
+			$this->notify_user_by_email(
+				$tx_data->user->user_email,
+				$subject,
+				$message
+			);
+		}
+
+		public function action_buddypress_deposit( $tx_data ) {
+
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ), $tx_data );
+
+			messages_new_message(
+				array(
+					'sender_id'  => $tx_data->user->ID,
+					'recipients' => array( $tx_data->user->ID ),
+					'subject'    => $subject,
+					'content'    => $message,
+				)
+			);
+		}
+
+		public function action_email_deposit( $tx_data ) {
+
+			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ), $tx_data );
+			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ), $tx_data );
+
+			$this->notify_user_by_email(
+				$tx_data->user->user_email,
+				$subject,
+				$message
+			);
+		}
+
+		private function apply_substitutions( $string, $tx_data ) {
+
+			$replace_pairs = array(
+				'###ACCOUNT###'    => $tx_data->user->user_login,
+				'###ACCOUNT_ID###' => $tx_data->user->ID,
+			);
+
+			if ( isset( $tx_data->other_user ) ) {
+				$replace_pairs['###OTHER_ACCOUNT###']    = $tx_data->other_user->user_login;
+				$replace_pairs['###OTHER_ACCOUNT_ID###'] = $tx_data->other_user->ID;
 			}
 
-			$msg_data->created_time_local = get_date_from_gmt( $msg_data->created_time );
+			if ( isset( $tx_data->txid ) ) {
+				$replace_pairs['###TXID###'] = $tx_data->txid;
+			}
 
 			// use pattern for displaying amounts
-			if ( isset( $msg_data->symbol ) ) {
+			$sprintf = '%01.8F';
+			if ( isset( $tx_data->symbol ) ) {
 				$adapters = apply_filters( 'wallets_api_adapters', array() );
-				if ( isset( $adapters[ $msg_data->symbol ] ) ) {
-					$adapter = $adapters[ $msg_data->symbol ];
+				if ( isset( $adapters[ $tx_data->symbol ] ) ) {
+					$adapter = $adapters[ $tx_data->symbol ];
 					$sprintf = $adapter->get_sprintf();
-				} else {
-					$sprintf = '%01.8F';
-				}
-
-				if ( isset( $msg_data->amount ) && is_numeric( $msg_data->amount ) ) {
-					$msg_data->amount = sprintf( $sprintf, $msg_data->amount );
-				}
-				if ( isset( $msg_data->fee ) && is_numeric( $msg_data->fee ) ) {
-					$msg_data->fee = sprintf( $sprintf, $msg_data->fee );
 				}
 			}
 
+			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {
+				$replace_pairs['###AMOUNT###']           = sprintf( $sprintf, abs( $tx_data->amount ) );
+			}
+
+			if ( isset( $tx_data->fee ) && is_numeric( $tx_data->fee ) ) {
+				$replace_pairs['###FEE###']              = sprintf( $sprintf, abs( $tx_data->fee ) );
+			}
+
+			$replace_pairs['###SYMBOL###']               = $tx_data->symbol;
+			$replace_pairs['###CREATED_TIME###']         = $tx_data->created_time;
+			$replace_pairs['###CREATED_TIME_LOCAL###']   = get_date_from_gmt( $tx_data->created_time );
+
+			if ( isset( $tx_data->comment ) && $tx_data->comment ) {
+				$replace_pairs['###COMMENT###']          = $tx_data->comment;
+			}
+
+			if ( isset( $tx_data->address ) && $tx_data->address ) {
+				$replace_pairs['###ADDRESS###']          = $tx_data->address;
+			}
+
+			if ( isset( $tx_data->extra ) && $tx_data->extra ) {
+				$replace_pairs['###EXTRA###']            = $tx_data->extra;
+			} else {
+				$replace_pairs['###EXTRA###']            = 'n/a';
+			}
+
+			if ( isset( $tx_data->tags ) && $tx_data->tags ) {
+				$replace_pairs['###TAGS###']                 = $tx_data->tags;
+			}
 
 			// variable substitution
-			foreach ( $msg_data as $field => $val ) {
-				$string = str_replace( '###' . strtoupper( $field ) . '###', $val, $string );
-			}
-			return $string;
+			return strtr( $string, $replace_pairs );
 		}
 
 		private function notify_user_by_email( $email, $subject, $message ) {
 			$headers = array();
 
-			$email_from = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+			$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
 			$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
 
 			if ( $email_from && $email_from_name ) {
@@ -989,7 +1145,7 @@ NOTIFICATION
 				);
 			} catch ( Exception $e ) {
 				$this->_notices->error(
-					__( "The following errors occured while sending a notification to $email: ", 'wallets' ) .
+					__( "The following error occured while sending a notification to $email: ", 'wallets' ) .
 					$e->getMessage()
 				);
 			}

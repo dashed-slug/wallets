@@ -5,33 +5,35 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 	class Dashed_Slug_Wallets_Capabilities {
 
-		const MANAGE_WALLETS = 'manage_wallets';
-		const HAS_WALLETS = 'has_wallets';
-		const LIST_WALLET_TRANSACTIONS = 'list_wallet_transactions';
-		const SEND_FUNDS_TO_USER = 'send_funds_to_user';
+		const MANAGE_WALLETS             = 'manage_wallets';
+		const HAS_WALLETS                = 'has_wallets';
+		const LIST_WALLET_TRANSACTIONS   = 'list_wallet_transactions';
+		const SEND_FUNDS_TO_USER         = 'send_funds_to_user';
 		const WITHDRAW_FUNDS_FROM_WALLET = 'withdraw_funds_from_wallet';
 
 		private $caps;
 
 		public  function __construct() {
 
-			$this->caps = apply_filters( 'wallets_capabilities',  array(
-				self::MANAGE_WALLETS
-					=> __( 'Can configure all settings related to wallets. This is for administrators only.', 'wallets' ),
-				self::HAS_WALLETS
-					=> __( 'Can have balances and use the wallets API.', 'wallets' ),
-				self::LIST_WALLET_TRANSACTIONS
-					=> __( 'Can view a list of past transactions.', 'wallets' ),
-				self::SEND_FUNDS_TO_USER
-					=> __( 'Can send cryptocurrencies to other users on this site.', 'wallets' ),
-				self::WITHDRAW_FUNDS_FROM_WALLET
-					=> __( 'Can withdraw cryptocurrencies from the site to an external address.', 'wallets' )
-			) );
+			$this->caps = apply_filters(
+				'wallets_capabilities', array(
+					self::MANAGE_WALLETS
+						=> __( 'Can configure all settings related to wallets. This is for administrators only.', 'wallets' ),
+					self::HAS_WALLETS
+						=> __( 'Can have balances and use the wallets API.', 'wallets' ),
+					self::LIST_WALLET_TRANSACTIONS
+						=> __( 'Can view a list of past transactions.', 'wallets' ),
+					self::SEND_FUNDS_TO_USER
+						=> __( 'Can send cryptocurrencies to other users on this site.', 'wallets' ),
+					self::WITHDRAW_FUNDS_FROM_WALLET
+						=> __( 'Can withdraw cryptocurrencies from the site to an external address.', 'wallets' ),
+				)
+			);
 
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
@@ -40,8 +42,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-3.4.2.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-3.4.2.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-3.5.0.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-3.5.0.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -50,14 +52,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'3.4.2'
+				'3.5.0'
 			);
 		}
 
 		public static function action_activate() {
 			// set some sane capabilities, users with manage_wallets can configure later
 
-			$user_roles = array_keys( get_editable_roles() );
+			$user_roles   = array_keys( get_editable_roles() );
 			$user_roles[] = 'administrator';
 			foreach ( $user_roles as $role_name ) {
 				$role = get_role( $role_name );
@@ -81,7 +83,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		public function action_admin_init() {
 
 			$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE );
-			$page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE );
+			$page   = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE );
 
 			if ( 'update' == $action && 'wallets-menu-caps' == $page ) {
 
@@ -91,7 +93,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				}
 
 				// commit changes to roles & capabilities matrix
-				if ( ! current_user_can( self::MANAGE_WALLETS ) )  {
+				if ( ! current_user_can( self::MANAGE_WALLETS ) ) {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 				}
 
@@ -158,60 +160,73 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function wallets_caps_page_cb() {
-			if ( ! current_user_can( self::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( self::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Capabilities', 'wallets' ); ?></h1>
 
-					<p><?php esc_html_e( 'Users in WordPress are assigned to roles, and these roles have capabilities. ' .
-						'Here you can set which wallets-related capabilities you want each user role to have.', 'wallets' ); ?>
+			<p>
+			<?php
+				esc_html_e(
+					'Users in WordPress are assigned to roles, and these roles have capabilities. ' .
+					'Here you can set which wallets-related capabilities you want each user role to have.', 'wallets'
+				);
+			?>
 
-						<a href="https://codex.wordpress.org/Roles_and_Capabilities"><?php
-							esc_html_e( 'Read about Roles and Capabilities in the Codex.', 'wallets' );
-						?></a>
+				<a href="https://codex.wordpress.org/Roles_and_Capabilities">
+				<?php
+					esc_html_e( 'Read about Roles and Capabilities in the Codex.', 'wallets' );
+				?>
+				</a>
 
-					</p>
+			</p>
 
-					<form method="post" action="admin.php?page=wallets-menu-caps" class="card"><?php
-						settings_fields( 'wallets-menu-caps' );
-						do_settings_sections( 'wallets-menu-caps' );
-						submit_button();
-					?></form><?php
+			<form method="post" action="admin.php?page=wallets-menu-caps" class="card">
+			<?php
+				settings_fields( 'wallets-menu-caps' );
+				do_settings_sections( 'wallets-menu-caps' );
+				submit_button();
+			?>
+			</form>
+			<?php
 		}
 
 		public function wallets_caps_section_cb() {
-			?><p><?php esc_html_e( 'Use the matrix below to assign capabilities to roles.', 'wallets'); ?></p>
+			?>
+			<p><?php esc_html_e( 'Use the matrix below to assign capabilities to roles.', 'wallets' ); ?></p>
 
 			<table class="wallets capabilities matrix">
 				<thead>
 					<tr>
 						<th />
-						<?php foreach ( $this->caps as $capability => $description ): ?>
+						<?php foreach ( $this->caps as $capability => $description ) : ?>
 							<th title="<?php echo esc_attr( $description ); ?>"><?php echo esc_html( str_replace( '_', ' ', $capability ) ); ?></th>
 						<?php endforeach; ?>
 					</tr>
 				</thead>
 				<tbody>
-				<?php foreach ( get_editable_roles() as $role_name => $role_info ): ?>
-					<?php if ( 'administrator' != $role_name || is_plugin_active_for_network( 'wallets/wallets.php' ) ): ?>
+				<?php foreach ( get_editable_roles() as $role_name => $role_info ) : ?>
+					<?php if ( 'administrator' != $role_name || is_plugin_active_for_network( 'wallets/wallets.php' ) ) : ?>
 					<tr>
 						<th><?php echo $role_name; ?></th>
-						<?php foreach ( $this->caps as $capability => $description ):
-							$checked = isset( $role_info['capabilities'][ $capability ] ) && $role_info['capabilities'][ $capability ]; ?>
+						<?php
+						foreach ( $this->caps as $capability => $description ) :
+							$checked = isset( $role_info['capabilities'][ $capability ] ) && $role_info['capabilities'][ $capability ];
+							?>
 							<td title="<?php echo esc_attr( $description ); ?>">
 								<input type="checkbox" name="caps[<?php echo $role_name; ?>][<?php echo $capability; ?>]" <?php checked( $checked ); ?> />
 							</td>
 						<?php endforeach; ?>
 					</tr>
 					<?php endif; ?>
-			<?php endforeach; ?>
+				<?php endforeach; ?>
 				</tbody>
 			</table>
 			<hr />
 			<dl>
-				<?php foreach ( $this->caps as $capability => $description ): ?>
-					<dt><code><?php echo esc_html( $capability ) ?></code></dt>
+				<?php foreach ( $this->caps as $capability => $description ) : ?>
+					<dt><code><?php echo esc_html( $capability ); ?></code></dt>
 					<dd><?php echo esc_html( $description ); ?></dd>
 				<?php endforeach; ?>
 			</dl>
@@ -219,7 +234,5 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 			<?php
 		} // end function wallets_caps_section_cb
 	} // end class Dashed_Slug_Wallets_Capabilities
-
 	new Dashed_Slug_Wallets_Capabilities();
 }
-

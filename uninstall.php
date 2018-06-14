@@ -20,7 +20,6 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 				delete_option( $option );
 				restore_current_blog();
 			}
-
 		} else {
 			delete_option( $option );
 		}
@@ -46,6 +45,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_email_from' );
 	wallets_delete_option( 'wallets_email_from_name' );
 	wallets_delete_option( 'wallets_buddypress_enabled' );
+	wallets_delete_option( 'wallets_history_enabled' );
 
 	wallets_delete_option( 'wallets_email_withdraw_enabled' );
 	wallets_delete_option( 'wallets_email_withdraw_subject' );
@@ -133,7 +133,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 		foreach ( $blog_ids as $blog_id ) {
 			switch_to_blog( $blog_id );
-			$user_roles = array_keys( get_editable_roles() );
+			$user_roles   = array_keys( get_editable_roles() );
 			$user_roles[] = 'administrator';
 			foreach ( $user_roles as $role_name ) {
 
@@ -149,9 +149,8 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			}
 			restore_current_blog();
 		}
-
 	} else {
-		$user_roles = array_keys( get_editable_roles() );
+		$user_roles   = array_keys( get_editable_roles() );
 		$user_roles[] = 'administrator';
 		foreach ( $user_roles as $role_name ) {
 

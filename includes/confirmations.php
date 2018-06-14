@@ -1,7 +1,7 @@
 <?php
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 	class Dashed_Slug_Wallets_Confirmations {
@@ -26,13 +26,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_redirect_seconds', '3' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_redirect_seconds', '3' );
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_admin_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_user_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_admin_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_user_enabled', 'on' );
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_email_subject', __( 'Your withdrawal request requires confirmation. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_withdraw_email_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_email_subject', __( 'Your withdrawal request requires confirmation. - ###COMMENT###', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_email_message', __(
+					<<<EMAIL
 
 ###ACCOUNT###,
 
@@ -49,14 +51,17 @@ Extra transaction info (optional): ###EXTRA###
 If you did not request this transaction, please contact the administrator of this site immediately.
 
 EMAIL
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_admin_enabled', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_user_enabled', 'on' );
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_admin_enabled', '' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_user_enabled', 'on' );
-
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_email_subject', __( 'Your internal funds transfer request requires confirmation. - ###COMMENT###', 'wallets' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets_confirm_move_email_message', __( <<<EMAIL
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_email_subject', __( 'Your internal funds transfer request requires confirmation. - ###COMMENT###', 'wallets' ) );
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_email_message', __(
+					<<<EMAIL
 
 ###ACCOUNT###,
 
@@ -74,7 +79,9 @@ Tags: ###TAGS###
 If you did not request this transaction, please contact the administrator of this site immediately.
 
 EMAIL
-				, 'wallets' ) );
+					, 'wallets'
+				)
+			);
 		}
 
 		public function filter_query_vars( $vars ) {
@@ -92,10 +99,10 @@ EMAIL
 
 			if ( isset( $wp->query_vars['__wallets_confirm'] ) ) {
 
-				$redirect_page_id = intval( Dashed_Slug_Wallets::get_option( 'wallets_confirm_redirect_page' ) );
+				$redirect_page_id = absint( Dashed_Slug_Wallets::get_option( 'wallets_confirm_redirect_page' ) );
 				if ( $redirect_page_id ) {
 					$redirect_url = get_page_link( $redirect_page_id );
-					$seconds = abs( intval( Dashed_Slug_Wallets::get_option( 'wallets_confirm_redirect_seconds', 3 ) ) );
+					$seconds      = abs( absint( Dashed_Slug_Wallets::get_option( 'wallets_confirm_redirect_seconds', 3 ) ) );
 					header( "Refresh: $seconds; URL=$redirect_url" );
 				}
 
@@ -109,20 +116,22 @@ EMAIL
 					);
 				}
 
-				$tx_data = $wpdb->get_row( $wpdb->prepare(
-					"
-					SELECT
-						*
-					FROM
-						$table_name_txs
-					WHERE
-						( blog_id = %d || %d ) AND
-						nonce = %s
+				$tx_data = $wpdb->get_row(
+					$wpdb->prepare(
+						"
+						SELECT
+							*
+						FROM
+							$table_name_txs
+						WHERE
+							( blog_id = %d || %d ) AND
+							nonce = %s
 					",
-					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-					$nonce
-				) );
+						get_current_blog_id(),
+						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+						$nonce
+					)
+				);
 
 				if ( ! $tx_data ) {
 					wp_die(
@@ -152,23 +161,26 @@ EMAIL
 					if ( preg_match( '/^(move-.*-)(send|receive)$/', $tx_data->txid, $matches ) ) {
 						$txid_prefix = $matches[1];
 
-						$tx_group = $wpdb->get_results( $wpdb->prepare(
-							"
-							SELECT
-								id
-							FROM
-								$table_name_txs
-							WHERE
-								( blog_id = %d || %d ) AND
-								txid LIKE %s
+						$tx_group = $wpdb->get_results(
+							$wpdb->prepare(
+								"
+								SELECT
+									id
+								FROM
+									$table_name_txs
+								WHERE
+									( blog_id = %d || %d ) AND
+									txid LIKE %s
 							",
-							get_current_blog_id(),
-							is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-							"$txid_prefix%" ) );
+								get_current_blog_id(),
+								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+								"$txid_prefix%"
+							)
+						);
 
 						if ( $tx_group ) {
 							foreach ( $tx_group as $tx ) {
-								$ids[ intval( $tx->id ) ] = null;
+								$ids[ absint( $tx->id ) ] = null;
 							}
 						}
 					}
@@ -177,8 +189,9 @@ EMAIL
 				// if the original transaction was a move, here the set of ids will contain the IDs for both send and receive rows
 				$set_of_ids = implode( ',', array_keys( $ids ) );
 
-				$affected_rows = $wpdb->query( $wpdb->prepare(
-					"
+				$affected_rows = $wpdb->query(
+					$wpdb->prepare(
+						"
 					UPDATE
 						$table_name_txs
 					SET
@@ -189,10 +202,11 @@ EMAIL
 						( blog_id = %d || %d ) AND
 						id IN ( $set_of_ids )
 					",
-					$new_status,
-					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
-				) );
+						$new_status,
+						get_current_blog_id(),
+						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+					)
+				);
 
 				if ( $affected_rows > 0 ) {
 					if ( 'pending' == $new_status ) {
@@ -208,17 +222,13 @@ EMAIL
 							array( 'response' => $redirect_page_id ? 302 : 200 )
 						);
 					}
-				}
-
-				elseif ( $affected_rows === 0 ) {
+				} elseif ( 0 === $affected_rows ) {
 					wp_die(
 						__( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ),
 						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
 						array( 'response' => $redirect_page_id ? 302 : 404 )
 					);
-				}
-
-				elseif ( $affected_rows === false ) {
+				} elseif ( false === $affected_rows ) {
 					wp_die(
 						__( 'Failed to update transaction due to an internal error.', 'wallets' ),
 						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
@@ -253,7 +263,7 @@ EMAIL
 			if ( $user ) {
 				// prep user names
 				$row['account'] = $user->user_login;
-				$email = $user->user_email;
+				$email          = $user->user_email;
 				if ( isset( $row['other_account'] ) ) {
 					$other_user = get_userdata( $row['other_account'] );
 					if ( $other_user ) {
@@ -273,8 +283,8 @@ EMAIL
 				if ( isset( $row['symbol'] ) ) {
 					try {
 						$adapters = apply_filters( 'wallets_api_adapters', array() );
-						$adapter = $adapters[ $row['symbol'] ];
-						$sprintf = $adapter->get_sprintf();
+						$adapter  = $adapters[ $row['symbol'] ];
+						$sprintf  = $adapter->get_sprintf();
 					} catch ( Exception $e ) {
 						$sprintf = '%01.8F';
 					}
@@ -290,9 +300,10 @@ EMAIL
 				// create link with nonce
 				$row['link'] = add_query_arg(
 					array(
-						'__wallets_confirm' => $row['nonce']
+						'__wallets_confirm' => $row['nonce'],
 					),
-					site_url( '/' ) );
+					site_url( '/' )
+				);
 
 				// variable substitution
 				foreach ( $row as $field => $val ) {
@@ -302,7 +313,7 @@ EMAIL
 
 				$headers = array();
 
-				$email_from = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
 				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
 
 				if ( $email_from && $email_from_name ) {
@@ -335,53 +346,78 @@ EMAIL
 					'Confirms',
 					'manage_wallets',
 					'wallets-menu-confirmations',
-					array( &$this, "wallets_confirmations_page_cb" )
+					array( &$this, 'wallets_confirmations_page_cb' )
 				);
 			}
 		}
 
 		public function wallets_confirmations_page_cb() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )  {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Transaction confirmation settings', 'wallets' ); ?></h1>
 
-				<p><?php esc_html_e( 'Users enter transaction requests via the front-end interface. '.
-					'For transactions between users as well as for withdrawals, you can choose which types of ' .
-					'confirmations are required before transactions are attempted.', 'wallets' ); ?></p>
+				<p>
+				<?php
+					esc_html_e(
+						'Users enter transaction requests via the front-end interface. ' .
+						'For transactions between users as well as for withdrawals, you can choose which types of ' .
+						'confirmations are required before transactions are attempted.', 'wallets'
+					);
+				?>
+				</p>
 
 				<ul style="list-style: inside">
 					<li><?php esc_html_e( 'User confirmations are done by sending emails that contain a link with a nonce. ', 'wallets' ); ?></li>
 
-					<li><?php printf( __( 'Admin confirmations are done by users with the <code>manage_wallets</code> capability, ' .
-						'via the <a href="%s">transactions</a> admin panel.', 'wallets' ),
-						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-transactions' ) ); ?></li>
+					<li>
+					<?php
+						printf(
+							__(
+								'Admin confirmations are done by users with the <code>manage_wallets</code> capability, ' .
+								'via the <a href="%s">transactions</a> admin panel.', 'wallets'
+							),
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-transactions' )
+						);
+					?>
+					</li>
 				</ul>
 
-				<p><?php printf( __( 'Once a transaction is confirmed, the <a href="%s">cron job</a> will attemt to execute it. ' .
-					'On this page you can also set here the amount of times a failed transaction is retried. ', 'wallets' ),
-					call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-cron' ) ); ?></p>
+				<p>
+				<?php
+					printf(
+						__(
+							'Once a transaction is confirmed, the <a href="%s">cron job</a> will attemt to execute it. ' .
+							'On this page you can also set here the amount of times a failed transaction is retried. ', 'wallets'
+						),
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-cron' )
+					);
+				?>
+				</p>
 
-				<form method="post" action="<?php
+				<form method="post" action="
+				<?php
 
-						if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-							echo esc_url(
-								add_query_arg(
-									'action',
-									'wallets-menu-confirmations',
-									network_admin_url( 'edit.php' )
-								)
-							);
-						} else {
-							echo 'options.php';
-						}
-
-					?>"><?php
-					settings_fields( 'wallets-menu-confirmations' );
-					do_settings_sections( 'wallets-menu-confirmations' );
-					submit_button();
-				?></form>
+					if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+						echo esc_url(
+							add_query_arg(
+								'action',
+								'wallets-menu-confirmations',
+								network_admin_url( 'edit.php' )
+							)
+						);
+					} else {
+						echo 'options.php';
+					}
+				?>
+				">
+					<?php
+						settings_fields( 'wallets-menu-confirmations' );
+						do_settings_sections( 'wallets-menu-confirmations' );
+						submit_button();
+					?>
+				</form>
 
 				<div class="card">
 					<h2><?php esc_html_e( 'The following variables are substituted in e-mail templates:', 'wallets' ); ?></h2>
@@ -413,31 +449,50 @@ EMAIL
 						<dt><code>###TAGS###</code></dt>
 						<dd><?php esc_html_e( 'A space separated list of tags, slugs, etc that further describe the type of transaction.', 'wallets' ); ?></dd>
 					</dl>
-				</div><?php
+				</div>
+				<?php
 		}
 
 		public function checkbox_cb( $arg ) {
-			?><input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
-			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+			?>
+			<input
+				type="checkbox"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function text_cb( $arg ) {
-			?><input style="width:100%;" type="text"
-			name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" value="<?php
-			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+			?>
+			<input
+				type="text"
+				style="width:100%;"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>" />
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function textarea_cb( $arg ) {
-			?><textarea style="width:100%;" rows="8"
+			?>
+			<textarea
+				style="width:100%;" rows="8"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
-				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php
-					echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
-			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
+
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+				<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function integer_cb( $arg ) {
@@ -446,36 +501,47 @@ EMAIL
 				type="number"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				value="<?php echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?>"
-				min="<?php echo intval( $arg['min'] ); ?>"
-				max="<?php echo intval( $arg['max'] ); ?>"
-				step="<?php echo intval( $arg['step'] ); ?>" />
+				min="<?php echo absint( $arg['min'] ); ?>"
+				max="<?php echo absint( $arg['max'] ); ?>"
+				step="<?php echo absint( $arg['step'] ); ?>" />
 
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
 		}
 
 		public function page_cb( $arg ) {
-			wp_dropdown_pages( array(
-				'name' => esc_attr( $arg['label_for'] ),
-				'id' => esc_attr( $arg['label_for'] ),
-				'selected' => intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ),
-				'show_option_none' => __( '(none)', 'wallets' ),
-				'option_none_value' => '0',
-			));
-			?><p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description"><?php
-			echo esc_html( $arg['description'] ); ?></p><?php
+			wp_dropdown_pages(
+				array(
+					'name'              => esc_attr( $arg['label_for'] ),
+					'id'                => esc_attr( $arg['label_for'] ),
+					'selected'          => absint( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ),
+					'show_option_none'  => __( '(none)', 'wallets' ),
+					'option_none_value' => '0',
+				)
+			);
+			?>
+			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
+			<?php echo esc_html( $arg['description'] ); ?>
+			</p>
+			<?php
 		}
 
 		public function wallets_confirm_redirect_section_cb() {
-			?><p><?php esc_html_e( 'Choose which page, if any, a user should be redirected to after clicking on a confirmation link in their e-mail.', 'wallets'); ?></p><?php
+			?>
+			<p><?php esc_html_e( 'Choose which page, if any, a user should be redirected to after clicking on a confirmation link in their e-mail.', 'wallets' ); ?></p>
+			<?php
 		}
 
 		public function wallets_confirm_move_section_cb() {
-			?><p><?php esc_html_e( 'Choose which confirmations are required before performing an internal transaction between users.', 'wallets'); ?></p><?php
+			?>
+			<p><?php esc_html_e( 'Choose which confirmations are required before performing an internal transaction between users.', 'wallets' ); ?></p>
+			<?php
 		}
 
 		public function wallets_confirm_withdraw_section_cb() {
-			?><p><?php esc_html_e( 'Choose which confirmations are required before performing a withdraw transaction.', 'wallets'); ?></p><?php
+			?>
+			<p><?php esc_html_e( 'Choose which confirmations are required before performing a withdraw transaction.', 'wallets' ); ?></p>
+			<?php
 		}
 
 		public function action_admin_init() {
@@ -495,9 +561,11 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_move_section',
 				array(
-					'label_for' => 'wallets_confirm_move_admin_enabled',
-					'description' => __( 'Check this if you wish internal transfers between users to require a confirmation via the admin panel. ' .
-						'Any user with the manage_wallets capability can perform the confirmation.', 'wallets' ),
+					'label_for'   => 'wallets_confirm_move_admin_enabled',
+					'description' => __(
+						'Check this if you wish internal transfers between users to require a confirmation via the admin panel. ' .
+						'Any user with the manage_wallets capability can perform the confirmation.', 'wallets'
+					),
 				)
 			);
 
@@ -513,9 +581,11 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_move_section',
 				array(
-					'label_for' => 'wallets_confirm_move_user_enabled',
-					'description' => __( 'Check this if you wish internal transfers between users to require a user confirmation. ' .
-						'The user that initiated the transaction will receive an email with a link that they will need to click to confirm the transaction', 'wallets' ),
+					'label_for'   => 'wallets_confirm_move_user_enabled',
+					'description' => __(
+						'Check this if you wish internal transfers between users to require a user confirmation. ' .
+						'The user that initiated the transaction will receive an email with a link that they will need to click to confirm the transaction', 'wallets'
+					),
 				)
 			);
 
@@ -533,8 +603,8 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_move_section',
 				array(
-					'label_for' => 'wallets_confirm_move_email_subject',
-					'description' => __( 'See the bottom of this page for variable substitutions.' )
+					'label_for'   => 'wallets_confirm_move_email_subject',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
 				)
 			);
 
@@ -550,8 +620,8 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_move_section',
 				array(
-					'label_for' => 'wallets_confirm_move_email_message',
-					'description' => __( 'See the bottom of this page for variable substitutions.' )
+					'label_for'   => 'wallets_confirm_move_email_message',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
 				)
 			);
 
@@ -576,9 +646,11 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_withdraw_section',
 				array(
-					'label_for' => 'wallets_confirm_withdraw_admin_enabled',
-					'description' => __( 'Check this if you wish withdrawals to require a confirmation via the admin panel. ' .
-						'Any user with the manage_wallets capability can perform the confirmation.', 'wallets' ),
+					'label_for'   => 'wallets_confirm_withdraw_admin_enabled',
+					'description' => __(
+						'Check this if you wish withdrawals to require a confirmation via the admin panel. ' .
+						'Any user with the manage_wallets capability can perform the confirmation.', 'wallets'
+					),
 				)
 			);
 
@@ -594,9 +666,11 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_withdraw_section',
 				array(
-					'label_for' => 'wallets_confirm_withdraw_user_enabled',
-					'description' => __( 'Check this if you wish withdrawals to require a user confirmation. ' .
-						'The user that initiated the transacion will receive an email with a link that they will need to click to confirm the withdrawal.', 'wallets' ),
+					'label_for'   => 'wallets_confirm_withdraw_user_enabled',
+					'description' => __(
+						'Check this if you wish withdrawals to require a user confirmation. ' .
+						'The user that initiated the transacion will receive an email with a link that they will need to click to confirm the withdrawal.', 'wallets'
+					),
 				)
 			);
 
@@ -614,8 +688,8 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_withdraw_section',
 				array(
-					'label_for' => 'wallets_confirm_withdraw_email_subject',
-					'description' => __( 'See the bottom of this page for variable substitutions.' )
+					'label_for'   => 'wallets_confirm_withdraw_email_subject',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
 				)
 			);
 
@@ -631,8 +705,8 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_withdraw_section',
 				array(
-					'label_for' => 'wallets_confirm_withdraw_email_message',
-					'description' => __( 'See the bottom of this page for variable substitutions.' )
+					'label_for'   => 'wallets_confirm_withdraw_email_message',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
 				)
 			);
 
@@ -657,7 +731,7 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_redirect_section',
 				array(
-					'label_for' => 'wallets_confirm_redirect_page',
+					'label_for'   => 'wallets_confirm_redirect_page',
 					'description' => __( 'After a user clicks on a confirmation link from their email, they will be redirected to this page.', 'wallets' ),
 				)
 			);
@@ -674,11 +748,11 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_redirect_section',
 				array(
-					'label_for' => 'wallets_confirm_redirect_seconds',
+					'label_for'   => 'wallets_confirm_redirect_seconds',
 					'description' => __( 'User browser will redirect after displaying confirmation message for this many seconds.', 'wallets' ),
-					'min' => 1,
-					'max' => 60,
-					'step' => 1,
+					'min'         => 1,
+					'max'         => 60,
+					'step'        => 1,
 				)
 			);
 
@@ -696,7 +770,7 @@ EMAIL
 				'wallets_confirm_withdraw_admin_enabled',
 				'wallets_confirm_withdraw_user_enabled',
 				'wallets_confirm_move_admin_enabled',
-				'wallets_confirm_move_user_enabled'
+				'wallets_confirm_move_user_enabled',
 			) as $checkbox_option_slug ) {
 					Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			}
@@ -705,7 +779,7 @@ EMAIL
 				'wallets_confirm_withdraw_email_subject',
 				'wallets_confirm_withdraw_email_message',
 				'wallets_confirm_move_email_subject',
-				'wallets_confirm_move_email_message'
+				'wallets_confirm_move_email_message',
 			) as $text_option_slug ) {
 				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING ) );
 			}
@@ -745,7 +819,7 @@ EMAIL
 			// withdrawals
 
 			$where = array(
-				'status' => 'unconfirmed',
+				'status'   => 'unconfirmed',
 				'category' => 'withdraw',
 			);
 
@@ -773,7 +847,7 @@ EMAIL
 			// moves
 
 			$where = array(
-				'status' => 'unconfirmed',
+				'status'   => 'unconfirmed',
 				'category' => 'move',
 			);
 

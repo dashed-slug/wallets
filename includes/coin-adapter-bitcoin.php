@@ -8,10 +8,10 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Bitcoin' ) ) {
-	include_once ( DSWALLETS_PATH . '/EasyBitcoin-PHP/easybitcoin.php' );
+	include_once( DSWALLETS_PATH . '/EasyBitcoin-PHP/easybitcoin.php' );
 }
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_Bitcoin' ) ) {
@@ -27,14 +27,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_Bitcoin' ) ) {
 		 */
 		protected function get_recommended_config() {
 			$wallet_url = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/wallet/%s' );
-			$block_url = site_url( 'wallets/api2/notify/' . $this->get_symbol(). '/block/%s' );
-			$wp_ip = self::server_ip();
-			$user = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
-			$password = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-password" );
-			$port = intval( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) );
+			$block_url  = site_url( 'wallets/api2/notify/' . $this->get_symbol() . '/block/%s' );
+			$wp_ip      = self::server_ip();
+			$user       = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-user" );
+			$password   = Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-password" );
+			$port       = absint( Dashed_Slug_Wallets::get_option( "{$this->option_slug}-rpc-port" ) );
 
-			$salt = bin2hex( random_bytes( 16 ) );
-			$result = hash_hmac( 'sha256', $password, $salt );
+			$salt        = bin2hex( random_bytes( 16 ) );
+			$result      = hash_hmac( 'sha256', $password, $salt );
 			$salted_pass = $user . ':' . $salt . '$' . $result;
 
 			return <<<CFG
@@ -54,23 +54,25 @@ CFG;
 
 		/** @internal */
 		public function section_fees_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			?><p><?php esc_html_e( 'You can set two types of fees:', 'wallets'); ?></p>
+			?><p><?php esc_html_e( 'You can set two types of fees:', 'wallets' ); ?></p>
 				<ul>
 					<li>
-						<strong><?php esc_html_e( 'Transaction fees', 'wallets' )?></strong> &mdash;
-						<?php esc_html_e( 'These are the fees a user pays when they send funds to other users.', 'wallets' )?>
-					</li><li>
-						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' )?></strong> &mdash;
-						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' )?></p>
-						<p><?php echo __( 'Fees are calculated as: <i>total_fees = fixed_fees + amount * proportional_fees</i>.', 'wallets' ); ?></p>
-						<p class="card"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees use the wallet settings in bitcoin.conf: paytxfee, mintxfee, maxtxfee, etc.', 'wallets' ) ?>
-						<a href="https://en.bitcoin.it/wiki/Running_Bitcoin" target="_blank"><?php esc_html_e( 'Refer to the documentation for details.', 'wallets' )?></a></p>
+						<strong><?php esc_html_e( 'Transaction fees', 'wallets' ); ?></strong> &mdash;
+						<?php esc_html_e( 'These are the fees a user pays when they send funds to other users.', 'wallets' ); ?>
 					</li>
-				</ul><?php
+					<li>
+						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' ); ?></strong> &mdash;
+						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' ); ?></p>
+						<p><?php echo __( 'Fees are calculated as: <i>total_fees = fixed_fees + amount * proportional_fees</i>.', 'wallets' ); ?></p>
+						<p class="card"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees use the wallet settings in bitcoin.conf: paytxfee, mintxfee, maxtxfee, etc.', 'wallets' ); ?>
+						<a href="https://en.bitcoin.it/wiki/Running_Bitcoin" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Refer to the documentation for details.', 'wallets' ); ?></a></p>
+					</li>
+				</ul>
+				<?php
 		}
 
 		// input field callbacks
@@ -87,7 +89,7 @@ CFG;
 
 		public function get_sprintf() {
 			if ( function_exists( 'mb_convert_encoding' ) ) {
-				return mb_convert_encoding('&#x0E3F;', 'UTF-8', 'HTML-ENTITIES') . '%01.8f';
+				return mb_convert_encoding( '&#x0E3F;', 'UTF-8', 'HTML-ENTITIES' ) . '%01.8f';
 			} else {
 				return parent::get_sprintf();
 			}

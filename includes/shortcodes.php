@@ -6,23 +6,23 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 	class Dashed_Slug_Wallets_Shortcodes {
 
 		private $shortcodes_caps = array(
 			'wallets_account_value' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
-			'wallets_balance' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
-			'wallets_transactions' => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
-			'wallets_deposit' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
-			'wallets_withdraw' => Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
-			'wallets_move' => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER
+			'wallets_balance'       => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_transactions'  => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
+			'wallets_deposit'       => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_withdraw'      => Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
+			'wallets_move'          => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER,
 		);
 
 		public function __construct() {
 			foreach ( $this->shortcodes_caps as $shortcode => $capability ) {
-				add_shortcode( $shortcode, array( &$this, "shortcode" ) );
+				add_shortcode( $shortcode, array( &$this, 'shortcode' ) );
 			}
 
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
@@ -31,8 +31,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.4.2.min.js' ) ) {
-					$script = 'bs58check-3.4.2.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.5.0.min.js' ) ) {
+					$script = 'bs58check-3.5.0.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				wp_enqueue_script(
 					'bs58check',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
-					array( ),
+					array(),
 					'2.1.0',
 					true
 				);
@@ -50,10 +50,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function shortcode( $atts, $content = '', $tag ) {
 			$view = preg_replace( '/^wallets_/', '', $tag );
 
-			$atts = shortcode_atts( array(
-				'template' => 'default',
-				'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
-			), $atts, "wallets_$view" );
+			$atts = shortcode_atts(
+				array(
+					'template'  => 'default',
+					'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
+				), $atts, "wallets_$view"
+			);
 
 			if ( ! (
 				isset( $this->shortcodes_caps[ $tag ] ) &&

@@ -25,3 +25,9 @@ body.toplevel_page_wallets-menu-wallets #wpbody-content .card {
 body.wallets_page_wallets-menu-transactions table td .button {
 	font-size: smaller;
 }
+
+/* ugly hack to hide the default icon */
+.SimpleHistoryLogitem--logger-Plugin_Wallets_Audit_Log .SimpleHistoryLogitem__senderImage::before {
+	content: '';
+	display: none;
+}

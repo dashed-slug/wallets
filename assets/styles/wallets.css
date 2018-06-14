@@ -194,3 +194,14 @@
 	background-size: auto 90%;
 	background-position: calc(100% - 20px) 50%;
 }
+
+.dashed-slug-wallets .wallets-clipboard-copy {
+	width: auto;
+	float: right;
+	cursor: pointer;
+	font-size: larger;
+}
+
+.dashed-slug-wallets .wallets-clipboard-copy + input {
+	clear: right;
+}

@@ -9,7 +9,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 
 if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$prefix = $wpdb->prefix;
 			}
 
-			self::$table_name_txs = "{$prefix}wallets_txs";
+			self::$table_name_txs  = "{$prefix}wallets_txs";
 			self::$table_name_adds = "{$prefix}wallets_adds";
 		}
 
@@ -142,14 +142,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				wp_enqueue_script(
 					'knockout',
 					plugins_url( 'knockout-latest.min.js', 'wallets/assets/scripts/knockout-latest.min.js' ),
-					array( ),
+					array(),
 					'3.5.0-pre',
 					true
 				);
 
 				wp_enqueue_script(
 					'momentjs',
-					plugins_url( 'moment.min.js', "wallets/assets/scripts/moment.min.js" ),
+					plugins_url( 'moment.min.js', 'wallets/assets/scripts/moment.min.js' ),
 					array(),
 					'2.22.1',
 					true
@@ -157,14 +157,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script(
 					'sprintf.js',
-					plugins_url( 'sprintf.min.js', "wallets/assets/scripts/sprintf.min.js" ),
-					array( ),
+					plugins_url( 'sprintf.min.js', 'wallets/assets/scripts/sprintf.min.js' ),
+					array(),
 					false,
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.4.2.min.js' ) ) {
-					$script = 'wallets-ko-3.4.2.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.5.0.min.js' ) ) {
+					$script = 'wallets-ko-3.5.0.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.4.2',
+					'3.5.0',
 					true
 				);
 
@@ -185,17 +185,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				if ( ! $fiat_symbol ) {
 					$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 				}
-				wp_localize_script( 'wallets_ko', 'walletsUserData', array(
-					'fiatSymbol' => $fiat_symbol,
-					'pollIntervalCoinInfo' => absint( Dashed_Slug_wallets::get_option( 'wallets_poll_interval_coin_info', 5 ) ),
-					'pollIntervalTransactions' => absint( Dashed_Slug_wallets::get_option( 'wallets_poll_interval_transactions', 5 ) ),
-					'walletsVisibilityCheckEnabled' => Dashed_Slug_wallets::get_option( 'wallets_visibility_check_enabled', 1 ) ? 1 : 0,
-				) );
+				wp_localize_script(
+					'wallets_ko', 'walletsUserData', array(
+						'fiatSymbol'                    => $fiat_symbol,
+						'pollIntervalCoinInfo'          => absint( Dashed_Slug_wallets::get_option( 'wallets_poll_interval_coin_info', 5 ) ),
+						'pollIntervalTransactions'      => absint( Dashed_Slug_wallets::get_option( 'wallets_poll_interval_transactions', 5 ) ),
+						'walletsVisibilityCheckEnabled' => Dashed_Slug_wallets::get_option( 'wallets_visibility_check_enabled', 1 ) ? 1 : 0,
+					)
+				);
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.4.2.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.4.2.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.5.0.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.5.0.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -204,12 +206,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.4.2',
+					'3.5.0',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.4.2.min.css' ) ) {
-					$front_styles = 'wallets-3.4.2.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.5.0.min.css' ) ) {
+					$front_styles = 'wallets-3.5.0.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -218,7 +220,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.4.2'
+					'3.5.0'
 				);
 			}
 		}
@@ -254,11 +256,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$charset_collate = $wpdb->get_charset_collate();
-			$table_name_txs = self::$table_name_txs;
+			$table_name_txs  = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
 
-			$installed_db_revision = intval( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision = 15;
+			$installed_db_revision = absint( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
+			$current_db_revision   = 15;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 				error_log( sprintf( 'Upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
@@ -319,7 +321,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				// make sure that schema is correct:
 
 				$wpdb->query( "UPDATE {$table_name_txs} SET extra='' WHERE extra IS NULL;" );
-				$wpdb->query( "
+				$wpdb->query(
+					"
 					DELETE FROM
 						$table_name_txs
 					USING
@@ -329,7 +332,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						{$table_name_txs}.id > t2.id AND
 						{$table_name_txs}.txid = t2.txid AND
 						{$table_name_txs}.symbol = t2.symbol AND
-						{$table_name_txs}.address = t2.address;" );
+						{$table_name_txs}.address = t2.address;"
+				);
 
 				// make sure that index is on ascii columns only to avoid "Specified key was too long" error
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'" );
@@ -359,34 +363,53 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			self::db_schema();
 
 			global $wpdb;
-			$table_name_txs = self::$table_name_txs;
+			$table_name_txs  = self::$table_name_txs;
 			$table_name_adds = self::$table_name_adds;
 
 			// check for both tables
 			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_txs}'" ) != $table_name_txs ) {
-				$this->_notices->error( sprintf(
-					__( 'Bitcoin and Altcoin Wallets could NOT create a transactions table "%s" in the database. The plugin may not function properly.', 'wallets'),
-					$table_name_txs
-					) );
+				$this->_notices->error(
+					sprintf(
+						__( 'Bitcoin and Altcoin Wallets could NOT create a transactions table "%s" in the database. The plugin may not function properly.', 'wallets' ),
+						$table_name_txs
+					)
+				);
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			} elseif ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_adds}'" ) != $table_name_adds ) {
-				$this->_notices->error( sprintf(
-					__( 'Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "%s" in the database. The plugin may not function properly. If this error message persists, please contact support.', 'wallets'),
-					$table_name_adds
-					) );
+				$this->_notices->error(
+					sprintf(
+						__( 'Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "%s" in the database. The plugin may not function properly. If this error message persists, please contact support.', 'wallets' ),
+						$table_name_adds
+					)
+				);
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			}
 
 			// count indexes from transactions table
-			$actual_indexes = $wpdb->get_results( "SHOW INDEXES FROM $table_name_txs" );
+			$actual_indexes   = $wpdb->get_results( "SHOW INDEXES FROM $table_name_txs" );
 			$expected_indexes = array(
-				array( 'K' => 'uq_tx_idx', 'C' => 'txid' ),
-				array( 'K' => 'uq_tx_idx', 'C' => 'address' ),
-				array( 'K' => 'uq_tx_idx', 'C' => 'symbol' ),
-				array( 'K' => 'account_idx', 'C' => 'account' ),
-				array( 'K' => 'blogid_idx', 'C' => 'blog_id' ),
+				array(
+					'K' => 'uq_tx_idx',
+					'C' => 'txid',
+				),
+				array(
+					'K' => 'uq_tx_idx',
+					'C' => 'address',
+				),
+				array(
+					'K' => 'uq_tx_idx',
+					'C' => 'symbol',
+				),
+				array(
+					'K' => 'account_idx',
+					'C' => 'account',
+				),
+				array(
+					'K' => 'blogid_idx',
+					'C' => 'blog_id',
+				),
 			);
-			$count = count( $expected_indexes );
+			$count            = count( $expected_indexes );
 			foreach ( $expected_indexes as $e ) {
 				foreach ( $actual_indexes as $a ) {
 					if ( $a->Table == $table_name_txs && $a->Key_name == $e['K'] && $a->Column_name == $e['C'] ) {
@@ -395,27 +418,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				}
 			}
 			if ( $count ) {
-				$this->_notices->error( sprintf(
-					__( 'The plugin may not function properly because at least one DB index was not found on the %s table. ' .
-						'If this error message persists, please contact support and report this: %s.', 'wallets'),
-					$table_name_txs,
-					print_r( $actual_indexes, true )
-				) );
+				$this->_notices->error(
+					sprintf(
+						__(
+							'The plugin may not function properly because at least one DB index was not found on the %s table. ' .
+							 'If this error message persists, please contact support and report this: %s.', 'wallets'
+						),
+						$table_name_txs,
+						print_r( $actual_indexes, true )
+					)
+				);
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 
 			}
 
 			// count indexes from addresses table
-			$actual_indexes = $wpdb->get_results( "SHOW INDEXES FROM $table_name_adds" );
+			$actual_indexes   = $wpdb->get_results( "SHOW INDEXES FROM $table_name_adds" );
 			$expected_indexes = array(
-				array( 'K' => 'uq_ad_idx', 'C' => 'address' ),
-				array( 'K' => 'uq_ad_idx', 'C' => 'symbol' ),
-				array( 'K' => 'uq_ad_idx', 'C' => 'extra' ),
-				array( 'K' => 'retrieve_idx', 'C' => 'account' ),
-				array( 'K' => 'retrieve_idx', 'C' => 'symbol' ),
-				array( 'K' => 'lookup_idx', 'C' => 'address' ),
+				array(
+					'K' => 'uq_ad_idx',
+					'C' => 'address',
+				),
+				array(
+					'K' => 'uq_ad_idx',
+					'C' => 'symbol',
+				),
+				array(
+					'K' => 'uq_ad_idx',
+					'C' => 'extra',
+				),
+				array(
+					'K' => 'retrieve_idx',
+					'C' => 'account',
+				),
+				array(
+					'K' => 'retrieve_idx',
+					'C' => 'symbol',
+				),
+				array(
+					'K' => 'lookup_idx',
+					'C' => 'address',
+				),
 			);
-			$count = count( $expected_indexes );
+			$count            = count( $expected_indexes );
 			foreach ( $expected_indexes as $e ) {
 				foreach ( $actual_indexes as $a ) {
 					if ( $a->Table == $table_name_adds && $a->Key_name == $e['K'] && $a->Column_name == $e['C'] ) {
@@ -424,12 +469,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				}
 			}
 			if ( $count ) {
-				$this->_notices->error( sprintf(
-					__( 'The plugin may not function properly because at least one DB index was not found on the %s table. ' .
-						'If this error message persists, please contact support and report this: %s.', 'wallets'),
-					$table_name_adds,
-					print_r( $actual_indexes, true )
-				) );
+				$this->_notices->error(
+					sprintf(
+						__(
+							'The plugin may not function properly because at least one DB index was not found on the %s table. ' .
+							 'If this error message persists, please contact support and report this: %s.', 'wallets'
+						),
+						$table_name_adds,
+						print_r( $actual_indexes, true )
+					)
+				);
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			}
 		}
@@ -440,10 +489,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			if ( version_compare( PHP_VERSION, '5.5' ) <= 0 ) {
 				$this->_notices->info(
 					sprintf(
-						__( 'The PHP version you are using, %s has reached end-of-life! Please talk to your hosting provider or administrator ' .
-							'about upgrading to a <a href="http://php.net/supported-versions.php" target="_blank">supported version</a>.', 'wallets' ),
-						PHP_VERSION ),
-					'old-php-ver' );
+						__(
+							'The PHP version you are using, %s has reached end-of-life! Please talk to your hosting provider or administrator ' .
+							'about upgrading to a <a href="http://php.net/supported-versions.php" target="_blank" rel="noopener noreferrer">supported version</a>.', 'wallets'
+						),
+						PHP_VERSION
+					),
+					'old-php-ver'
+				);
 			}
 
 			// Check for WP version
@@ -451,14 +504,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			if ( version_compare( $wp_version, '4.9.6' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
-						__( 'You are using WordPress %s. This plugin has been tested with %s. Please upgrade to the latest WordPress.', 'wallets' ),
+						__( 'You are using WordPress %1$s. This plugin has been tested with %2$s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'4.9.6' ),
-					'old-wp-ver' );
+						'4.9.6'
+					),
+					'old-wp-ver'
+				);
 			}
 
 			// Check for needed PHP extensions
-			$extensions_needed = array( 'mbstring', 'curl' );
+			$extensions_needed  = array( 'mbstring', 'curl' );
 			$extensions_missing = array();
 			foreach ( $extensions_needed as $extension ) {
 				if ( ! extension_loaded( $extension ) ) {
@@ -468,10 +523,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			if ( $extensions_missing ) {
 				$this->_notices->warning(
 					sprintf(
-						__( 'The plugin may not function properly because the following PHP extensions are not installed on your server: %s. ' .
-							'Install these extensions or talk to your hosting provider about this.', 'wallets' ),
-						implode( ', ', $extensions_missing ) ),
-					'missing-extensions' );
+						__(
+							'The plugin may not function properly because the following PHP extensions are not installed on your server: %s. ' .
+							'Install these extensions or talk to your hosting provider about this.', 'wallets'
+						),
+						implode( ', ', $extensions_missing )
+					),
+					'missing-extensions'
+				);
 			}
 		}
 
@@ -481,19 +540,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// built-in bitcoin adapter settings
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-general-enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-ip', '127.0.0.1' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-port', '8332' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-user', '' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-password', '' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-rpc-path', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-general-enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-rpc-ip', '127.0.0.1' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-rpc-port', '8332' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-rpc-user', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-rpc-password', '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-rpc-path', '' );
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-move-proportional', '0' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00100000' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-fees-withdraw-proportional', '0' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-fees-move', '0.00000100' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-fees-move-proportional', '0' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-fees-withdraw', '0.00100000' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-fees-withdraw-proportional', '0' );
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option',  'wallets-bitcoin-core-node-settings-other-minconf', '6' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets-bitcoin-core-node-settings-other-minconf', '6' );
 
 		}
 
@@ -512,12 +571,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$wpdb->delete(
 					self::$table_name_txs,
 					array( 'blog_id' => $blog_id ),
-					array( '%d')
+					array( '%d' )
 				);
 				$wpdb->delete(
 					self::$table_name_adds,
 					array( 'blog_id' => $blog_id ),
-					array( '%d')
+					array( '%d' )
 				);
 			}
 		}
@@ -526,22 +585,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			wp_add_dashboard_widget(
 				'wallets-dashboard-widget',
 				'Bitcoin and Altcoin Wallets',
-				array( &$this, 'dashboard_widget_cb' ) );
+				array( &$this, 'dashboard_widget_cb' )
+			);
 		}
 
 		public function dashboard_widget_cb() {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ] = '3.4.2';
-			$data[ __( 'Git SHA', 'wallets' ) ] = '83da95a';
-			$data[ __( 'Web Server', 'wallets' ) ] = $_SERVER['SERVER_SOFTWARE'];
-			$data[ __( 'PHP version', 'wallets' ) ] = PHP_VERSION;
-			$data[ __( 'WordPress version', 'wallets' ) ] = get_bloginfo( 'version' );
-			$data[ __( 'MySQL version', 'wallets' ) ] = $wpdb->get_var( 'SELECT VERSION()' );
-			$data[ __( 'DB prefix', 'wallets' ) ] = $wpdb->prefix;
-			$data[ __( 'Is multisite', 'wallets' ) ] = is_multisite();
-			$data[ __( 'Is network activated', 'wallets' ) ] = is_plugin_active_for_network( 'wallets/wallets.php' );
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.5.0';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '5530a73';
+			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
+			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
+			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
+			$data[ __( 'MySQL version', 'wallets' ) ]          = $wpdb->get_var( 'SELECT VERSION()' );
+			$data[ __( 'DB prefix', 'wallets' ) ]              = $wpdb->prefix;
+			$data[ __( 'Is multisite', 'wallets' ) ]           = is_multisite();
+			$data[ __( 'Is network activated', 'wallets' ) ]   = is_plugin_active_for_network( 'wallets/wallets.php' );
 			$data[ __( 'PHP max execution time', 'wallets' ) ] = ini_get( 'max_execution_time' );
 
 			foreach ( array(
@@ -562,19 +622,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$data[ "PHP Extension '$extension'" ] = extension_loaded( $extension ) ? __( 'Loaded', 'wallets' ) : __( 'Not loaded', 'wallets' );
 			}
 
-			$active_exts = array();
+			$active_exts     = array();
 			$net_active_exts = array();
-			$app_exts = json_decode( file_get_contents( DSWALLETS_PATH . '/assets/data/features.json' ) );
-			$adapter_exts = json_decode( file_get_contents( DSWALLETS_PATH . '/assets/data/adapters.json' ) );
+			$app_exts        = json_decode( file_get_contents( DSWALLETS_PATH . '/assets/data/features.json' ) );
+			$adapter_exts    = json_decode( file_get_contents( DSWALLETS_PATH . '/assets/data/adapters.json' ) );
 
 			foreach ( array_merge( $app_exts, $adapter_exts ) as $extension ) {
-				if ( is_plugin_active( "{$extension->slug}/{$extension->slug}.php") ) {
-					 $active_exts[] = $extension->slug;
-				} elseif ( is_plugin_active_for_network( "{$extension->slug}/{$extension->slug}.php" ) ) {
-					$net_active_exts[] = $extension->slug;
+
+				$plugin_filename      = "{$extension->slug}/{$extension->slug}.php";
+				$plugin_full_filename = plugin_dir_path( __FILE__ ) . "../../$plugin_filename";
+
+				if ( is_plugin_active( $plugin_filename ) ) {
+					$plugin_data   = get_plugin_data( $plugin_full_filename );
+					$active_exts[] = "$extension->slug $plugin_data[Version]";
+
+				} elseif ( is_plugin_active_for_network( $plugin_filename ) ) {
+					$plugin_data       = get_plugin_data( $plugin_full_filename );
+					$net_active_exts[] = "$extension->slug $plugin_data[Version]";
 				}
-				$data[ "Active wallets extensions"] = $active_exts ? implode( ', ', $active_exts ) : 'n/a';
-				$data[ "Network-active wallets extensions"] = $net_active_exts ? implode( ', ', $net_active_exts ) : 'n/a';
+				$data['Active wallets extensions']         = $active_exts ? implode( ', ', $active_exts ) : 'n/a';
+				$data['Network-active wallets extensions'] = $net_active_exts ? implode( ', ', $net_active_exts ) : 'n/a';
 			}
 
 			?><p><?php esc_html_e( 'When requesting support, please send the following info along with your request.', 'wallets' ); ?></p>
@@ -582,19 +649,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			<table>
 				<thead><th /><th /></thead>
 				<tbody>
-					<?php foreach ( $data as $metric => $value ): ?>
+					<?php foreach ( $data as $metric => $value ) : ?>
 					<tr>
-						<td><?php echo $metric ?></td>
-						<td><code><?php
-							if ( is_bool( $value ) ) {
-								echo $value ? 'true' : 'false';
-							} else {
-								echo esc_html( $value );
-							} ?></code></td>
+						<td><?php echo $metric; ?></td>
+						<td><code>
+						<?php
+						if ( is_bool( $value ) ) {
+							echo $value ? 'true' : 'false';
+						} else {
+							echo esc_html( $value );
+						}
+							?>
+							</code></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
-			</table><?php
+			</table>
+			<?php
 		}
 
 		//////// Exchange rate API
@@ -735,6 +806,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		//////// other helpers ////////
 
+		public static function user_link( $user_login ) {
+			static $memoize = array();
+
+			if ( ! isset( $memoize[ $user_login ] ) ) {
+				$network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
+
+				$user = get_user_by( 'login', $user_login );
+				if ( $user ) {
+					$link                   = call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "user-edit.php?user_id={$user->ID}" );
+					$memoize[ $user_login ] = "<a href=\"$link\">$user_login</a>";
+				} else {
+					$memoize[ $user_login ] = $user_login;
+				}
+			}
+			return $memoize[ $user_login ];
+		}
+
 		/**
 		 * Get confirmed balance totals for all users grouped by coin.
 		 *
@@ -755,7 +843,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
 
-			$user_balances_query = $wpdb->prepare( "
+			$user_balances_query = $wpdb->prepare(
+				"
 				SELECT
 					SUM( amount ) as balance,
 					symbol
@@ -795,7 +884,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param float $amount Amount to withdraw to.
 		 * @param string $comment Optional comment to attach to the transaction.
 		 * @param string $extra Optional comment or other info to attach to the destination address.
-		 *		See Dashed_Slug_Wallets_Coin_Adapter->get_extra_field_description() for details
+		 *      See Dashed_Slug_Wallets_Coin_Adapter->get_extra_field_description() for details
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @param boolean $skip_confirm Set to true if the transaction should not require confirmations. Useful for feature extensions.
 		 * @throws Exception If the operation fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
@@ -807,15 +896,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
 			);
 
-			do_action( 'wallets_api_withdraw', array(
-				'symbol' => $symbol,
-				'amount' => $amount,
-				'address' => $address,
-				'extra' => $extra,
-				'comment' => $comment,
-				'check_capabilities' => $check_capabilities,
-				'skip_confirm' => $skip_confirm,
-			) );
+			do_action(
+				'wallets_api_withdraw', array(
+					'symbol'             => $symbol,
+					'amount'             => $amount,
+					'address'            => $address,
+					'extra'              => $extra,
+					'comment'            => $comment,
+					'check_capabilities' => $check_capabilities,
+					'skip_confirm'       => $skip_confirm,
+				)
+			);
 		}
 
 		/**
@@ -840,22 +931,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @return void
 		 * @throws Exception If move fails. Exception code will be one of Dashed_Slug_Wallets_PHP_API::ERR_*.
 		 */
-		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '', $skip_confirm = false, $fromaccount = null  ) {
+		public function do_move( $symbol, $toaccount, $amount, $comment, $check_capabilities = false, $tags = '', $skip_confirm = false, $fromaccount = null ) {
 			trigger_error(
 				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_move WordPress action instead.',
 				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
 			);
 
-			do_action( 'wallets_api_move', array(
-				'symbol' => $symbol,
-				'amount' => $amount,
-				'from_user_id' => $fromaccount,
-				'to_user_id' => $toaccount,
-				'comment' => $comment,
-				'tags' => $tags,
-				'check_capabilities' => $check_capabilities,
-				'skip_confirm' => $skip_confirm,
-			) );
+			do_action(
+				'wallets_api_move', array(
+					'symbol'             => $symbol,
+					'amount'             => $amount,
+					'from_user_id'       => $fromaccount,
+					'to_user_id'         => $toaccount,
+					'comment'            => $comment,
+					'tags'               => $tags,
+					'check_capabilities' => $check_capabilities,
+					'skip_confirm'       => $skip_confirm,
+				)
+			);
 		}
 
 		/**
@@ -868,7 +961,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @param string $symbol Character symbol of the wallet's coin.
 		 * @param bool $check_capabilities Capabilities are checked if set to true. Default: false.
 		 * @return string|array A deposit address associated with the current logged in user,
-		 *		or an array of an address plus extra transaction info, for coins that require it.
+		 *      or an array of an address plus extra transaction info, for coins that require it.
 		 * @throws Exception If the operation fails.
 		 */
 		public function get_deposit_address( $symbol, $account = null, $check_capabilities = false ) {
@@ -879,7 +972,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$args = array(
 				'check_capabilities' => $check_capabilities,
-				'symbol' => $symbol,
+				'symbol'             => $symbol,
 			);
 
 			if ( is_numeric( $account ) ) {
@@ -913,8 +1006,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$args = array(
 				'check_capabilities' => $check_capabilities,
-				'symbol' => $symbol,
-				'user_id' => get_current_user_id(),
+				'symbol'             => $symbol,
+				'user_id'            => get_current_user_id(),
 			);
 
 			$address = apply_filters( 'wallets_api_deposit_address', null, $args );
@@ -945,11 +1038,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			trigger_error(
 				'The ' . __FUNCTION__ . ' method is deprecated. Please use the wallets_api_balance WordPress filter instead.',
 				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
-				);
+			);
 
 			$args = array(
 				'check_capabilities' => $check_capabilities,
-				'symbol' => $symbol,
+				'symbol'             => $symbol,
 			);
 
 			if ( is_numeric( $account ) ) {
@@ -987,10 +1080,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			);
 
 			$args = array(
-				'symbol' => $symbol,
-				'count' => $count,
-				'from' => $from,
-				'minconf' => $minconf,
+				'symbol'             => $symbol,
+				'count'              => $count,
+				'from'               => $from,
+				'minconf'            => $minconf,
 				'check_capabilities' => $check_capabilities,
 			);
 
@@ -1022,9 +1115,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				defined( 'E_USER_DEPRECATED' ) ? E_USER_DEPRECATED : E_USER_WARNING
 			);
 
-			$adapters = apply_filters( 'wallets_api_adapters', array(), array(
-				'check_capabilities' => $check_capabilities,
-			) );
+			$adapters = apply_filters(
+				'wallets_api_adapters', array(), array(
+					'check_capabilities' => $check_capabilities,
+				)
+			);
 
 			if ( is_null( $symbol ) ) {
 				return $adapters;
@@ -1033,7 +1128,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				throw new Exception( __( 'The symbol for the requested coin adapter was not a string.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
 			}
 			$symbol = strtoupper( $symbol );
-			if ( ! isset ( $adapters[ $symbol  ] ) ) {
+			if ( ! isset( $adapters[ $symbol  ] ) ) {
 				throw new Exception( sprintf( __( 'The coin adapter for the symbol %s is not available.', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
 			}
 			return $adapters[ $symbol ];

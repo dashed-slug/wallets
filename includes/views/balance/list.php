@@ -1,4 +1,4 @@
-<?php defined( 'ABSPATH' ) || die( '-1' ); // don't load directly ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
 <form class="dashed-slug-wallets deposit deposit-list" onsubmit="return false;" data-bind="if: Object.keys( coins() ).length > 0">
 	<?php

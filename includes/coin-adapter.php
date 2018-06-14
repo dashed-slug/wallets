@@ -9,7 +9,7 @@
  */
 
 // don't load directly
-defined( 'ABSPATH' ) || die( '-1' );
+defined( 'ABSPATH' ) || die( -1 );
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
@@ -65,11 +65,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			add_submenu_page(
 				'wallets-menu-wallets',
-				sprintf( 'Bitcoin and Altcoin Wallets: %s (%s) Adapter Settings' , $this->get_adapter_name(), $this->get_symbol() ),
-				sprintf( '%s (%s)' , $this->get_adapter_name(), $this->get_symbol() ),
+				sprintf( 'Bitcoin and Altcoin Wallets: %s (%s) Adapter Settings', $this->get_adapter_name(), $this->get_symbol() ),
+				sprintf( '%s (%s)', $this->get_adapter_name(), $this->get_symbol() ),
 				'manage_wallets',
 				$this->menu_slug,
-				array( &$this, "admin_menu_wallets_cb" )
+				array( &$this, 'admin_menu_wallets_cb' )
 			);
 
 			// General settings
@@ -84,11 +84,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-general-enabled",
 				__( 'Enabled', 'wallets' ),
-				array( &$this, 'settings_checkbox_cb'),
+				array( &$this, 'settings_checkbox_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-general",
 				array(
-					'label_for' => "{$this->option_slug}-general-enabled",
+					'label_for'   => "{$this->option_slug}-general-enabled",
 					'description' => __( 'Check to enable this adapter.', 'wallets' ),
 				)
 			);
@@ -101,11 +101,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-general-minwithdraw",
 				__( 'Min withdraw', 'wallets' ),
-				array( &$this, 'settings_currency_cb'),
+				array( &$this, 'settings_currency_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-general",
 				array(
-					'label_for' => "{$this->option_slug}-general-minwithdraw",
+					'label_for'   => "{$this->option_slug}-general-minwithdraw",
 					'description' => __( 'Minimum withdrawal amount for this coin.', 'wallets' ),
 				)
 			);
@@ -114,7 +114,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 				$this->menu_slug,
 				"{$this->option_slug}-general-minwithdraw"
 			);
-
 
 			// Fees settings
 
@@ -128,11 +127,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-fees-move",
 				__( 'Fixed part of transaction fee between users', 'wallets' ),
-				array( &$this, 'settings_currency_cb'),
+				array( &$this, 'settings_currency_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-fees",
 				array(
-					'label_for' => "{$this->option_slug}-fees-move",
+					'label_for'   => "{$this->option_slug}-fees-move",
 					'description' => __( 'Senders of internal transfers will pay the fixed fee to this site per transaction.', 'wallets' ),
 				)
 			);
@@ -145,11 +144,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-fees-move-proportional",
 				__( 'Proportional part of transaction fee between users', 'wallets' ),
-				array( &$this, 'settings_percent_cb'),
+				array( &$this, 'settings_percent_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-fees",
 				array(
-					'label_for' => "{$this->option_slug}-fees-move-proportional",
+					'label_for'   => "{$this->option_slug}-fees-move-proportional",
 					'description' => __( 'Senders of internal transfers will pay transfer_amount * proportional_fee to this site.', 'wallets' ),
 				)
 			);
@@ -162,11 +161,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-fees-withdraw",
 				__( 'Fixed part of withdrawal fee', 'wallets' ),
-				array( &$this, 'settings_currency_cb'),
+				array( &$this, 'settings_currency_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-fees",
 				array(
-					'label_for' => "{$this->option_slug}-fees-withdraw",
+					'label_for'   => "{$this->option_slug}-fees-withdraw",
 					'description' => __( 'Users will pay this fixed fee to the site when performing withdrawals.', 'wallets' ),
 				)
 			);
@@ -179,11 +178,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-fees-withdraw-proportional",
 				__( 'Proportional part of withdrawal fee', 'wallets' ),
-				array( &$this, 'settings_percent_cb'),
+				array( &$this, 'settings_percent_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-fees",
 				array(
-					'label_for' => "{$this->option_slug}-fees-withdraw-proportional",
+					'label_for'   => "{$this->option_slug}-fees-withdraw-proportional",
 					'description' => __( 'Users will pay withdraw_amount * proportional_fee to the site when performing withdrawals.', 'wallets' ),
 				)
 			);
@@ -192,7 +191,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 				$this->menu_slug,
 				"{$this->option_slug}-fees-withdraw-proportional"
 			);
-
 
 			// Other
 
@@ -206,11 +204,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			add_settings_field(
 				"{$this->option_slug}-other-minconf",
 				__( 'Minumum confirmations', 'wallets' ),
-				array( &$this, 'settings_int8_cb'),
+				array( &$this, 'settings_int8_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-other",
 				array(
-					'label_for' => "{$this->option_slug}-other-minconf",
+					'label_for'   => "{$this->option_slug}-other-minconf",
 					'description' => __( 'Deposits will count towards user balances after this many blockchain confirmations.', 'wallets' ),
 				)
 			);
@@ -226,7 +224,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 		/** @internal */
 		public function section_general_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -235,28 +233,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 		/** @internal */
 		public function section_fees_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			?><p><?php esc_html_e( 'You can set two types of fees:', 'wallets'); ?></p>
+			?><p><?php esc_html_e( 'You can set two types of fees:', 'wallets' ); ?></p>
 				<ul>
 					<li>
-						<strong><?php esc_html_e( 'Transaction fees', 'wallets' )?></strong> &mdash;
-						<?php esc_html_e( 'These are the fees a user pays when they send funds to other users.', 'wallets' )?>
-					</li><li>
-						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' )?></strong> &mdash;
-						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' )?></p>
-						<p><?php echo __( 'Fees are calculated as: <i>total_fees = fixed_fees + amount * proportional_fees</i>.', 'wallets' ); ?></p>
-						<p class="card"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees set the appropriate settings in your wallet\'s .conf file.', 'wallets' ) ?>
-						<?php esc_html_e( 'Refer to the wallet documentation for details.', 'wallets' )?></p>
+						<strong><?php esc_html_e( 'Transaction fees', 'wallets' ); ?></strong> &mdash;
+						<?php esc_html_e( 'These are the fees a user pays when they send funds to other users.', 'wallets' ); ?>
 					</li>
-				</ul><?php
+					<li>
+						<p><strong><?php esc_html_e( 'Withdrawal fees', 'wallets' ); ?></strong> &mdash;
+						<?php esc_html_e( 'This the amount that is subtracted from a user\'s account in addition to the amount that they send to another address on the blockchain.', 'wallets' ); ?></p>
+						<p><?php echo __( 'Fees are calculated as: <i>total_fees = fixed_fees + amount * proportional_fees</i>.', 'wallets' ); ?></p>
+						<p class="card"><?php esc_html_e( 'This withdrawal fee is NOT the network fee, and you are advised to set the withdrawal fee to an amount that will cover the network fee of a typical transaction, possibly with some slack that will generate profit. To control network fees set the appropriate settings in your wallet\'s .conf file.', 'wallets' ); ?>
+						<?php esc_html_e( 'Refer to the wallet documentation for details.', 'wallets' ); ?></p>
+					</li>
+				</ul>
+				<?php
 		}
 
 		/** @internal */
 		public function section_other_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
@@ -282,28 +282,28 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		/** @internal */
 		public function settings_int8_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"256\" step=\"1\" value=\"";
-			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
+			echo esc_attr( absint( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_int16_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"1\" max=\"65535\" step=\"1\" value=\"";
-			echo esc_attr( intval( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
+			echo esc_attr( absint( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_currency_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" step=\"0.00000001\" value=\"";
-			echo esc_attr( sprintf( "%01.8f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
+			echo esc_attr( sprintf( '%01.8f', Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_percent_cb( $arg ) {
 			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"number\" min=\"0\" max=\"0.5\" step=\"0.00001\" value=\"";
-			echo esc_attr( sprintf( "%01.5f", Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
+			echo esc_attr( sprintf( '%01.5f', Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) ) . '" />';
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
@@ -332,35 +332,45 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 *
 		 */
 		public function admin_menu_wallets_cb() {
-			if ( ! current_user_can( 'manage_wallets' ) )  {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			?><h1><img src="<?php esc_attr( $this->get_icon_url() ); ?>" style="height: 1em;" /><?php
-				echo esc_html( sprintf( __( 'Coin adapter settings for %s', 'wallets' ), $this->get_adapter_name() ) ); ?></h1>
-			<div><p><?php
-				echo esc_html( sprintf( __( 'These are the settings for this %s adapter', 'wallets' ), $this->get_name() ) ); ?>
+			?>
+			<h1><img src="<?php esc_attr( $this->get_icon_url() ); ?>" style="height: 1em;" />
+			<?php
+				echo esc_html( sprintf( __( 'Coin adapter settings for %s', 'wallets' ), $this->get_adapter_name() ) );
+			?>
+			</h1>
+			<div><p>
+			<?php
+				echo esc_html( sprintf( __( 'These are the settings for this %s adapter', 'wallets' ), $this->get_name() ) );
+			?>
 			</p></div>
 
-			<form method="post" action="<?php
+			<form method="post" action="
+			<?php
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				echo esc_url(
+					add_query_arg(
+						'action',
+						$this->menu_slug,
+						network_admin_url( 'edit.php' )
+					)
+				);
+			} else {
+				echo 'options.php';
+			}
 
-				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-					echo esc_url(
-						add_query_arg(
-							'action',
-							$this->menu_slug,
-							network_admin_url( 'edit.php' )
-						)
-					);
-				} else {
-					echo 'options.php';
-				}
-
-				?>"><?php
-				settings_fields( $this->menu_slug, null, 'save' );
-				do_settings_sections( $this->menu_slug);
-				submit_button();
-			?></form><?php
+			?>
+			">
+			<?php
+			settings_fields( $this->menu_slug, null, 'save' );
+			do_settings_sections( $this->menu_slug );
+			submit_button();
+			?>
+			</form>
+			<?php
 		}
 
 		/**
@@ -371,10 +381,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			check_admin_referer( "{$this->menu_slug}-options" );
 
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-enabled", filter_input( INPUT_POST, "{$this->option_slug}-general-enabled", FILTER_SANITIZE_STRING ) ? 'on' : '' );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move", filter_input( INPUT_POST, "{$this->option_slug}-fees-move", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-move-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move", filter_input( INPUT_POST, "{$this->option_slug}-fees-move", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-move-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-minconf", filter_input( INPUT_POST, "{$this->option_slug}-fees-minconf", FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', $this->menu_slug, network_admin_url( 'admin.php' ) ) );
@@ -398,7 +408,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @internal
 		 */
 		protected static function server_ip() {
-			if ( false === ( $result = get_transient( 'wallets-server-ip' ) ) ) {
+			$result = get_transient( 'wallets-server-ip' );
+			if ( false === $result ) {
 				try {
 					$ip = @file_get_contents( 'http://api.ipify.org' );
 					if ( false !== $ip && filter_var( $ip, FILTER_VALIDATE_IP ) !== false ) {
@@ -406,13 +417,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 					}
 				} catch ( Exception $e ) {
 
-					if( array_key_exists( 'SERVER_ADDR', $_SERVER ) ) {
+					if ( array_key_exists( 'SERVER_ADDR', $_SERVER ) ) {
 						$result = $_SERVER['SERVER_ADDR'];
 
 					} elseif ( array_key_exists( 'LOCAL_ADDR', $_SERVER ) ) {
 						$result = $_SERVER['LOCAL_ADDR'];
 
-					} elseif ( array_key_exists('SERVER_NAME', $_SERVER ) ) {
+					} elseif ( array_key_exists( 'SERVER_NAME', $_SERVER ) ) {
 						$result = gethostbyname( $_SERVER['SERVER_NAME'] );
 
 					} elseif ( php_uname( 'n' ) ) {
@@ -430,7 +441,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		}
 
 		public function is_enabled() {
-			return $this->get_adapter_option( "general-enabled" );
+			return $this->get_adapter_option( 'general-enabled' );
 		}
 
 
@@ -562,7 +573,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return number Minimum amount of confirmations required to consider a transaction as confirmed.
 		 */
 		public function get_minconf() {
-			return intval( $this->get_adapter_option( 'other-minconf', 1 ) );
+			return absint( $this->get_adapter_option( 'other-minconf', 1 ) );
 		}
 
 		/**
@@ -668,7 +679,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return string|array A deposit address or an array of the deposit address plus some other extra string describing the deposit.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
-		public abstract function get_new_address( );
+		public abstract function get_new_address();
 
 		/**
 		 * Perform a withdrawal.
@@ -716,7 +727,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 					return 'https://ethplorer.io/tx/%s';
 
 				default:
-					return 'https://chainz.cryptoid.info/' . strtolower( $symbol) . '/tx.dws?%s.htm';
+					return 'https://chainz.cryptoid.info/' . strtolower( $symbol ) . '/tx.dws?%s.htm';
 			}
 		}
 
@@ -733,12 +744,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		public function explorer_uri_address( $uri ) {
 			$symbol = $this->get_symbol();
 
-			switch( $symbol ) {
+			switch ( $symbol ) {
 				case 'BTC':
 					return 'https://blockchain.info/address/%s';
 
 				case 'DOGE':
-					return "https://dogechain.info/address/%s";
+					return 'https://dogechain.info/address/%s';
 
 				case 'FTC':
 					return 'http://explorer.feathercoin.com/address/%s';
@@ -750,7 +761,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 					return 'https://ethplorer.io/address/%s';
 
 				default:
-					return 'https://chainz.cryptoid.info/' . strtolower( $symbol) . '/address.dws?%s.htm';
+					return 'https://chainz.cryptoid.info/' . strtolower( $symbol ) . '/address.dws?%s.htm';
 			}
 		}
 
