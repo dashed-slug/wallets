@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.5.0
+Stable tag: 3.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -307,6 +307,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.5.1 =
+- Add: Can now hook to frontend events for running JavaScript after coin data is loaded. See documentation for details.
+- Improve: Frontend UIs now start with 50% opacity while coin data is not yet loaded from the JSON API.
 
 = 3.5.0 =
 - Add: Support for keeping an "Audit Log" of transactions using the plugin "Simple History", if the plugin is installed.
@@ -870,7 +874,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.5.0 brings a large number of small improvements over the previous version.
+Version 3.5.1 introduces the ability to hook functions to the frontend after the coin data is loaded (user request).
 
 == Donating ==
 

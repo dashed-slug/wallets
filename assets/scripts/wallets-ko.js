@@ -52,6 +52,11 @@
 			$( '.dashed-slug-wallets .select2' ).remove();
 		}
 
+		// for knowing when to trigger events only the first time after something is loaded
+		var
+			coinsLoaded = false,
+			noncesLoaded = false,
+			walletsLoaded = false;
 
 		// the knockout viewmodel
 		function WalletsViewModel() {
@@ -87,6 +92,16 @@
 								self.selectedCoin( Object.keys( response.coins )[ 0 ] );
 							}
 						}
+						if ( ! coinsLoaded ) {
+							$( 'body' ).trigger( 'wallets_coins_ready', [ response.coins ] );
+							coinsLoaded = true;
+						}
+						if ( ! walletsLoaded ) {
+							if ( coinsLoaded && noncesLoaded ) {
+								$( 'body' ).trigger( 'wallets_ready', [ self.coins(), self.nonces() ] );
+								walletsLoaded = true;
+							}
+						}
 					},
 					complete: function( jqXHR, status ) {
 						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
@@ -118,7 +133,16 @@
 							return;
 						}
 						self.nonces( response.nonces );
-
+						if ( ! noncesLoaded ) {
+							$( 'body' ).trigger( 'wallets_nonces_ready', [ response.nonces ] );
+							noncesLoaded = true;
+						}
+						if ( ! walletsLoaded ) {
+							if ( coinsLoaded && noncesLoaded ) {
+								$( 'body' ).trigger( 'wallets_ready', [ self.coins(), self.nonces() ] );
+								walletsLoaded = true;
+							}
+						}
 					},
 					complete: function( jqXHR, status ) {
 						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
@@ -653,7 +677,11 @@
 				walletsViewModel.resetWithdraw();
 				alert( sprintf( wallets_ko_i18n.submit_wd, amount, symbol, address ) );
 			}
-		});
+		} );
+
+		$( 'html' ).on( 'wallets_ready', function( event, coins, nonces ) {
+			$('.dashed-slug-wallets').addClass('wallets-ready');
+		} );
 
 		// one second after doc ready, load coins and nonces, then start polling
 		setTimeout( function() {

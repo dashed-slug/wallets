@@ -1,6 +1,11 @@
 .dashed-slug-wallets {
 	padding: 1em;
 	border: 1px solid black;
+	opacity: 0.5;
+}
+
+.dashed-slug-wallets.wallets-ready {
+	opacity: 1;
 }
 
 .dashed-slug-wallets label {
