@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.5.2
+Stable tag: 3.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -307,6 +307,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.5.3 =
+- Add: Full node coin adapters now skip rewards generated from mining. PoS rewards must be skipped, PoW rewards can be included.
 
 = 3.5.2 =
 - Fix: Issue with generated rewards for PoS coins, that previously appeared as extra deposits.
@@ -882,7 +885,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.5.1 introduces the ability to hook functions to the frontend after the coin data is loaded (user request).
+Version 3.5.2 and 3.5.3 address issues with minting rewards for some PoS coins.
 
 == Donating ==
 

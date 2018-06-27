@@ -90,6 +90,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 		public function action_wallets_admin_menu() {
 			parent::action_wallets_admin_menu();
 
+			// General settings
+
+			add_settings_field(
+				"{$this->option_slug}-general-generated",
+				__( 'Receive deposits from mining', 'wallets' ),
+				array( &$this, 'settings_checkbox_cb' ),
+				$this->menu_slug,
+				"{$this->option_slug}-general",
+				array(
+					'label_for'   => "{$this->option_slug}-general-enabled",
+					'description' => __(
+						'THIS MUST BE DISABLED FOR PROOF-OF-STAKE COINS. ' .
+						'Only enable for purely Proof-of-Work coins, ' .
+						'and only if you wish users to receive mining rewards.',
+						'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-general-generated"
+			);
+
 			// RPC API
 
 			add_settings_section(
@@ -483,7 +506,16 @@ CFG;
 				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 
-			// A txid coming from the wallet corresponds to a blockchain transaction that can have potentially
+			// If mining rewards are not to be included, skip generated transactions.
+			// This is useful for PoS coins, where staking rewards must not be calculated.
+			// The admin can still choose to include generated transactions.
+			// This is useful for PoW coins if solo mining rewards are to be treated as deposits.
+
+			if ( isset( $result['generated'] ) && $result['generated'] && ! $this->get_adapter_option( 'general-generated' ) ) {
+				return;
+			}
+
+			// A txid coming from the wallet corresponds to a blockchain transaction that can potentially have
 			// a multitude of inputs and outputs. We go over each one and gather the important data to pass them to
 			// the wallets_transaction action (listened to by core).
 
