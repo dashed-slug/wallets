@@ -920,7 +920,7 @@ NOTIFICATION
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $tx_data );
 
 			$this->notify_user_by_email(
-				$tx_data->user->user_email,
+				$tx_data->user,
 				$subject,
 				$message
 			);
@@ -977,7 +977,7 @@ NOTIFICATION
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ), $tx_data );
 
 			$this->notify_user_by_email(
-				$tx_data->user->user_email,
+				$tx_data->user,
 				$subject,
 				$message
 			);
@@ -1004,7 +1004,7 @@ NOTIFICATION
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ), $tx_data );
 
 			$this->notify_user_by_email(
-				$tx_data->user->user_email,
+				$tx_data->user,
 				$subject,
 				$message
 			);
@@ -1031,7 +1031,7 @@ NOTIFICATION
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ), $tx_data );
 
 			$this->notify_user_by_email(
-				$tx_data->user->user_email,
+				$tx_data->user,
 				$subject,
 				$message
 			);
@@ -1058,7 +1058,7 @@ NOTIFICATION
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ), $tx_data );
 
 			$this->notify_user_by_email(
-				$tx_data->user->user_email,
+				$tx_data->user,
 				$subject,
 				$message
 			);
@@ -1124,9 +1124,16 @@ NOTIFICATION
 			return strtr( $string, $replace_pairs );
 		}
 
-		private function notify_user_by_email( $email, $subject, $message ) {
+		private function notify_user_by_email( $user, $subject, $message ) {
+			$disable_emails = get_user_meta( $user->ID, 'wallets_disable_emails', true );
+
+			if ( $disable_emails ) {
+				return;
+			}
+
 			$headers = array();
 
+			$email_to        = $user->user_email;
 			$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
 			$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
 
@@ -1138,14 +1145,14 @@ NOTIFICATION
 
 			try {
 				wp_mail(
-					$email,
+					$email_to,
 					$subject,
 					$message,
 					$headers
 				);
 			} catch ( Exception $e ) {
 				$this->_notices->error(
-					__( "The following error occured while sending a notification to $email: ", 'wallets' ) .
+					__( "The following error occured while sending a notification to $email_to: ", 'wallets' ) .
 					$e->getMessage()
 				);
 			}

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -307,6 +307,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.5.2 =
+- Fix: Issue with generated rewards for PoS coins, that previously appeared as extra deposits.
+- Add: Exchange rates provider for cryptocompare.com
+- Change: Default exchange rates providers after first installing the plugin are fixer and cryptocompare.
+- Add: Email notifications can be turned off for individual users via their profile admin page.
+- Fix: User profile pages only display wallets-related section for users with `has_wallets` capability.
+- Change: QR-code URIs for most coins only include address string and no name. This is safer. Coins that require a full URI still have it.
 
 = 3.5.1 =
 - Add: Can now hook to frontend events for running JavaScript after coin data is loaded. See documentation for details.

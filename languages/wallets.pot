@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-06-22 07:53:23+00:00\n"
+"POT-Creation-Date: 2018-06-27 08:39:37+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -283,8 +283,18 @@ msgid ""
 "version 3.0.0</a>."
 msgstr ""
 
-#: includes/admin-user.php:37
+#: includes/admin-user.php:41
 msgid "Base currency"
+msgstr ""
+
+#: includes/admin-user.php:77
+msgid "Disable email notifications"
+msgstr ""
+
+#: includes/admin-user.php:89
+msgid ""
+"If this is checked, this user will NOT receive transaction notifications "
+"via email."
 msgstr ""
 
 #: includes/caps.php:26
@@ -497,8 +507,8 @@ msgid ""
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:301 includes/coin-adapter-rpc.php:314
-#: includes/coin-adapter-rpc.php:483 includes/coin-adapter-rpc.php:580
-#: includes/coin-adapter-rpc.php:593 includes/coin-adapter-rpc.php:610
+#: includes/coin-adapter-rpc.php:483 includes/coin-adapter-rpc.php:585
+#: includes/coin-adapter-rpc.php:598 includes/coin-adapter-rpc.php:615
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -514,7 +524,7 @@ msgstr ""
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:534
+#: includes/coin-adapter-rpc.php:539
 msgid "%1$s::%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 

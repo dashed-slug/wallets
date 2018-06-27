@@ -488,39 +488,44 @@ CFG;
 			// the wallets_transaction action (listened to by core).
 
 			if ( isset( $result['details'] ) && is_array( $result['details'] ) && count( $result['details'] ) ) {
+				$tx_sums = array();
 
 				foreach ( $result['details'] as $row ) {
-					$tx                = new stdClass();
-					$tx->symbol        = $this->get_symbol();
-					$tx->txid          = $txid;
-					$tx->address       = $row['address'];
-					$tx->amount        = $row['amount'];
-					$tx->confirmations = $result['confirmations'];
-					$tx->created_time  = $result['time'];
+					if ( isset( $row['address'] ) ) {
+						if ( ! isset( $tx_sums[ $row['address'] ] ) ) {
+							$tx                = new stdClass();
+							$tx->symbol        = $this->get_symbol();
+							$tx->txid          = $txid;
+							$tx->address       = $row['address'];
+							$tx->amount        = 0;
+							$tx->confirmations = $result['confirmations'];
+							$tx->created_time  = $result['time'];
 
-					if ( isset( $result['comment'] ) && is_string( $result['comment'] ) ) {
-						$tx->comment = $result['comment'];
-					} elseif ( isset( $result['label'] ) && is_string( $result['label'] ) ) {
-						$tx->comment = $row['label'];
+							if ( isset( $result['comment'] ) && is_string( $result['comment'] ) ) {
+								$tx->comment = $result['comment'];
+							} elseif ( isset( $result['label'] ) && is_string( $result['label'] ) ) {
+								$tx->comment = $row['label'];
+							}
+
+							if ( isset( $row['fee'] ) ) {
+								$tx->fee = $row['fee'];
+							}
+
+							$tx_sums[ $row['address'] ] = $tx;
+						}
+
+						$tx_sums[ $row['address'] ]->amount += $row['amount'];
+
+						$tx_sums[ $row['address'] ]->category = $tx_sums[ $row['address'] ]->amount > 0 ? 'deposit' : 'withdraw';
+					} // end if isset $row['address']
+				} // end foreach $result['details']
+
+				foreach ( $tx_sums as $tx ) {
+					if ( floatval( number_format( $tx->amount, 8 ) ) ) {
+						do_action( 'wallets_transaction', $tx );
 					}
-
-					if ( isset( $row['fee'] ) ) {
-						$tx->fee = $row['fee'];
-					}
-
-					switch ( $row['category'] ) {
-						case 'send':
-							$tx->category = 'withdraw';
-							break;
-						case 'receive':
-							$tx->category = 'deposit';
-							break;
-						default:
-							return;
-					}
-
-					do_action( 'wallets_transaction', $tx );
 				}
+
 			}
 		} // function wallet_notify()
 

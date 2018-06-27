@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'fixer', 'coinmarketcap', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
+		private static $providers = array( 'fixer', 'coinmarketcap', 'cryptocompare', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
 		private static $rates     = array();
 		private static $cryptos   = array();
 		private static $fiats     = array();
@@ -527,7 +527,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_providers', array( 'fixer', 'coinmarketcap' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_providers', array( 'fixer', 'cryptocompare' ) );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry', 5 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled', '' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip', '127.0.0.1' );
@@ -655,6 +655,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					}
 				}
 			}
+			return $cryptos;
+		}
+
+		public static function filter_rates_cryptos_cryptocompare( $cryptos ) {
+			$url  = 'https://min-api.cryptocompare.com/data/all/coinlist';
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_object( $obj ) && isset( $obj->Response ) && 'Success' == $obj->Response ) {
+					return array_merge( $cryptos, array_keys( get_object_vars( $obj->Data ) ) );
+				}
+			}
+
 			return $cryptos;
 		}
 
@@ -819,7 +832,33 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $rates;
 		}
 
+		public static function filter_rates_cryptocompare( $rates ) {
+			$adapters       = apply_filters( 'wallets_api_adapters', array() );
+			$symbols_crypto = array_intersect( self::$cryptos, array_keys( $adapters ) );
+			$fiat_symbol    = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+			$symbols_fiats  = array_unique( array_merge( array( $fiat_symbol ), array( 'BTC','USD','EUR' ) ) );
 
+			$url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=' .
+					implode(',', $symbols_crypto ) .
+					'&tsyms=' .
+					implode(',', $symbols_fiats );
+
+
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_object( $obj ) ) {
+					foreach ( $obj as $quote => $rate_data ) {
+						foreach ( $rate_data as $base => $rate ) {
+							if ( $base != $quote ) {
+								$rates[ "{$base}_{$quote}" ] = $rate;
+							}
+						}
+					}
+				}
+			}
+			return $rates;
+		}
 
 		public static function filter_rates_bittrex( $rates ) {
 

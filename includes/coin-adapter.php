@@ -507,7 +507,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			if ( is_array( $address ) ) {
 				$address = $address[0];
 			}
-			return strtolower( $this->get_name() ) . ':' . $address;
+			return $address;
 		}
 
 

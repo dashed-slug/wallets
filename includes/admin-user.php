@@ -20,13 +20,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 		}
 
 		public function action_user_profile( $profileuser ) {
-			$dsw = Dashed_Slug_Wallets::get_instance();
+			if ( ! user_can( $profileuser->ID, 'has_wallets' ) ) {
+				return;
+			}
 
-			$fiat_symbol = get_the_author_meta( 'wallets_base_symbol', $profileuser->ID, true );
+			$fiat_symbol = get_user_meta( $profileuser->ID, 'wallets_base_symbol', true );
 			if ( ! $fiat_symbol ) {
 				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			}
 			$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array() );
+
+			$disable_emails = get_user_meta( $profileuser->ID, 'wallets_disable_emails', true );
 
 			?><h2><?php echo esc_html( 'Bitcoin and Altcoin Wallets', 'wallets' ); ?></h2>
 
@@ -58,6 +62,33 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 								esc_html_e(
 									'Cryptocurrency amounts will also be displayed as the ' .
 									'equivalent amount in this currency.', 'wallets'
+								);
+							?>
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th>
+							<label for="wallets_disable_emails"><?php esc_html_e( 'Disable email notifications', 'wallets' ); ?></label>
+						</th>
+
+						<td>
+							<input
+								type="checkbox"
+								id="wallets_disable_emails"
+								name="wallets_disable_emails"
+								<?php checked( $disable_emails ); ?>>
+
+							<p class="description">
+							<?php
+								esc_html_e(
+									'If this is checked, this user will NOT receive transaction notifications via email.',
+									'wallets'
 								);
 							?>
 							</p>
@@ -137,7 +168,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 		function update_extra_profile_fields( $user_id ) {
 			if ( current_user_can( 'edit_user', $user_id ) ) {
-				update_user_meta( $user_id, 'wallets_base_symbol', $_POST['wallets_base_symbol'] );
+				if ( isset( $_POST['wallets_base_symbol'] ) && is_string( $_POST['wallets_base_symbol'] ) ) {
+					update_user_meta( $user_id, 'wallets_base_symbol', $_POST['wallets_base_symbol'] );
+				}
+				update_user_meta( $user_id, 'wallets_disable_emails', isset( $_POST['wallets_disable_emails'] ) );
 			}
 		}
 
