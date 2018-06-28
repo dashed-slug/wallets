@@ -99,7 +99,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				$this->menu_slug,
 				"{$this->option_slug}-general",
 				array(
-					'label_for'   => "{$this->option_slug}-general-enabled",
+					'label_for'   => "{$this->option_slug}-general-generated",
 					'description' => __(
 						'THIS MUST BE DISABLED FOR PROOF-OF-STAKE COINS. ' .
 						'Only enable for purely Proof-of-Work coins, ' .
@@ -324,6 +324,33 @@ CFG;
 				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 			}
 			return floatval( $result );
+		}
+
+		public function get_unavailable_balance() {
+			if ( ! $this->get_adapter_option( 'general-enabled' ) ) {
+				throw new Exception( 'Adapter is disabled' );
+			}
+
+			$result = $this->rpc->getinfo();
+
+			if ( false === $result ) {
+
+				$result = $this->rpc->getwalletinfo();
+
+				if ( false == $result ) {
+					throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				}
+			}
+
+			$unavailable_balance = 0;
+
+			foreach ( array( 'newmint', 'stake', 'unconfirmed_balance', 'immature_balance' ) as $field ) {
+				if ( isset( $result[ $field ] ) ) {
+					$unavailable_balance += floatval( $result[ $field ] );
+				}
+			}
+
+			return floatval( $unavailable_balance );
 		}
 
 		public function get_new_address() {

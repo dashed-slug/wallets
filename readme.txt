@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 3.5.3
+Stable tag: 3.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -307,6 +307,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.5.4 =
+- Add: Exchange rates provider for coingecko.com
+- Add: Coin adapters list displays wallet balance unavailable for withdrawal next to available wallet balance.
+- Improve: Successful cold storage withdrawals now report TXID. Message includes links for address and TXID to relevant blockexplorer.
+- Fix: Bug in checkbox under full node coin adapter settings about skipping rewards generated from mining (introduced in 3.5.3).
 
 = 3.5.3 =
 - Add: Full node coin adapters now skip rewards generated from mining. PoS rewards must be skipped, PoW rewards can be included.
@@ -885,7 +891,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.5.2 and 3.5.3 address issues with minting rewards for some PoS coins.
+Version 3.5.4 contains minor bugfixes and improvements.
 
 == Donating ==
 

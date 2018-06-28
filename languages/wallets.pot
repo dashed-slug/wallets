@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.3\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-06-27 13:46:42+00:00\n"
+"POT-Creation-Date: 2018-06-28 11:02:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,65 +25,69 @@ msgstr ""
 msgid "Wallet Balance"
 msgstr ""
 
-#: includes/adapters-list-table.php:22 includes/cold-storage.php:154
+#: includes/adapters-list-table.php:22
+msgid "Wallet Unavailable Balance"
+msgstr ""
+
+#: includes/adapters-list-table.php:23 includes/cold-storage.php:158
 msgid "Sum of User Balances"
 msgstr ""
 
-#: includes/adapters-list-table.php:23
+#: includes/adapters-list-table.php:24
 msgid "Adapter Status"
 msgstr ""
 
-#: includes/adapters-list-table.php:24
+#: includes/adapters-list-table.php:25
 msgid "Withdrawals lock"
 msgstr ""
 
-#: includes/adapters-list-table.php:25
+#: includes/adapters-list-table.php:26
 msgid "Pending withdrawals"
 msgstr ""
 
-#: includes/adapters-list-table.php:91
+#: includes/adapters-list-table.php:93
 msgid "Responding"
 msgstr ""
 
-#: includes/adapters-list-table.php:93
+#: includes/adapters-list-table.php:96
 msgid "n/a"
 msgstr ""
 
-#: includes/adapters-list-table.php:94
+#: includes/adapters-list-table.php:97
 msgid "Not Responding: %s"
 msgstr ""
 
-#: includes/adapters-list-table.php:174 includes/coin-adapter.php:321
+#: includes/adapters-list-table.php:214 includes/coin-adapter.php:321
 msgid "Wallet unlocked. Withdrawals will be processed."
 msgstr ""
 
-#: includes/adapters-list-table.php:176 includes/coin-adapter.php:323
+#: includes/adapters-list-table.php:216 includes/coin-adapter.php:323
 msgid "Wallet locked. Withdrawals will NOT be processed."
 msgstr ""
 
-#: includes/adapters-list-table.php:192
+#: includes/adapters-list-table.php:232
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: includes/adapters-list-table.php:193
+#: includes/adapters-list-table.php:233
 msgid "Settings"
 msgstr ""
 
-#: includes/adapters-list-table.php:204
+#: includes/adapters-list-table.php:244
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: includes/adapters-list-table.php:205
+#: includes/adapters-list-table.php:245
 msgid "Export"
 msgstr ""
 
-#: includes/adapters-list-table.php:219
+#: includes/adapters-list-table.php:259
 msgid ""
 "Creates new deposit addresses. Use this after switching to a different "
 "adapter."
 msgstr ""
 
-#: includes/adapters-list-table.php:220
+#: includes/adapters-list-table.php:260
 msgid "Renew deposit addresses"
 msgstr ""
 
@@ -101,7 +105,7 @@ msgstr ""
 #: includes/coin-adapter-bitcoin.php:58 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:279 includes/coin-adapter.php:228
 #: includes/coin-adapter.php:237 includes/coin-adapter.php:260
-#: includes/coin-adapter.php:336 includes/cold-storage.php:136
+#: includes/coin-adapter.php:336 includes/cold-storage.php:140
 #: includes/confirmations.php:356 includes/cron.php:525
 #: includes/frontend-settings.php:194 includes/notifications.php:696
 #: includes/rates.php:294 includes/transactions.php:91
@@ -113,7 +117,7 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:153 includes/adapters-list.php:172
-#: includes/caps.php:92 includes/cold-storage.php:115 includes/json-api.php:416
+#: includes/caps.php:92 includes/cold-storage.php:119 includes/json-api.php:416
 #: includes/json-api.php:459 includes/json-api.php:712
 #: includes/json-api.php:755 includes/transactions.php:936
 #: includes/transactions.php:1127 includes/transactions.php:1149
@@ -154,8 +158,8 @@ msgstr ""
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: includes/admin-menu.php:92 includes/cold-storage.php:354
-#: includes/cold-storage.php:369 includes/rates.php:380
+#: includes/admin-menu.php:92 includes/cold-storage.php:358
+#: includes/cold-storage.php:373 includes/rates.php:380
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -510,25 +514,26 @@ msgid ""
 "of the %2$s daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:324 includes/coin-adapter-rpc.php:337
-#: includes/coin-adapter-rpc.php:506 includes/coin-adapter-rpc.php:617
-#: includes/coin-adapter-rpc.php:630 includes/coin-adapter-rpc.php:647
+#: includes/coin-adapter-rpc.php:324 includes/coin-adapter-rpc.php:341
+#: includes/coin-adapter-rpc.php:364 includes/coin-adapter-rpc.php:533
+#: includes/coin-adapter-rpc.php:644 includes/coin-adapter-rpc.php:657
+#: includes/coin-adapter-rpc.php:674
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:347
+#: includes/coin-adapter-rpc.php:374
 msgid "%1$s->%2$s() failed to withdraw because the adapter is disabled."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:357
+#: includes/coin-adapter-rpc.php:384
 msgid "%1$s->%2$s() failed to withdraw because the wallet is locked."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:374 includes/coin-adapter-rpc.php:436
+#: includes/coin-adapter-rpc.php:401 includes/coin-adapter-rpc.php:463
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:571
+#: includes/coin-adapter-rpc.php:598
 msgid "%1$s::%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -636,19 +641,25 @@ msgstr ""
 msgid "Cannot withdraw to cold storage: %s"
 msgstr ""
 
-#: includes/cold-storage.php:93
-msgid "Sent %1$s to cold storage address %2$s"
+#: includes/cold-storage.php:96
+msgid "Withdrawal to cold storage"
 msgstr ""
 
-#: includes/cold-storage.php:109
+#: includes/cold-storage.php:100
+msgid ""
+"Sent <code>%1$s</code> to cold storage address <a href=\"%4$s\">%2$s</a>. "
+"TXID: <a href =\"%5$s\">%3$s</a>."
+msgstr ""
+
+#: includes/cold-storage.php:113
 msgid "Failed to withdraw to cold storage: %s"
 msgstr ""
 
-#: includes/cold-storage.php:143
+#: includes/cold-storage.php:147
 msgid "Bitcoin and Altcoin Wallets: Transfer to and from cold storage"
 msgstr ""
 
-#: includes/cold-storage.php:145
+#: includes/cold-storage.php:149
 msgid ""
 "<a href=\"https://en.bitcoin.it/wiki/Cold_storage\" target=\"_blank\" "
 "rel=\"noopener noreferrer\">Cold storage</a> lets you remove part of your "
@@ -656,85 +667,85 @@ msgid ""
 "cyber-attack. "
 msgstr ""
 
-#: includes/cold-storage.php:146
+#: includes/cold-storage.php:150
 msgid ""
 "Any funds you withdraw or deposit here will affect your total wallet "
 "balance but not any user balances. "
 msgstr ""
 
-#: includes/cold-storage.php:149
+#: includes/cold-storage.php:153
 msgid "Cold storage state for your online wallets:"
 msgstr ""
 
-#: includes/cold-storage.php:152
+#: includes/cold-storage.php:156
 msgid "Adapter"
 msgstr ""
 
-#: includes/cold-storage.php:153
+#: includes/cold-storage.php:157
 msgid "Currency"
 msgstr ""
 
-#: includes/cold-storage.php:155
+#: includes/cold-storage.php:159
 msgid "Online Wallet Balance"
 msgstr ""
 
-#: includes/cold-storage.php:156
+#: includes/cold-storage.php:160
 msgid "Actions"
 msgstr ""
 
-#: includes/cold-storage.php:215
+#: includes/cold-storage.php:219
 msgid "Deposit"
 msgstr ""
 
-#: includes/cold-storage.php:223
+#: includes/cold-storage.php:227
 msgid "Withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:251
+#: includes/cold-storage.php:255
 msgid "Withdraw %s to cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:274
+#: includes/cold-storage.php:278
 msgid "Amount"
 msgstr ""
 
-#: includes/cold-storage.php:282
+#: includes/cold-storage.php:286
 msgid "External address"
 msgstr ""
 
-#: includes/cold-storage.php:288
+#: includes/cold-storage.php:292
 msgid "Withdraw to storage"
 msgstr ""
 
-#: includes/cold-storage.php:300
+#: includes/cold-storage.php:304
 msgid "Deposit %s from cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:349
+#: includes/cold-storage.php:353
 msgid "Need a hardware wallet?"
 msgstr ""
 
-#: includes/cold-storage.php:382
+#: includes/cold-storage.php:386
 msgid "You are responsible for the money people deposit on your site. "
 msgstr ""
 
-#: includes/cold-storage.php:383
+#: includes/cold-storage.php:387
 msgid "Get a hardware wallet and sleep easier!"
 msgstr ""
 
-#: includes/cold-storage.php:420
+#: includes/cold-storage.php:424
 msgid "To have <code>%1$d%%</code> online (<code>%2$s</code>), %3$s %4$s."
 msgstr ""
 
-#: includes/cold-storage.php:423
+#: includes/cold-storage.php:427
 msgid "deposit"
 msgstr ""
 
-#: includes/cold-storage.php:423
+#: includes/cold-storage.php:427
 msgid "withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:437
+#: includes/cold-storage.php:441
 msgid "You currently have <code>%1$01.2f%%</code> online (<code>%2$s</code>)."
 msgstr ""
 

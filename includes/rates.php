@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'fixer', 'coinmarketcap', 'cryptocompare', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
+		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'cryptocompare', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
 		private static $rates     = array();
 		private static $cryptos   = array();
 		private static $fiats     = array();
@@ -789,6 +789,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $cryptos;
 		}
 
+		public static function filter_rates_cryptos_coingecko( $cryptos ) {
+			$url  = 'https://api.coingecko.com/api/v3/coins/list';
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_array( $obj ) ) {
+					foreach ( $obj as $currency ) {
+						$cryptos[] = strtoupper( $currency->symbol );
+					}
+				}
+			}
+			return $cryptos;
+		}
+
 		// filter that pulls fiat currency symbols
 
 		public static function filter_rates_fixer( $rates ) {
@@ -1006,6 +1020,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $rates;
 		}
 
+		public static function filter_rates_coingecko( $rates ) {
+			$url  = 'https://api.coingecko.com/api/v3/exchange_rates';
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_object( $obj ) ) {
+					foreach ( $obj->rates as $symbol => $market ) {
+						if ( isset( $market->value ) && $market->value ) {
+							$m           = strtoupper( $symbol ) . '_BTC';
+							$rates[ $m ] = $market->value;
+						}
+					}
+				}
+			}
+
+			$url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc';
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_array( $obj ) ) {
+					foreach ( $obj as $market ) {
+						$m           = 'BTC_' . strtoupper( $market->symbol );
+						$rates[ $m ] = $market->current_price;
+					}
+				}
+			}
+			return $rates;
+		}
 
 		// API
 

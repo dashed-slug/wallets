@@ -16,13 +16,14 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
-			'adapter_name' => esc_html__( 'Adapter name', 'wallets' ),
-			'coin'         => esc_html__( 'Coin', 'wallets' ),
-			'balance'      => esc_html__( 'Wallet Balance', 'wallets' ),
-			'balances'     => esc_html__( 'Sum of User Balances', 'wallets' ),
-			'status'       => esc_html__( 'Adapter Status', 'wallets' ),
-			'locked'       => esc_html__( 'Withdrawals lock', 'wallets' ),
-			'pending_wds'  => esc_html__( 'Pending withdrawals', 'wallets' ),
+			'adapter_name'             => esc_html__( 'Adapter name', 'wallets' ),
+			'coin'                     => esc_html__( 'Coin', 'wallets' ),
+			'balance'                  => esc_html__( 'Wallet Balance', 'wallets' ),
+			'unavailable_balance'      => esc_html__( 'Wallet Unavailable Balance', 'wallets' ),
+			'balances'                 => esc_html__( 'Sum of User Balances', 'wallets' ),
+			'status'                   => esc_html__( 'Adapter Status', 'wallets' ),
+			'locked'                   => esc_html__( 'Withdrawals lock', 'wallets' ),
+			'pending_wds'              => esc_html__( 'Pending withdrawals', 'wallets' ),
 		);
 	}
 
@@ -32,11 +33,12 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 	public function get_sortable_columns() {
 		return array(
-			'adapter_name' => array( 'name', true ),
-			'coin'         => array( 'name', false ),
-			'balance'      => array( 'balance', false ),
-			'balances'     => array( 'balances', false ),
-			'pending_wds'  => array( 'pending_wds', false ),
+			'adapter_name'             => array( 'name', true ),
+			'coin'                     => array( 'name', false ),
+			'balance'                  => array( 'balance', false ),
+			'unavailable_balance'      => array( 'unavailable_balance', false ),
+			'balances'                 => array( 'balances', false ),
+			'pending_wds'              => array( 'pending_wds', false ),
 		);
 	}
 
@@ -87,25 +89,33 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 		foreach ( $adapters as $symbol => &$adapter ) {
 
 			try {
-				$balance = $adapter->get_balance();
-				$status  = esc_html__( 'Responding', 'wallets' );
+				$balance             = $adapter->get_balance();
+				$status              = esc_html__( 'Responding', 'wallets' );
+
 			} catch ( Exception $e ) {
 				$inaccounts = $withdrawable = $balance = esc_html__( 'n/a', 'wallets' );
 				$status     = sprintf( esc_html__( 'Not Responding: %s', 'wallets' ), $e->getMessage() );
 			}
 
+			try {
+				$unavailable_balance = $adapter->get_unavailable_balance();
+			} catch ( Exception $e ) {
+				$unavailable_balance = 0;
+			}
+
 			$format = $adapter->get_sprintf();
 
 			$new_row = array(
-				'sprintf'      => $format,
-				'icon'         => $adapter->get_icon_url(),
-				'symbol'       => $adapter->get_symbol(),
-				'name'         => $adapter->get_name(),
-				'adapter_name' => $adapter->get_adapter_name(),
-				'balance'      => $balance,
-				'status'       => $status,
-				'settings_url' => $adapter->get_settings_url(),
-				'unlocked'     => $adapter->is_unlocked(),
+				'sprintf'             => $format,
+				'icon'                => $adapter->get_icon_url(),
+				'symbol'              => $adapter->get_symbol(),
+				'name'                => $adapter->get_name(),
+				'adapter_name'        => $adapter->get_adapter_name(),
+				'balance'             => $balance,
+				'unavailable_balance' => $unavailable_balance,
+				'status'              => $status,
+				'settings_url'        => $adapter->get_settings_url(),
+				'unlocked'            => $adapter->is_unlocked(),
 			);
 
 			if ( isset( $balances[ $symbol ] ) ) {
@@ -133,7 +143,6 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			case 'pending_wds':
 				return esc_html( $item[ $column_name ] );
 			case 'balance':
-			case 'balances':
 				return
 					sprintf( $item['sprintf'], $item[ $column_name ] );
 			default:
@@ -148,15 +157,46 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 		return $actions;
 	}
 
+	public function column_unavailable_balance( $item ) {
+		if ( ! isset( $item['unavailable_balance'] ) || ! $item['unavailable_balance'] ) {
+			return '&mdash;';
+		}
+
+		$html = '<span>' . sprintf( $item['sprintf'], $item['unavailable_balance'] ) . '</span>';
+
+		if ( 0 == $item['balance'] && $item['unavailable_balance'] > 0 ) {
+			$html .= sprintf(
+				'<p style="color:red;">%s</p>',
+				__(
+					'It looks like all of the balance on this coin is currently unavailable for withdrawals. ' .
+					'If this is a Proof-of-Stake wallet, consider using the <code>reservebalance=</code> argument ' .
+					'in your .conf file. Consult the wallet\'s documentation for details.',
+					'wallets'
+				)
+			);
+		}
+
+		return $html;
+	}
+
 	public function column_balances( $item ) {
 		if ( ! isset( $item['balances'] ) ) {
 			return '&mdash;';
 		}
 
-		return
-			( $item['balance'] < $item['balances'] ? '<span style="color:red;">' : '<span>' ) .
-			sprintf( $item['sprintf'], $item['balances'] ) .
-			'</span>';
+		if ( $item['balance'] + $item['unavailable_balance'] < $item['balances'] ) {
+
+			return sprintf(
+				"<span style=\"color:red;\">$item[sprintf]</span>",
+				$item['balances']
+			);
+
+		} else {
+			return sprintf(
+				"<span>$item[sprintf]</span>",
+				$item['balances']
+			);
+		}
 	}
 
 	public function column_coin( $item ) {

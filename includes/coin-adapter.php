@@ -646,19 +646,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			return floatval( $this->get_adapter_option( 'fees-move-proportional' ) );
 		}
 
-
 		/**
-		 * Total wallet balance.
+		 * Total wallet balance available for spending.
 		 *
-		 * This is the total amount held in the wallet of this coin.
+		 * This is the total amount held in the wallet of this coin. Balance reserved due to staking in PoS coins
+		 * is not included in this call.
 		 *
 		 * @api
-		 * @uses get_minconf()
-		 * @return number Total amount of coins held in the wallet.
+		 * @return number Total amount of coins held in the wallet that are available for spending.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
-
 		public abstract function get_balance();
+
+		/**
+		 * Total balance that is yet unavailable due to staking.
+		 *
+		 * For Proof-of-Stake coins, this is the balance that is currently unavailable due to staking.
+		 * This includes coins that are currently being staked as well as coins that are newly minted and
+		 * not yet mature enough for spending.
+		 *
+		 * @api
+		 * @return number Total amount of coins held in the wallet that are not yet available for spending.
+		 * @throws Exception If communication with the wallet's API failed for some reason.
+		 */
+		public function get_unavailable_balance() {
+			return 0;
+		}
 
 		/**
 		 * Scrapes transaction IDs and passes them to the wallets core for recording in the transactions DB table.

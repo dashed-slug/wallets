@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.5.3.min.js' ) ) {
-				$script = 'wallets-cold-storage-3.5.3.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.5.4.min.js' ) ) {
+				$script = 'wallets-cold-storage-3.5.4.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.5.3',
+				'3.5.4',
 				true
 			);
 		}
@@ -89,19 +89,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								return;
 							}
 
-							$msg = sprintf(
-								__( 'Sent %1$s to cold storage address %2$s', 'wallets' ),
-								sprintf( $adapter->get_sprintf(), $cold_storage_amount ),
-								$cold_storage_address
-							);
-
 							try {
-								$adapter->do_withdraw(
+								$txid = $adapter->do_withdraw(
 									$cold_storage_address,
 									$cold_storage_amount,
-									$msg
+									__( 'Withdrawal to cold storage', 'wallets' )
 								);
-								error_log( $msg );
+
+								$msg = sprintf(
+									__( 'Sent <code>%1$s</code> to cold storage address <a href="%4$s">%2$s</a>. TXID: <a href ="%5$s">%3$s</a>.', 'wallets' ),
+									sprintf( $adapter->get_sprintf(), $cold_storage_amount ),
+									$cold_storage_address,
+									$txid,
+									sprintf( $adapter->explorer_uri_address( null ), $cold_storage_address ),
+									sprintf( $adapter->explorer_uri_transaction( null ), $txid )
+								);
+
+								error_log( strip_tags( $msg ) );
 
 								$notices->info( $msg );
 
