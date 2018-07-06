@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.6
+Tested up to: 4.9.7
 Requires PHP: 5.6
-Stable tag: 3.5.4
+Stable tag: 3.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,9 +59,8 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 
 - [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
 - [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
-- [Feathercoin adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/feathercoin-adapter-extension/)
+- [Full Node Multi Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/)
 - [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/)
-- [Gridcoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/gridcoin-adapter-extension/)
 
 ...plus more!
 
@@ -71,12 +70,14 @@ Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited acces
 
 Here are all the currently available premium app extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
 
+- [Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/exchange-extension/)
+- [Airdrop extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension/)
+- [Faucet extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/)
 - [ShapeShift Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/)
-- [Author Payroll extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension/)
 - [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/)
 - [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
 - [Events Manager Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/)
-- [Faucet extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/)
+- [Author Payroll extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension/)
 
 Premium members also get auto-updates for any installed extensions. [Instructions for how to set up auto-updates are here](https://www.dashed-slug.net/dashed-slug/extension-updates-activation/).
 
@@ -307,6 +308,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.5.5 =
+- Add: User can explicitly select default fiat currency to be "none" or "site default".
+- Add: Admin can explicitly select default fiat currency to be "none".
+- Add: If effective fiat currency is "none", make sure that no fiat amounts are displayed.
+- Fix: QR code in the `[wallets_deposit]` shortcode no longer exceeds boundaries if drawing area is small.
+- Fix: Notification messages no longer display coin symbols twice next to transacted amounts.
+- Add: Plugin "About" section and `readme.txt` now know about the Exchange extension.
 
 = 3.5.4 =
 - Add: Exchange rates provider for coingecko.com
@@ -891,7 +900,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.5.4 contains minor bugfixes and improvements.
+Version 3.5.5 contains minor bugfixes and improvements.
 
 == Donating ==
 

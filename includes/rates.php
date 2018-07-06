@@ -475,6 +475,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>">
 
+				<option
+					<?php if ( 'none' == $fiat_symbol ): ?>
+					selected="selected"
+					<?php endif; ?>
+					value="none">
+					&mdash;
+				</option>
+
 				<?php foreach ( $fiats as $fiat ) : ?>
 				<option
 					<?php if ( $fiat == $fiat_symbol ) : ?>

@@ -98,8 +98,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 <<<NOTIFICATION
 ###ACCOUNT###,
 
-You have withdrawn ###AMOUNT### ###SYMBOL### to address ###ADDRESS###.
+You have withdrawn ###AMOUNT### to address ###ADDRESS###.
 
+Coin symbol: ###SYMBOL###
 Fees paid: ###FEE###
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
@@ -119,10 +120,11 @@ NOTIFICATION
 
 ###ACCOUNT###,
 
-You have attempted to withdraw ###AMOUNT### ###SYMBOL### to address ###ADDRESS###.
+You have attempted to withdraw ###AMOUNT### to address ###ADDRESS###.
 
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
+Coin symbol: ###SYMBOL###
 Last error message: ###LAST_ERROR###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -141,8 +143,9 @@ NOTIFICATION
 
 ###ACCOUNT###,
 
-You have sent ###AMOUNT### ###SYMBOL### from your account to the ###OTHER_ACCOUNT### account.
+You have sent ###AMOUNT### from your account to the ###OTHER_ACCOUNT### account.
 
+Coin symbol: ###SYMBOL###
 Fees paid: ###FEE###
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
@@ -162,10 +165,11 @@ NOTIFICATION
 
 ###ACCOUNT###,
 
-You have attempted to send ###AMOUNT### ###SYMBOL### from your account to the ###OTHER_ACCOUNT### account.
+You have attempted to send ###AMOUNT### from your account to the ###OTHER_ACCOUNT### account.
 
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
+Coin symbol: ###SYMBOL###
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -184,8 +188,9 @@ NOTIFICATION
 
 ###ACCOUNT###,
 
-You have received ###AMOUNT### ###SYMBOL### from ###OTHER_ACCOUNT###.
+You have received ###AMOUNT### from ###OTHER_ACCOUNT###.
 
+Coin symbol: ###SYMBOL###
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -204,10 +209,11 @@ NOTIFICATION
 
 ###ACCOUNT###,
 
-You have deposited ###AMOUNT### ###SYMBOL### from address ###ADDRESS###.
+You have deposited ###AMOUNT### from address ###ADDRESS###.
 
 Please note that the funds may not be yet available to you before the required amount of network confirmations is reached.
 
+Coin symbol: ###SYMBOL###
 Transaction ID: ###TXID###
 Transaction seen at: ###CREATED_TIME_LOCAL###
 Extra transaction info (optional): ###EXTRA###

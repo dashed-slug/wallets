@@ -1,5 +1,13 @@
 [
 	{
+		"name": "Exchange extension",
+		"description": "Allows your users to enter market orders and exchange cryptocurrencies.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/exchange-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/exchange-extension-support",
+		"slug": "wallets-exchange"
+	},
+
+	{
 		"name": "Airdrop extension",
 		"description": "Distribute coins to your users by performing airdrops.",
 		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension",

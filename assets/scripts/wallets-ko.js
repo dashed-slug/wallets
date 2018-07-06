@@ -189,19 +189,26 @@
 
 			self.updateQrCode = function() {
 				if ( 'undefined' !== typeof( self.coins ) ) {
-					var $qrnode = $( '.dashed-slug-wallets.deposit .qrcode' );
-					$qrnode.empty();
+					var $deposits = $( '.dashed-slug-wallets.deposit' );
+					$('.qrcode', $deposits ).empty();
 
 					var coins = self.coins();
 					var coin = self.selectedCoin();
 					if ( 'object' == typeof( coins[ coin ] ) ) {
 						if ( coins[ coin ].deposit_address_qrcode_uri ) {
-							$qrnode.qrcode( {
-								text: coins[ coin ].deposit_address_qrcode_uri
+							$deposits.each( function( n, el ) {
+								var $deposit = $( el );
+								var $qrcode = $( '.qrcode', $deposit );
+								if ( $qrcode.length ) {
+									var width = $qrcode.width();
+									$qrcode.qrcode( {
+										width: width,
+										height: width,
+										text: coins[ coin ].deposit_address_qrcode_uri
+									} );
+								}
 							} );
 						}
-					} else {
-						$qrnode.empty();
 					}
 				}
 			};

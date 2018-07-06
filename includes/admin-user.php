@@ -24,10 +24,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 				return;
 			}
 
+			$default_fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			$fiat_symbol = get_user_meta( $profileuser->ID, 'wallets_base_symbol', true );
-			if ( ! $fiat_symbol ) {
-				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
-			}
 			$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array() );
 
 			$disable_emails = get_user_meta( $profileuser->ID, 'wallets_disable_emails', true );
@@ -45,6 +43,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 							<select
 								id="wallets_fiat_symbol"
 								name="wallets_base_symbol">
+
+								<option
+									<?php if ( 'none' == $fiat_symbol ): ?>
+									selected="selected"
+									<?php endif; ?>
+									value="none">
+									<?php
+										esc_html_e( '(none)', 'wallets' );
+									?>
+								</option>
+
+								<option
+									<?php if ( ! $fiat_symbol ): ?>
+									selected="selected"
+									<?php endif; ?>
+									value="">
+									<?php
+										echo sprintf(
+											esc_html( 'Site default (%s)', 'wallets' ),
+											$default_fiat_symbol
+										);
+									?>
+								</option>
+
 								<?php foreach ( $fiats as $fiat ) : ?>
 									<option
 										<?php

@@ -38,11 +38,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 
 ###ACCOUNT###,
 
-You have requested to withdraw ###AMOUNT### ###SYMBOL### to address ###ADDRESS###.
+You have requested to withdraw ###AMOUNT### to address ###ADDRESS###.
 
 If you want the withdrawal to proceed, please click on this link to confirm:
 ###LINK###
 
+Coin symbol: ###SYMBOL###
 Fees to be paid: ###FEE###
 Transacton requested at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -65,11 +66,12 @@ EMAIL
 
 ###ACCOUNT###,
 
-You have requested to send ###AMOUNT### ###SYMBOL### from your account to user ###OTHER_ACCOUNT###.
+You have requested to send ###AMOUNT### from your account to user ###OTHER_ACCOUNT###.
 
 If you want the transaction to proceed, please click on this link to confirm:
 ###LINK###
 
+Coin symbol: ###SYMBOL###
 Fees to be paid: ###FEE###
 Transaction ID: ###TXID###
 Transacton created at: ###CREATED_TIME_LOCAL###
