@@ -318,12 +318,20 @@ CFG;
 				throw new Exception( 'Adapter is disabled' );
 			}
 
-			$result = $this->rpc->getbalance( '*', $this->get_minconf() );
+			$symbol = $this->get_symbol();
 
+			$result = Dashed_Slug_Wallets::get_transient( "wallets_get_balance_$symbol" );
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				$result = $this->rpc->getbalance( '*', $this->get_minconf() );
+
+				if ( false === $result ) {
+					throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				}
+				$result = floatval( $result );
+				Dashed_Slug_Wallets::set_transient( "wallets_get_balance_$symbol", $result, 30 );
 			}
-			return floatval( $result );
+
+			return $result;
 		}
 
 		public function get_unavailable_balance() {
@@ -331,26 +339,34 @@ CFG;
 				throw new Exception( 'Adapter is disabled' );
 			}
 
-			$result = $this->rpc->getinfo();
+			$symbol = $this->get_symbol();
 
+			$result = Dashed_Slug_Wallets::get_transient( "wallets_get_unav_balance_$symbol" );
 			if ( false === $result ) {
+				$result = $this->rpc->getinfo();
 
-				$result = $this->rpc->getwalletinfo();
+				if ( false === $result ) {
 
-				if ( false == $result ) {
-					throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+					$result = $this->rpc->getwalletinfo();
+
+					if ( false == $result ) {
+						throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+					}
 				}
+
+				$unavailable_balance = 0;
+
+				foreach ( array( 'newmint', 'stake', 'unconfirmed_balance', 'immature_balance' ) as $field ) {
+					if ( isset( $result[ $field ] ) ) {
+						$unavailable_balance += floatval( $result[ $field ] );
+					}
+				}
+
+				$result = floatval( $unavailable_balance );
+				Dashed_Slug_Wallets::set_transient( "wallets_get_unav_balance_$symbol", $result, 30 );
 			}
 
-			$unavailable_balance = 0;
-
-			foreach ( array( 'newmint', 'stake', 'unconfirmed_balance', 'immature_balance' ) as $field ) {
-				if ( isset( $result[ $field ] ) ) {
-					$unavailable_balance += floatval( $result[ $field ] );
-				}
-			}
-
-			return floatval( $unavailable_balance );
+			return $result;
 		}
 
 		public function get_new_address() {
@@ -634,52 +650,60 @@ CFG;
 		 */
 		public function cron() {
 			$this->cron_scrape_listtransactions();
-			$this->cron_scrape_listreceivedbyaddress();
-			$this->cron_scrape_listunspent();
 		}
 
 		protected function cron_scrape_listtransactions() {
-			$result = $this->rpc->listtransactions( '*', 32 );
-			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
-			}
+			$symbol = $this->get_symbol();
+			$last_txid = Dashed_Slug_Wallets::get_transient( "wallets_listtxs_last_txid_$symbol" );
+			$last_time = Dashed_Slug_Wallets::get_transient( "wallets_listtxs_last_time_$symbol", 0 );
 
-			foreach ( $result as &$transaction ) {
-				if ( isset( $transaction['txid'] ) ) {
-					do_action( 'wallets_notify_wallet_' . $this->get_symbol(), $transaction['txid'] );
+			$batch_size = absint( Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 8 ) );
+
+			$skip = 0;
+			$done = false;
+
+			while ( ! $done ) {
+
+				$result = $this->rpc->listtransactions( '*', $batch_size, $skip );
+
+				if ( false === $result ) {
+					throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
 				}
-			}
-		}
 
-		protected function cron_scrape_listreceivedbyaddress() {
-			$result = $this->rpc->listreceivedbyaddress();
-			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
-			}
+				foreach ( $result as &$transaction ) {
+					if ( isset( $transaction['txid'] ) ) {
+						$txid = $transaction['txid'];
 
-			if ( is_array( $result ) ) {
-				foreach ( $result as &$address ) {
-					if ( isset( $address['txids'] ) ) {
-						foreach ( $address['txids'] as $txid ) {
-							do_action( 'wallets_notify_wallet_' . $this->get_symbol(), $txid );
+						// if already encountered, end the loop
+						if ( $last_txid == $txid ) {
+							$done = true;
 						}
+
+						// record latest transaction by time
+						if ( isset( $transaction['time'] ) ) {
+							$time = absint( $transaction['time'] );
+							if ( $time > $last_time ) {
+								$last_txid = $txid;
+								$last_time = $time;
+							}
+						}
+
+						do_action( "wallets_notify_wallet_$symbol", $transaction['txid'] );
 					}
 				}
-			}
-		}
 
-		protected function cron_scrape_listunspent() {
-			$result = $this->rpc->listunspent();
-			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
-			}
+				// save last encountered transaction for next time
+				// every 8 hours the entire chain of txids will be rescanned
+				Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_txid_$symbol", $txid, 8 * HOUR_IN_SECONDS );
+				Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_time_$symbol", $time, 8 * HOUR_IN_SECONDS );
 
-			if ( is_array( $result ) ) {
-				foreach ( $result as &$unspent ) {
-					if ( isset( $unspent['txid'] ) ) {
-						do_action( 'wallets_notify_wallet_' . $this->get_symbol(), $unspent['txid'] );
-					}
+				// if listtransactions returned empty array end the loop
+				if ( 0 == count( $result ) ) {
+					$done = true;
 				}
+
+				// on next iteration retrieve previous batch
+				$skip = $skip + $batch_size;
 			}
 		}
 

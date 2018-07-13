@@ -1110,6 +1110,8 @@ NOTIFICATION
 
 			if ( isset( $tx_data->comment ) && $tx_data->comment ) {
 				$replace_pairs['###COMMENT###']          = $tx_data->comment;
+			} else {
+				$replace_pairs['###COMMENT###']          = 'n/a';
 			}
 
 			if ( isset( $tx_data->address ) && $tx_data->address ) {

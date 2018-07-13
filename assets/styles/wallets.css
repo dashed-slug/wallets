@@ -175,6 +175,10 @@
 	height: 64px;
 }
 
+.dashed-slug-wallets.deposit.deposit-list tbody td.balance span {
+	white-space: nowrap;
+}
+
 .dashed-slug-wallets.deposit .qrcode {
 	text-align: center;
 	margin: 1em;

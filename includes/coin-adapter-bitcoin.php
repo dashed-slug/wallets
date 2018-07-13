@@ -117,10 +117,24 @@ CFG;
 
 		// cron implementation
 
+		protected function cron_scrape_listunspent() {
+			$result = $this->rpc->listunspent();
+			if ( false === $result ) {
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+			}
+
+			if ( is_array( $result ) ) {
+				foreach ( $result as &$unspent ) {
+					if ( isset( $unspent['txid'] ) ) {
+						do_action( 'wallets_notify_wallet_' . $this->get_symbol(), $unspent['txid'] );
+					}
+				}
+			}
+		}
+
 		public function cron() {
 			try {
 				$this->cron_scrape_listtransactions();
-				$this->cron_scrape_listreceivedbyaddress();
 			} catch ( Exception $e ) {
 				// bittiraha lightweight wallet only implements listunspent, not listtransactions or listreceivedbyaddress
 				$this->cron_scrape_listunspent();

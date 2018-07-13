@@ -18,8 +18,8 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
 			'adapter_name'             => esc_html__( 'Adapter name', 'wallets' ),
 			'coin'                     => esc_html__( 'Coin', 'wallets' ),
-			'balance'                  => esc_html__( 'Wallet Balance', 'wallets' ),
-			'unavailable_balance'      => esc_html__( 'Wallet Unavailable Balance', 'wallets' ),
+			'balance'                  => esc_html__( 'Hot Wallet Balance', 'wallets' ),
+			'unavailable_balance'      => esc_html__( 'Unavailable Balance', 'wallets' ),
 			'balances'                 => esc_html__( 'Sum of User Balances', 'wallets' ),
 			'status'                   => esc_html__( 'Adapter Status', 'wallets' ),
 			'locked'                   => esc_html__( 'Withdrawals lock', 'wallets' ),
@@ -164,11 +164,11 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 		$html = '<span>' . sprintf( $item['sprintf'], $item['unavailable_balance'] ) . '</span>';
 
-		if ( 0 == $item['balance'] && $item['unavailable_balance'] > 0 ) {
+		if ( ( $item['balance'] / $item['unavailable_balance'] ) > .99 ) {
 			$html .= sprintf(
-				'<p style="color:red;">%s</p>',
+				'<p class="wallets-adapters-pos-warning">%s</p>',
 				__(
-					'It looks like all of the balance on this coin is currently unavailable for withdrawals. ' .
+					'It looks like less than 1% of the balance of this coin is currently available for withdrawals. ' .
 					'If this is a Proof-of-Stake wallet, consider using the <code>reservebalance=</code> argument ' .
 					'in your .conf file. Consult the wallet\'s documentation for details.',
 					'wallets'

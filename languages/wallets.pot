@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.5\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-07-06 08:37:26+00:00\n"
+"POT-Creation-Date: 2018-07-13 09:10:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,11 +22,11 @@ msgid "Coin"
 msgstr ""
 
 #: includes/adapters-list-table.php:21
-msgid "Wallet Balance"
+msgid "Hot Wallet Balance"
 msgstr ""
 
 #: includes/adapters-list-table.php:22
-msgid "Wallet Unavailable Balance"
+msgid "Unavailable Balance"
 msgstr ""
 
 #: includes/adapters-list-table.php:23 includes/cold-storage.php:158
@@ -100,7 +100,7 @@ msgid "Could not reset user deposit addresses for %1$s: %2$s"
 msgstr ""
 
 #: includes/adapters-list.php:147 includes/adapters-list.php:166
-#: includes/adapters-list.php:208 includes/admin-menu.php:59
+#: includes/adapters-list.php:208 includes/admin-menu.php:63
 #: includes/caps.php:97 includes/caps.php:164
 #: includes/coin-adapter-bitcoin.php:58 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:279 includes/coin-adapter.php:228
@@ -141,88 +141,88 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: includes/admin-menu.php:37 includes/wallets-core.php:244
+#: includes/admin-menu.php:41 includes/wallets-core.php:244
 #: includes/wallets-core.php:254
 msgid "Wallets"
 msgstr ""
 
-#: includes/admin-menu.php:47
+#: includes/admin-menu.php:51
 msgid "About"
 msgstr ""
 
-#: includes/admin-menu.php:67
+#: includes/admin-menu.php:71
 msgid "IMPORTANT SECURITY DISCLAIMER:"
 msgstr ""
 
-#: includes/admin-menu.php:87
+#: includes/admin-menu.php:91
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: includes/admin-menu.php:92 includes/cold-storage.php:358
+#: includes/admin-menu.php:96 includes/cold-storage.php:358
 #: includes/cold-storage.php:373 includes/rates.php:380
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
 msgstr ""
 
-#: includes/admin-menu.php:96
+#: includes/admin-menu.php:100
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: includes/admin-menu.php:99
+#: includes/admin-menu.php:103
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: includes/admin-menu.php:111
+#: includes/admin-menu.php:115
 msgid "See more here"
 msgstr ""
 
-#: includes/admin-menu.php:123
+#: includes/admin-menu.php:127
 msgid "Follow the slime:"
 msgstr ""
 
-#: includes/admin-menu.php:125
+#: includes/admin-menu.php:129
 msgid "Subscribe to the YouTube channel:"
 msgstr ""
 
-#: includes/admin-menu.php:129
+#: includes/admin-menu.php:133
 msgid "+1 the Google+ page to learn the latest news:"
 msgstr ""
 
-#: includes/admin-menu.php:133
+#: includes/admin-menu.php:137
 msgid "Like the Facebook page to learn the latest news:"
 msgstr ""
 
-#: includes/admin-menu.php:137
+#: includes/admin-menu.php:141
 msgid "The dashed-slug can also be found on SteemIt:"
 msgstr ""
 
-#: includes/admin-menu.php:144
+#: includes/admin-menu.php:148
 msgid "Get the free PDF manual!"
 msgstr ""
 
-#: includes/admin-menu.php:146
+#: includes/admin-menu.php:150
 msgid ""
 "Visit the dashed-slug <a "
 "href=\"https://dashed-slug.net/downloads\">download area</a>."
 msgstr ""
 
-#: includes/admin-menu.php:155
+#: includes/admin-menu.php:159
 msgid "RTFM! :-)"
 msgstr ""
 
-#: includes/admin-menu.php:160
+#: includes/admin-menu.php:164
 msgid "Have your say!"
 msgstr ""
 
-#: includes/admin-menu.php:163
+#: includes/admin-menu.php:167
 msgid ""
 "Did you find this plugin useful? Leave a review on <a "
 "href=\"https://wordpress.org/support/plugin/wallets/reviews/\">wordpress."
 "org</a>."
 msgstr ""
 
-#: includes/admin-menu.php:164
+#: includes/admin-menu.php:168
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a "
 "href=\"https://wordpress.org/support/plugin/wallets\">wordpress.org support "
@@ -231,53 +231,66 @@ msgid ""
 "forums for the extensions."
 msgstr ""
 
-#: includes/admin-menu.php:165
+#: includes/admin-menu.php:169
 msgid ""
 "Something else on your mind? <a "
 "href=\"https://dashed-slug.net/contact\">Contact me</a>."
 msgstr ""
 
-#: includes/admin-menu.php:170
+#: includes/admin-menu.php:174
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: includes/admin-menu.php:172
+#: includes/admin-menu.php:176
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: includes/admin-menu.php:175
+#: includes/admin-menu.php:179
 msgid "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: includes/admin-menu.php:231
+#: includes/admin-menu.php:235
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: includes/admin-menu.php:235
+#: includes/admin-menu.php:239
 msgid "App extensions"
 msgstr ""
 
-#: includes/admin-menu.php:237
+#: includes/admin-menu.php:241
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: includes/admin-menu.php:244
+#: includes/admin-menu.php:248
 msgid "Coin adapters"
 msgstr ""
 
-#: includes/admin-menu.php:246
+#: includes/admin-menu.php:250
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for "
 "additional cryptocurrencies. "
 msgstr ""
 
-#: includes/admin-menu.php:279
+#: includes/admin-menu.php:283
 msgid "Installed"
+msgstr ""
+
+#: includes/admin-menu.php:311
+msgid ""
+"Found <strong>Bitcoin and Altcoin Wallets</strong> useful? Want to help the "
+"project? "
+msgstr ""
+
+#: includes/admin-menu.php:316
+msgid ""
+"Please leave a <a "
+"href=\"https://wordpress.org/support/view/plugin-reviews/wallets?filter=5#"
+"postform\">★★★★★</a> rating on WordPress.org!"
 msgstr ""
 
 #: includes/admin-notices.php:45
@@ -288,7 +301,7 @@ msgid ""
 msgstr ""
 
 #: includes/admin-user.php:39
-msgid "Base currency"
+msgid "Fiat currency"
 msgstr ""
 
 #: includes/admin-user.php:53 includes/confirmations.php:520
@@ -386,6 +399,12 @@ msgstr ""
 
 #: includes/coin-adapter-bitcoin.php:72
 msgid "Refer to the documentation for details."
+msgstr ""
+
+#: includes/coin-adapter-bitcoin.php:123 includes/coin-adapter-rpc.php:328
+#: includes/coin-adapter-rpc.php:353 includes/coin-adapter-rpc.php:380
+#: includes/coin-adapter-rpc.php:549 includes/coin-adapter-rpc.php:670
+msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
 #: includes/coin-adapter-json.php:32
@@ -518,26 +537,19 @@ msgid ""
 "of the %2$s daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:324 includes/coin-adapter-rpc.php:341
-#: includes/coin-adapter-rpc.php:364 includes/coin-adapter-rpc.php:533
-#: includes/coin-adapter-rpc.php:644 includes/coin-adapter-rpc.php:657
-#: includes/coin-adapter-rpc.php:674
-msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
-msgstr ""
-
-#: includes/coin-adapter-rpc.php:374
+#: includes/coin-adapter-rpc.php:390
 msgid "%1$s->%2$s() failed to withdraw because the adapter is disabled."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:384
+#: includes/coin-adapter-rpc.php:400
 msgid "%1$s->%2$s() failed to withdraw because the wallet is locked."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:401 includes/coin-adapter-rpc.php:463
+#: includes/coin-adapter-rpc.php:417 includes/coin-adapter-rpc.php:479
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:598
+#: includes/coin-adapter-rpc.php:614
 msgid "%1$s::%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 

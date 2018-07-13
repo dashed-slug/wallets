@@ -20,7 +20,10 @@
 					<img data-bind="attr: { src: icon_url }" />
 				</td>
 				<td class="coin" data-bind="text: name"></td>
-				<td class="balance" data-bind="text: sprintf( sprintf_pattern, balance )"></td>
+				<td class="balance">
+					<span data-bind="text: sprintf( sprintf_pattern, balance )"></span>
+					<span class="fiat-amount" data-bind="text: rate ? sprintf( '%s %01.2f', walletsUserData.fiatSymbol, balance * rate ) : '';" ></span>
+				</td>
 			</tr>
 		</tbody>
 	</table>

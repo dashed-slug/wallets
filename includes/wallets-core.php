@@ -163,8 +163,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.5.5.min.js' ) ) {
-					$script = 'wallets-ko-3.5.5.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.5.6.min.js' ) ) {
+					$script = 'wallets-ko-3.5.6.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.5.5',
+					'3.5.6',
 					true
 				);
 
@@ -196,8 +196,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.5.5.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.5.5.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.5.6.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.5.6.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -206,12 +206,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.5.5',
+					'3.5.6',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.5.5.min.css' ) ) {
-					$front_styles = 'wallets-3.5.5.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.5.6.min.css' ) ) {
+					$front_styles = 'wallets-3.5.6.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -220,7 +220,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.5.5'
+					'3.5.6'
 				);
 
 				// if no fiat amounts are to be displayed, then explicitly hide them
@@ -268,7 +268,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = absint( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision   = 15;
+			$current_db_revision   = 16;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 				error_log( sprintf( 'Upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
@@ -289,7 +289,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
 				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
 				txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id',
-				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
 				fee decimal(20,10) signed NOT NULL DEFAULT 0 COMMENT 'fees deducted from account',
 				comment TEXT DEFAULT NULL COMMENT 'transaction comment',
@@ -313,7 +313,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
-				symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
 				extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
 				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
@@ -347,12 +347,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw'" );
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR'" );
 				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN txid varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id'" );
-				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)'" );
+				$wpdb->query( "ALTER TABLE {$table_name_txs} MODIFY COLUMN symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)'" );
 
 				// 2. deposit addresses table
 
 				$wpdb->query( "UPDATE {$table_name_adds} SET extra='' WHERE extra IS NULL;" );
-				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN symbol varchar(5) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)'" );
+				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)'" );
 				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN address varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL" );
 				$wpdb->query( "ALTER TABLE {$table_name_adds} MODIFY COLUMN extra varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR';" );
 
@@ -601,8 +601,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.5.5';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '58ee0c1';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.5.6';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = 'e6079cb';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );

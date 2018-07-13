@@ -36,7 +36,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 				<tbody>
 					<tr>
 						<th>
-							<label for="wallets_fiat_symbol"><?php esc_html_e( 'Base currency', 'wallets' ); ?></label>
+							<label for="wallets_fiat_symbol"><?php esc_html_e( 'Fiat currency', 'wallets' ); ?></label>
 						</th>
 
 						<td>

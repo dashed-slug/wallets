@@ -17,6 +17,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			if ( 'wallets-menu-wallets' == $page ) {
 				add_action( 'admin_enqueue_scripts', array( &$this, 'action_admin_enqueue_scripts' ) );
 			}
+
+			if ( 'wallets-menu' == substr( $page, 0, 12 ) ) {
+				add_action( 'in_admin_footer', array( &$this, 'footer' ) );
+			}
 		}
 
 		public function action_admin_enqueue_scripts() {
@@ -24,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-3.5.5.min.js', 'wallets/assets/scripts/pay-now-button-3.5.5.min.js' ),
+				plugins_url( 'pay-now-button-3.5.6.min.js', 'wallets/assets/scripts/pay-now-button-3.5.6.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -296,6 +300,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				</li>
 			<?php endforeach; ?>
 			</ul>
+			<?php
+		}
+
+		public function footer() {
+			?>
+			<div class="card wallets-footer-message">
+				<p>
+				<?php
+					echo __( 'Found <strong>Bitcoin and Altcoin Wallets</strong> useful? Want to help the project? ', 'wallets' );
+				?>
+				</p>
+				<p>
+				<?php
+					echo __( 'Please leave a <a href="https://wordpress.org/support/view/plugin-reviews/wallets?filter=5#postform">★★★★★</a> rating on WordPress.org!', 'wallets' );
+				?>
+				</p>
+			</div>
 			<?php
 		}
 

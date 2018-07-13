@@ -161,7 +161,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		public function execute_pending_moves() {
 			// if this option does not exist, uninstall script might be already running.
 			// 0 batch size forces this function to not do anything
-			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 0 );
+			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 1 );
 
 			global $wpdb;
 			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
@@ -347,7 +347,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		public function execute_pending_withdrawals() {
 			// if this option does not exist, uninstall script might be already running.
 			// 0 batch size forces this function to not do anything
-			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 0 );
+			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 1 );
 
 			global $wpdb;
 

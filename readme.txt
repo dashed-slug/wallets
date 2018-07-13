@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.7
 Requires PHP: 5.6
-Stable tag: 3.5.5
+Stable tag: 3.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,6 +308,17 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.5.6 =
+- Improve: Adapters list now warns user if more than 99% of hot wallet coins are not available, such as when staking entire balance.
+- Improve: In RPC (full node) coin adapters, the calls `get_balance()` and `get_unavailable_balance()` are cached for performance.
+- Improve: In RPC (full node) coin adapters, performance of the discovery of past TXIDs via `listtransactions` is vastly improved.
+- Improve: In RPC (full node) coin adapters, discovery of past TXIDs no longer uses `listreceivedbyaddress` or `listunspent` as they are redundant.
+- Change: DB schema now allows coin symbols with up to 8 characters (was 5).
+- Fix: JSON API calls now allow coin symbols that contain digits (0-9).
+- Add: Balances list view (`[wallets_balances view="list"]`) now also displays fiat amounts if possible.
+- Fix: When a transaction is performed without a comment attached, the comment is now shown as 'n/a' in notifications.
+- Add: Suggestion in admin screens footer for rating the plugin on WordPress.org.
 
 = 3.5.5 =
 - Add: User can explicitly select default fiat currency to be "none" or "site default".
@@ -900,7 +911,13 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.5.5 contains minor bugfixes and improvements.
+Version 3.5.6 contains a number of user requests, bugfixes and improvements. It involves a schema upgrade from version 15 to 16.
+
+If for some reason you need to perform the schema upgrade manually, the SQL commands (for table prefix `wp_`) are:
+
+`ALTER TABLE wp_wallets_txs MODIFY COLUMN symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)';`
+`ALTER TABLE wp_wallets_adds MODIFY COLUMN symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)';`
+`UPDATE wp_options SET wallets_db_revision = 16;`
 
 == Donating ==
 

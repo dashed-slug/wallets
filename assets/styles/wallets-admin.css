@@ -31,3 +31,15 @@ body.wallets_page_wallets-menu-transactions table td .button {
 	content: '';
 	display: none;
 }
+
+.wallets-footer-message {
+	text-align: center;
+	margin: 0 0 0 auto;
+}
+
+.wallets-adapters-pos-warning {
+	background-color: red;
+	border-radius: 10px;
+	padding: 5px;
+	color: white !important;
+}

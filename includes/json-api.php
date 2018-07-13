@@ -51,7 +51,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			);
 
 			add_rewrite_rule(
-				'^wallets/get_transactions/([a-zA-Z]+)/([0-9]+)/([0-9]+)/?$',
+				'^wallets/get_transactions/([0-9a-zA-Z]+)/([0-9]+)/([0-9]+)/?$',
 				'index.php?' .
 				'__wallets_action=get_transactions&' .
 				'__wallets_symbol=$matches[1]&' .
@@ -61,7 +61,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			);
 
 			add_rewrite_rule(
-				'^wallets/notify/([a-zA-Z]+)/([a-zA-Z]+)/([0-9a-zA-Z]+)/?$',
+				'^wallets/notify/([0-9a-zA-Z]+)/([a-zA-Z]+)/([0-9a-zA-Z]+)/?$',
 				'index.php?' .
 				'__wallets_action=notify&' .
 				'__wallets_symbol=$matches[1]&' .
@@ -88,7 +88,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			);
 
 			add_rewrite_rule(
-				'^wallets/api2/get_transactions/([a-zA-Z]+)/([0-9]+)/([0-9]+)/?$',
+				'^wallets/api2/get_transactions/([0-9a-zA-Z]+)/([0-9]+)/([0-9]+)/?$',
 				'index.php?' .
 				'__wallets_action=get_transactions&' .
 				'__wallets_symbol=$matches[1]&' .
@@ -99,7 +99,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			);
 
 			add_rewrite_rule(
-				'^wallets/api2/notify/([a-zA-Z]+)/([a-zA-Z]+)/([0-9a-zA-Z]+)/?$',
+				'^wallets/api2/notify/([0-9a-zA-Z]+)/([a-zA-Z]+)/([0-9a-zA-Z]+)/?$',
 				'index.php?' .
 				'__wallets_action=notify&' .
 				'__wallets_symbol=$matches[1]&' .
