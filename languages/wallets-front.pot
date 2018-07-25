@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.5.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-07-13 09:10:59+00:00\n"
+"POT-Creation-Date: 2018-07-25 10:13:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,65 +13,90 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n1.0.1\n"
 
-#: includes/sidebar-widgets.php:93
+#: includes/sidebar-widgets.php:115
 msgid "Template"
 msgstr ""
 
-#: includes/sidebar-widgets.php:119
+#: includes/sidebar-widgets.php:131
+msgid "Columns"
+msgstr ""
+
+#: includes/sidebar-widgets.php:175
 msgid "Deposit to wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:120
+#: includes/sidebar-widgets.php:176
 msgid ""
 "A form that will let the user know which address they can send coins to if "
 "they wish to make a deposit."
 msgstr ""
 
-#: includes/sidebar-widgets.php:131
+#: includes/sidebar-widgets.php:187
 msgid "Withdraw from wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:132
+#: includes/sidebar-widgets.php:188
 msgid "A form that will let the user withdraw funds."
 msgstr ""
 
-#: includes/sidebar-widgets.php:143
+#: includes/sidebar-widgets.php:199
 msgid "Transfer to user wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:144
+#: includes/sidebar-widgets.php:200
 msgid "A form that lets the user transfer coins to other users on your site."
 msgstr ""
 
-#: includes/sidebar-widgets.php:155
+#: includes/sidebar-widgets.php:211
 msgid "Wallet balance"
 msgstr ""
 
-#: includes/sidebar-widgets.php:156
+#: includes/sidebar-widgets.php:212
 msgid "The current user's balances in all enabled coins."
 msgstr ""
 
-#: includes/sidebar-widgets.php:167
+#: includes/sidebar-widgets.php:223
 msgid "Wallet transactions"
 msgstr ""
 
-#: includes/sidebar-widgets.php:168
+#: includes/sidebar-widgets.php:224
 msgid ""
 "An interactive table that shows past deposits, withdrawals and transfers "
 "for the user."
 msgstr ""
 
-#: includes/sidebar-widgets.php:179 includes/views/account_value/default.php:8
+#: includes/sidebar-widgets.php:235 includes/views/account_value/default.php:8
 msgid "Account value"
 msgstr ""
 
-#: includes/sidebar-widgets.php:180
+#: includes/sidebar-widgets.php:236
 msgid "Shows the account's total value expressed in the default fiat currency."
+msgstr ""
+
+#: includes/sidebar-widgets.php:247
+#: includes/views/total_balances/default.php:13
+msgid "Total user balances"
+msgstr ""
+
+#: includes/sidebar-widgets.php:248
+msgid "Shows the total user balances for each coin."
+msgstr ""
+
+#: includes/sidebar-widgets.php:259
+msgid "Exchange rates"
+msgstr ""
+
+#: includes/sidebar-widgets.php:260
+msgid ""
+"Shows exchange rates for online cryptocurrencies, expressed in the default "
+"fiat currency."
 msgstr ""
 
 #: includes/views/balance/default.php:8 includes/views/balance/list.php:12
 #: includes/views/deposit/default.php:8 includes/views/deposit/list.php:12
-#: includes/views/move/default.php:8 includes/views/transactions/default.php:8
+#: includes/views/move/default.php:8 includes/views/rates/default.php:12
+#: includes/views/total_balances/default.php:12
+#: includes/views/transactions/default.php:9
 #: includes/views/transactions/rows.php:8 includes/views/withdraw/default.php:8
 msgid "Coin"
 msgstr ""
@@ -105,7 +130,7 @@ msgid "Fee (deducted from amount)"
 msgstr ""
 
 #: includes/views/move/default.php:12
-#: includes/views/transactions/default.php:25
+#: includes/views/transactions/default/fragments.php:36
 #: includes/views/withdraw/default.php:12
 msgid "Comment"
 msgstr ""
@@ -118,17 +143,11 @@ msgstr ""
 msgid "Reset form"
 msgstr ""
 
-#: includes/views/transactions/default.php:9
-#: includes/views/transactions/rows.php:9
-msgid "Rows per page"
+#: includes/views/rates/default.php:13
+msgid "Exchange Rate"
 msgstr ""
 
-#: includes/views/transactions/default.php:10
-#: includes/views/transactions/rows.php:10
-msgid "Page"
-msgstr ""
-
-#: includes/views/transactions/default.php:17
+#: includes/views/transactions/default/fragments.php:4
 #: includes/views/transactions/rows.php:16
 #: includes/views/transactions/rows.php:54
 #: includes/views/transactions/rows.php:90
@@ -136,7 +155,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: includes/views/transactions/default.php:18
+#: includes/views/transactions/default/fragments.php:8
 #: includes/views/transactions/rows.php:22
 #: includes/views/transactions/rows.php:60
 #: includes/views/transactions/rows.php:95
@@ -144,40 +163,40 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: includes/views/transactions/default.php:19
+#: includes/views/transactions/default/fragments.php:12
 msgid "Time"
 msgstr ""
 
-#: includes/views/transactions/default.php:20
+#: includes/views/transactions/default/fragments.php:16
 msgid "Amount (+fee)"
 msgstr ""
 
-#: includes/views/transactions/default.php:21
+#: includes/views/transactions/default/fragments.php:20
 msgid "Fee"
 msgstr ""
 
-#: includes/views/transactions/default.php:22
+#: includes/views/transactions/default/fragments.php:24
 msgid "From"
 msgstr ""
 
-#: includes/views/transactions/default.php:23
+#: includes/views/transactions/default/fragments.php:28
 msgid "To"
 msgstr ""
 
-#: includes/views/transactions/default.php:24
+#: includes/views/transactions/default/fragments.php:32
 #: includes/views/transactions/rows.php:29
 #: includes/views/transactions/rows.php:65
 #: includes/views/transactions/rows.php:100
 msgid "Tx ID"
 msgstr ""
 
-#: includes/views/transactions/default.php:26
+#: includes/views/transactions/default/fragments.php:40
 #: includes/views/transactions/rows.php:20
 #: includes/views/transactions/rows.php:58
 msgid "Confirmations"
 msgstr ""
 
-#: includes/views/transactions/default.php:27
+#: includes/views/transactions/default/fragments.php:44
 #: includes/views/transactions/rows.php:19
 #: includes/views/transactions/rows.php:57
 #: includes/views/transactions/rows.php:93
@@ -185,27 +204,27 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: includes/views/transactions/default.php:28
+#: includes/views/transactions/default/fragments.php:48
 #: includes/views/transactions/rows.php:23
 #: includes/views/transactions/rows.php:96
 #: includes/views/transactions/rows.php:117
 msgid "Retries&nbsp;left"
 msgstr ""
 
-#: includes/views/transactions/default.php:32
+#: includes/views/transactions/default/fragments.php:52
 msgid "Admin&nbsp;confirm"
 msgstr ""
 
-#: includes/views/transactions/default.php:37
+#: includes/views/transactions/default/fragments.php:55
 msgid "User&nbsp;confirm"
 msgstr ""
 
-#: includes/views/transactions/default.php:48
-#: includes/views/transactions/default.php:95
-#: includes/views/transactions/default.php:126
-#: includes/views/transactions/default.php:127
-#: includes/views/transactions/default.php:151
-#: includes/views/transactions/default.php:152
+#: includes/views/transactions/default/fragments.php:81
+#: includes/views/transactions/default/fragments.php:149
+#: includes/views/transactions/default/fragments.php:153
+#: includes/views/transactions/default/fragments.php:215
+#: includes/views/transactions/default/fragments.php:274
+#: includes/views/transactions/default/fragments.php:278
 #: includes/views/transactions/rows.php:38
 #: includes/views/transactions/rows.php:82
 #: includes/views/transactions/rows.php:102
@@ -213,6 +232,16 @@ msgstr ""
 #: includes/views/transactions/rows.php:123
 #: includes/views/transactions/rows.php:124
 msgid "me"
+msgstr ""
+
+#: includes/views/transactions/default.php:10
+#: includes/views/transactions/rows.php:9
+msgid "Rows per page"
+msgstr ""
+
+#: includes/views/transactions/default.php:11
+#: includes/views/transactions/rows.php:10
+msgid "Page"
 msgstr ""
 
 #: includes/views/withdraw/default.php:9

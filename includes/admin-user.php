@@ -24,6 +24,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 				return;
 			}
 
+			if ( ! ( user_can( $profileuser->ID, 'view_wallets_profile' ) || current_user_can( 'manage_wallets' ) ) ) {
+				return;
+			}
+
 			$default_fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			$fiat_symbol = get_user_meta( $profileuser->ID, 'wallets_base_symbol', true );
 			$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array() );

@@ -166,7 +166,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					SELECT
 						account,
 						symbol,
-						sum(amount) AS balance
+						SUM( amount ) AS balance
 					FROM
 						$table_name_txs
 					WHERE

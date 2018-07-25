@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.7
 Requires PHP: 5.6
-Stable tag: 3.5.6
+Stable tag: 3.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -146,7 +146,7 @@ Using the built-in coin adapter you can connect to a Bitcoin core full node.
 
 You can connect to any Bitcoin-like full node that you manage yourself using the *[Bitcoin and Altcoin Wallets: Full Node Multi Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq")*. This would include coins such as Litecoin, Dogecoin, etc.
 
-Also, if you are OK with using a web wallet service, then you can install the *[CoinPayments adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq)*. You then automatically get [all of the coins that platform supports](https://www.coinpayments.net/supported-coins/).
+Also, if you are OK with using a web wallet service, then you can install the *[CoinPayments adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq)*. You then automatically get [all of the coins that platform supports](https://www.coinpayments.net/supported-coins).
 
 = Is it secure? =
 
@@ -200,7 +200,7 @@ Remember that you have two options: stand-alone wallets or web wallets. Running 
 
 = How can I integrate the plugin with my site? =
 
-Just insert the [shortcodes](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/wallet-shortcodes/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) anywhere to create forms to let a logged in user:
+Just insert the [shortcodes](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shortcodes/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) anywhere to create forms to let a logged in user:
 
 - **deposit funds:** `[wallets_deposit]`
 - **withdraw funds:** `[wallets_withdraw]`
@@ -309,6 +309,21 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 3.6.0 =
+- Add: The `default` template of the `[wallets_transactions]` shortcode now accepts a list of columns as an optional argument.
+- Add: New shortcode `[wallets_rates]` displays exchange rates of online coins.
+- Add: New shortcode `[wallets_total_balances]` displays the total sum of user balances per each coin.
+- Add: When a transaction fails due to an error, the admin or admins can be notified by email.
+- Add: When a transaction requires admin confirmation, the admin or admins can be notified by email.
+- Add: When a user is about to receive an internal transaction that is not yet approved, the recipient user can be notified by email.
+- Add: Administrator can set all unconfirmed transactions to be auto-confirmed after a specified number of days.
+- Add: *Transactions* page in admin screens now has a new column, amount without fees.
+- Improve: In *Transactions* page, long tx comments are now displayed with ellipsis to save screen space. Hover with the mouse to see entire text.
+- Add: The *Bitcoin and Altcoin Wallets* section in a user's profile screen can be hidden. A new capability, `view_wallets_profile` controls this.
+- Add: Adapters list admin screen now has a new column that shows total amount of fees paid to the site wallet.
+- Fix: Cryptocompare.com exchange rates provider no longer generates an invalid API call when no coins are enabled.
+
+
 = 3.5.6 =
 - Improve: Adapters list now warns user if more than 99% of hot wallet coins are not available, such as when staking entire balance.
 - Improve: In RPC (full node) coin adapters, the calls `get_balance()` and `get_unavailable_balance()` are cached for performance.
@@ -316,7 +331,7 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 - Improve: In RPC (full node) coin adapters, discovery of past TXIDs no longer uses `listreceivedbyaddress` or `listunspent` as they are redundant.
 - Change: DB schema now allows coin symbols with up to 8 characters (was 5).
 - Fix: JSON API calls now allow coin symbols that contain digits (0-9).
-- Add: Balances list view (`[wallets_balances view="list"]`) now also displays fiat amounts if possible.
+- Add: Balances list view (`[wallets_balance view="list"]`) now also displays fiat amounts if possible.
 - Fix: When a transaction is performed without a comment attached, the comment is now shown as 'n/a' in notifications.
 - Add: Suggestion in admin screens footer for rating the plugin on WordPress.org.
 
@@ -911,13 +926,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.5.6 contains a number of user requests, bugfixes and improvements. It involves a schema upgrade from version 15 to 16.
-
-If for some reason you need to perform the schema upgrade manually, the SQL commands (for table prefix `wp_`) are:
-
-`ALTER TABLE wp_wallets_txs MODIFY COLUMN symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)';`
-`ALTER TABLE wp_wallets_adds MODIFY COLUMN symbol varchar(8) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)';`
-`UPDATE wp_options SET wallets_db_revision = 16;`
+Version 3.6.0 addresses a number of user requests.
 
 == Donating ==
 

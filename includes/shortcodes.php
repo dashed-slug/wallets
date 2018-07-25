@@ -12,12 +12,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 	class Dashed_Slug_Wallets_Shortcodes {
 
 		private $shortcodes_caps = array(
-			'wallets_account_value' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
-			'wallets_balance'       => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
-			'wallets_transactions'  => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
-			'wallets_deposit'       => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
-			'wallets_withdraw'      => Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
-			'wallets_move'          => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER,
+			'wallets_account_value'  => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_balance'        => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_transactions'   => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
+			'wallets_deposit'        => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_withdraw'       => Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
+			'wallets_move'           => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER,
+			'wallets_total_balances' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_rates'          => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+		);
+
+		public static $tx_columns = array(
+			'type',
+			'tags',
+			'time',
+			'amount',
+			'fee',
+			'from_user',
+			'to_user',
+			'txid',
+			'comment',
+			'confirmations',
+			'status',
+			'retries',
+			'admin_confirm',
+			'user_confirm',
 		);
 
 		public function __construct() {
@@ -31,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.5.6.min.js' ) ) {
-					$script = 'bs58check-3.5.6.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.6.0.min.js' ) ) {
+					$script = 'bs58check-3.6.0.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -54,6 +73,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				array(
 					'template'  => 'default',
 					'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
+					'columns'   => implode( ',', self::$tx_columns ),
 				), $atts, "wallets_$view"
 			);
 
@@ -64,6 +84,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			) ) {
 				// user not allowed to view this shortcode
 				return '';
+			}
+
+			if ( 'wallets_total_balances' == $tag ) {
+				$adapters       = apply_filters( 'wallets_api_adapters', array() );
+				$fiat_symbol    = Dashed_Slug_Wallets_Rates::get_fiat_selection();
+				$total_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+				ksort( $adapters );
+			}
+
+			// turn $atts[cols] to array and make sure it contains only valid transaction columns
+			if ( 'wallets_transactions' == $tag && 'default' == $atts['template'] ) {
+				$columns = explode( ',', $atts['columns'] );
+				$atts['columns'] = array_intersect( $columns, self::$tx_columns );
 			}
 
 			ob_start();

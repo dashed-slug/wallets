@@ -29,19 +29,20 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
-			'txid'          => esc_html__( 'Transaction ID', 'wallets' ),
+			'txid'          => esc_html__( 'TXID', 'wallets' ),
 			'category'      => esc_html__( 'Type', 'wallets' ),
 			'symbol'        => esc_html__( 'Coin', 'wallets' ),
-			'amount'        => esc_html__( 'Amount (+fee)', 'wallets' ),
+			'amountnofee'   => esc_html__( 'Amount', 'wallets' ),
 			'fee'           => esc_html__( 'Fee', 'wallets' ),
+			'amount'        => esc_html__( 'Amount (+fee)', 'wallets' ),
 			'from'          => esc_html__( 'From', 'wallets' ),
 			'to'            => esc_html__( 'To', 'wallets' ),
 			'comment'       => esc_html__( 'Comment', 'wallets' ),
 			'tags'          => esc_html__( 'Tags', 'wallets' ),
 			'created_time'  => esc_html__( 'Time', 'wallets' ),
-			'confirmations' => esc_html__( 'Confirmations', 'wallets' ),
+			'confirmations' => esc_html__( 'Confirms', 'wallets' ),
 			'status'        => esc_html__( 'Status', 'wallets' ),
-			'retries'       => esc_html__( 'Retries left', 'wallets' ),
+			'retries'       => esc_html__( 'Retries', 'wallets' ),
 			'admin_confirm' => esc_html__( 'Accepted by admin', 'wallets' ),
 			'user_confirm'  => esc_html__( 'Verified by user', 'wallets' ),
 		);
@@ -55,6 +56,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 		return array(
 			'created_time'  => array( 'created_time', true ),
 			'amount'        => array( 'amount', false ),
+			'amountnofee'   => array( 'amountnofee', false ),
 			'confirmations' => array( 'confirmations', false ),
 			'status'        => array( 'status', false ),
 			'admin_confirm' => array( 'admin_confirm', false ),
@@ -108,6 +110,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				txs.symbol,
 				txs.amount,
 				txs.fee,
+				txs.amount + ABS( txs.fee ) * IF( txs.amount > 0, -1, 1) AS amountnofee,
 				txs.address,
 				txs.extra,
 				txs.comment,
@@ -145,7 +148,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 			case 'category':
 			case 'symbol':
-			case 'comment':
 			case 'tags':
 			case 'status':
 			case 'from':
@@ -158,6 +160,10 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 			case 'amount':
 			case 'fee':
+			case 'amountnofee':
+				if ( 0 == $item[ $column_name ] ) {
+					return '&mdash;'; // no amount
+				}
 				$adapters = apply_filters( 'wallets_api_adapters', array() );
 				if ( isset( $adapters[ $item['symbol'] ] ) ) {
 					$adapter = $adapters[ $item['symbol'] ];
@@ -180,6 +186,14 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_created_time( $item ) {
 		return get_date_from_gmt( $item['created_time'] );
+	}
+
+	public function column_comment( $item ) {
+		return sprintf(
+			'<span title="%s">%s</span>',
+			esc_attr( $item[ 'comment' ] ),
+			wp_trim_words( $item[ 'comment' ], 5 )
+		);
 	}
 
 	public function column_from( $item ) {

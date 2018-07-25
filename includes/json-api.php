@@ -295,10 +295,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$coin_info->balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => $coin_info->symbol ) );
 
-							$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
-							if ( ! $fiat_symbol ) {
-								$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
-							}
+							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 
 							$coin_info->rate = false;
 							try {
@@ -588,10 +585,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$coin_info->balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => $coin_info->symbol ) );
 
-							$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
-							if ( ! $fiat_symbol ) {
-								$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
-							}
+							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 
 							$coin_info->rate = false;
 							try {

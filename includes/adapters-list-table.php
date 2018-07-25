@@ -21,6 +21,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			'balance'                  => esc_html__( 'Hot Wallet Balance', 'wallets' ),
 			'unavailable_balance'      => esc_html__( 'Unavailable Balance', 'wallets' ),
 			'balances'                 => esc_html__( 'Sum of User Balances', 'wallets' ),
+			'total_fees'               => esc_html__( 'Sum of fees paid', 'wallets' ),
 			'status'                   => esc_html__( 'Adapter Status', 'wallets' ),
 			'locked'                   => esc_html__( 'Withdrawals lock', 'wallets' ),
 			'pending_wds'              => esc_html__( 'Pending withdrawals', 'wallets' ),
@@ -38,6 +39,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			'balance'                  => array( 'balance', false ),
 			'unavailable_balance'      => array( 'unavailable_balance', false ),
 			'balances'                 => array( 'balances', false ),
+			'total_fees'                => array( 'total_fees', false ),
 			'pending_wds'              => array( 'pending_wds', false ),
 		);
 	}
@@ -59,7 +61,8 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 		$this->items = array();
 
-		$balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+		$balances  = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+		$total_fees = Dashed_Slug_Wallets::get_fee_totals_per_coin();
 
 		global $wpdb;
 		$table_name_txs            = Dashed_Slug_Wallets::$table_name_txs;
@@ -120,6 +123,14 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 			if ( isset( $balances[ $symbol ] ) ) {
 				$new_row['balances'] = $balances[ $symbol ];
+			} else {
+				$balances[ $symbol ] = 0;
+			}
+
+			if ( isset( $total_fees[ $symbol ] ) ) {
+				$new_row['total_fees'] = $total_fees[ $symbol ];
+			} else {
+				$new_row['total_fees'] = 0;
 			}
 
 			if ( isset( $pending_withdrawal_counts[ $symbol  ] ) ) {
@@ -142,6 +153,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			case 'status':
 			case 'pending_wds':
 				return esc_html( $item[ $column_name ] );
+			case 'total_fees':
 			case 'balance':
 				return
 					sprintf( $item['sprintf'], $item[ $column_name ] );

@@ -22,19 +22,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 			// these have to do with the email confirmation API
 			add_filter( 'query_vars', array( &$this, 'filter_query_vars' ), 0 );
 			add_action( 'parse_request', array( &$this, 'handle_user_confirm_request' ), 0 );
+
+			// these actions send emails related to trasaction confirmations
 			add_action( 'wallets_send_user_confirm_email', array( &$this, 'send_user_confirm_email' ), 10, 1 );
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_inform_admins_enabled' ) ) {
+				add_action( 'wallets_send_user_confirm_email', array( &$this, 'send_inform_admins_email' ), 10, 1 );
+			}
+
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_receive_move_user_enabled' ) ) {
+				add_action( 'wallets_send_user_confirm_email', array( &$this, 'send_inform_receive_move_email' ), 10, 1 );
+			}
+
+
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_redirect_seconds', '3' );
-
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_admin_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_user_enabled', 'on' );
-
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_email_subject', __( 'Your withdrawal request requires confirmation. - ###COMMENT###', 'wallets' ) );
 			call_user_func(
-				$network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_withdraw_email_message', __(
-					<<<EMAIL
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_redirect_seconds',
+				'3'
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_withdraw_admin_enabled',
+				'on'
+			);
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_withdraw_user_enabled',
+				'on'
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_withdraw_email_subject',
+				__( 'Your withdrawal request requires confirmation. - ###COMMENT###', 'wallets' )
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_withdraw_email_message',
+				__( <<<EMAIL
 
 ###ACCOUNT###,
 
@@ -44,8 +74,9 @@ If you want the withdrawal to proceed, please click on this link to confirm:
 ###LINK###
 
 Coin symbol: ###SYMBOL###
+Amount: ###AMOUNT###
 Fees to be paid: ###FEE###
-Transacton requested at: ###CREATED_TIME_LOCAL###
+Transaction requested at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Extra transaction info (optional): ###EXTRA###
 
@@ -56,12 +87,62 @@ EMAIL
 				)
 			);
 
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_admin_enabled', '' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_user_enabled', 'on' );
-
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_email_subject', __( 'Your internal funds transfer request requires confirmation. - ###COMMENT###', 'wallets' ) );
 			call_user_func(
-				$network_active ? 'add_site_option' : 'add_option', 'wallets_confirm_move_email_message', __(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_receive_move_user_enabled',
+				'on'
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_receive_move_email_subject',
+				__( 'A user has sent you a transaction that needs to be confirmed. - ###COMMENT###', 'wallets' )
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_receive_move_email_message',
+				__( <<<EMAIL
+
+###OTHER_ACCOUNT###,
+
+User ###ACCOUNT### has initiated an internal transaction to send you some funds.
+
+You will receive the transaction when the transaction is confirmed.
+If you do not receive the transaction soon, you may wish to contact the user or an admin about it.
+
+Coin symbol: ###SYMBOL###
+Amount: ###AMOUNT###
+Transaction requested at: ###CREATED_TIME_LOCAL###
+Comment: ###COMMENT###
+
+EMAIL
+					, 'wallets'
+				)
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_move_admin_enabled',
+				''
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_move_user_enabled',
+				'on'
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_move_email_subject',
+				__( 'Your internal funds transfer request requires confirmation. - ###COMMENT###', 'wallets' )
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_move_email_message',
+				__(
 					<<<EMAIL
 
 ###ACCOUNT###,
@@ -72,9 +153,10 @@ If you want the transaction to proceed, please click on this link to confirm:
 ###LINK###
 
 Coin symbol: ###SYMBOL###
+Amount: ###AMOUNT###
 Fees to be paid: ###FEE###
 Transaction ID: ###TXID###
-Transacton created at: ###CREATED_TIME_LOCAL###
+Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 Tags: ###TAGS###
 
@@ -84,6 +166,58 @@ EMAIL
 					, 'wallets'
 				)
 			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_inform_admins_enabled',
+				'on'
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_inform_admins_subject',
+				__( 'A user transaction request requires confirmation. - ###COMMENT###', 'wallets' )
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_inform_admins_message',
+				__( <<<EMAIL
+
+User ###ACCOUNT### has requested to perform a transaction that requires confirmation.
+
+If you want the transaction to proceed, please log into your site and navigate to "Wallets" -> "Transactions".
+Then, find the transaction in the list and click on the "Admin accept" button.
+Any user with the "manage_wallets" capability can perform this action.
+
+Coin symbol: ###SYMBOL###
+Type: ###CATEGORY###
+Amount: ###AMOUNT###
+Fees to be paid: ###FEE###
+Transaction created at: ###CREATED_TIME_LOCAL###
+Comment: ###COMMENT###
+Tags: ###TAGS###
+
+If you do not want the transaction to proceed, you do not need to perform any action.
+You may click on the "Cancel" button to mark the transaction as cancelled.
+
+EMAIL
+					, 'wallets'
+				)
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_move_auto_days',
+				'0'
+			);
+
+			call_user_func(
+				$network_active ? 'add_site_option' : 'add_option',
+				'wallets_confirm_withdraw_auto_days',
+				'0'
+			);
+
 		}
 
 		public function filter_query_vars( $vars ) {
@@ -340,6 +474,188 @@ EMAIL
 			}
 		}
 
+		public function send_inform_admins_email( $row ) {
+			if ( is_object( $row ) ) {
+				$row = (array) $row;
+			}
+
+			if ( 'move' == $row['category'] && ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) ) {
+				return;
+			}
+
+			if ( 'withdraw' == $row['category'] && ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) {
+				return;
+			}
+
+			$subject = Dashed_Slug_Wallets::get_option( 'wallets_confirm_inform_admins_subject' );
+			$message = Dashed_Slug_Wallets::get_option( 'wallets_confirm_inform_admins_message' );
+
+			$user = get_userdata( $row['account'] );
+
+			if ( $user ) {
+				// prep user names
+				$row['account'] = $user->user_login;
+				$email          = $user->user_email;
+				if ( isset( $row['other_account'] ) ) {
+					$other_user = get_userdata( $row['other_account'] );
+					if ( $other_user ) {
+						$row['other_account'] = $other_user->user_login;
+					}
+				}
+
+				// delete some vars
+				unset( $row['blog_id'] );
+				unset( $row['updated_time'] );
+
+				// localize time based on wp timezone
+				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
+
+				// use pattern for displaying amounts
+				if ( isset( $row['symbol'] ) ) {
+					try {
+						$adapters = apply_filters( 'wallets_api_adapters', array() );
+						$adapter  = $adapters[ $row['symbol'] ];
+						$sprintf  = $adapter->get_sprintf();
+					} catch ( Exception $e ) {
+						$sprintf = '%01.8F';
+					}
+
+					if ( isset( $row['amount'] ) ) {
+						$row['amount'] = sprintf( $sprintf, $row['amount'] );
+					}
+					if ( isset( $row['fee'] ) ) {
+						$row['fee'] = sprintf( $sprintf, $row['fee'] );
+					}
+				}
+
+				// variable substitution
+				foreach ( $row as $field => $val ) {
+					$subject = str_replace( '###' . strtoupper( $field ) . '###', $val, $subject );
+					$message = str_replace( '###' . strtoupper( $field ) . '###', $val, $message );
+				}
+
+				$headers = array();
+
+				$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+
+				if ( $email_from && $email_from_name ) {
+					$headers[] = "From: $email_from_name <$email_from>";
+				} elseif ( $email_from ) {
+					$headers[] = "From: $email_from";
+				}
+
+				$admin_emails = Dashed_Slug_Wallets::get_admin_emails();
+
+
+				$result = wp_mail(
+					$admin_emails,
+					$subject,
+					$message,
+					$headers
+				);
+
+				if ( ! $result ) {
+					$this->_notices->error(
+						__( "The following errors occured while sending confirmation request email to admins: ", 'wallets' ) .
+						$e->getMessage()
+					);
+				}
+			}
+
+		}
+
+		public function send_inform_receive_move_email( $row ) {
+			if ( is_object( $row ) ) {
+				$row = (array) $row;
+			}
+
+			if ( 'withdraw' == $row['category'] ) {
+				return;
+			}
+
+			if ( 'move' == $row['category'] && ! Dashed_Slug_Wallets::get_option( 'wallets_confirm_receive_move_user_enabled' ) ) {
+				return;
+			}
+
+			$subject = Dashed_Slug_Wallets::get_option( 'wallets_confirm_receive_move_email_subject' );
+			$message = Dashed_Slug_Wallets::get_option( 'wallets_confirm_receive_move_email_message' );
+
+			$user = get_userdata( $row['account'] );
+
+			if ( $user ) {
+				// prep user names
+				$row['account'] = $user->user_login;
+				if ( isset( $row['other_account'] ) ) {
+					$other_user = get_userdata( $row['other_account'] );
+					if ( $other_user ) {
+						$row['other_account'] = $other_user->user_login;
+						$email = $other_user->user_email;
+					}
+				} else {
+					return;
+				}
+
+				// delete some vars
+				unset( $row['blog_id'] );
+				unset( $row['updated_time'] );
+
+				// localize time based on wp timezone
+				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
+
+				// use pattern for displaying amounts
+				if ( isset( $row['symbol'] ) ) {
+					try {
+						$adapters = apply_filters( 'wallets_api_adapters', array() );
+						$adapter  = $adapters[ $row['symbol'] ];
+						$sprintf  = $adapter->get_sprintf();
+					} catch ( Exception $e ) {
+						$sprintf = '%01.8F';
+					}
+
+					if ( isset( $row['amount'] ) ) {
+						$row['amount'] = sprintf( $sprintf, $row['amount'] );
+					}
+					if ( isset( $row['fee'] ) ) {
+						$row['fee'] = sprintf( $sprintf, $row['fee'] );
+					}
+				}
+
+				// variable substitution
+				foreach ( $row as $field => $val ) {
+					$subject = str_replace( '###' . strtoupper( $field ) . '###', $val, $subject );
+					$message = str_replace( '###' . strtoupper( $field ) . '###', $val, $message );
+				}
+
+				$headers = array();
+
+				$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+
+				if ( $email_from && $email_from_name ) {
+					$headers[] = "From: $email_from_name <$email_from>";
+				} elseif ( $email_from ) {
+					$headers[] = "From: $email_from";
+				}
+
+
+				$result = wp_mail(
+					$email,
+					$subject,
+					$message,
+					$headers
+				);
+
+				if ( ! $result ) {
+					$this->_notices->error(
+						__( "The following errors occured while sending notice about receiving a transaction that requires confirmation to $email: ", 'wallets' ) .
+						$e->getMessage()
+					);
+				}
+			}
+
+		}
+
 		public function action_admin_menu() {
 			if ( current_user_can( 'manage_wallets' ) ) {
 				add_submenu_page(
@@ -546,6 +862,18 @@ EMAIL
 			<?php
 		}
 
+		public function wallets_confirm_inform_admins_section_cb() {
+			?>
+			<p><?php esc_html_e( 'Decide whether admins are notified whenever a transaction requires admin confirmation.', 'wallets' ); ?></p>
+			<?php
+		}
+
+		public function wallets_confirm_auto_section_cb() {
+			?>
+			<p><?php esc_html_e( 'You can have transactions that are older than the specified amount of days to be automatically marked as "verified by admin".', 'wallets' ); ?></p>
+			<?php
+		}
+
 		public function action_admin_init() {
 			// move confirms
 
@@ -576,6 +904,8 @@ EMAIL
 				'wallets_confirm_move_admin_enabled'
 			);
 
+			// move sender confirm email
+
 			add_settings_field(
 				'wallets_confirm_move_user_enabled',
 				__( 'User confirmation required (e-mail)', 'wallets' ),
@@ -595,8 +925,6 @@ EMAIL
 				'wallets-menu-confirmations',
 				'wallets_confirm_move_user_enabled'
 			);
-
-			// move user confirm email
 
 			add_settings_field(
 				'wallets_confirm_move_email_subject',
@@ -630,6 +958,62 @@ EMAIL
 			register_setting(
 				'wallets-menu-confirmations',
 				'wallets_confirm_move_email_message'
+			);
+
+			// move user receipient confirm notice email
+
+			add_settings_field(
+				'wallets_confirm_receive_move_user_enabled',
+				__( 'Recipient user is notified by email', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_move_section',
+				array(
+					'label_for'   => 'wallets_confirm_receive_move_user_enabled',
+					'description' => __(
+						'If a user is about to receive an internal transaction that requires confirmation, notify that user.',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_receive_move_user_enabled'
+			);
+
+			add_settings_field(
+				'wallets_confirm_receive_move_email_subject',
+				__( 'Template for e-mail subject line:', 'wallets' ),
+				array( &$this, 'text_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_move_section',
+				array(
+					'label_for'   => 'wallets_confirm_receive_move_email_subject',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_receive_move_email_subject'
+			);
+
+			add_settings_field(
+				'wallets_confirm_receive_move_email_message',
+				__( 'Template for e-mail message body:', 'wallets' ),
+				array( &$this, 'textarea_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_move_section',
+				array(
+					'label_for'   => 'wallets_confirm_receive_move_email_message',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_receive_move_email_message'
 			);
 
 			// withdraw confirms
@@ -760,30 +1144,171 @@ EMAIL
 
 			register_setting(
 				'wallets-menu-confirmations',
-				'wallets_confirm_redirect_page'
+				'wallets_confirm_redirect_seconds'
 			);
+
+			// notify admins about needed confirms
+
+			add_settings_section(
+				'wallets_confirm_inform_admins_section',
+				__( 'Notify admins whenever their confirmation is required', 'wallets' ),
+				array( &$this, 'wallets_confirm_inform_admins_section_cb' ),
+				'wallets-menu-confirmations'
+			);
+
+			add_settings_field(
+				'wallets_confirm_inform_admins_enabled',
+				__( 'Notify admins when confirmation needed', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_inform_admins_section',
+				array(
+					'label_for'   => 'wallets_confirm_inform_admins_enabled',
+					'description' => __(
+						'When this is checked, admins with the manage_wallets capability will be notified about any transactions that require admin confirmation.', 'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_inform_admins_enabled'
+			);
+
+			add_settings_field(
+				'wallets_confirm_inform_admins_subject',
+				__( 'Template for e-mail subject line:', 'wallets' ),
+				array( &$this, 'text_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_inform_admins_section',
+				array(
+					'label_for'   => 'wallets_confirm_inform_admins_subject',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_inform_admins_subject'
+			);
+
+			add_settings_field(
+				'wallets_confirm_inform_admins_message',
+				__( 'Template for e-mail message body:', 'wallets' ),
+				array( &$this, 'textarea_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_inform_admins_section',
+				array(
+					'label_for'   => 'wallets_confirm_inform_admins_message',
+					'description' => __( 'See the bottom of this page for variable substitutions.' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_inform_admins_message'
+			);
+
+			// auto-confirms
+
+			add_settings_section(
+				'wallets_confirm_auto_section',
+				__( 'Auto-confirm transactions', 'wallets' ),
+				array( &$this, 'wallets_confirm_auto_section_cb' ),
+				'wallets-menu-confirmations'
+			);
+
+			add_settings_field(
+				'wallets_confirm_move_auto_days',
+				__( 'Auto-confirm internal transfers (days)', 'wallets' ),
+				array( &$this, 'integer_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_auto_section',
+				array(
+					'label_for'   => 'wallets_confirm_move_auto_days',
+					'description' => __(
+						'If you wish, internal transfers can be automatically marked as confirmed '
+						. 'by admins after the specified number of days has elapsed. Set to 0 '
+						. 'if you do not wish internal transfers to be auto-confirmed (default).',
+
+						'wallets'
+					),
+					'min'         => 0,
+					'max'         => 365,
+					'step'        => 1,
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_move_auto_days'
+			);
+
+			add_settings_field(
+				'wallets_confirm_withdraw_auto_days',
+				__( 'Auto-confirm withdrawals (days)', 'wallets' ),
+				array( &$this, 'integer_cb' ),
+				'wallets-menu-confirmations',
+				'wallets_confirm_auto_section',
+				array(
+					'label_for'   => 'wallets_confirm_withdraw_auto_days',
+					'description' => __(
+						'If you wish, withdrawals can be automatically marked as confirmed'
+						. ' by admins after the specified number of days has elapsed. Set to 0 '
+						. 'if you do not wish withdrawals to be auto-confirmed (default).',
+
+						'wallets'
+					),
+					'min'         => 0,
+					'max'         => 365,
+					'step'        => 1,
+				)
+			);
+
+			register_setting(
+				'wallets-menu-confirmations',
+				'wallets_confirm_withdraw_auto_days'
+			);
+
 
 		}
 
 		public function update_network_options() {
 			check_admin_referer( 'wallets-menu-confirmations-options' );
 
+			// checkboxes
 			foreach ( array(
 				'wallets_confirm_withdraw_admin_enabled',
 				'wallets_confirm_withdraw_user_enabled',
 				'wallets_confirm_move_admin_enabled',
 				'wallets_confirm_move_user_enabled',
+				'wallets_confirm_inform_admins_enabled',
+				'wallets_confirm_receive_move_user_enabled',
 			) as $checkbox_option_slug ) {
 					Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			}
 
+			// strings
 			foreach ( array(
 				'wallets_confirm_withdraw_email_subject',
 				'wallets_confirm_withdraw_email_message',
 				'wallets_confirm_move_email_subject',
 				'wallets_confirm_move_email_message',
+				'wallets_confirm_inform_admins_subject',
+				'wallets_confirm_inform_admins_message',
+				'wallets_confirm_receive_move_email_subject',
+				'wallets_confirm_receive_move_email_message',
 			) as $text_option_slug ) {
 				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING ) );
+			}
+
+			// integers
+			foreach ( array(
+				'wallets_confirm_redirect_seconds',
+				'wallets_confirm_move_auto_days',
+				'wallets_confirm_withdraw_auto_days',
+			) as $integer_option_slug ) {
+				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_NUMBER_INT ) );
 			}
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-confirmations', network_admin_url( 'admin.php' ) ) );
@@ -797,10 +1322,12 @@ EMAIL
 				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
 					switch_to_blog( $blog_id );
 					$this->confirm_transactions();
+					$this->auto_confirm_transactions();
 					restore_current_blog();
 				}
 			} else {
 				$this->confirm_transactions();
+				$this->auto_confirm_transactions();
 			}
 		}
 
@@ -843,7 +1370,7 @@ EMAIL
 			);
 
 			if ( false === $result ) {
-				error_log( sprintf( '%s failed to update unconfirmed withdrawals.', __FUNCTION__ ) );
+				error_log( sprintf( '%s: Failed to update unconfirmed withdrawals.', __FUNCTION__ ) );
 			}
 
 			// moves
@@ -871,7 +1398,60 @@ EMAIL
 			);
 
 			if ( false === $result ) {
-				error_log( sprintf( '%s failed to update unconfirmed moves between users.', __FUNCTION__ ) );
+				error_log( sprintf( '%s: Failed to update unconfirmed moves between users.', __FUNCTION__ ) );
+			}
+		}
+
+		public function auto_confirm_transactions() {
+			global $wpdb;
+
+			$batch_size     = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size' );
+			$move_days      = Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_auto_days', 0 );
+			$withdraw_days  = Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_auto_days', 0 );
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+			// if this option does not exist, uninstall script might be already running.
+			if ( ! $batch_size ) {
+				return;
+			}
+			$batch_size = absint( $batch_size );
+
+			foreach ( array( 'move', 'withdraw' ) as $category ) {
+				$days = absint( ${"{$category}_days"} );
+
+				if ( $days ) {
+					$sql = $wpdb->prepare(
+						"
+						UPDATE
+							$table_name_txs
+						SET
+							admin_confirm = 1,
+							status = 'pending'
+						WHERE
+							status = 'unconfirmed'
+							AND category = %s
+							AND ! admin_confirm
+							AND created_time < NOW() - INTERVAL %d DAY
+						LIMIT
+							%d
+						",
+						$category,
+						$days,
+						$batch_size
+					);
+
+					$result = $wpdb->query( $sql );
+					if ( false === $result ) {
+						error_log(
+							sprintf(
+								'%s: Failed to auto-confirm %s transactions due to: %s',
+								__FUNCTION__,
+								$category,
+								$wpdb->last_error
+							)
+						);
+					}
+				}
 			}
 		}
 	}

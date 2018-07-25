@@ -163,8 +163,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.5.6.min.js' ) ) {
-					$script = 'wallets-ko-3.5.6.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.6.0.min.js' ) ) {
+					$script = 'wallets-ko-3.6.0.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.5.6',
+					'3.6.0',
 					true
 				);
 
@@ -181,10 +181,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				include __DIR__ . '/wallets-ko-i18n.php';
 
 				// attach user preferences data to frontend knockout script
-				$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
-				if ( ! $fiat_symbol ) {
-					$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
-				}
+				$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 				wp_localize_script(
 					'wallets_ko', 'walletsUserData', array(
 						'fiatSymbol'                    => $fiat_symbol,
@@ -196,8 +193,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.5.6.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.5.6.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.6.0.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.6.0.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -206,12 +203,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.5.6',
+					'3.6.0',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.5.6.min.css' ) ) {
-					$front_styles = 'wallets-3.5.6.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.6.0.min.css' ) ) {
+					$front_styles = 'wallets-3.6.0.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -220,7 +217,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.5.6'
+					'3.6.0'
 				);
 
 				// if no fiat amounts are to be displayed, then explicitly hide them
@@ -601,8 +598,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.5.6';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = 'e6079cb';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.6.0';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '6ac33cd';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -840,9 +837,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @return An assoc array of symbols to total confirmed user balance sums.
 		 */
 		public static function get_balance_totals_per_coin() {
-			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
-			}
 			static $balances = array();
 			if ( $balances ) {
 				return $balances;
@@ -863,6 +857,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					status = 'done'
 				GROUP BY
 					symbol
+				ORDER BY
+					symbol
 				",
 				get_current_blog_id(),
 				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
@@ -873,6 +869,73 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				$balances[ $row->symbol ] = $row->balance;
 			}
 			return $balances;
+		}
+
+		/**
+		 * Get confirmed fee totals paid by all users, grouped by coin.
+		 *
+		 * @since 3.6.0 Introduced
+		 * @internal
+		 * @return An assoc array of symbols to total fees paid by confirmed transactions.
+		 */
+		public static function get_fee_totals_per_coin() {
+			static $fees = array();
+			if ( $fees ) {
+				return $fees;
+			}
+
+			global $wpdb;
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+			$user_fees_query = $wpdb->prepare(
+				"
+				SELECT
+					SUM( fee ) as fee,
+					symbol
+				FROM
+					$table_name_txs
+				WHERE
+					( blog_id = %d || %d ) AND
+					status = 'done'
+				GROUP BY
+					symbol
+				",
+				get_current_blog_id(),
+				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+			);
+
+			$results = $wpdb->get_results( $user_fees_query );
+			foreach ( $results as $row ) {
+				$fees[ $row->symbol ] = $row->fee;
+			}
+			return $fees;
+		}
+
+		public static function get_admin_emails() {
+			static $admin_emails = array();
+
+			if ( ! $admin_emails ) {
+				$roles__in = array();
+				foreach( wp_roles()->roles as $role_slug => $role ) {
+					if( ! empty( $role['capabilities']['manage_wallets'] ) )
+						$roles__in[] = $role_slug;
+				}
+
+				if ( $roles__in ) {
+					$users = get_users( array(
+						'roles__in' => $roles__in,
+						'fields' => array( 'id' , 'display_name', 'user_email' ),
+					) );
+
+					foreach ( $users as $user ) {
+						if ( user_can( $user->id, 'manage_wallets' ) ) {
+							$admin_emails[] = "{$user->display_name} <{$user->user_email}>";
+						}
+					}
+				}
+			}
+
+			return $admin_emails;
 		}
 
 		//////// PHP API v1 (deprecated)

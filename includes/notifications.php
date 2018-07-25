@@ -9,13 +9,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 		private $emails_enabled             = false;
 		private $buddypress_enabled         = false;
 		private $simple_history_enabled     = false;
+		private $error_forwarding_enabled   = false;
+
 
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
-			$this->emails_enabled         = Dashed_Slug_Wallets::get_option( 'wallets_email_enabled', 'on' );
-			$this->buddypress_enabled     = Dashed_Slug_Wallets::get_option( 'wallets_buddypress_enabled' );
-			$this->simple_history_enabled = Dashed_Slug_Wallets::get_option( 'wallets_history_enabled', 'on' );
+			$this->emails_enabled           = Dashed_Slug_Wallets::get_option( 'wallets_email_enabled', 'on' );
+			$this->buddypress_enabled       = Dashed_Slug_Wallets::get_option( 'wallets_buddypress_enabled' );
+			$this->simple_history_enabled   = Dashed_Slug_Wallets::get_option( 'wallets_history_enabled', 'on' );
+			$this->error_forwarding_enabled = Dashed_Slug_Wallets::get_option( 'wallets_email_error_forwarding_enabled' );
 
 			add_action( 'wallets_admin_menu', array( &$this, 'bind_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'bind_settings' ) );
@@ -284,6 +287,25 @@ NOTIFICATION
 			register_setting(
 				'wallets-menu-notifications',
 				'wallets_email_from_name'
+			);
+
+			add_settings_field(
+				'wallets_email_error_forwarding_enabled',
+				__( 'Forward errors to admins', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for'   => 'wallets_email_error_forwarding_enabled',
+					'description' => __(
+						'Bcc any notifications about transaction errors to users who have the <code>manage_wallets</code> capability (admins).', 'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_email_error_forwarding_enabled'
 			);
 
 			add_settings_field(
@@ -786,6 +808,7 @@ NOTIFICATION
 				'wallets_email_move_receive_enabled',
 				'wallets_email_deposit_enabled',
 				'wallets_email_enabled',
+				'wallets_email_error_forwarding_enabled',
 				'wallets_buddypress_enabled',
 				'wallets_history_enabled',
 			) as $checkbox_option_slug ) {
@@ -955,9 +978,10 @@ NOTIFICATION
 
 			if ( $this->emails_enabled ) {
 				$this->notify_user_by_email(
-					$tx_data->user->user_email,
+					$tx_data->user,
 					$subject,
-					$message
+					$message,
+					$this->error_forwarding_enabled
 				);
 			}
 		}
@@ -1012,7 +1036,8 @@ NOTIFICATION
 			$this->notify_user_by_email(
 				$tx_data->user,
 				$subject,
-				$message
+				$message,
+				$this->error_forwarding_enabled
 			);
 		}
 
@@ -1132,7 +1157,7 @@ NOTIFICATION
 			return strtr( $string, $replace_pairs );
 		}
 
-		private function notify_user_by_email( $user, $subject, $message ) {
+		private function notify_user_by_email( $user, $subject, $message, $bcc_admins = false ) {
 			$disable_emails = get_user_meta( $user->ID, 'wallets_disable_emails', true );
 
 			if ( $disable_emails ) {
@@ -1151,6 +1176,11 @@ NOTIFICATION
 				$headers[] = "From: $email_from";
 			}
 
+			if ( $bcc_admins ) {
+				$admin_emails = Dashed_Slug_Wallets::get_admin_emails();
+				$headers[] = 'Bcc: ' . implode( ', ', $admin_emails );
+			}
+
 			try {
 				wp_mail(
 					$email_to,
@@ -1165,7 +1195,6 @@ NOTIFICATION
 				);
 			}
 		}
-
 	}
 
 	new Dashed_Slug_Wallets_Notifications();

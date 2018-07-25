@@ -509,12 +509,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				echo sprintf(
 					__(
 						'App extensions, such as the <a href="%s">WooCommerce</a> and <a href="%s">Events Manager</a> payment gateways, use exchange rates for price calculation. ' .
-						'Choose which API or APIs will be used to pull exchange rates between various cryptocurrencies.', 'wallets'
+						'Choose which external API or APIs will be used to pull exchange rates between various cryptocurrencies.',
+
+						'wallets'
 					),
 					'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/',
 					'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/'
 				);
 			?>
+			</p>
+			<p class="card">
+				<?php
+					echo __(
+						'TIP: You can use the </code>[wallets_rates]</code> shortcode to display a list of exchange rates in the frontend. ' .
+						'Note: The UI will not be displayed if the current user has selected "none" as their fiat currency default, in their profile section.',
+
+						'wallets'
+					);
+				?>
 			</p>
 			<?php
 		}
@@ -735,7 +747,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_yobit( $cryptos ) {
-			$json = self::file_get_contents( 'https://yobit.net/api/3/info' );
+			$url = 'https://yobit.net/api/3/info';
+			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) && isset( $obj->pairs ) ) {
@@ -752,7 +765,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_cryptopia( $cryptos ) {
-			$json = self::file_get_contents( 'https://www.cryptopia.co.nz/api/GetCurrencies' );
+			$url = 'https://www.cryptopia.co.nz/api/GetCurrencies';
+			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) && isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) ) {
@@ -768,7 +782,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_tradesatoshi( $cryptos ) {
-			$json = self::file_get_contents( 'https://tradesatoshi.com/api/public/getcurrencies' );
+			$url = 'https://tradesatoshi.com/api/public/getcurrencies';
+			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result ) ) {
@@ -860,25 +875,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			$fiat_symbol    = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			$symbols_fiats  = array_unique( array_merge( array( $fiat_symbol ), array( 'BTC','USD','EUR' ) ) );
 
-			$url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=' .
-					implode(',', $symbols_crypto ) .
-					'&tsyms=' .
-					implode(',', $symbols_fiats );
+			if ( $symbols_crypto ) {
+				$url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=' .
+						implode(',', $symbols_crypto ) .
+						'&tsyms=' .
+						implode(',', $symbols_fiats );
 
-
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) ) {
-					foreach ( $obj as $quote => $rate_data ) {
-						foreach ( $rate_data as $base => $rate ) {
-							if ( $base != $quote ) {
-								$rates[ "{$base}_{$quote}" ] = $rate;
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_object( $obj ) ) {
+						foreach ( $obj as $quote => $rate_data ) {
+							foreach ( $rate_data as $base => $rate ) {
+								if ( $base != $quote ) {
+									$rates[ "{$base}_{$quote}" ] = $rate;
+								}
 							}
 						}
 					}
 				}
 			}
+
 			return $rates;
 		}
 
@@ -1144,6 +1161,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			self::load_data();
 			return false !== array_search( $symbol, self::$cryptos );
 		}
+
+		/**
+		 * Determines which fiat coin must be used to display amounts to the specified user.
+		 *
+		 * @return string Fiat symbol or 'none' if no selection.
+		 *
+		 */
+		public static function get_fiat_selection( $user = null ) {
+			if ( is_numeric( $user ) ) {
+				$user_id = absint( $user );
+			} elseif ( is_a( $user, 'WP_User' ) ) {
+				$user_id = $user->ID;
+			} else {
+				$user_id = get_current_user_id();
+			}
+
+			$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
+			if ( ! $fiat_symbol ) {
+				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+			}
+			return $fiat_symbol;
+		}
+
 	}
 
 	new Dashed_Slug_Wallets_Rates();

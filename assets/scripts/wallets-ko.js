@@ -652,7 +652,7 @@
 		};
 
 		// bind the viewmodel
-		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value' ).each( function( i, el ) {
+		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value,.rates' ).each( function( i, el ) {
 			ko.applyBindings( walletsViewModel, el );
 		} );
 

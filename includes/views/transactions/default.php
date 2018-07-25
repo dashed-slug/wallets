@@ -1,4 +1,5 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
+<?php require_once( 'default/fragments.php'); // load knockout templates to interpolate columns ?>
 
 	<form class="dashed-slug-wallets transactions" data-bind="if: Object.keys( coins() ).length > 0" onsubmit="return false;">
 		<?php
@@ -14,149 +15,49 @@
 		<table data-bind="if: transactions().length, visible: transactions().length">
 			<thead>
 				<tr>
-					<th class="type"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?></th>
-					<th class="tags"><?php echo apply_filters( 'wallets_ui_text_tags', esc_html__( 'Tags', 'wallets-front' ) ); ?></th>
-					<th class="time"><?php echo apply_filters( 'wallets_ui_text_time', esc_html__( 'Time', 'wallets-front' ) ); ?></th>
-					<th class="amount"><?php echo apply_filters( 'wallets_ui_text_amountplusfee', esc_html__( 'Amount (+fee)', 'wallets-front' ) ); ?></th>
-					<th class="fee"><?php echo apply_filters( 'wallets_ui_text_fee', esc_html__( 'Fee', 'wallets-front' ) ); ?></th>
-					<th class="from user"><?php echo apply_filters( 'wallets_ui_text_from', esc_html__( 'From', 'wallets-front' ) ); ?></th>
-					<th class="to user"><?php echo apply_filters( 'wallets_ui_text_to', esc_html__( 'To', 'wallets-front' ) ); ?></th>
-					<th class="txid"><?php echo apply_filters( 'wallets_ui_text_txid', esc_html__( 'Tx ID', 'wallets-front' ) ); ?></th>
-					<th class="comment"><?php echo apply_filters( 'wallets_ui_text_comment', esc_html__( 'Comment', 'wallets-front' ) ); ?></th>
-					<th class="confirmations"><?php echo apply_filters( 'wallets_ui_text_confirmations', esc_html__( 'Confirmations', 'wallets-front' ) ); ?></th>
-					<th class="status"><?php echo apply_filters( 'wallets_ui_text_status', esc_html__( 'Status', 'wallets-front' ) ); ?></th>
-					<th class="retries"><?php echo apply_filters( 'wallets_ui_text_retriesleft', esc_html__( 'Retries&nbsp;left', 'wallets-front' ) ); ?></th>
-					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
-					?>
-					<th class="admin_confirm"><?php echo apply_filters( 'wallets_ui_text_adminconfirm', esc_html__( 'Admin&nbsp;confirm', 'wallets-front' ) ); ?></th>
-					<?php
-					endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
-					?>
-					<th class="admin_confirm"><?php echo apply_filters( 'wallets_ui_text_userconfirm', esc_html__( 'User&nbsp;confirm', 'wallets-front' ) ); ?></th>
-					<?php endif; ?>
+					<?php foreach ( $atts['columns'] as $column ): ?>
+					<th
+						class="<?php echo esc_attr( $column ); ?>"
+						data-bind="template: { name: 'wallets-txs-headers-<?php echo esc_attr( $column ); ?>' }">
+					</th>
+					<?php endforeach; ?>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: transactions()">
 				<tr data-bind="if: ( category == 'withdraw' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
-					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
-					<td class="tags" data-bind="text: tags"></td>
-					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
-					<td class="from user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
-					<td class="to user">
-						<div data-bind="if: address_uri">
-							<a target="_blank" rel="noopener noreferrer" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
-						</div>
-						<div data-bind="if: ! address_uri">
-							<span data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
-						</div>
+					<?php foreach ( $atts['columns'] as $column ): ?>
+					<td
+						class="<?php echo esc_attr( $column ); ?>"
+						data-bind="template: { name: 'wallets-txs-withdraw-<?php echo esc_attr( $column ); ?>' }">
 					</td>
-					<td class="txid">
-						<div data-bind="if: tx_uri">
-							<a target="_blank" rel="noopener noreferrer" data-bind="text: txid, attr: { href: tx_uri }"></a>
-						</div>
-						<div data-bind="if: ! tx_uri">
-							<span data-bind="text: txid"></span>
-						</div>
-					</td>
-					<td class="comment" data-bind="text: comment"></td>
-					<td class="confirmations" data-bind="text: confirmations"></td>
-					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
-					<td class="retries" data-bind="text: ( 'unconfirmed' == status || 'pending' == status ) ? retries : ''"></td>
-					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
-					?>
-					<td class="admin_confirm" data-bind="text: parseInt( admin_confirm ) ? '\u2611' : '\u2610' "></td>
-					<?php
-					endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
-					?>
-					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
-					<?php endif; ?>
+					<?php endforeach; ?>
 				</tr>
 
 				<tr data-bind="if: ( category == 'deposit' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
-					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
-					<td class="tags" data-bind="text: tags"></td>
-					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
-					<td class="from user">
-						<div data-bind="if: address_uri">
-							<a target="_blank" rel="noopener noreferrer" data-bind="text: extra ? address + ' (' + extra + ')' : address, attr: { href: address_uri }"></a>
-						</div>
-						<div data-bind="if: ! address_uri">
-							<span data-bind="text: extra ? address + ' (' + extra + ')' : address"></span>
-						</div>
+					<?php foreach ( $atts['columns'] as $column ): ?>
+					<td
+						class="<?php echo esc_attr( $column ); ?>"
+						data-bind="template: { name: 'wallets-txs-deposit-<?php echo esc_attr( $column ); ?>' }">
 					</td>
-					<td class="to user" data-bind="text: '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>'"></td>
-					<td class="txid">
-						<div data-bind="if: tx_uri">
-							<a target="_blank" rel="noopener noreferrer" data-bind="text: txid, attr: { href: tx_uri }"></a>
-						</div>
-						<div data-bind="if: ! tx_uri">
-							<span data-bind="text: txid"></span>
-						</div>
-					</td>
-					<td class="comment" data-bind="text: comment"></td>
-					<td class="confirmations" data-bind="text: confirmations"></td>
-					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
-					<td class="retries"></td>
-					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
-					?>
-					<td class="admin_confirm"></td>
-					<?php
-					endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
-					?>
-					<td class="user_confirm"></td>
-					<?php endif; ?>
+					<?php endforeach; ?>
 				</tr>
 
 				<tr data-bind="if: ( category == 'move' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
-					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
-					<td class="tags" data-bind="text: tags"></td>
-					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
-					<td class="from user" data-bind="text: (amount>= 0 ? other_account_name : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
-					<td class="to user" data-bind="text: (amount < 0 ? other_account_name : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
-					<td class="txid" data-bind="text: txid"></td>
-					<td class="comment" data-bind="text: comment"></td>
-					<td class="confirmations"></td>
-					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
-					<td class="retries"></td>
-					<?php
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_admin_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_admin_enabled' ) ) :
-					?>
-					<td class="admin_confirm" data-bind="text: admin_confirm ? '\u2611' : '\u2610' "></td>
-					<?php
-					endif;
-					if ( Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) || Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) :
-					?>
-					<td class="user_confirm" data-bind="text: parseInt( user_confirm ) ?  '\u2611' : '\u2610' "></td>
-					<?php endif; ?>
+					<?php foreach ( $atts['columns'] as $column ): ?>
+					<td
+						class="<?php echo esc_attr( $column ); ?>"
+						data-bind="template: { name: 'wallets-txs-move-<?php echo esc_attr( $column ); ?>' }">
+					</td>
+					<?php endforeach; ?>
 				</tr>
 
 				<tr data-bind="if: ( category == 'trade' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
-					<td class="type" data-bind="text: wallets_ko_i18n[ category ]"></td>
-					<td class="tags" data-bind="text: tags"></td>
-					<td class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></td>
-					<td class="amount" data-bind="text: amount_string, attr: { title: amount_fiat }"></td>
-					<td class="fee" data-bind="text: fee_string, attr: { title: fee_fiat }"></td>
-					<td class="from user" data-bind="text: (amount >= 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
-					<td class="to user" data-bind="text: (amount < 0 ? '' : '<?php echo apply_filters( 'wallets_ui_text_me', esc_attr__( 'me', 'wallets-front' ) ); ?>')"></td>
-					<td class="txid" data-bind="text: txid"></td>
-					<td class="comment" data-bind="text: comment"></td>
-					<td class="confirmations"></td>
-					<td class="status" data-bind="text: wallets_ko_i18n[ status ]"></td>
-					<td class="retries"></td>
-					<td class="admin_confirm"></td>
-					<td class="user_confirm"></td>
+					<?php foreach ( $atts['columns'] as $column ): ?>
+					<td
+						class="<?php echo esc_attr( $column ); ?>"
+						data-bind="template: { name: 'wallets-txs-trade-<?php echo esc_attr( $column ); ?>' }">
+					</td>
+					<?php endforeach; ?>
 				</tr>
 
 			</tbody>

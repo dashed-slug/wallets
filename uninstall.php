@@ -44,6 +44,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_email_enabled' );
 	wallets_delete_option( 'wallets_email_from' );
 	wallets_delete_option( 'wallets_email_from_name' );
+	wallets_delete_option( 'wallets_email_error_forwarding_enabled' );
 	wallets_delete_option( 'wallets_buddypress_enabled' );
 	wallets_delete_option( 'wallets_history_enabled' );
 
@@ -82,6 +83,14 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_confirm_move_email_message' );
 	wallets_delete_option( 'wallets_confirm_redirect_page' );
 	wallets_delete_option( 'wallets_confirm_redirect_seconds' );
+	wallets_delete_option( 'wallets_confirm_inform_admins_enabled' );
+	wallets_delete_option( 'wallets_confirm_inform_admins_subject' );
+	wallets_delete_option( 'wallets_confirm_inform_admins_message' );
+	wallets_delete_option( 'wallets_confirm_receive_move_user_enabled' );
+	wallets_delete_option( 'wallets_confirm_receive_move_email_subject' );
+	wallets_delete_option( 'wallets_confirm_receive_move_email_message' );
+	wallets_delete_option( 'wallets_confirm_move_auto_days' );
+	wallets_delete_option( 'wallets_confirm_withdraw_auto_days' );
 
 	// remove exchange rate providers settings
 	wallets_delete_option( 'wallets_rates_fixer_key' );

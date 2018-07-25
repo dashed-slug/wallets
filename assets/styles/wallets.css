@@ -20,6 +20,13 @@
 	width: 100%;
 }
 
+.dashed-slug-wallets.rates .rate {
+	text-align: right;
+}
+.dashed-slug-wallets.rates tbody .rate {
+	font-family: monospace;
+}
+
 .dashed-slug-wallets.move label.amount,
 .dashed-slug-wallets.withdraw label.amount {
 	width: 65%;
@@ -111,7 +118,8 @@
 
 .dashed-slug-wallets.transactions-rows li .type,
 .dashed-slug-wallets.transactions-rows li .status,
-.dashed-slug-wallets.transactions-rows li .from.user {
+.dashed-slug-wallets.transactions-rows li .from.user,
+.dashed-slug-wallets.transactions-rows li .from-user {
 	float: left;
 	clear: both;
 	font-size: smaller;
@@ -121,7 +129,8 @@
 .dashed-slug-wallets.transactions-rows li .tags,
 .dashed-slug-wallets.transactions-rows li .confirmations,
 .dashed-slug-wallets.transactions-rows li .retries,
-.dashed-slug-wallets.transactions-rows li .to.user {
+.dashed-slug-wallets.transactions-rows li .to.user,
+.dashed-slug-wallets.transactions-rows li .to-user {
 	float: right;
 	font-size: smaller;
 }
@@ -165,12 +174,7 @@
 	content: "\201D"
 }
 
-.dashed-slug-wallets.balance.balance-list tbody td.icon {
-	width: 64px;
-	height: 64px;
-}
-
-.dashed-slug-wallets.deposit.deposit-list tbody td.icon {
+.dashed-slug-wallets tbody td.icon {
 	width: 64px;
 	height: 64px;
 }
