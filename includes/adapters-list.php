@@ -64,6 +64,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 
 			echo Dashed_Slug_Wallets_TXs::$tx_columns . "\n";
 			foreach ( $rows as &$row ) {
+				$account_user = get_user_by( 'id', $row[ 1 ] );
+				if ( false !== $account_user ) {
+					$row[ 1 ] = $account_user->user_email;
+				}
+				$other_account_user = get_user_by( 'id', $row[ 2 ] );
+				if ( false !== $other_account_user ) {
+					$row[ 2 ] = $other_account_user->user_email;
+				}
+
 				fputcsv( $fh, $row, ',' );
 			}
 		}

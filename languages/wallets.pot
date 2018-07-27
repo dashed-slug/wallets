@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-07-25 10:13:31+00:00\n"
+"POT-Creation-Date: 2018-07-27 13:52:49+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -95,16 +95,16 @@ msgstr ""
 msgid "Renew deposit addresses"
 msgstr ""
 
-#: includes/adapters-list.php:87
+#: includes/adapters-list.php:96
 msgid "Could not reset cold storage deposit address for %1$s: %2$s"
 msgstr ""
 
-#: includes/adapters-list.php:122
+#: includes/adapters-list.php:131
 msgid "Could not reset user deposit addresses for %1$s: %2$s"
 msgstr ""
 
-#: includes/adapters-list.php:147 includes/adapters-list.php:166
-#: includes/adapters-list.php:208 includes/admin-menu.php:63
+#: includes/adapters-list.php:156 includes/adapters-list.php:175
+#: includes/adapters-list.php:217 includes/admin-menu.php:63
 #: includes/caps.php:101 includes/caps.php:168
 #: includes/coin-adapter-bitcoin.php:58 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:279 includes/coin-adapter.php:228
@@ -113,35 +113,35 @@ msgstr ""
 #: includes/confirmations.php:674 includes/cron.php:525
 #: includes/frontend-settings.php:194 includes/notifications.php:724
 #: includes/rates.php:294 includes/transactions.php:91
-#: includes/transactions.php:930 includes/transactions.php:1123
-#: includes/transactions.php:1145 includes/transactions.php:1167
-#: includes/transactions.php:1188 includes/transactions.php:1209
-#: includes/transactions.php:1233
+#: includes/transactions.php:930 includes/transactions.php:1137
+#: includes/transactions.php:1159 includes/transactions.php:1181
+#: includes/transactions.php:1202 includes/transactions.php:1223
+#: includes/transactions.php:1247
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: includes/adapters-list.php:153 includes/adapters-list.php:172
+#: includes/adapters-list.php:162 includes/adapters-list.php:181
 #: includes/caps.php:96 includes/cold-storage.php:119 includes/json-api.php:413
 #: includes/json-api.php:456 includes/json-api.php:706
 #: includes/json-api.php:749 includes/transactions.php:936
-#: includes/transactions.php:1127 includes/transactions.php:1149
-#: includes/transactions.php:1171 includes/transactions.php:1192
-#: includes/transactions.php:1213 includes/transactions.php:1237
+#: includes/transactions.php:1141 includes/transactions.php:1163
+#: includes/transactions.php:1185 includes/transactions.php:1206
+#: includes/transactions.php:1227 includes/transactions.php:1251
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
-#: includes/adapters-list.php:213
+#: includes/adapters-list.php:222
 msgid "Bitcoin and Altcoin Wallets coin adapters list"
 msgstr ""
 
-#: includes/adapters-list.php:214
+#: includes/adapters-list.php:223
 msgid ""
 "This plugin uses Coin Adapters to communicate with actual coin wallets. A "
 "Bitcoin core adapter is built-in, and you can download more coin adapters "
 "for free from the dashed-slug website."
 msgstr ""
 
-#: includes/adapters-list.php:216
+#: includes/adapters-list.php:225
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
@@ -1938,65 +1938,65 @@ msgid ""
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:601
+#: includes/wallets-core.php:604
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:602
+#: includes/wallets-core.php:605
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:603
+#: includes/wallets-core.php:606
 msgid "Web Server"
 msgstr ""
 
-#: includes/wallets-core.php:604
+#: includes/wallets-core.php:607
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:605
+#: includes/wallets-core.php:608
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:606
+#: includes/wallets-core.php:609
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:607
+#: includes/wallets-core.php:610
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:608
+#: includes/wallets-core.php:611
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:609
+#: includes/wallets-core.php:612
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:610
+#: includes/wallets-core.php:613
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:627
+#: includes/wallets-core.php:630
 msgid "Loaded"
 msgstr ""
 
-#: includes/wallets-core.php:627
+#: includes/wallets-core.php:630
 msgid "Not loaded"
 msgstr ""
 
-#: includes/wallets-core.php:652
+#: includes/wallets-core.php:655
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:1199
+#: includes/wallets-core.php:1202
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1203
+#: includes/wallets-core.php:1206
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 

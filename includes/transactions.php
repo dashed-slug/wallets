@@ -997,6 +997,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						$total_rows++;
 
+						if ( $data[ 1 ] && ! is_numeric( $data[ 1 ] ) ) {
+							$account_user = get_user_by( 'email', $data[ 1 ] );
+							if ( false !== $account_user ) {
+								$data[ 1 ] = $account_user->ID;
+							}
+						}
+
+						if ( $data[ 2 ] && ! is_numeric( $data[ 2 ] ) ) {
+							$other_account_user = get_user_by( 'email', $data[ 2 ] );
+							if ( false !== $other_account_user ) {
+								$data[ 2 ] = $other_account_user->ID;
+							}
+						}
+
 						if ( $data[4] ) { // only insert rows with a TXID
 							$rows_affected = $wpdb->query(
 								$wpdb->prepare(

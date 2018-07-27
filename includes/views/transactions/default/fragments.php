@@ -305,4 +305,3 @@
 <script type="text/html" id="wallets-txs-trade-user_confirm">
 	&mdash;
 </script>
-wa

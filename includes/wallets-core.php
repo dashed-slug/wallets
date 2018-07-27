@@ -163,8 +163,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.6.0.min.js' ) ) {
-					$script = 'wallets-ko-3.6.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.6.1.min.js' ) ) {
+					$script = 'wallets-ko-3.6.1.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.6.0',
+					'3.6.1',
 					true
 				);
 
@@ -193,8 +193,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.6.0.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.6.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.6.1.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.6.1.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -203,12 +203,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.6.0',
+					'3.6.1',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.6.0.min.css' ) ) {
-					$front_styles = 'wallets-3.6.0.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.6.1.min.css' ) ) {
+					$front_styles = 'wallets-3.6.1.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -217,7 +217,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.6.0'
+					'3.6.1'
 				);
 
 				// if no fiat amounts are to be displayed, then explicitly hide them
@@ -587,19 +587,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		}
 
 		public function action_wp_dashboard_setup() {
-			wp_add_dashboard_widget(
-				'wallets-dashboard-widget',
-				'Bitcoin and Altcoin Wallets',
-				array( &$this, 'dashboard_widget_cb' )
-			);
+
+			if ( current_user_can( 'manage_wallets' ) || current_user_can( 'activate_plugins' ) ) {
+				wp_add_dashboard_widget(
+					'wallets-dashboard-widget',
+					'Bitcoin and Altcoin Wallets',
+					array( &$this, 'dashboard_widget_cb' )
+				);
+			}
 		}
 
 		public function dashboard_widget_cb() {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.6.0';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '6ac33cd';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.6.1';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '7701935';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );

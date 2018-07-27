@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.7
 Requires PHP: 5.6
-Stable tag: 3.6.0
+Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,9 +268,26 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 I do not have plans to add fiat currency deposits. That is not to say that someone cannot develop an extension to do this.
 
-= Can you build an exchange on top of the plugin? =
+= Can I use an exchange to facilitate cryptocurrency trading on top of this plugin? =
 
-Yes this is in the future plans, but it is a huge undertaking! For now you can use the [ShapeShift app extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) that lets you display a front-end UI to the [ShapeShift.io](https://shapeshift.io/) service.
+Yes, an [Exchange extension](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) is now available to premium dashed-slug members. The relevant blog post announcement [is here](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
+
+Alternatively you can use the [ShapeShift app extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) that lets you display a front-end UI to the [ShapeShift.io](https://shapeshift.io/) service.
+
+= In the adapters list view, why is the Hot Wallet Balance not equal to the Sum of User Balances? =
+
+The Hot Wallet Balance and the Users Balances are not the same thing. The difference is explained in the *Glossary* section of the documentation.
+
+Reasons why the two amounts would diverge:
+
+1. As users pay fees for transactions, their total balances decrease but the wallet balance stays the same.
+2. If you have used the cold storage feature, or alternatively if you have deposited/withdrawn directly from the wallet and not via the plugin, then the balances will not match. See the *Cold Storage* section in the documentation for more.
+
+= My site was hacked and some funds were stolen. Can you help? =
+
+I regret that I cannot help you. As you may know, cryptocurrency transactions are non-reversible. This is why the security disclaimer is there - you, as an administrator, are solely responsible for the security of your site. There is no way I could assume responsibility for lost funds. I do not hold private keys to any of your or your users' funds.
+
+If you have evidence that your funds were stolen you should go to the police. In some situations it may be possible to track down the thieves.
 
 = I want to pay for premium membership but cannot or do not want to pay via PayPal. =
 
@@ -308,6 +325,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.1 =
+- Improve: Import/export CSV function now lets an admin to export transactions and reimport them to a new system where the users have different user IDs. Users are represented by emails in the CSV file.
+- Improve: Debug info in Dashboard screen is only shown to users with the `manage_wallets` or `activate_plugins` capability (i.e. admins).
+- Fix: Typo in `[wallets_transactions]` shortcode where the "wa" string was erroneously included in the markup.
 
 = 3.6.0 =
 - Add: The `default` template of the `[wallets_transactions]` shortcode now accepts a list of columns as an optional argument.
@@ -926,7 +948,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.0 addresses a number of user requests.
+Version 3.6.1 makes the CSV import/export function more robust and fixes minor bugs.
 
 == Donating ==
 
