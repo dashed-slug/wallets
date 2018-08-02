@@ -87,6 +87,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					if ( isset( $instance['columns'] ) && $instance['columns'] ) {
 						$shortcode .= " columns=\"$instance[columns]\"";
 					}
+					if ( isset( $instance['qrsize'] ) && $instance['qrsize'] ) {
+						$shortcode .= " qrsize=\"$instance[qrsize]\"";
+					}
 					$shortcode .= ']';
 
 					echo do_shortcode( $shortcode );
@@ -145,6 +148,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 						'wallets'
 					); ?></p>
 			</label>
+
+			<?php elseif ( 'wallets_deposit' == $this->widget ): ?>
+			<label>
+				<?php esc_html_e( 'QR code size (px)', 'wallets' ); ?><br />
+					<input
+						type="number"
+						min="0"
+						max="1024"
+						step="1"
+						id="<?php echo $this->get_field_id( 'qrsize' ); ?>"
+						name="<?php echo $this->get_field_name( 'qrsize' ); ?>"
+						value="<?php echo esc_attr( $instance['qrsize'] ); ?>">
+					</input>
+
+					<p class="description"><?php esc_html_e(
+						'Size of the deposit QR code, in pixels. If this is left empty, no size is set.',
+
+						'wallets'
+					); ?></p>
+			</label>
 			<?php endif;
 		}
 
@@ -162,6 +185,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 				$columns = array_map( 'trim', $columns );
 				$columns = array_intersect( $columns, Dashed_Slug_Wallets_Shortcodes::$tx_columns );
 				$instance['columns'] = implode( ',', $columns );
+
+			} elseif ( isset( $new_instance['qrsize'] ) ) {
+				$instance['qrsize'] = $new_instance['qrsize'] ? absint( $new_instance['qrsize'] ) : '';
 			}
 
 			return $instance;

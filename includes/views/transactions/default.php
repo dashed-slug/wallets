@@ -24,7 +24,9 @@
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: transactions()">
-				<tr data-bind="if: ( category == 'withdraw' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
+
+				<!-- ko if: ( category == 'withdraw' ) -->
+				<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="withdraw">
 					<?php foreach ( $atts['columns'] as $column ): ?>
 					<td
 						class="<?php echo esc_attr( $column ); ?>"
@@ -32,8 +34,10 @@
 					</td>
 					<?php endforeach; ?>
 				</tr>
+				<!-- /ko -->
 
-				<tr data-bind="if: ( category == 'deposit' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
+				<!-- ko if: ( category == 'deposit' ) -->
+				<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
 					<?php foreach ( $atts['columns'] as $column ): ?>
 					<td
 						class="<?php echo esc_attr( $column ); ?>"
@@ -41,8 +45,10 @@
 					</td>
 					<?php endforeach; ?>
 				</tr>
+				<!-- /ko -->
 
-				<tr data-bind="if: ( category == 'move' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
+				<!-- ko if: ( category == 'move' ) -->
+				<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
 					<?php foreach ( $atts['columns'] as $column ): ?>
 					<td
 						class="<?php echo esc_attr( $column ); ?>"
@@ -50,8 +56,10 @@
 					</td>
 					<?php endforeach; ?>
 				</tr>
+				<!-- /ko -->
 
-				<tr data-bind="if: ( category == 'trade' ), css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
+				<!-- ko if: ( category == 'trade' ) -->
+				<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
 					<?php foreach ( $atts['columns'] as $column ): ?>
 					<td
 						class="<?php echo esc_attr( $column ); ?>"
@@ -59,6 +67,7 @@
 					</td>
 					<?php endforeach; ?>
 				</tr>
+				<!-- /ko -->
 
 			</tbody>
 		</table>

@@ -93,11 +93,11 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 			try {
 				$balance             = $adapter->get_balance();
-				$status              = esc_html__( 'Responding', 'wallets' );
+				$status              = true;
 
 			} catch ( Exception $e ) {
 				$inaccounts = $withdrawable = $balance = esc_html__( 'n/a', 'wallets' );
-				$status     = sprintf( esc_html__( 'Not Responding: %s', 'wallets' ), $e->getMessage() );
+				$status     = $e->getMessage();
 			}
 
 			try {
@@ -150,7 +150,6 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 		switch ( $column_name ) {
 			case 'adapter_name':
-			case 'status':
 			case 'pending_wds':
 				return esc_html( $item[ $column_name ] );
 			case 'total_fees':
@@ -159,6 +158,21 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 					sprintf( $item['sprintf'], $item[ $column_name ] );
 			default:
 				return '';
+		}
+	}
+
+	public function column_status( $item ) {
+		if ( true === $item['status'] ) {
+			return sprintf(
+				'<span style="color: green;">&#x2705; %s</span>',
+				__( 'Responding', 'wallets' )
+			);
+		} else {
+			return sprintf(
+				'<span style="color: red;">&#x274E; %s: %s</span>',
+				__( 'Not responding', 'wallets' ),
+				$item['status']
+			);
 		}
 	}
 

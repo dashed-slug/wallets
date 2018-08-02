@@ -185,7 +185,7 @@
 
 .dashed-slug-wallets.deposit .qrcode {
 	text-align: center;
-	margin: 1em;
+	margin: 1em auto;
 }
 
 .dashed-slug-wallets .validationMessage {

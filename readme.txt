@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.7
 Requires PHP: 5.6
-Stable tag: 3.6.1
+Stable tag: 3.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -325,6 +325,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.2 =
+- Fix: Invalid HTML in `[wallets_balance template="list"]` was causing problems with page layout.
+- Add: `[wallets_deposit]` shortcode accepts optional argument `qrsize` to set dimension of QR code in pixels. e.g. `[wallets_deposit qrsize="120"]`
+- Improve: `[wallets_transactions template="default"]` is now rendered more efficiently thanks to `<!-- ko if -->` statements.
 
 = 3.6.1 =
 - Improve: Import/export CSV function now lets an admin to export transactions and reimport them to a new system where the users have different user IDs. Users are represented by emails in the CSV file.
@@ -948,7 +953,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.1 makes the CSV import/export function more robust and fixes minor bugs.
+Version 3.6.2 fixes minor bugs.
 
 == Donating ==
 

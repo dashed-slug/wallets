@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.6.1.min.js' ) ) {
-					$script = 'bs58check-3.6.1.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.6.2.min.js' ) ) {
+					$script = 'bs58check-3.6.2.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -69,12 +69,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function shortcode( $atts, $content = '', $tag ) {
 			$view = preg_replace( '/^wallets_/', '', $tag );
 
+			$defaults = array(
+				'template'  => 'default',
+				'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
+			);
+
+			if ( 'transactions' == $view ) {
+				$defaults['columns'] = implode( ',', self::$tx_columns );
+			} elseif ( 'deposit' == $view ) {
+				$defaults['qrsize'] = false;
+			}
+
 			$atts = shortcode_atts(
-				array(
-					'template'  => 'default',
-					'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
-					'columns'   => implode( ',', self::$tx_columns ),
-				), $atts, "wallets_$view"
+				$defaults,
+				$atts,
+				"wallets_$view"
 			);
 
 			if ( ! (

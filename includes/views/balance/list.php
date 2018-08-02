@@ -31,4 +31,4 @@
 		do_action( 'wallets_ui_after_balance' );
 		do_action( 'wallets_ui_after' );
 	?>
-</div>
+</form>
