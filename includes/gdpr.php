@@ -228,6 +228,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_GDPR' ) ) {
 			);
 
 			if ( $user ) {
+				$wpdb->flush();
 				$query = $wpdb->prepare(
 					"
 					DELETE FROM
@@ -276,6 +277,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_GDPR' ) ) {
 			);
 
 			if ( $user ) {
+				$wpdb->flush();
 				$query = $wpdb->prepare(
 					"
 					DELETE FROM

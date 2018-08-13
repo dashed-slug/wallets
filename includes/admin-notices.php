@@ -51,9 +51,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 		public function action_admin_enqueue_scripts() {
 			wp_enqueue_script(
 				'wallets-notify',
-				plugins_url( 'assets/scripts/wallets-notify-3.6.2.min.js', DSWALLETS_PATH . '/wallets.php' ),
+				plugins_url( 'assets/scripts/wallets-notify-3.6.3.min.js', DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'3.6.2'
+				'3.6.3'
 			);
 
 		}
@@ -65,6 +65,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 			foreach ( explode( ',', self::TYPES ) as $type ) {
 				foreach ( $this->admin_notices->{$type} as $admin_notice ) {
+
+					// hide dismissible nag notices if DISABLE_NAG_NOTICES is set
+					// see: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
+					if ( 'error' != $type && $admin_notice->dismiss_option && defined('DISABLE_NAG_NOTICES') && constant('DISABLE_NAG_NOTICES') ) {
+						continue;
+					}
 
 					$dismiss_url = add_query_arg(
 						array(

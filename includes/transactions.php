@@ -530,6 +530,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 				} catch ( Exception $e ) {
 
+					$wpdb->flush();
 					$fail_query = $wpdb->prepare(
 						"
 						UPDATE
@@ -648,6 +649,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						if ( ! $affected ) {
 
+							$wpdb->flush();
 							$row_exists = $wpdb->get_var(
 								$wpdb->prepare(
 									"
@@ -758,6 +760,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							// Old transactions that are rediscovered via cron do not normally have an account id and cannot be inserted.
 							// Will now try to record as new withdrawal since this is not an existing transaction.
 
+							$wpdb->flush();
 							$row_exists = $wpdb->get_var(
 								$wpdb->prepare(
 									"

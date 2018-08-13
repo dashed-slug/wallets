@@ -1420,6 +1420,7 @@ EMAIL
 				$days = absint( ${"{$category}_days"} );
 
 				if ( $days ) {
+					$wpdb->flush();
 					$sql = $wpdb->prepare(
 						"
 						UPDATE

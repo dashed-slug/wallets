@@ -385,7 +385,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-move-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-minconf", filter_input( INPUT_POST, "{$this->option_slug}-fees-minconf", FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-other-minconf", filter_input( INPUT_POST, "{$this->option_slug}-other-minconf", FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', $this->menu_slug, network_admin_url( 'admin.php' ) ) );
 			exit;

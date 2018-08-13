@@ -75,6 +75,7 @@
 				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
 
 				$.ajax({
+					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: true,
 					data: {
@@ -121,6 +122,7 @@
 				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
 
 				$.ajax({
+					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: false,
 					data: {
@@ -324,6 +326,7 @@
 				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
 
 				$.ajax({
+					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: false,
 					data: {
@@ -496,6 +499,7 @@
 				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
 
 				$.ajax({
+					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: false,
 					data: {
@@ -562,6 +566,7 @@
 				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
 
 				$.ajax({
+					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: true,
 					data: {

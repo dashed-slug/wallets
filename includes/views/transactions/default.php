@@ -1,14 +1,30 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
-<?php require_once( 'default/fragments.php'); // load knockout templates to interpolate columns ?>
+<?php require_once __DIR__ .'/default/fragments.php'; // load knockout templates to interpolate columns ?>
 
 	<form class="dashed-slug-wallets transactions" data-bind="if: Object.keys( coins() ).length > 0" onsubmit="return false;">
 		<?php
 			do_action( 'wallets_ui_before' );
 			do_action( 'wallets_ui_before_transactions' );
 		?>
-		<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( coins() ).map(function(o){return coins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
-		<label class="rows"><?php echo apply_filters( 'wallets_ui_text_rowsperpage', esc_html__( 'Rows per page', 'wallets-front' ) ); ?>: <select data-bind="options: [10,20,50,100], value: rowsPerPage, valueUpdate: ['afterkeydown', 'input']"></select></label>
-		<label class="page"><?php echo apply_filters( 'wallets_ui_text_page', esc_html__( 'Page', 'wallets-front' ) ); ?>: <input type="number" min="1" step="1" data-bind="numeric, value: currentPage, valueUpdate: ['afterkeydown', 'input', 'oninput', 'change', 'onchange', 'blur']"/></label>
+		<table>
+			<colgroup>
+				<?php echo str_repeat( '<col>', 5 ); ?>
+			</colgroup>
+			<tbody>
+				<tr>
+					<td colspan="3">
+						<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( coins() ).map(function(o){return coins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
+					</td>
+					<td>
+						<label class="page"><?php echo apply_filters( 'wallets_ui_text_page', esc_html__( 'Page', 'wallets-front' ) ); ?>: <input type="number" min="1" step="1" data-bind="numeric, value: currentPage, valueUpdate: ['afterkeydown', 'input', 'oninput', 'change', 'onchange', 'blur']"/></label>
+					</td>
+					<td>
+						<label class="rows"><?php echo apply_filters( 'wallets_ui_text_rowsperpage', esc_html__( 'Rows per page', 'wallets-front' ) ); ?>: <select data-bind="options: [10,20,50,100], value: rowsPerPage, valueUpdate: ['afterkeydown', 'input']"></select></label>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
 		<p style="text-align: center;" data-bind="if: ! transactions().length, visible: ! transactions().length">
 				&mdash;
 		</p>

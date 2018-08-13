@@ -107,6 +107,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 
 			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
 
+			$wpdb->flush();
 			$query = $wpdb->prepare(
 				"
 					UPDATE

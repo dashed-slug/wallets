@@ -186,6 +186,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			}
 
 			// start db transaction and lock tables
+			$wpdb->flush();
 			$wpdb->query( 'SET autocommit=0' );
 
 			try {
@@ -215,6 +216,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 				// STEP 2: Batch transactions for that week into aggregates.
 
+				$wpdb->flush();
 				$query = $wpdb->prepare(
 					"
 					INSERT INTO
@@ -290,7 +292,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				}
 
 				// STEP 3: Delete old non-aggregated internal transactions for that week, plus any failed or cancelled internal transactions during that week.
-
+				$wpdb->flush();
 				$query = $wpdb->prepare(
 					"
 					DELETE FROM

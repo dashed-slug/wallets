@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.7
+Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.6.2
+Stable tag: 3.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -325,6 +325,18 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.3 =
+- Add: New filter `wallets_user_data` allows for adding data to JavaScript global variable `walletsUserData`.
+- Improve: Move and withdraw UIs are now based on an HTML table layout.
+- Improve: AJAX calls no longer pass unneeded path info to the request URI.
+- Improve: Safer loading of transaction UI fragments file (does not depend on current directory).
+- Improve: Updated to latest versions of all 3rd party libraries: `bs58check` 2.1.2, `moment.js` 2.22.2, latest `jquery-qrcode`.
+- Improve: Dismissible notices in the admin screens now respect the `DISABLE_NAG_NOTICES` constant.
+- Fix: Can now set a minimum confirmation count in coin adapter settings when plugin is network-activated on a multisite install.
+- Fix: All DB queries are now prepended by a flush of the DB object. Error reporting can no longer report stale DB errors from previous queries.
+- Fix: Some minor HTML validation errors now fixed.
+- Fix: Coin icons in dropdowns and menu items now all display in the same size.
 
 = 3.6.2 =
 - Fix: Invalid HTML in `[wallets_balance template="list"]` was causing problems with page layout.
@@ -953,7 +965,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.2 fixes minor bugs.
+Version 3.6.3 fixes minor bugs and includes some minor improvements.
 
 == Donating ==
 

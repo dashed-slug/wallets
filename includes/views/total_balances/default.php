@@ -21,7 +21,7 @@
 				?>
 				<tr>
 					<td class="icon">
-						<img src="<?php echo $adapter->get_icon_url(); ?>" ></img>
+						<img src="<?php echo esc_attr( $adapter->get_icon_url() ); ?>" alt="<?php echo esc_attr( $adapter->get_name() ); ?>" />
 					</td>
 					<td class="coin"><?php echo $adapter->get_name(); ?></td>
 					<td class="total_balances">

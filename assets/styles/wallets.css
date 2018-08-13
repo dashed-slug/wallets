@@ -27,14 +27,27 @@
 	font-family: monospace;
 }
 
-.dashed-slug-wallets.move label.amount,
-.dashed-slug-wallets.withdraw label.amount {
-	width: 65%;
+.dashed-slug-wallets table,
+.dashed-slug-wallets table tr,
+.dashed-slug-wallets table td {
+	border: none;
+	border-collapse: collapse;
 }
 
-.dashed-slug-wallets.move label.fee,
-.dashed-slug-wallets.withdraw label.fee {
-	width: 34%;
+.dashed-slug-wallets table col {
+	width: 16.66%;
+}
+
+.dashed-slug-wallets table td {
+	vertical-align: bottom;
+}
+
+.dashed-slug-wallets table .buttons-row {
+	text-align: center;
+}
+
+.dashed-slug-wallets label .validationMessage {
+	display:none;
 }
 
 .dashed-slug-wallets .base-amount,
@@ -204,7 +217,7 @@
 
 .menu-item .wallets-menu-icon {
 	background-repeat: no-repeat;
-	background-size: auto 90%;
+	background-size: 1.5em 1.5em;
 	background-position: calc(100% - 20px) 50%;
 }
 
