@@ -112,7 +112,7 @@ You will receive the transaction when the transaction is confirmed.
 If you do not receive the transaction soon, you may wish to contact the user or an admin about it.
 
 Coin symbol: ###SYMBOL###
-Amount: ###AMOUNT###
+Amount to receive: ###AMOUNT###
 Transaction requested at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
 
@@ -613,11 +613,13 @@ EMAIL
 						$sprintf = '%01.8F';
 					}
 
-					if ( isset( $row['amount'] ) ) {
-						$row['amount'] = sprintf( $sprintf, $row['amount'] );
-					}
-					if ( isset( $row['fee'] ) ) {
-						$row['fee'] = sprintf( $sprintf, $row['fee'] );
+					if ( isset( $row['amount'] ) && isset( $row['fee'] ) ) {
+						// display positive amount to recipient
+						$row['amount'] = sprintf( $sprintf, abs( $row['amount'] ) - $row['fee'] );
+
+					} elseif ( isset( $row['amount'] ) ) {
+						// display positive amount to recipient
+						$row['amount'] = sprintf( $sprintf, abs( $row['amount'] ) );
 					}
 				}
 

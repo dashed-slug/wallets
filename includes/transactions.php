@@ -241,7 +241,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$balance_query = $wpdb->prepare(
 							"
 							SELECT
-								SUM( amount )
+								SUM( IF( category = 'deposit', amount - fee, amount ) )
 							FROM
 								{$table_name_txs}
 							WHERE
@@ -448,7 +448,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					$balance_query = $wpdb->prepare(
 						"
 						SELECT
-							SUM(amount)
+							SUM( IF( category = 'deposit', amount - fee, amount ) )
 						FROM
 							{$table_name_txs}
 						WHERE

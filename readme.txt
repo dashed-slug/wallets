@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.6.3
+Stable tag: 3.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitco
 
 == Description ==
 
-https://www.youtube.com/watch?v=_dbkKHhEzRQ
+https://www.youtube.com/watch?v=j7kddOZOaqc
 
 ### Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
 
@@ -102,22 +102,26 @@ First, understand the tradeoff between setting up a full node or using the cloud
 
 = Full node =
 
-If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ). A full node is harder to setup and maintain, but gives you performance and freedom to control network fee settings.
+A **full node** is harder to setup and maintain, but gives you performance and freedom to control network fee settings. With a full node you do not rely on a third party to do transaction verification. If you are interested in connecting to your own custom coin you might be interested in setting up a full node.
+
+If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ) or [article](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/installation-instructions/).
 
 = Cloud wallets =
 
 **Cloud wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
 
-- If you are interested in installing the CoinPayments adapter, then the installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
-- If you prefer to install the block.io coin adapter then the installation instructions are on that other [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
+- If you are interested in installing the CoinPayments adapter:
+  - TL;DR installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
+  - More detailed step-by-step instructions are [on this page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/installation-instructions-web-wallet/) and [in this YouTube video](https://www.youtube.com/watch?v=j7kddOZOaqc).
+- If you prefer to install the block.io coin adapter then the installation instructions are on the [block.io coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
 
-There is a troubleshooting section on the coin adapter pages.
+There is a Troubleshooting section on the coin adapter pages. It lists common problems and their solutions.
 
-The support forums are [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/) and [here](https://www.dashed-slug.net/forums/forum/block-io-cloud-wallet-adapter-extension-support/).
+The support forums for the two web wallet coin adapters are [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/) and [here](https://www.dashed-slug.net/forums/forum/block-io-cloud-wallet-adapter-extension-support/).
 
 = Disclaimer =
 
-**By using this free plugin you accept all responsibility for handling the account balances for all your users.**
+**By using this free plugin, you accept all responsibility for handling the account balances for all your users.**
 Under no circumstances is **dashed-slug.net** or any of its affiliates responsible for any damages incurred by the use of this plugin.
 
 Every effort has been made to harden the security of this plugin, but its safe operation depends on your site being secure overall.
@@ -325,6 +329,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.4 =
+- Fix: Fees on deposits coming from the CoinPayments adapter were not subtracted from user balances. (Important!)
+- Fix: When the recipient of an internal transaction gets an email notification, the email now displays a positive amount, minus any fees paid by the sender.
+- Improve: DB table string columns are shorter. This allows for default Unicode collation to be used without hitting a limit on index size in MySQL < 5.6
+
+- Add: New introductory YouTube video added to readme file.
 
 = 3.6.3 =
 - Add: New filter `wallets_user_data` allows for adding data to JavaScript global variable `walletsUserData`.
@@ -965,7 +976,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.3 fixes minor bugs and includes some minor improvements.
+Version 3.6.4 includes an important bug fix that affected deposit fees from CoinPayments, plus some more improvements.
 
 == Donating ==
 

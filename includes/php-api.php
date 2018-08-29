@@ -166,7 +166,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					SELECT
 						account,
 						symbol,
-						SUM( amount ) AS balance
+						SUM( IF( category = 'deposit', amount - fee, amount ) ) AS balance
 					FROM
 						$table_name_txs
 					WHERE
@@ -363,14 +363,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 * Example: Request to withdraw 0.1 LTC from user 2
 		 *
-		 *  do_action( 'wallets_api_withdraw', array(
-		 *      'symbol' => 'LTC',
-		 *      'amount => 0.1,
-		 *      'from_user_id' => 2,
-		 *      'address' => 'LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf',
-		 *      'comment' => 'Withdrawing some Litecoin',
-		 *      'skip_confirm' => true,
-		 *  ) );
+		 *     do_action( 'wallets_api_withdraw', array(
+		 *         'symbol' => 'LTC',
+		 *         'amount => 0.1,
+		 *         'from_user_id' => 2,
+		 *         'address' => 'LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf',
+		 *         'comment' => 'Withdrawing some Litecoin',
+		 *         'skip_confirm' => true,
+		 *     ) );
 		 *
 		 * @api
 		 * @since 3.0.0
@@ -582,15 +582,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 * Example: Request to move 10 DOGE from user 2 to user 3. User 2 is to pay 1 DOGE as fee and user 3 is to receive 9 DOGE.
 		 *
-		 *  do_action( 'wallets_api_move', array(
-		 *      'symbol' => 'DOGE',
-		 *      'amount' => 10,
-		 *      'from_user_id' => 2,
-		 *      'to_user_id' => 3,
-		 *      'fee' => 1,
-		 *      'comment' => 'WOW such off-chain transaction, much internal transfer !!!1',
-		 *      'skip_confirm' => true,
-		 *  ) );
+		 *     do_action( 'wallets_api_move', array(
+		 *         'symbol' => 'DOGE',
+		 *         'amount' => 10,
+		 *         'from_user_id' => 2,
+		 *         'to_user_id' => 3,
+		 *         'fee' => 1,
+		 *         'comment' => 'WOW such off-chain transaction, much internal transfer !!!1',
+		 *         'skip_confirm' => true,
+		 *     ) );
 		 *
 		 * @api
 		 * @since 3.0.0
