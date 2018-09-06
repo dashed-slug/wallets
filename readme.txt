@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.6.4
+Stable tag: 3.6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -329,6 +329,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.5 =
+- Fix: Better balance algo, includes all trading fees in calculation.
+- Add: Deposits can now have comments (needed for upcoming fiat coin adapter).
+- Improve: moment.js localization now matches WordPress locale (affects all time translations, including faucet).
+- Improve: In *Exchange Rates* admin menu, exchange rates in debug views are sorted alphabetically, allowing easier inspection.
+- Improve: If plugin recieves notification about an invalid TXID or blockid, handles error silently, writing a warning to the logs.
+- Add: In user profiles screen, deposit addresses also display extra info such as Payment ID, Memo, etc.
+- Fix: In user profiles screen, deposit addresses are no longer shown as links if no explorer URI is available.
 
 = 3.6.4 =
 - Fix: Fees on deposits coming from the CoinPayments adapter were not subtracted from user balances. (Important!)
@@ -976,7 +985,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.4 includes an important bug fix that affected deposit fees from CoinPayments, plus some more improvements.
+Version 3.6.5 includes an important bug fix that affects fee calculation for the Exchange extension, plus some more improvements.
 
 == Donating ==
 

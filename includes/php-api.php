@@ -166,7 +166,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					SELECT
 						account,
 						symbol,
-						SUM( IF( category = 'deposit', amount - fee, amount ) ) AS balance
+						SUM( IF( amount > 0, amount - fee, amount + fee ) ) AS balance
 					FROM
 						$table_name_txs
 					WHERE

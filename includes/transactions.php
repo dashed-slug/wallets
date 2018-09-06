@@ -241,7 +241,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$balance_query = $wpdb->prepare(
 							"
 							SELECT
-								SUM( IF( category = 'deposit', amount - fee, amount ) )
+								SUM( IF( amount > 0, amount - fee, amount + fee ) )
 							FROM
 								{$table_name_txs}
 							WHERE
@@ -448,7 +448,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					$balance_query = $wpdb->prepare(
 						"
 						SELECT
-							SUM( IF( category = 'deposit', amount - fee, amount ) )
+							SUM( IF( amount > 0, amount - fee, amount + fee ) )
 						FROM
 							{$table_name_txs}
 						WHERE
@@ -682,6 +682,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'symbol'        => $tx->symbol,
 									'amount'        => number_format( $tx->amount, 10, '.', '' ),
 									'fee'           => isset( $tx->fee ) ? $tx->fee : 0,
+									'comment'       => isset( $tx->comment ) ? $tx->comment : '',
 									'created_time'  => $tx->created_time,
 									'updated_time'  => $current_time_gmt,
 									'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
@@ -696,6 +697,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 										'%d',
 										'%s',
 										'%d',
+										'%s',
 										'%s',
 										'%s',
 										'%s',

@@ -164,20 +164,45 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 										<?php
 										echo esc_html( 'Deposit address:', 'wallets' );
 
-										if ( is_string( $deposit_address ) ) :
+										if ( $explorer_uri_address ) {
+
+											if ( is_string( $deposit_address ) ) :
+											?>
+
+											<a href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address ) ); ?>">
+												<?php echo esc_html( $deposit_address ); ?>
+											</a>
+
+											<?php
+											elseif ( is_array( $deposit_address ) ) :
+											?>
+
+											<a href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address[ 0 ] ) ); ?>">
+												<?php echo esc_html( $deposit_address[ 0 ] . ' ' . $deposit_address[ 1 ] ); ?>
+											</a>
+											<?php
+											endif;
+
+										} else {
+
+											if ( is_string( $deposit_address ) ) :
+											?>
+
+											<span>
+												<?php echo esc_html( $deposit_address ); ?>
+											</span>
+
+											<?php
+											elseif ( is_array( $deposit_address ) ) :
+											?>
+
+											<span href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address[ 0 ] ) ); ?>">
+												<?php echo esc_html( $deposit_address[ 0 ] . ' ' . $deposit_address[ 1 ] ); ?>
+											</span>
+											<?php
+											endif;
+										}
 										?>
-
-										<a href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address ) ); ?>">
-											<?php echo esc_html( $deposit_address ); ?>
-										</a>
-
-										<?php elseif ( is_array( $deposit_address ) ) : ?>
-
-										<a href="<?php echo esc_attr( sprintf( $explorer_uri_address, $deposit_address[0] ) ); ?>">
-											<?php echo esc_html( $deposit_address[0] ); ?>
-										</a>
-
-										<?php endif; ?>
 									</div>
 								</td>
 							</tr>

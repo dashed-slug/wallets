@@ -422,6 +422,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			$data = Dashed_Slug_Wallets::get_option( $arg['label_for'], array() );
 
+			ksort( $data );
+
 			?>
 			<p class="count"><?php echo sprintf( esc_html( 'Number of records: %d', 'wallets' ), count( $data ) ); ?></p>
 			<textarea

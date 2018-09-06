@@ -7,6 +7,9 @@
 
 	$( function() {
 
+		// localise moment.js
+		moment.locale( $( 'html' ).attr( 'lang' ).toLowerCase().split( '-' )[ 0 ] );
+
 		// common error handlers for all requests
 
 		var xhrErrorHandler = function( jqXHR, textStatus, errorThrown ) {

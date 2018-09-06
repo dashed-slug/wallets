@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.4\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-08-29 09:26:46+00:00\n"
+"POT-Creation-Date: 2018-09-06 07:34:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -113,20 +113,20 @@ msgstr ""
 #: includes/confirmations.php:676 includes/cron.php:527
 #: includes/frontend-settings.php:194 includes/notifications.php:724
 #: includes/rates.php:294 includes/transactions.php:91
-#: includes/transactions.php:933 includes/transactions.php:1140
-#: includes/transactions.php:1162 includes/transactions.php:1184
-#: includes/transactions.php:1205 includes/transactions.php:1226
-#: includes/transactions.php:1250
+#: includes/transactions.php:935 includes/transactions.php:1142
+#: includes/transactions.php:1164 includes/transactions.php:1186
+#: includes/transactions.php:1207 includes/transactions.php:1228
+#: includes/transactions.php:1252
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:163 includes/adapters-list.php:182
 #: includes/caps.php:96 includes/cold-storage.php:119 includes/json-api.php:413
 #: includes/json-api.php:456 includes/json-api.php:706
-#: includes/json-api.php:749 includes/transactions.php:939
-#: includes/transactions.php:1144 includes/transactions.php:1166
-#: includes/transactions.php:1188 includes/transactions.php:1209
-#: includes/transactions.php:1230 includes/transactions.php:1254
+#: includes/json-api.php:749 includes/transactions.php:941
+#: includes/transactions.php:1146 includes/transactions.php:1168
+#: includes/transactions.php:1190 includes/transactions.php:1211
+#: includes/transactions.php:1232 includes/transactions.php:1256
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -413,7 +413,7 @@ msgstr ""
 
 #: includes/coin-adapter-bitcoin.php:123 includes/coin-adapter-rpc.php:328
 #: includes/coin-adapter-rpc.php:353 includes/coin-adapter-rpc.php:380
-#: includes/coin-adapter-rpc.php:549 includes/coin-adapter-rpc.php:670
+#: includes/coin-adapter-rpc.php:549 includes/coin-adapter-rpc.php:671
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -559,7 +559,7 @@ msgstr ""
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:614
+#: includes/coin-adapter-rpc.php:615
 msgid "%1$s::%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -1302,7 +1302,7 @@ msgstr ""
 #: includes/json-api.php:682 includes/json-api.php:700
 #: includes/json-api.php:743 includes/php-api.php:153 includes/php-api.php:244
 #: includes/php-api.php:309 includes/php-api.php:408 includes/php-api.php:636
-#: includes/php-api.php:827 includes/transactions.php:891
+#: includes/php-api.php:827 includes/transactions.php:893
 msgid "Not allowed"
 msgstr ""
 
@@ -1645,7 +1645,7 @@ msgstr ""
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: includes/rates.php:536
+#: includes/rates.php:538
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
@@ -1907,17 +1907,17 @@ msgid ""
 "system."
 msgstr ""
 
-#: includes/transactions.php:922
+#: includes/transactions.php:924
 msgid "Could not get account for %1$s address %2$s"
 msgstr ""
 
-#: includes/transactions.php:959
+#: includes/transactions.php:961
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:969
+#: includes/transactions.php:971
 msgid "Failed to import file : %s"
 msgstr ""
 
