@@ -463,6 +463,10 @@ CFG;
 		}
 
 		protected function set_secret( $secret ) {
+			if ( ! $this->is_enabled() ) {
+				throw new Exception( 'Cannot set secret because adapter is not enabled' );
+			}
+
 			$retain_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_secrets_retain_minutes', 0 ) );
 			if ( ! $retain_minutes ) {
 				$retain_minutes = 1;

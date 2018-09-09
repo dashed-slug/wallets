@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.5\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.6.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-09-06 07:34:12+00:00\n"
+"POT-Creation-Date: 2018-09-09 06:41:32+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -413,7 +413,7 @@ msgstr ""
 
 #: includes/coin-adapter-bitcoin.php:123 includes/coin-adapter-rpc.php:328
 #: includes/coin-adapter-rpc.php:353 includes/coin-adapter-rpc.php:380
-#: includes/coin-adapter-rpc.php:549 includes/coin-adapter-rpc.php:671
+#: includes/coin-adapter-rpc.php:553 includes/coin-adapter-rpc.php:675
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -555,11 +555,11 @@ msgstr ""
 msgid "%1$s->%2$s() failed to withdraw because the wallet is locked."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:417 includes/coin-adapter-rpc.php:479
+#: includes/coin-adapter-rpc.php:417 includes/coin-adapter-rpc.php:483
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:615
+#: includes/coin-adapter-rpc.php:619
 msgid "%1$s::%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 

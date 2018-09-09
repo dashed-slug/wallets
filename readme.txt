@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.6.5
+Stable tag: 3.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -329,6 +329,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.6 =
+- Fix: Change in DB schema allows installation on very old MySQL databases that don't allow over 1000 characters in index. (Error 1071: Specified key was too long)
+- Fix: Do not attempt to unlock RPC wallets with passphrase if coin adapter is disabled.
 
 = 3.6.5 =
 - Fix: Better balance algo, includes all trading fees in calculation.
@@ -985,7 +989,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.5 includes an important bug fix that affects fee calculation for the Exchange extension, plus some more improvements.
+Version 3.6.6 includes a bugfix that prevented installation on old versions of MySQL databases (circa 5.5).
 
 == Donating ==
 
