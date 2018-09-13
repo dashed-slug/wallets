@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.6.6
+Stable tag: 3.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,15 +268,17 @@ If your coin is an ERC-20 token then there is no support for that at the moment.
 
 Unfortunately I do not undertake custom projects. If you have an idea about a cool extension then please let me know about it. If it is a good fit for the project, it will be added to the backlog. When implemented, It will be available either to all users for free, or for dashed-slug premium members.
 
-= Can you add fiat currency deposits? =
-
-I do not have plans to add fiat currency deposits. That is not to say that someone cannot develop an extension to do this.
-
 = Can I use an exchange to facilitate cryptocurrency trading on top of this plugin? =
 
 Yes, an [Exchange extension](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) is now available to premium dashed-slug members. The relevant blog post announcement [is here](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
 
 Alternatively you can use the [ShapeShift app extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) that lets you display a front-end UI to the [ShapeShift.io](https://shapeshift.io/) service.
+
+= I want to do a token sale. Can I use WooCommerce to do so? =
+
+It is not recommended that you use WooCommerce and the [WooCommerce payment gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) to sell tokens or other coins.
+
+Instead, consider using the [Exchange extension](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) to provide a way for your users to buy or sell your token. This requires that you have a working *coin adapter* for your coin or token.
 
 = In the adapters list view, why is the Hot Wallet Balance not equal to the Sum of User Balances? =
 
@@ -329,6 +331,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.6.7 =
+Fix: Important bug in balance calculation, introduced in `3.6.5` regarding withdrawal fees. All fees are now being properly accounted for.
 
 = 3.6.6 =
 - Fix: Change in DB schema allows installation on very old MySQL databases that don't allow over 1000 characters in index. (Error 1071: Specified key was too long)
@@ -989,7 +994,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.6 includes a bugfix that prevented installation on old versions of MySQL databases (circa 5.5).
+Version 3.6.7 includes an important bugfix introduced in 3.6.5 that affected balance calculations.
 
 == Donating ==
 
