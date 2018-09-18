@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<form class="dashed-slug-wallets withdraw" data-bind="submit: doWithdraw, if: Object.keys( coins() ).length > 0">
+<form class="dashed-slug-wallets withdraw" data-bind="submit: doWithdraw, if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() && ajaxSemaphore() < 1 }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_withdraw' );

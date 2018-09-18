@@ -6,8 +6,9 @@
 	'use strict';
 
 	$( function() {
+		var apiversion = 3;
 
-		// localise moment.js
+		// localize moment.js
 		moment.locale( $( 'html' ).attr( 'lang' ).toLowerCase().split( '-' )[ 0 ] );
 
 		// common error handlers for all requests
@@ -65,96 +66,95 @@
 		function WalletsViewModel() {
 			var self = this;
 
-			// count of currently ongoing ajax requests
+			// is truthy if there is an action (withdrawal transfer) in transit
 			self.ajaxSemaphore = ko.observable( 0 );
 
 			// currently selected coin. all views are synchronized to show this coin.
 			self.selectedCoin = ko.observable();
 
 			// the structure that describes online coins and the user balance for those coins
-			self.coins = ko.observable( {} );
+			self.coinsResponse = {};
+			self.coinsDirty = ko.observable( false );
+			self.coins = ko.computed( function() {
 
-			self.loadCoins = function() {
-				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
-
-				$.ajax({
-					url: walletsUserData.home_url,
-					dataType: 'json',
-					cache: true,
-					data: {
-						'__wallets_apiversion' : 2,
-						'__wallets_action': 'get_coins_info'
-					},
-					success: function( response ) {
-						if ( response.result != 'success' ) {
-							serverErrorHandler( response );
-							return;
-						}
-						self.coins( response.coins );
-						if ( ! self.selectedCoin() ) {
-							if ( ! $.isEmptyObject( response.coins ) ) {
-								self.selectedCoin( Object.keys( response.coins )[ 0 ] );
+				if ( self.coinsDirty() ) {
+					$.ajax({
+						url: walletsUserData.home_url,
+						dataType: 'json',
+						cache: true,
+						async: true,
+						data: {
+							'__wallets_apiversion' : apiversion,
+							'__wallets_action': 'get_coins_info'
+						},
+						success: function( response ) {
+							if ( response.result != 'success' ) {
+								serverErrorHandler( response );
+								return;
 							}
-						}
-						if ( ! coinsLoaded ) {
-							$( 'body' ).trigger( 'wallets_coins_ready', [ response.coins ] );
-							coinsLoaded = true;
-						}
-						if ( ! walletsLoaded ) {
-							if ( coinsLoaded && noncesLoaded ) {
-								$( 'body' ).trigger( 'wallets_ready', [ self.coins(), self.nonces() ] );
-								walletsLoaded = true;
+							self.coinsResponse = response.coins;
+							self.coinsDirty( false );
+							if ( ! self.selectedCoin() ) {
+								if ( ! $.isEmptyObject( response.coins ) ) {
+									self.selectedCoin( Object.keys( response.coins )[ 0 ] );
+								}
 							}
-						}
-					},
-					complete: function( jqXHR, status ) {
-						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
-						ko.tasks.runEarly();
-						removeSelect2();
-						self.updateQrCode();
-					},
-					error: xhrErrorHandler
-				});
-			};
+							if ( ! coinsLoaded ) {
+								$( 'body' ).trigger( 'wallets_coins_ready', [ response.coins ] );
+								coinsLoaded = true;
+							}
+							if ( ! walletsLoaded ) {
+								if ( coinsLoaded && noncesLoaded ) {
+									$( 'body' ).trigger( 'wallets_ready', [ self.coins(), self.nonces() ] );
+									walletsLoaded = true;
+								}
+							}
+						},
+						error: xhrErrorHandler
+					});
+				}
+				return self.coinsResponse;
+			} );
 
+			self.coins.subscribe( removeSelect2 );
 
 			// the nonces necessary to perform actions over the JSON API
-			self.nonces = ko.observable( {} );
-
-			self.loadNonces = function() {
-				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
-
-				$.ajax({
-					url: walletsUserData.home_url,
-					dataType: 'json',
-					cache: false,
-					data: {
-						'__wallets_apiversion' : 2,
-						'__wallets_action': 'get_nonces'
-					},
-					success: function( response ) {
-						if ( response.result != 'success' ) {
-							serverErrorHandler( response );
-							return;
-						}
-						self.nonces( response.nonces );
-						if ( ! noncesLoaded ) {
-							$( 'body' ).trigger( 'wallets_nonces_ready', [ response.nonces ] );
-							noncesLoaded = true;
-						}
-						if ( ! walletsLoaded ) {
-							if ( coinsLoaded && noncesLoaded ) {
-								$( 'body' ).trigger( 'wallets_ready', [ self.coins(), self.nonces() ] );
-								walletsLoaded = true;
+			self.noncesResponse = {};
+			self.noncesDirty = ko.observable( false );
+			self.nonces = ko.computed( function() {
+				if ( self.noncesDirty() ) {
+					$.ajax({
+						url: walletsUserData.home_url,
+						dataType: 'json',
+						cache: false,
+						asunc: true,
+						data: {
+							'__wallets_apiversion' : apiversion,
+							'__wallets_action': 'get_nonces'
+						},
+						success: function( response ) {
+							if ( response.result != 'success' ) {
+								serverErrorHandler( response );
+								return;
 							}
-						}
-					},
-					complete: function( jqXHR, status ) {
-						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
-					},
-					error: xhrErrorHandler
-				});
-			};
+							self.noncesResponse = response.nonces;
+							self.noncesDirty( false );
+							if ( ! noncesLoaded ) {
+								$( 'body' ).trigger( 'wallets_nonces_ready', [ response.nonces ] );
+								noncesLoaded = true;
+							}
+							if ( ! walletsLoaded ) {
+								if ( coinsLoaded && noncesLoaded ) {
+									$( 'body' ).trigger( 'wallets_ready', [ self.coins(), self.nonces() ] );
+									walletsLoaded = true;
+								}
+							}
+						},
+						error: xhrErrorHandler
+					});
+				}
+				return self.noncesResponse;
+			});
 
 			// computes total account value expressed in the default fiat currency
 			self.accountValue = ko.computed( function() {
@@ -200,7 +200,7 @@
 					var coins = self.coins();
 					var coin = self.selectedCoin();
 					if ( 'object' == typeof( coins[ coin ] ) ) {
-						if ( coins[ coin ].deposit_address_qrcode_uri ) {
+						if ( coins[ coin ].deposit_address ) {
 							$deposits.each( function( n, el ) {
 								var $deposit = $( el );
 								var $qrcode = $( '.qrcode', $deposit );
@@ -209,7 +209,7 @@
 									$qrcode.qrcode( {
 										width: width,
 										height: width,
-										text: coins[ coin ].deposit_address_qrcode_uri
+										text: coins[ coin ].deposit_address
 									} );
 								}
 							} );
@@ -220,6 +220,7 @@
 
 			// draws the qr code on the [wallets_deposit] shortcode
 			if ( 'function' === typeof ( jQuery.fn.qrcode ) ) {
+				self.coins.subscribe( self.updateQrCode );
 				self.selectedCoin.subscribe( self.updateQrCode );
 			}
 
@@ -317,6 +318,34 @@
 				return ['',''];
 			});
 
+			self.doNewAddress = function( form ) {
+				if ( confirm( wallets_ko_i18n.get_new_address ) ) {
+					var symbol = self.selectedCoin(),
+					    nonce  = self.nonces().do_new_address;
+
+					self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+
+					$.ajax({
+						url: walletsUserData.home_url,
+						dataType: 'json',
+						cache: false,
+						data: {
+							'__wallets_apiversion' : apiversion,
+							'__wallets_action' : 'do_new_address',
+							'__wallets_symbol' : symbol,
+							'_wpnonce' : nonce
+						},
+						success: function( response ) {
+							self.coinsDirty( true );
+						},
+						complete: function( jqXHR, status ) {
+							self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
+						},
+						error: xhrErrorHandler
+					});
+				}
+			};
+
 			// the move action that performs internal transfer requests. runs when the button is hit in the [wallets_move] form
 			self.doMove = function( form ) {
 				var user = self.moveUser(),
@@ -333,7 +362,7 @@
 					dataType: 'json',
 					cache: false,
 					data: {
-						'__wallets_apiversion' : 2,
+						'__wallets_apiversion' : apiversion,
 						'__wallets_action' : 'do_move',
 						'__wallets_move_toaccount' : user,
 						'__wallets_move_amount' : amount,
@@ -351,7 +380,8 @@
 							comment
 						] );
 
-						self.loadTransactions();
+						self.coinsDirty( true );
+						self.transactionsDirty( true );
 					},
 					complete: function( jqXHR, status ) {
 						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
@@ -506,7 +536,7 @@
 					dataType: 'json',
 					cache: false,
 					data: {
-						'__wallets_apiversion' : 2,
+						'__wallets_apiversion' : apiversion,
 						'__wallets_action' : 'do_withdraw',
 						'__wallets_withdraw_address' : address,
 						'__wallets_symbol' : symbol,
@@ -525,7 +555,11 @@
 							extra
 						] );
 
-						self.loadTransactions();
+						self.coinsDirty( false );
+						self.transactionsDirty( false );
+
+						self.coinsDirty( true );
+						self.transactionsDirty( true );
 					},
 					complete: function( jqXHR, status ) {
 						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
@@ -544,107 +578,116 @@
 
 			// current page number in the [wallets_transactions] view
 			self.currentPage = ko.observable( 1 ).extend({ rateLimit: 500 });
+			self.currentPage.subscribe( function() {
+				self.transactionsDirty( false );
+				ko.tasks.runEarly();
+				self.transactionsDirty( true );
+			});
 
 			// how many rows to show per page, in the [wallets_transactions] view
 			self.rowsPerPage = ko.observable( 10 ).extend({ rateLimit: 500 });
+			self.rowsPerPage.subscribe( function() {
+				self.transactionsDirty( false );
+				ko.tasks.runEarly();
+				self.transactionsDirty( true );
+			});
 
 			// a page of transactions to show in the [wallets_transactions] view
-			self.transactions = ko.observable( [] );
+			self.transactionsResponse = [];
+			self.transactionsDirty = ko.observable( false );
+			self.selectedCoin.subscribe( function() {
+				self.transactionsDirty( false );
+				ko.tasks.runEarly();
+				self.transactionsDirty( true );
+			});
 
-			// action that loads a page of transactions for the [wallets_transactions] view
-			self.loadTransactions = function() {
-				var page = parseInt( self.currentPage() );
-				var count = self.rowsPerPage();
-				var from = ( page -1) * count;
-				var symbol = self.selectedCoin();
+			self.transactions = ko.computed( function() {
 
-				if ( 'string' !== typeof symbol ) {
-					return;
-				}
+				if ( self.transactionsDirty() ) {
+					var page = parseInt( self.currentPage() );
+					var count = self.rowsPerPage();
+					var from = ( page - 1 ) * count;
+					var symbol = self.selectedCoin();
 
-				if ( isNaN( from ) ) {
-					return;
-				}
+					if ( 'string' === typeof symbol && symbol && ! isNaN( from ) ) {
 
-				self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+						$.ajax({
+							url: walletsUserData.home_url,
+							dataType: 'json',
+							cache: true,
+							async: true,
+							data: {
+								'__wallets_apiversion' : apiversion,
+								'__wallets_action' : 'get_transactions',
+								'__wallets_tx_count' : count,
+								'__wallets_tx_from' : from,
+								'__wallets_symbol' : symbol
+							},
+							success: function( response ) {
+								var transactions = [];
+								if ( response.result != 'success' ) {
+									serverErrorHandler( response );
+									return;
+								}
 
-				$.ajax({
-					url: walletsUserData.home_url,
-					dataType: 'json',
-					cache: true,
-					data: {
-						'__wallets_apiversion' : 2,
-						'__wallets_action' : 'get_transactions',
-						'__wallets_tx_count' : count,
-						'__wallets_tx_from' : from,
-						'__wallets_symbol' : symbol
-					},
-					success: function( response ) {
-						var transactions = [];
-						if ( response.result != 'success' ) {
-							serverErrorHandler( response );
-							return;
-						}
+								if ( ! response.transactions.length && page > 1 ) {
+									self.currentPage( page - 1 );
+								} else {
 
-						if ( ! response.transactions.length && page > 1 ) {
-							self.currentPage( page - 1 );
-						} else {
+									transactions = response.transactions;
 
-							transactions = response.transactions;
+									var coins = self.coins();
+									var fiatSprintf = walletsUserData.fiatSymbol + ' %01.2f';
 
-							var coins = self.coins();
-							var fiatSprintf = walletsUserData.fiatSymbol + ' %01.2f';
+									for ( var t in transactions ) {
 
-							for ( var t in transactions ) {
+										transactions[ t ].tx_uri = '';
+										transactions[ t ].address_uri = '';
 
-								transactions[ t ].tx_uri = '';
-								transactions[ t ].address_uri = '';
+										var coin = transactions[ t ].symbol;
+										if ( 'object' == typeof( coins[ coin ] ) ) {
 
-								var coin = transactions[ t ].symbol;
-								if ( 'object' == typeof( coins[ coin ] ) ) {
+											if ( 'string' !== typeof ( transactions[ t ].amount_string ) ) {
+												transactions[ t ].amount_string = sprintf( coins[ coin ].sprintf, transactions[ t ].amount );
+											}
 
-									if ( 'string' !== typeof ( transactions[ t ].amount_string ) ) {
-										transactions[ t ].amount_string = sprintf( coins[ coin ].sprintf, transactions[ t ].amount );
-									}
+											if ( 'string' !== typeof ( transactions[ t ].fee_string ) ) {
+												transactions[ t ].fee_string = sprintf( coins[ coin ].sprintf, transactions[ t ].fee );
+											}
 
-									if ( 'string' !== typeof ( transactions[ t ].fee_string ) ) {
-										transactions[ t ].fee_string = sprintf( coins[ coin ].sprintf, transactions[ t ].fee );
-									}
+											if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
+												transactions[ t ].amount_fiat = sprintf( fiatSprintf, transactions[ t ].amount * coins[ coin ].rate );
+												transactions[ t ].fee_fiat = sprintf( fiatSprintf, transactions[ t ].fee * coins[ coin ].rate );
+											} else {
+												transactions[ t ].amount_fiat = transactions[ t ].fee_fiat = '';
+											}
 
-									if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
-										transactions[ t ].amount_fiat = sprintf( fiatSprintf, transactions[ t ].amount * coins[ coin ].rate );
-										transactions[ t ].fee_fiat = sprintf( fiatSprintf, transactions[ t ].fee * coins[ coin ].rate );
-									} else {
-										transactions[ t ].amount_fiat = transactions[ t ].fee_fiat = '';
-									}
+											if ( 'string' === typeof ( transactions[ t ].txid ) ) {
+												if ( transactions[ t ].txid.match( /^[\w\d]+$/ ) ) {
+													transactions[ t ].tx_uri = sprintf( coins[ coin ].explorer_uri_tx, transactions[ t ].txid );
+												}
+											}
 
-									if ( 'string' === typeof ( transactions[ t ].txid ) ) {
-										if ( transactions[ t ].txid.match( /^[\w\d]+$/ ) ) {
-											transactions[ t ].tx_uri = sprintf( coins[ coin ].explorer_uri_tx, transactions[ t ].txid );
-										}
-									}
-
-									if ( 'string' === typeof ( transactions[t].address ) ) {
-										if ( transactions[ t ].address.match( /^[\w\d]+$/ ) ) {
-											transactions[ t ].address_uri = sprintf( coins[ coin ].explorer_uri_address, transactions[ t ].address );
+											if ( 'string' === typeof ( transactions[t].address ) ) {
+												if ( transactions[ t ].address.match( /^[\w\d]+$/ ) ) {
+													transactions[ t ].address_uri = sprintf( coins[ coin ].explorer_uri_address, transactions[ t ].address );
+												}
+											}
 										}
 									}
 								}
-							}
-						}
-						self.transactions( transactions );
-					},
-					complete: function( jqXHR, status ) {
-						self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
-					},
-					error: xhrErrorHandler
-				});
-			};
+								self.transactionsResponse = transactions;
+								self.transactionsDirty( false );
+							},
+							error: xhrErrorHandler
+						});
+					}
+				}
 
-			self.selectedCoin.subscribe( self.loadTransactions );
-			self.currentPage.subscribe( self.loadTransactions );
-			self.rowsPerPage.subscribe( self.loadTransactions );
-		}
+				return self.transactionsResponse;
+			} );
+
+		} // end viewmodel object
 
 		// init the viewmodel
 		ko.options.deferUpdates = true;
@@ -663,9 +706,6 @@
 		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value,.rates' ).each( function( i, el ) {
 			ko.applyBindings( walletsViewModel, el );
 		} );
-
-		// set sane defaults
-		walletsViewModel.currentPage(1);
 
 		// handle the bubbling events on move or withdraw response from server
 
@@ -695,26 +735,29 @@
 		} );
 
 		$( 'html' ).on( 'wallets_ready', function( event, coins, nonces ) {
-			$('.dashed-slug-wallets').addClass('wallets-ready');
+
 		} );
 
 		// one second after doc ready, load coins and nonces, then start polling
 		setTimeout( function() {
 			removeSelect2();
 
-			walletsViewModel.loadNonces();
+			walletsViewModel.noncesDirty( true );
 			setInterval( function() {
-				walletsViewModel.loadNonces();
+				walletsViewModel.noncesDirty( false );
+				walletsViewModel.noncesDirty( true );
 			}, 12 * 60 * 60 * 1000 );
 
-			walletsViewModel.loadCoins();
+			walletsViewModel.coinsDirty( true );
 			var minutes = parseFloat( walletsUserData.pollIntervalCoinInfo );
 			if ( minutes ) {
 				setInterval( function() {
 					if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
 						return;
 					}
-					walletsViewModel.loadCoins();
+					walletsViewModel.coinsDirty( false );
+					ko.tasks.runEarly();
+					walletsViewModel.coinsDirty( true );
 				}, minutes * 60 * 1000 );
 			}
 
@@ -722,7 +765,10 @@
 
 		// two seconds after doc ready, load transactions and start interval
 		setTimeout( function() {
-			walletsViewModel.loadTransactions();
+			walletsViewModel.transactionsDirty( false );
+			ko.tasks.runEarly();
+			walletsViewModel.transactionsDirty( true );
+			walletsViewModel.updateQrCode();
 
 			var minutes = parseFloat( walletsUserData.pollIntervalTransactions );
 
@@ -731,7 +777,9 @@
 					if ( typeof( window.document.hidden ) !== 'undefined' && window.document.hidden ) {
 						return;
 					}
-					walletsViewModel.loadTransactions();
+					walletsViewModel.transactionsDirty( false );
+					ko.tasks.runEarly();
+					walletsViewModel.transactionsDirty( true );
 				}, minutes * 60 * 1000 );
 			}
 		}, 2000 );
@@ -740,7 +788,9 @@
 			// load coin data again when gaining visibility
 			window.document.addEventListener( 'visibilitychange', function() {
 				if ( ! window.document.hidden ) {
-					walletsViewModel.loadCoins();
+					walletsViewModel.coinsDirty( false );
+					ko.tasks.runEarly();
+					walletsViewModel.coinsDirty( true );
 				}
 			});
 		}

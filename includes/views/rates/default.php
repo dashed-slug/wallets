@@ -1,11 +1,12 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<div class="dashed-slug-wallets rates rates-list" data-bind="if: Object.keys( coins() ).length > 0 && 'none' != walletsUserData.fiatSymbol">
+<div class="dashed-slug-wallets rates rates-list" data-bind="if: Object.keys( coins() ).length > 0 && 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_rates' );
 	?>
 
+	<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { coinsDirty( false ); ko.tasks.runEarly(); coinsDirty( true ); }">&#x1f5d8;</span>
 	<table>
 		<thead>
 			<tr>

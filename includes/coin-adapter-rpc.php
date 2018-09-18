@@ -241,6 +241,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				"{$this->option_slug}-rpc-ssl-enabled"
 			);
 
+			// Other
+
+			add_settings_section(
+				"{$this->option_slug}-other",
+				__( 'Other adapter settings' ),
+				array( &$this, 'section_other_cb' ),
+				$this->menu_slug
+			);
+
+			add_settings_field(
+				"{$this->option_slug}-other-minconf",
+				__( 'Minumum confirmations', 'wallets' ),
+				array( &$this, 'settings_int8_cb' ),
+				$this->menu_slug,
+				"{$this->option_slug}-other",
+				array(
+					'label_for'   => "{$this->option_slug}-other-minconf",
+					'description' => __( 'Deposits will count towards user balances after this many blockchain confirmations.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				$this->menu_slug,
+				"{$this->option_slug}-other-minconf"
+			);
+
 		}
 
 
@@ -271,7 +297,14 @@ CFG;
 
 		// section callbacks
 
-		// section callbacks
+		/** @internal */
+		public function section_other_cb() {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
+			}
+
+			echo '<p>' . esc_html( 'Other settings.', 'wallets' ) . '</p>';
+		}
 
 		/** @internal */
 		public function settings_rpc_cb() {

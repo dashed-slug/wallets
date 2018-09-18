@@ -16,6 +16,14 @@
 	},
 
 	{
+		"name": "Fiat Coin Adapter",
+		"description": "With this coin adapter for fiat currencies, an admin can manually insert offline fiat transactions on behalf of users.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/fiat-coin-adapter-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/fiat-coin-adapter-extension-support/",
+		"slug": "wallets-fiat"
+	},
+
+	{
 		"name": "Full Node Multi Coin Adapter",
 		"description": "Allows the Bitcoin and Altcoin Wallets WordPress plugin to connect to a large number of Bitcoin-like full node wallets via their JSON RPC API.",
 		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension",

@@ -11,6 +11,7 @@ $translation_array = array(
 	'amount_positive'      => apply_filters( 'wallets_ui_text_amount_positive', __( 'Amount must be positive', 'wallets-front' ) ),
 	'insufficient_balance' => apply_filters( 'wallets_ui_text_insufficient_balance', __( 'Insufficient balance', 'wallets-front' ) ),
 	'minimum_withdraw'     => apply_filters( 'wallets_ui_text_minimum_withdraw', __( 'Amount is less than minimum withdrawal amount for this coin', 'wallets-front' ) ),
+	'get_new_address'      => apply_filters( 'wallets_ui_text_get_new_address', __( 'Get a new deposit address for this coin?', 'wallets-front' ) ),
 
 	'deposit'              => apply_filters( 'wallets_ui_text_deposit', __( 'deposit', 'wallets-front' ) ),
 	'withdraw'             => apply_filters( 'wallets_ui_text_withdraw', __( 'withdraw', 'wallets-front' ) ),

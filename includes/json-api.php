@@ -23,7 +23,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 	class Dashed_Slug_Wallets_JSON_API {
 
-		const LATEST_API_VERSION = 2;
+		const LATEST_API_VERSION = 3;
 
 		public function __construct() {
 
@@ -829,6 +829,386 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER ) ) {
 				$nonces->do_move = wp_create_nonce( 'wallets-do-move' );
 			}
+
+			return $nonces;
+		}
+
+		//////// JSON API v3 ////////
+
+		public function json_api_3_handle( $query, $action ) {
+
+			$response = array();
+
+			try {
+
+				$core    = Dashed_Slug_Wallets::get_instance();
+				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+
+				if ( 'notify' == $action ) {
+					try {
+						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
+						$type    = strtolower( sanitize_text_field( $query->query_vars['__wallets_notify_type'] ) );
+						$message = sanitize_text_field( $query->query_vars['__wallets_notify_message'] );
+
+						do_action( "wallets_notify_{$type}_{$symbol}", $message );
+
+						$response['result'] = 'success';
+
+					} catch ( Exception $e ) {
+						error_log( $e->getMessage() );
+						throw new Exception( __( 'Could not process notification.', 'wallets' ) );
+					}
+				} elseif ( ! is_user_logged_in() ) {
+					throw new Exception( __( 'Must be logged in' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN );
+
+				} elseif ( 'get_coins_info' == $action ) {
+
+					$ts = gmdate( 'D, d M Y H:i:s' ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Last-Modified: $ts" );
+					header( 'Pragma: no-cache' );
+					header( 'Cache-Control: no-store, must-revalidate' );
+
+					if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
+						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					}
+
+					$all_adapters = apply_filters( 'wallets_api_adapters', array() );
+
+					$response['coins'] = array();
+
+					foreach ( $all_adapters as $symbol => $adapter ) {
+						try {
+							// Test connectivity. Only report to the frontend
+							// adapters that are connected and respond with no exceptions.
+							$adapter->get_balance();
+
+							// gather info
+							$format = $adapter->get_sprintf();
+
+							$coin_info             = new stdClass();
+							$coin_info->symbol     = $adapter->get_symbol();
+							$coin_info->name       = apply_filters( 'wallets_coin_name_' . $coin_info->symbol, $adapter->get_name() );
+							$coin_info->is_fiat    = Dashed_Slug_Wallets_Rates::is_fiat( $coin_info->symbol );
+							$coin_info->is_crypto  = Dashed_Slug_Wallets_Rates::is_crypto( $coin_info->symbol );
+							$coin_info->icon_url   = apply_filters( 'wallets_coin_icon_url_' . $coin_info->symbol, $adapter->get_icon_url() );
+							$coin_info->sprintf    = apply_filters( 'wallets_sprintf_pattern_' . $coin_info->symbol, $adapter->get_sprintf() );
+							$coin_info->extra_desc = $adapter->get_extra_field_description();
+
+							$coin_info->explorer_uri_address = apply_filters( 'wallets_explorer_uri_add_' . $coin_info->symbol, '' );
+							$coin_info->explorer_uri_tx      = apply_filters( 'wallets_explorer_uri_tx_' . $coin_info->symbol, '' );
+
+							$coin_info->balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => $coin_info->symbol ) );
+
+							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
+
+							$coin_info->rate = false;
+							try {
+								$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
+									$fiat_symbol,
+									$coin_info->symbol
+								);
+							} catch ( Exception $e ) {
+							}
+
+							$coin_info->move_fee              = $adapter->get_move_fee();
+							$coin_info->move_fee_proportional = $adapter->get_move_fee_proportional();
+
+							$coin_info->withdraw_fee              = $adapter->get_withdraw_fee();
+							$coin_info->withdraw_fee_proportional = $adapter->get_withdraw_fee_proportional();
+							$coin_info->min_withdraw              = $adapter->get_minwithdraw();
+
+							$address = apply_filters( 'wallets_api_deposit_address', null, array( 'symbol' => $symbol ) );
+							if ( is_string( $address ) ) {
+								$coin_info->deposit_address = $address;
+							} elseif ( is_array( $address ) ) {
+								$coin_info->deposit_address = $address[0];
+								$coin_info->deposit_extra   = $address[1];
+							}
+
+							$response['coins'][ $symbol ] = $coin_info;
+
+						} catch ( Exception $e ) {
+							error_log( "Could not get info about coin with symbol $symbol: " . $e->getMessage() );
+						}
+					}
+					uasort( $response['coins'], array( &$this, 'coin_comparator' ) );
+					$response['result'] = 'success';
+
+				} elseif ( 'get_transactions' == $action ) {
+
+					$seconds_to_cache = 30;
+					$ts               = gmdate( 'D, d M Y H:i:s', time() + $seconds_to_cache ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Cache-Control: max-age=$seconds_to_cache" );
+
+					if (
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS )
+					) {
+						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					}
+
+					try {
+						$symbol = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
+						$count  = absint( $query->query_vars['__wallets_tx_count'] );
+						$from   = absint( $query->query_vars['__wallets_tx_from'] );
+
+						$response['transactions'] = apply_filters(
+							'wallets_api_transactions', null, array(
+								'from'    => $from,
+								'count'   => $count,
+								'symbol'  => $symbol,
+								'minconf' => 0,
+							)
+						);
+
+						$adapters = apply_filters( 'wallets_api_adapters', array() );
+						if ( ! array_key_exists( $symbol, $adapters ) ) {
+							throw new Exception( sprintf( __( 'Adapter for symbol "%s" is not found.', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_GET_TRANSACTIONS );
+						}
+						$adapter = $adapters[ $symbol ];
+
+						$format = apply_filters( 'wallets_sprintf_pattern_' . $symbol, $adapter->get_sprintf() );
+
+						foreach ( $response['transactions'] as $tx ) {
+							unset( $tx->id );
+							unset( $tx->blog_id );
+							unset( $tx->nonce );
+						}
+					} catch ( Exception $e ) {
+						throw new Exception( sprintf( __( 'Could not get "%s" transactions', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_GET_TRANSACTIONS, $e );
+					}
+					$response['result'] = 'success';
+
+				} elseif ( 'get_nonces' == $action ) {
+
+					$ts = gmdate( 'D, d M Y H:i:s' ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Last-Modified: $ts" );
+					header( 'Pragma: no-cache' );
+					header( 'Cache-Control: no-store, must-revalidate' );
+
+					if (
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
+					) {
+						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					}
+
+					$response['nonces'] = apply_filters( 'wallets_api_nonces', new stdClass() );
+					$response['result'] = 'success';
+
+				} elseif ( 'do_new_address' == $action ) {
+
+					$ts = gmdate( 'D, d M Y H:i:s' ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Last-Modified: $ts" );
+					header( 'Pragma: no-cache' );
+					header( 'Cache-Control: no-store, must-revalidate' );
+
+					if (
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
+					) {
+						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					}
+
+					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+
+					if ( ! wp_verify_nonce( $nonce, 'wallets-do-new-address' ) ) {
+						throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+					}
+
+					try {
+						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
+						$user_id = get_current_user_id();
+
+						$new_address = apply_filters(
+							'wallets_api_deposit_address',
+							false,
+							array(
+								'symbol'  => $symbol,
+								'user_id' => $user_id,
+								'check_capabilities' => true,
+								'force_new' => true,
+							)
+						);
+
+						if ( ! $new_address ) {
+							throw new Exception(
+								sprintf(
+									__( 'Could not get new %s address', 'wallets' ),
+									$symbol
+								),
+								null,
+								$e
+							);
+						}
+
+						if ( is_array( $new_address ) ) {
+							$response['address'] = $new_address[ 0 ];
+							$response['extra'] = $new_address[ 1 ];
+						} else {
+							$response['new_address'] = $new_address;
+						}
+
+					} catch ( Exception $e ) {
+						throw new Exception(
+							sprintf(
+								__( 'Could not get new %s address', 'wallets' ),
+								$symbol
+							),
+							null,
+							$e
+						);
+					}
+					$response['result'] = 'success';
+
+				} elseif ( 'do_withdraw' == $action ) {
+
+					$ts = gmdate( 'D, d M Y H:i:s' ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Last-Modified: $ts" );
+					header( 'Pragma: no-cache' );
+					header( 'Cache-Control: no-store, must-revalidate' );
+
+					if (
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
+					) {
+						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					}
+
+					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+
+					if ( ! wp_verify_nonce( $nonce, 'wallets-do-withdraw' ) ) {
+						throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+					}
+
+					try {
+						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
+						$address = sanitize_text_field( $query->query_vars['__wallets_withdraw_address'] );
+						$amount  = floatval( $query->query_vars['__wallets_withdraw_amount'] );
+						$comment = sanitize_text_field( $query->query_vars['__wallets_withdraw_comment'] );
+						$extra   = sanitize_text_field( $query->query_vars['__wallets_withdraw_extra'] );
+
+						do_action(
+							'wallets_api_withdraw', array(
+								'symbol'  => $symbol,
+								'address' => $address,
+								'extra'   => $extra,
+								'amount'  => $amount,
+								'comment' => $comment,
+							)
+							);
+
+					} catch ( Exception $e ) {
+						throw new Exception( sprintf( __( 'Could not withdraw %s', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW, $e );
+					}
+					$response['result'] = 'success';
+
+				} elseif ( 'do_move' == $action ) {
+
+					$ts = gmdate( 'D, d M Y H:i:s' ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Last-Modified: $ts" );
+					header( 'Pragma: no-cache' );
+					header( 'Cache-Control: no-store, must-revalidate' );
+
+					if (
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+						! current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER )
+					) {
+						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					}
+
+					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+
+					if ( ! wp_verify_nonce( $nonce, 'wallets-do-move' ) ) {
+						throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+					}
+
+					try {
+						$symbol    = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
+						$toaccount = $query->query_vars['__wallets_move_toaccount'];
+						$amount    = floatval( $query->query_vars['__wallets_move_amount'] );
+						$comment   = sanitize_text_field( $query->query_vars['__wallets_move_comment'] );
+						$tags      = sanitize_text_field( $query->query_vars['__wallets_move_tags'] );
+
+						$to_user_id = false;
+						foreach ( array( 'slug', 'email', 'login' ) as $field ) {
+							$user = get_user_by( $field, $toaccount );
+							if ( false !== $user ) {
+								$to_user_id = $user->ID;
+								break;
+							}
+						}
+
+						if ( ! $to_user_id ) {
+							throw new Exception(
+								sprintf(
+									__( 'Could not find user %s. Please enter a valid slug, email, or login name.', 'wallets' ),
+									$toaccount
+									),
+								Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE
+								);
+						}
+
+						do_action(
+							'wallets_api_move', array(
+								'symbol'             => $symbol,
+								'to_user_id'         => $to_user_id,
+								'amount'             => $amount,
+								'comment'            => $comment,
+								'tags'               => $tags,
+								'check_capabilities' => true,
+							)
+							);
+
+					} catch ( Exception $e ) {
+						throw new Exception( sprintf( __( 'Could not move %s', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE, $e );
+					}
+					$response['result'] = 'success';
+				} else {
+					// unknown action. maybe some extension will handle it?
+					return;
+				} // end if foo = action
+			} catch ( Exception $e ) {
+				$response['result']  = 'error';
+				$response['code']    = $e->getCode();
+				$response['message'] = $e->getMessage();
+				while ( $e = $e->getPrevious() ) {
+					$response['message'] .= ': ' . $e->getMessage();
+				}
+			}
+
+			// send response
+
+			if ( ! headers_sent() ) {
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_zlib_disabled' ) ) {
+					ini_set( 'zlib.output_compression', 0 );
+				} else {
+					ini_set( 'zlib.output_compression', 1 );
+				}
+			}
+
+			if ( isset( $response['code'] ) && Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN == $response['code'] ) {
+				wp_send_json( $response, 403 );
+
+			} else {
+				wp_send_json( $response );
+			}
+		} // end function action_parse_request
+
+		public function json_api_3_nonces( $nonces ) {
+			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET ) ) {
+				$nonces->do_withdraw = wp_create_nonce( 'wallets-do-withdraw' );
+			}
+
+			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER ) ) {
+				$nonces->do_move = wp_create_nonce( 'wallets-do-move' );
+			}
+
+			$nonces->do_new_address = wp_create_nonce( 'wallets-do-new-address' );
 
 			return $nonces;
 		}

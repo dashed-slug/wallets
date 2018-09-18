@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.6.7
+Stable tag: 3.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -331,6 +331,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.7.0 =
+- Change: JSON API latest version is now `3`. To use previous versions, first enabled legacy APIs in the plugin's settings.
+- Add: Users can now use the `[wallets_deposit]` UI to request a new deposit address. Old addresses are retained.
+- Add: New "Reload data from server" button on all UIs requests a fresh copy of displayed data from the server immediately.
+- Change: `get_coins_info` is no longer cached at the browser level. This allows for manual reload of server data.
+- Change: `get_coins_info` no longer returns the superfluous `deposit_address_qrcode_uri` field. The deposit address is used in QR codes directly. This saves on transmitted data.
+- Change: The Coin Adapter class no longer provides an adapter setting for minconf. This is done at the RPC Coin Adapter level. This has no effect to the end user at the moment.
+- Add: New filters provide ability to override coin name and coin icon URL as reported by `get_coins_info`. Examples in the accompanying documentation.
 
 = 3.6.7 =
 Fix: Important bug in balance calculation, introduced in `3.6.5` regarding withdrawal fees. All fees are now being properly accounted for.
@@ -994,7 +1003,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.6.7 includes an important bugfix introduced in 3.6.5 that affected balance calculations.
+Version 3.7.0 brings some major improvements to the frontend and JSON API.
 
 == Donating ==
 

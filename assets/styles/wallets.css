@@ -2,10 +2,21 @@
 	padding: 1em;
 	border: 1px solid black;
 	opacity: 0.5;
+	position: relative;
+
+	-webkit-transition: opacity 0.5s ease-in-out;
+	-moz-transition: opacity 0.5s ease-in-out;
+	transition: opacity 0.5s ease-in-out;
 }
 
 .dashed-slug-wallets.wallets-ready {
 	opacity: 1;
+}
+
+.dashed-slug-wallets .wallets-reload-button {
+	right: 10px;
+    position: absolute;
+    cursor: pointer;
 }
 
 .dashed-slug-wallets label {
@@ -199,6 +210,10 @@
 .dashed-slug-wallets.deposit .qrcode {
 	text-align: center;
 	margin: 1em auto;
+}
+
+.dashed-slug-wallets.deposit input[type=submit] {
+	width: 100%;
 }
 
 .dashed-slug-wallets .validationMessage {
