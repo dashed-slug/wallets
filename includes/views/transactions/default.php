@@ -6,7 +6,7 @@
 			do_action( 'wallets_ui_before' );
 			do_action( 'wallets_ui_before_transactions' );
 		?>
-		<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { transactionsDirty( false ); ko.tasks.runEarly(); transactionsDirty( true ); }">&#x1f5d8;</span>
+		<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { transactionsDirty( false ); ko.tasks.runEarly(); transactionsDirty( true ); }"></span>
 		<table>
 			<colgroup>
 				<?php echo str_repeat( '<col>', 5 ); ?>

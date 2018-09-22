@@ -252,7 +252,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 
 			add_settings_field(
 				"{$this->option_slug}-other-minconf",
-				__( 'Minumum confirmations', 'wallets' ),
+				__( 'Minimum confirmations', 'wallets' ),
 				array( &$this, 'settings_int8_cb' ),
 				$this->menu_slug,
 				"{$this->option_slug}-other",

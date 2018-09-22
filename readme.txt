@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.7.0
+Stable tag: 3.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,10 +57,11 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 
  You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all [subscribers at dashed-slug](https://www.dashed-slug.net/dashed-slug/subscribe/) (you do not have to pay for membership).
 
-- [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/)
-- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/)
-- [Full Node Multi Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/)
-- [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/)
+- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - hundreds of coins supported, easy to use cloud wallet
+- [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/) - BTC, LTC, DOGE cloud wallet
+- [Full Node Multi Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/) - supports most Bitcoin-like wallets (LTC, etc), must set up manually on server
+- [Fiat Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/fiat-coin-adapter-extension/) - for use with the Exchange extension, can accept manual entries from e.g. bank deposits
+- [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) - use this as a reference implementation for new adapters
 
 ...plus more!
 
@@ -331,6 +332,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.7.1 =
+- Add: `[wallets_move]` and `[wallets_withdraw]` shortcodes now also display amount to be paid after fees.
+- Fix: Problem where QR code was not rendered on first page load, introduced in `3.7.0`.
+- Fix: Unicode glyph on reload button introduced in `3.7.0` was not visible on some mobile devices, is now an image.
+- Add: New filters introduced in `3.7.0` on the output of the `get_coins_info` JSON API now also affect older versions of the API.
 
 = 3.7.0 =
 - Change: JSON API latest version is now `3`. To use previous versions, first enabled legacy APIs in the plugin's settings.
@@ -1003,7 +1010,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.7.0 brings some major improvements to the frontend and JSON API.
+Version 3.7.1 brings minor improvements and user requests on 3.7.0.
 
 == Donating ==
 

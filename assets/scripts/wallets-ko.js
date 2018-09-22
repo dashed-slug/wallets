@@ -94,11 +94,7 @@
 							}
 							self.coinsResponse = response.coins;
 							self.coinsDirty( false );
-							if ( ! self.selectedCoin() ) {
-								if ( ! $.isEmptyObject( response.coins ) ) {
-									self.selectedCoin( Object.keys( response.coins )[ 0 ] );
-								}
-							}
+
 							if ( ! coinsLoaded ) {
 								$( 'body' ).trigger( 'wallets_coins_ready', [ response.coins ] );
 								coinsLoaded = true;
@@ -117,6 +113,13 @@
 			} );
 
 			self.coins.subscribe( removeSelect2 );
+			self.coins.subscribe( function() {
+				if ( ! self.selectedCoin() ) {
+					if ( ! $.isEmptyObject( self.coins() ) ) {
+						self.selectedCoin( Object.keys( self.coins() )[ 0 ] );
+					}
+				}
+			});
 
 			// the nonces necessary to perform actions over the JSON API
 			self.noncesResponse = {};
@@ -193,29 +196,31 @@
 			});
 
 			self.updateQrCode = function() {
-				if ( 'undefined' !== typeof( self.coins ) ) {
-					var $deposits = $( '.dashed-slug-wallets.deposit' );
-					$('.qrcode', $deposits ).empty();
+				setTimeout( function() {
+					if ( 'undefined' !== typeof( self.coins ) ) {
+						var $deposits = $( '.dashed-slug-wallets.deposit' );
+						$('.qrcode', $deposits ).empty();
 
-					var coins = self.coins();
-					var coin = self.selectedCoin();
-					if ( 'object' == typeof( coins[ coin ] ) ) {
-						if ( coins[ coin ].deposit_address ) {
-							$deposits.each( function( n, el ) {
-								var $deposit = $( el );
-								var $qrcode = $( '.qrcode', $deposit );
-								if ( $qrcode.length ) {
-									var width = $qrcode.width();
-									$qrcode.qrcode( {
-										width: width,
-										height: width,
-										text: coins[ coin ].deposit_address
-									} );
-								}
-							} );
+						var coins = self.coins();
+						var coin = self.selectedCoin();
+						if ( 'object' == typeof( coins[ coin ] ) ) {
+							if ( coins[ coin ].deposit_address ) {
+								$deposits.each( function( n, el ) {
+									var $deposit = $( el );
+									var $qrcode = $( '.qrcode', $deposit );
+									if ( $qrcode.length ) {
+										var width = $qrcode.width();
+										$qrcode.qrcode( {
+											width: width,
+											height: width,
+											text: coins[ coin ].deposit_address
+										} );
+									}
+								} );
+							}
 						}
 					}
-				}
+				}, 500 );
 			};
 
 			// draws the qr code on the [wallets_deposit] shortcode
@@ -317,6 +322,32 @@
 				}
 				return ['',''];
 			});
+
+			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
+			self.moveAmountAfterFee = ko.computed( function( ) {
+				var coins = self.coins();
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					var amount = parseFloat( self.moveAmount() );
+					if ( ! isNaN( amount ) ) {
+						var fee = parseFloat( coins[ coin ].move_fee );
+						fee += parseFloat( coins[ coin ].move_fee_proportional ) * amount;
+
+						if ( ! isNaN( fee ) ) {
+							var amountAfterFeeString = sprintf( coins[ coin ].sprintf, amount - fee );
+							var amountAfterFeeFiatString = sprintf( walletsUserData.fiatSymbol + ' %01.2f', ( amount - fee ) * coins[ coin ].rate );
+
+							if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
+								return [ amountAfterFeeString, amountAfterFeeFiatString ];
+							} else {
+								return [ amountAfterFeeString, '' ];
+							}
+						}
+					}
+				}
+				return ['',''];
+			});
+
 
 			self.doNewAddress = function( form ) {
 				if ( confirm( wallets_ko_i18n.get_new_address ) ) {
@@ -499,6 +530,7 @@
 
 
 			// fee to be paid in a withdrawal, used in the [wallets_withdraw] form
+			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
 			self.withdrawFee = ko.computed( function() {
 				var coins = self.coins();
 				var coin = self.selectedCoin();
@@ -517,8 +549,35 @@
 						}
 					}
 				}
-				return '';
+				return [ '', '' ];
 			});
+
+			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
+			self.withdrawAmountAfterFee = ko.computed( function() {
+				var coins = self.coins();
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					var amount = parseFloat( self.withdrawAmount() );
+					if ( ! isNaN( amount ) ) {
+						var fee = parseFloat( coins[ coin ].withdraw_fee );
+
+						fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * amount;
+
+						if ( ! isNaN( fee ) ) {
+							var amountAfterFeeString = sprintf( coins[ coin ].sprintf, amount - fee );
+							var amountAfterFeeFiatString = sprintf( walletsUserData.fiatSymbol + ' %01.2f', ( amount - fee ) * coins[ coin ].rate );
+
+							if ( walletsUserData.fiatSymbol && coins[ coin ].rate ) {
+								return [ amountAfterFeeString, amountAfterFeeFiatString ];
+							} else {
+								return [ amountAfterFeeString, '' ];
+							}
+						}
+					}
+				}
+				return [ '', '' ];
+			});
+
 
 			// the withdraw action. activated when the button is clicked
 			self.doWithdraw = function( form ) {
@@ -768,7 +827,6 @@
 			walletsViewModel.transactionsDirty( false );
 			ko.tasks.runEarly();
 			walletsViewModel.transactionsDirty( true );
-			walletsViewModel.updateQrCode();
 
 			var minutes = parseFloat( walletsUserData.pollIntervalTransactions );
 

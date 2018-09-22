@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.7.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.7.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-09-18 16:31:50+00:00\n"
+"POT-Creation-Date: 2018-09-22 09:04:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -154,16 +154,20 @@ msgstr ""
 msgid "Fee (deducted from amount)"
 msgstr ""
 
-#: includes/views/move/default.php:40
+#: includes/views/move/default.php:31 includes/views/withdraw/default.php:45
+msgid "Amount after fee"
+msgstr ""
+
+#: includes/views/move/default.php:43
 #: includes/views/transactions/default/fragments.php:36
 msgid "Comment"
 msgstr ""
 
-#: includes/views/move/default.php:46 includes/views/withdraw/default.php:60
+#: includes/views/move/default.php:49 includes/views/withdraw/default.php:63
 msgid "Send"
 msgstr ""
 
-#: includes/views/move/default.php:49 includes/views/withdraw/default.php:63
+#: includes/views/move/default.php:52 includes/views/withdraw/default.php:66
 msgid "Reset form"
 msgstr ""
 
@@ -272,7 +276,7 @@ msgstr ""
 msgid "Withdraw to address"
 msgstr ""
 
-#: includes/views/withdraw/default.php:54
+#: includes/views/withdraw/default.php:57
 msgid "Comment (optional)"
 msgstr ""
 

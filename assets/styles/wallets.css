@@ -14,9 +14,29 @@
 }
 
 .dashed-slug-wallets .wallets-reload-button {
-	right: 10px;
-    position: absolute;
+    float: right;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
+    background: url('/wp-content/plugins/wallets/assets/sprites/reload-icon.png') no-repeat center center;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+
+	-webkit-animation: spin 4s linear infinite;
+	-moz-animation: spin 4s linear infinite;
+	animation: spin 4s linear infinite;
+}
+
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.dashed-slug-wallets.wallets-ready .wallets-reload-button {
+	-webkit-animation: none;
+	-moz-animation: none;
+	animation: none;
 }
 
 .dashed-slug-wallets label {

@@ -284,9 +284,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$format = $adapter->get_sprintf();
 
 							$coin_info             = new stdClass();
-							$coin_info->name       = $adapter->get_name();
 							$coin_info->symbol     = $adapter->get_symbol();
-							$coin_info->icon_url   = $adapter->get_icon_url();
+							$coin_info->name       = apply_filters( 'wallets_coin_name_' . $coin_info->symbol, $adapter->get_name() );
+							$coin_info->icon_url   = apply_filters( 'wallets_coin_icon_url_' . $coin_info->symbol, $adapter->get_icon_url() );
 							$coin_info->sprintf    = apply_filters( 'wallets_sprintf_pattern_' . $coin_info->symbol, $adapter->get_sprintf() );
 							$coin_info->extra_desc = $adapter->get_extra_field_description();
 
@@ -574,9 +574,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$format = $adapter->get_sprintf();
 
 							$coin_info             = new stdClass();
-							$coin_info->name       = $adapter->get_name();
 							$coin_info->symbol     = $adapter->get_symbol();
-							$coin_info->icon_url   = $adapter->get_icon_url();
+							$coin_info->name       = apply_filters( 'wallets_coin_name_' . $coin_info->symbol, $adapter->get_name() );
+							$coin_info->icon_url   = apply_filters( 'wallets_coin_icon_url_' . $coin_info->symbol, $adapter->get_icon_url() );
 							$coin_info->sprintf    = apply_filters( 'wallets_sprintf_pattern_' . $coin_info->symbol, $adapter->get_sprintf() );
 							$coin_info->extra_desc = $adapter->get_extra_field_description();
 
