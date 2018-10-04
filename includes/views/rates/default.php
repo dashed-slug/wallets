@@ -22,7 +22,7 @@
 				</td>
 				<td class="coin" data-bind="text: name"></td>
 				<td class="rate">
-					<span data-bind="text: sprintf( '%01.2f %s', rate, walletsUserData.fiatSymbol )"></span>
+					<span data-bind="text: sprintf( '%01.4f %s', rate, walletsUserData.fiatSymbol )"></span>
 				</td>
 			</tr>
 		</tbody>

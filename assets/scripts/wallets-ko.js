@@ -7,6 +7,7 @@
 
 	$( function() {
 		var apiversion = 3;
+		var timeout_millis = 30000;
 
 		// localize moment.js
 		moment.locale( $( 'html' ).attr( 'lang' ).toLowerCase().split( '-' )[ 0 ] );
@@ -83,6 +84,7 @@
 						dataType: 'json',
 						cache: true,
 						async: true,
+						timeout: timeout_millis,
 						data: {
 							'__wallets_apiversion' : apiversion,
 							'__wallets_action': 'get_coins_info'
@@ -131,6 +133,7 @@
 						dataType: 'json',
 						cache: false,
 						asunc: true,
+						timeout: timeout_millis,
 						data: {
 							'__wallets_apiversion' : apiversion,
 							'__wallets_action': 'get_nonces'
@@ -360,6 +363,7 @@
 						url: walletsUserData.home_url,
 						dataType: 'json',
 						cache: false,
+						timeout: timeout_millis,
 						data: {
 							'__wallets_apiversion' : apiversion,
 							'__wallets_action' : 'do_new_address',
@@ -392,6 +396,7 @@
 					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: false,
+					timeout: timeout_millis,
 					data: {
 						'__wallets_apiversion' : apiversion,
 						'__wallets_action' : 'do_move',
@@ -594,6 +599,7 @@
 					url: walletsUserData.home_url,
 					dataType: 'json',
 					cache: false,
+					timeout: timeout_millis,
 					data: {
 						'__wallets_apiversion' : apiversion,
 						'__wallets_action' : 'do_withdraw',
@@ -675,6 +681,7 @@
 							dataType: 'json',
 							cache: true,
 							async: true,
+							timeout: timeout_millis,
 							data: {
 								'__wallets_apiversion' : apiversion,
 								'__wallets_action' : 'get_transactions',

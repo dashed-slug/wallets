@@ -179,6 +179,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			);
 
 			add_settings_field(
+				'wallets_rates_referer_skip',
+				__( 'Skip refreshing exchange rates when HTTP_REFERER is set', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'label_for'   => 'wallets_rates_referer_skip',
+					'description' => __( 'If this is enabled, exchange rates will only be pulled on HTTP requests ' .
+						'that do not have HTTP_REFERER set. This ensures somewhat better performance for end users, ' .
+						'but you MUST set up a unix cron job that periodically triggers this site.' .
+						'Usually requests originating from browsers will have HTTP_REFERER set, ' .
+						'while curl requests originating from unix cron may not. (Default: disabled)',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_rates_referer_skip'
+			);
+
+			add_settings_field(
 				'wallets_rates_tor_ip',
 				__( 'Tor proxy IP', 'wallets' ),
 				array( &$this, 'text_cb' ),
@@ -558,6 +581,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function action_shutdown() {
+			$referer_skip = Dashed_Slug_Wallets::get_option( 'wallets_rates_referer_skip', false );
+			if ( $referer_skip && isset( $_SERVER['HTTP_REFERER'] ) ) {
+				return;
+			}
 
 			$last_run = Dashed_Slug_Wallets::get_transient( 'wallets_rates_last_run', 0 );
 			$interval = Dashed_Slug_Wallets::get_option( 'wallets_rates_cache_expiry', 5 );
@@ -640,7 +667,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $result;
 		}
 
-		// filters that pull exchange rates
+		// filters that pull coin symbols
 
 		public static function filter_rates_fiats_fixer( $fiats ) {
 			$apikey = trim( Dashed_Slug_Wallets::get_option( 'wallets_rates_fixer_key' ) );
@@ -828,7 +855,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $cryptos;
 		}
 
-		// filter that pulls fiat currency symbols
+		// filter that pulls fiat currency rates
 
 		public static function filter_rates_fixer( $rates ) {
 			$apikey = trim( Dashed_Slug_Wallets::get_option( 'wallets_rates_fixer_key' ) );

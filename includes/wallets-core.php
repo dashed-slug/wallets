@@ -163,8 +163,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.7.1.min.js' ) ) {
-					$script = 'wallets-ko-3.7.1.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.7.2.min.js' ) ) {
+					$script = 'wallets-ko-3.7.2.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.7.1',
+					'3.7.2',
 					true
 				);
 
@@ -199,8 +199,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.7.1.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.7.1.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.7.2.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.7.2.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -209,12 +209,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.7.1',
+					'3.7.2',
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.7.1.min.css' ) ) {
-					$front_styles = 'wallets-3.7.1.min.css';
+				if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.7.2.min.css' ) ) {
+					$front_styles = 'wallets-3.7.2.min.css';
 				} else {
 					$front_styles = 'wallets.css';
 				}
@@ -223,7 +223,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_styles',
 					plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 					array(),
-					'3.7.1'
+					'3.7.2'
+				);
+
+				$reload_button_url = plugins_url( 'assets/sprites/reload-icon.png', DSWALLETS_FILE );
+				wp_add_inline_style(
+					'wallets_styles',
+					".dashed-slug-wallets .wallets-reload-button { background-image: url('$reload_button_url'); }"
 				);
 
 				// if no fiat amounts are to be displayed, then explicitly hide them
@@ -595,8 +601,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.7.1';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '7733677';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.7.2';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = 'e776d78';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -632,19 +638,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			foreach ( array_merge( $app_exts, $adapter_exts ) as $extension ) {
 
 				$plugin_filename      = "{$extension->slug}/{$extension->slug}.php";
-				$plugin_full_filename = plugin_dir_path( __FILE__ ) . "../../$plugin_filename";
+				$plugin_full_filename = WP_CONTENT_DIR . "/plugins/$plugin_filename";
 
-				if ( is_plugin_active( $plugin_filename ) ) {
-					$plugin_data   = get_plugin_data( $plugin_full_filename );
-					$active_exts[] = "$extension->slug $plugin_data[Version]";
+				if ( file_exists( $plugin_full_filename ) ) {
+					if ( is_plugin_active( $plugin_filename ) ) {
+						$plugin_data   = get_plugin_data( $plugin_full_filename, false, false );
+						if ( $plugin_data ) {
+							$active_exts[] = "$extension->slug $plugin_data[Version]";
+						}
 
-				} elseif ( is_plugin_active_for_network( $plugin_filename ) ) {
-					$plugin_data       = get_plugin_data( $plugin_full_filename );
-					$net_active_exts[] = "$extension->slug $plugin_data[Version]";
+					} elseif ( is_plugin_active_for_network( $plugin_filename ) ) {
+						$plugin_data       = get_plugin_data( $plugin_full_filename, false, false );
+						if ( $plugin_data ) {
+							$net_active_exts[] = "$extension->slug $plugin_data[Version]";
+						}
+					}
 				}
-				$data['Active wallets extensions']         = $active_exts ? implode( ', ', $active_exts ) : 'n/a';
-				$data['Network-active wallets extensions'] = $net_active_exts ? implode( ', ', $net_active_exts ) : 'n/a';
 			}
+
+			$data['Active wallets extensions']         = $active_exts ? implode( ', ', $active_exts ) : 'n/a';
+			$data['Network-active wallets extensions'] = $net_active_exts ? implode( ', ', $net_active_exts ) : 'n/a';
 
 			?><p><?php esc_html_e( 'When requesting support, please send the following info along with your request.', 'wallets' ); ?></p>
 

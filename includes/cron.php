@@ -26,34 +26,38 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
 			}
 
-			if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
-				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
-				$notices->warning(
-					__(
-						'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
-						'Until you fix this, transactions will not be executed. ' .
-						'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'
-					),
-					'wallets-cron-disabled'
-				);
-			} else {
-				$last_cron_run = absint( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
+			$referer_skip = Dashed_Slug_Wallets::get_option( 'wallets_cron_referer_skip', false );
 
-				$schedules     = $this->filter_cron_schedules( array() );
-				$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-				$interval      = $schedules[ $cron_interval ]['interval'];
+			if ( ! $referer_skip ) {
 
-				if ( time() - $last_cron_run > 4 * HOUR_IN_SECONDS ) {
-					Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
+				if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
+					$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+					$notices->warning(
 						__(
-							'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
-							'Triggering a cron run now. Check the Troubleshooting section in the accompanying PDF manual for ways to debug and solve the issue.',
-							'wallets'
+							'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
+							'Until you fix this, transactions will not be executed. ' .
+							'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'
 						),
-						'wallets-cron-not-running'
+						'wallets-cron-disabled'
 					);
+				} else {
+					$schedules     = $this->filter_cron_schedules( array() );
+					$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
+					$interval      = $schedules[ $cron_interval ]['interval'];
 
-					add_action( 'shutdown', 'Dashed_Slug_Wallets_Cron::trigger_cron' );
+					$last_cron_run = absint( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
+					if ( time() - $last_cron_run > 4 * HOUR_IN_SECONDS ) {
+						Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
+							__(
+								'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
+								'Triggering a cron run now. Check the Troubleshooting section in the accompanying PDF manual for ways to debug and solve the issue.',
+								'wallets'
+							),
+							'wallets-cron-not-running'
+						);
+
+						add_action( 'shutdown', 'Dashed_Slug_Wallets_Cron::trigger_cron' );
+					}
 				}
 			}
 		}
@@ -159,6 +163,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 *
 		 */
 		public function cron() {
+			$referer_skip = Dashed_Slug_Wallets::get_option( 'wallets_cron_referer_skip', false );
+			if ( $referer_skip && isset( $_SERVER['HTTP_REFERER'] ) ) {
+				return;
+			}
+
 			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
 			add_action( 'shutdown', array( &$this, 'old_transactions_aggregating' ) );
@@ -387,9 +396,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets_cron_settings_section',
 				array(
 					'label_for'   => 'wallets_cron_batch_size',
-					'description' => __( 'Up to this many transactions (withdrawals and internal transfers) will be attempted per run of the cron job.', 'wallets' ),
+					'description' => __( 'Up to this many transactions (withdrawals and internal transfers) will be attempted per run of the cron job. Make sure that your hardware can handle the batch size you set here, or the plugin may misbehave.', 'wallets' ),
 					'min'         => 1,
-					'max'         => 100,
+					'max'         => 1000,
 					'step'        => 1,
 					'required'    => true,
 				)
@@ -441,6 +450,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets-menu-cron',
 				'wallets_retries_move'
 			);
+
+			add_settings_field(
+				'wallets_cron_referer_skip',
+				__( 'Skip run when HTTP_REFERER is set', 'wallets' ),
+				array( &$this, 'settings_checkbox_cb' ),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for'   => 'wallets_cron_referer_skip',
+					'description' => __( 'If this is enabled, cron tasks will only run on HTTP requests ' .
+						'that do not have HTTP_REFERER set. This ensures somewhat better performance for end users, ' .
+						'but you MUST set up a unix cron job that periodically triggers this site, ' .
+						'or transactions will NOT be processed. Usually requests originating from browsers ' .
+						'will have HTTP_REFERER set, while curl requests originating from unix cron may not. (Default: disabled)',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_cron_referer_skip'
+			);
+
+
 
 			add_settings_section(
 				'wallets_cron_withdrawals_section',
@@ -635,6 +669,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			?>
 			</select>
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<?php
+		}
+
+		public function settings_checkbox_cb( $arg ) {
+			?>
+			<input
+				type="checkbox"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
+
+			<p
+				class="description"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>-description">
+				<?php echo $arg['description']; ?></p>
+
 			<?php
 		}
 

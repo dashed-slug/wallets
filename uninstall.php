@@ -36,6 +36,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_retries_withdraw' );
 	wallets_delete_option( 'wallets_retries_move' );
 	wallets_delete_option( 'wallets_cron_batch_size' );
+	wallets_delete_option( 'wallets_cron_referer_skip' );
 	wallets_delete_option( 'wallets_last_cron_run' );
 	wallets_delete_option( 'wallets_secrets_retain_minutes' );
 	wallets_delete_option( 'wallets_cron_aggregating' );
@@ -97,6 +98,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_rates_providers' );
 	wallets_delete_option( 'wallets_rates_cache_expiry' );
 	wallets_delete_option( 'wallets_rates_tor_enabled' );
+	wallets_delete_option( 'wallets_rates_referer_skip' );
 	wallets_delete_option( 'wallets_rates_tor_ip' );
 	wallets_delete_option( 'wallets_rates_tor_port' );
 	wallets_delete_option( 'wallets_default_base_symbol' );

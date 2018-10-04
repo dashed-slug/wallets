@@ -109,6 +109,46 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				'top'
 			);
 
+			// v3
+			add_rewrite_rule(
+				'^wallets/api3/get_coins_info/?$',
+				'index.php?' .
+				'__wallets_action=get_coins_info&' .
+				'__wallets_apiversion=3',
+				'top'
+			);
+
+			add_rewrite_rule(
+				'^wallets/api3/get_nonces/?$',
+				'index.php?' .
+				'__wallets_action=get_nonces&' .
+				'__wallets_apiversion=3',
+				'top'
+			);
+
+			add_rewrite_rule(
+				'^wallets/api3/get_transactions/([0-9a-zA-Z]+)/([0-9]+)/([0-9]+)/?$',
+				'index.php?' .
+				'__wallets_action=get_transactions&' .
+				'__wallets_symbol=$matches[1]&' .
+				'__wallets_tx_count=$matches[2]&' .
+				'__wallets_tx_from=$matches[3]&' .
+				'__wallets_apiversion=3',
+				'top'
+			);
+
+			add_rewrite_rule(
+				'^wallets/api3/notify/([0-9a-zA-Z]+)/([a-zA-Z]+)/([0-9a-zA-Z]+)/?$',
+				'index.php?' .
+				'__wallets_action=notify&' .
+				'__wallets_symbol=$matches[1]&' .
+				'__wallets_notify_type=$matches[2]&' .
+				'__wallets_notify_message=$matches[3]&' .
+				'__wallets_apiversion=3',
+				'top'
+			);
+
+
 			$rules = get_option( 'rewrite_rules', array() );
 
 			$wallets_rules_count = 0;
@@ -120,7 +160,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				}
 			}
 
-			if ( $wallets_rules_count < 8 ) {
+			if ( $wallets_rules_count < 12 ) {
 				add_action( 'shutdown', 'Dashed_Slug_Wallets_JSON_API::flush_rules' );
 			}
 		}

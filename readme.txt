@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.7.1
+Stable tag: 3.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -332,6 +332,16 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.7.2 =
+- Add: New option in cron settings, allows cron to only run if `HTTP_REFERER` is not set (i.e. if triggered from curl via a system cron). This can help with frontend performance.
+- Change: Exchange rates view (`[wallets_rates]`) now displays exchange rates with 4 decimals (previously 2).
+- Change: Maximum amount of cron batch size is now 1000. Comes with a warning about setting the value too high.
+- Add: Source maps for the minified versions of JavaScript code are now added and are available to browser debugging consoles.
+- Fix: Image for reload button now works even if the site home is in a subdirectory of the domain.
+- Fix: Footer in admin screens no longer blocks click events on elements that appear in the same row as the footer's panel.
+- Fix: Added timeouts in all AJAX calls; this should prevent `net::ERR_NETWORK_IO_SUSPENDED` errors.
+- Improve: Safer code in dashboard widget while detecting other installed dashed-slug extensions.
 
 = 3.7.1 =
 - Add: `[wallets_move]` and `[wallets_withdraw]` shortcodes now also display amount to be paid after fees.
@@ -1010,7 +1020,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.7.1 brings minor improvements and user requests on 3.7.0.
+Version 3.7.2 brings minor improvements and user requests on 3.7.1.
 
 == Donating ==
 

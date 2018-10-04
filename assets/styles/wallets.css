@@ -14,11 +14,11 @@
 }
 
 .dashed-slug-wallets .wallets-reload-button {
-    float: right;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    background: url('/wp-content/plugins/wallets/assets/sprites/reload-icon.png') no-repeat center center;
+	float: right;
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
+	background: no-repeat center center;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -53,7 +53,9 @@
 
 .dashed-slug-wallets.rates .rate {
 	text-align: right;
+	white-space: nowrap;
 }
+
 .dashed-slug-wallets.rates tbody .rate {
 	font-family: monospace;
 }

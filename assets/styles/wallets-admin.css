@@ -37,6 +37,14 @@ body.wallets_page_wallets-menu-transactions table td .button {
 	margin: 0 0 0 auto;
 }
 
+#wpfooter {
+	pointer-events: none;
+}
+
+#wpfooter > * {
+	pointer-events: all;
+}
+
 .wallets-adapters-pos-warning {
 	background-color: red;
 	border-radius: 10px;
