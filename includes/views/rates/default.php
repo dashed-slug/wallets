@@ -16,7 +16,7 @@
 		</thead>
 
 		<tbody data-bind="foreach: jQuery.map( coins(), function( v, i ) { var copy = jQuery.extend({},v); copy.sprintf_pattern = copy.sprintf; delete copy.sprintf; return copy; } )">
-			<tr data-bind="if: rate">
+			<tr data-bind="if: rate && ( symbol != walletsUserData.fiatSymbol )">
 				<td class="icon">
 					<img data-bind="attr: { src: icon_url }" />
 				</td>

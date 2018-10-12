@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.7.2
+Stable tag: 3.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,7 +67,7 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 
 = Premium plugin extensions available today =
 
-Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to this plugin (as well as extensions to the [SVG Logo and Text Effects](https://wordpress.org/plugins/slate/) FREE WordPress plugin).
+Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to this plugin.
 
 Here are all the currently available premium app extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
 
@@ -332,6 +332,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.7.3 =
+- Fix: The `wallets_api_balance` filter now counts unconfirmed and pending withdrawals towards a user's current balance.
+- Change: Argument "confirmed" of the `wallets_api_balance` filter is removed. The filter always returns confirmed balances.
+- Change: When first activating the plugin, the built-in Bitcoin node adapter is disabled by default.
+- Fix: The `[wallets_rates]` shortcode no longer displays identity rates of the form XYZ = 1 XYZ.
+- Improve: Better application of a fix for themes that improperly use the Select2 library.
 
 = 3.7.2 =
 - Add: New option in cron settings, allows cron to only run if `HTTP_REFERER` is not set (i.e. if triggered from curl via a system cron). This can help with frontend performance.
@@ -1020,7 +1027,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.7.2 brings minor improvements and user requests on 3.7.1.
+Version 3.7.3 is a security patch that addresses an important bug.
 
 == Donating ==
 

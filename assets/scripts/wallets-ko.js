@@ -47,14 +47,17 @@
 
 		// fault-tolerant way of making sure that select2 is not applied to the dropdowns of this plugin
 		function removeSelect2() {
-			$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function ( i, el ) {
-				if ( $( el ).data( 'select2' ) ) {
-					$( el ).select2( 'destroy' );
-				} else {
-					$( el ).removeClass( 'select2-hidden-accessible' );
-				}
-			} );
-			$( '.dashed-slug-wallets .select2' ).remove();
+			setTimeout( function() {
+				ko.tasks.runEarly();
+				$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function ( i, el ) {
+					if ( $( el ).data( 'select2' ) ) {
+						$( el ).select2( 'destroy' );
+					} else {
+						$( el ).removeClass( 'select2-hidden-accessible' );
+					}
+				} );
+				$( '.dashed-slug-wallets .select2' ).remove();
+			}, 1000 );
 		}
 
 		// for knowing when to trigger events only the first time after something is loaded
@@ -107,6 +110,9 @@
 									walletsLoaded = true;
 								}
 							}
+						},
+						complete: function( ) {
+							removeSelect2();
 						},
 						error: xhrErrorHandler
 					});

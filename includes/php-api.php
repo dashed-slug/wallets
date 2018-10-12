@@ -118,12 +118,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 *      $btc_balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => 'BTC' ) );
 		 *
-		 * Example: Unconfirmed Litecoin balance of user 2:
+		 * Example: Litecoin balance of user 2:
 		 *
 		 *      $btc_balance = apply_filters( 'wallets_api_balance', 0, array(
 		 *          'symbol' => 'LTC',
 		 *          'user_id' => 2,
-		 *          'confirmed' => false,
 		 *      ) );
 		 *
 		 * @api
@@ -133,8 +132,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      - string 'symbol' &rarr; The coin to get the balance of.
 		 *      - integer 'user_id' &rarr; (Optional) WordPress ID of the user to get the balance of. Default is the current user.
 		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
-		 *      - boolean 'confirmed' &rarr; (Optional) Whether to calculate the balance only based on confirmed transactions (i.e. in `done` state)
-		 *                                                          or based on all transactions, including those in unconfirmed or pending state. Default is `true`.
 		 * @throws Exception     If capability checking fails.
 		 * @return float The balance for the specified coin and user.
 		 */
@@ -143,7 +140,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				$args, array(
 					'user_id'            => get_current_user_id(),
 					'check_capabilities' => false,
-					'confirmed'          => true,
 				)
 			);
 
@@ -153,10 +149,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
 
-			static $confirmed_user_balances   = array();
-			static $unconfirmed_user_balances = array();
+			static $user_balances = array();
 
-			if ( ! ${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' } ) {
+			if ( ! $user_balances ) {
 
 				global $wpdb;
 				$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
@@ -167,36 +162,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 						account,
 						symbol,
 						SUM( IF( amount > 0, amount - fee, amount ) ) AS balance
+
 					FROM
 						$table_name_txs
+
 					WHERE
 						( blog_id = %d || %d ) AND
-						( status = 'done' || %d  ) AND
-						( status NOT IN ( 'cancelled', 'failed' ) || %d )
+						(
+							( amount < 0 && status NOT IN ( 'cancelled', 'failed' ) ) ||
+							( amount > 0 && status = 'done' )
+						)
+
 					GROUP BY
 						account,
 						symbol
 					",
 					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
-					$args['confirmed'] ? 0 : 1, // if requesting confirmed balance, then look for status = done, otherwise bypass check
-					$args['confirmed'] ? 1 : 0 // if not requesting confirmed balance, then look for status not in (cancelled, failed), otherwise bypass check
+
+					// if net active, bypass blog_id check, otherwise look for blog_id
+					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
 				);
 
 				$user_balances_results = $wpdb->get_results( $user_balances_query );
 
 				foreach ( $user_balances_results as $user_balance_row ) {
-					if ( ! isset( ${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ] ) ) {
-						${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ] = new stdClass();
+					if ( ! isset( $user_balances[ $user_balance_row->account ] ) ) {
+						$user_balances[ $user_balance_row->account ] = new stdClass();
 					}
-					${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_balance_row->account ]->{ $user_balance_row->symbol } = floatval( $user_balance_row->balance );
+					$user_balances[ $user_balance_row->account ]->{ $user_balance_row->symbol } = floatval( $user_balance_row->balance );
 				}
 			}
 
 			$user_id = absint( $args['user_id'] );
 
-			if ( isset( ${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_id ] ) && isset( ${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_id ]->{ $args['symbol'] } ) ) {
-				return ${ $args['confirmed'] ? 'confirmed_user_balances' : 'unconfirmed_user_balances' }[ $user_id ]->{ $args['symbol'] };
+			if ( isset( $user_balances[ $user_id ] ) && isset( $user_balances[ $user_id ]->{ $args['symbol'] } ) ) {
+				return $user_balances[ $user_id ]->{ $args['symbol'] };
 			}
 			return 0;
 		}
