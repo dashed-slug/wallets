@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					WHERE
 						( blog_id = %d || %d ) AND
 						(
-							( amount < 0 && status NOT IN ( 'cancelled', 'failed' ) ) ||
+							( amount < 0 && status NOT IN ( 'cancelled', 'failed' ) ) OR
 							( amount > 0 && status = 'done' )
 						)
 

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.7.3
+Stable tag: 3.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -332,6 +332,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.7.4 =
+- Improve: JavaScript var `walletsUserData.recommendApiVersion` can be used by extensions to access latest version of JSON API.
+- Add: Deposits can now be cancelled.
+- Add: Cron job can now auto-cancel transactions that have remained in an unconfirmed or pending state for too long (default: cancel after 24 hours).
 
 = 3.7.3 =
 - Fix: The `wallets_api_balance` filter now counts unconfirmed and pending withdrawals towards a user's current balance.
@@ -1027,7 +1032,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.7.3 is a security patch that addresses an important bug.
+Version 3.7.4 brings some minor feature improvements.
 
 == Donating ==
 

@@ -1241,7 +1241,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							WHERE
 								id IN ( $set_of_ids ) AND
 								( status IN ( 'unconfirmed', 'pending' ) OR
-								( status = 'done' && category = 'move' ) )
+								( status = 'done' && category IN ( 'move', 'deposit' ) ) )
 							"
 						);
 

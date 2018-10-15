@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.7.3\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.7.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-10-12 17:02:32+00:00\n"
+"POT-Creation-Date: 2018-10-15 11:00:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -110,7 +110,7 @@ msgstr ""
 #: includes/coin-adapter-rpc.php:303 includes/coin-adapter-rpc.php:312
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:140
-#: includes/confirmations.php:676 includes/cron.php:561
+#: includes/confirmations.php:676 includes/cron.php:620
 #: includes/frontend-settings.php:194 includes/notifications.php:724
 #: includes/rates.php:317 includes/transactions.php:91
 #: includes/transactions.php:935 includes/transactions.php:1142
@@ -147,8 +147,8 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: includes/admin-menu.php:41 includes/wallets-core.php:253
-#: includes/wallets-core.php:263
+#: includes/admin-menu.php:41 includes/wallets-core.php:254
+#: includes/wallets-core.php:264
 msgid "Wallets"
 msgstr ""
 
@@ -1049,127 +1049,137 @@ msgstr ""
 msgid "Auto-confirm withdrawals (days)"
 msgstr ""
 
-#: includes/cron.php:110
+#: includes/cron.php:111
 msgid "minute"
 msgstr ""
 
-#: includes/cron.php:115
+#: includes/cron.php:116
 msgid "three minutes"
 msgstr ""
 
-#: includes/cron.php:120
+#: includes/cron.php:121
 msgid "five minutes"
 msgstr ""
 
-#: includes/cron.php:125
+#: includes/cron.php:126
 msgid "ten minutes"
 msgstr ""
 
-#: includes/cron.php:130
+#: includes/cron.php:131
 msgid "twenty minutes"
 msgstr ""
 
-#: includes/cron.php:135
+#: includes/cron.php:136
 msgid "half an hour"
 msgstr ""
 
-#: includes/cron.php:369
+#: includes/cron.php:407
 msgid "Perioric checks"
 msgstr ""
 
-#: includes/cron.php:376
+#: includes/cron.php:414
 msgid "Run every"
 msgstr ""
 
-#: includes/cron.php:382
+#: includes/cron.php:420
 msgid "How often to run the cron job."
 msgstr ""
 
-#: includes/cron.php:393
+#: includes/cron.php:431
 msgid "Max batch size"
 msgstr ""
 
-#: includes/cron.php:399
+#: includes/cron.php:437
 msgid ""
 "Up to this many transactions (withdrawals and internal transfers) will be "
 "attempted per run of the cron job. Make sure that your hardware can handle "
 "the batch size you set here, or the plugin may misbehave."
 msgstr ""
 
-#: includes/cron.php:414
+#: includes/cron.php:452
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: includes/cron.php:420
+#: includes/cron.php:458
 msgid ""
 "Failed withdrawals will be attempted up to this many times, while the "
 "adapter is unlocked."
 msgstr ""
 
-#: includes/cron.php:435
+#: includes/cron.php:473
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: includes/cron.php:441
+#: includes/cron.php:479
 msgid "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: includes/cron.php:456
+#: includes/cron.php:494
 msgid "Skip run when HTTP_REFERER is set"
 msgstr ""
 
-#: includes/cron.php:481
+#: includes/cron.php:519
 msgid "Withdrawal locks"
 msgstr ""
 
-#: includes/cron.php:488
+#: includes/cron.php:526
 msgid "Time to retain withdrawal secrets"
 msgstr ""
 
-#: includes/cron.php:516
-msgid "Old transaction aggregation"
+#: includes/cron.php:554
+msgid "Old transactions"
 msgstr ""
 
-#: includes/cron.php:523
-msgid "Batch old transactions"
+#: includes/cron.php:561
+msgid "Batch old transactions and clean"
 msgstr ""
 
-#: includes/cron.php:529
+#: includes/cron.php:567
 msgid ""
 "Choose how to aggregate similar past internal transactions that are in a "
-"\"done\" state."
+"\"done\" state. Old \"failed\" or \"cancelled\" internal transactions will "
+"be deleted."
 msgstr ""
 
-#: includes/cron.php:531
+#: includes/cron.php:569
 msgid "Never"
 msgstr ""
 
-#: includes/cron.php:532
+#: includes/cron.php:570
 msgid "Weekly"
 msgstr ""
 
-#: includes/cron.php:564
+#: includes/cron.php:582
+msgid "Cancel old unconfirmed/pending transactions "
+msgstr ""
+
+#: includes/cron.php:588
+msgid ""
+"Time to wait before cancelling an unconfirmed or pending transaction, in "
+"minutes (0 = do not cancel)."
+msgstr ""
+
+#: includes/cron.php:623
 msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: includes/cron.php:608
+#: includes/cron.php:667
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron "
 "job."
 msgstr ""
 
-#: includes/cron.php:618
+#: includes/cron.php:677
 msgid ""
 "You can control how wallet secrets are stored. Wallet secrets are needed "
 "for performing withdrawals."
 msgstr ""
 
-#: includes/cron.php:628
+#: includes/cron.php:687
 msgid ""
 "You can control whether similar old internal transactions are aggregated. "
 "Aggregating past transactions saves space on the DB. Aggregation is "
-"performed in batches so as not to overwhelm the DB.  Old \"failed\" or "
-"\"cancelled\" internal transactions will be deleted."
+"performed in batches so as not to overwhelm the DB."
 msgstr ""
 
 #: includes/frontend-settings.php:36
@@ -1945,92 +1955,92 @@ msgstr ""
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:254 includes/wallets-core.php:264
+#: includes/wallets-core.php:255 includes/wallets-core.php:265
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:255 includes/wallets-core.php:265
+#: includes/wallets-core.php:256 includes/wallets-core.php:266
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:378
+#: includes/wallets-core.php:379
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:386
+#: includes/wallets-core.php:387
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:512
+#: includes/wallets-core.php:513
 msgid ""
 "You are using WordPress %1$s. This plugin has been tested with %2$s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:604
+#: includes/wallets-core.php:605
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:605
+#: includes/wallets-core.php:606
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:606
+#: includes/wallets-core.php:607
 msgid "Web Server"
 msgstr ""
 
-#: includes/wallets-core.php:607
+#: includes/wallets-core.php:608
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:608
+#: includes/wallets-core.php:609
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:609
+#: includes/wallets-core.php:610
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:610
+#: includes/wallets-core.php:611
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:611
+#: includes/wallets-core.php:612
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:612
+#: includes/wallets-core.php:613
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:613
+#: includes/wallets-core.php:614
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:630
+#: includes/wallets-core.php:631
 msgid "Loaded"
 msgstr ""
 
-#: includes/wallets-core.php:630
+#: includes/wallets-core.php:631
 msgid "Not loaded"
 msgstr ""
 
-#: includes/wallets-core.php:662
+#: includes/wallets-core.php:663
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:1209
+#: includes/wallets-core.php:1210
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1213
+#: includes/wallets-core.php:1214
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 

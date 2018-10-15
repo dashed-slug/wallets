@@ -6,7 +6,6 @@
 	'use strict';
 
 	$( function() {
-		var apiversion = 3;
 		var timeout_millis = 30000;
 
 		// localize moment.js
@@ -89,7 +88,7 @@
 						async: true,
 						timeout: timeout_millis,
 						data: {
-							'__wallets_apiversion' : apiversion,
+							'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
 							'__wallets_action': 'get_coins_info'
 						},
 						success: function( response ) {
@@ -141,7 +140,7 @@
 						asunc: true,
 						timeout: timeout_millis,
 						data: {
-							'__wallets_apiversion' : apiversion,
+							'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
 							'__wallets_action': 'get_nonces'
 						},
 						success: function( response ) {
@@ -371,7 +370,7 @@
 						cache: false,
 						timeout: timeout_millis,
 						data: {
-							'__wallets_apiversion' : apiversion,
+							'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
 							'__wallets_action' : 'do_new_address',
 							'__wallets_symbol' : symbol,
 							'_wpnonce' : nonce
@@ -404,7 +403,7 @@
 					cache: false,
 					timeout: timeout_millis,
 					data: {
-						'__wallets_apiversion' : apiversion,
+						'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
 						'__wallets_action' : 'do_move',
 						'__wallets_move_toaccount' : user,
 						'__wallets_move_amount' : amount,
@@ -607,7 +606,7 @@
 					cache: false,
 					timeout: timeout_millis,
 					data: {
-						'__wallets_apiversion' : apiversion,
+						'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
 						'__wallets_action' : 'do_withdraw',
 						'__wallets_withdraw_address' : address,
 						'__wallets_symbol' : symbol,
@@ -689,7 +688,7 @@
 							async: true,
 							timeout: timeout_millis,
 							data: {
-								'__wallets_apiversion' : apiversion,
+								'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
 								'__wallets_action' : 'get_transactions',
 								'__wallets_tx_count' : count,
 								'__wallets_tx_from' : from,

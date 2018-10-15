@@ -73,7 +73,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_secrets_retain_minutes', 0 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_aggregating', 'never' );
-
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_autocancel', 1440 );
 		}
 
 		public static function action_deactivate() {
@@ -93,6 +93,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size', filter_input( INPUT_POST, 'wallets_cron_batch_size', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_secrets_retain_minutes', filter_input( INPUT_POST, 'wallets_secrets_retain_minutes', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_aggregating', filter_input( INPUT_POST, 'wallets_cron_aggregating', FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_autocancel', filter_input( INPUT_POST, 'wallets_cron_autocancel', FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-cron', network_admin_url( 'admin.php' ) ) );
 			exit;
@@ -170,8 +171,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
-			add_action( 'shutdown', array( &$this, 'old_transactions_aggregating' ) );
-
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 				global $wpdb;
 				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
@@ -182,13 +181,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			} else {
 				$this->call_cron_on_all_adapters();
 			}
+
+			$this->old_transactions_aggregating();
+
+			$this->old_unconfirmed_pending_transactions_cancel();
 		}
 
 		public function old_transactions_aggregating() {
 			global $wpdb;
 
 			$table_name_txs       = Dashed_Slug_Wallets::$table_name_txs;
-			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'wallets', 'never' );
+			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'never' );
 
 			if ( 'never' == $aggregating_interval ) {
 				return;
@@ -334,6 +337,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'SET autocommit=1' );
+		}
+
+		private function old_unconfirmed_pending_transactions_cancel() {
+			global $wpdb;
+
+			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
+			$autocancel_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_cron_autocancel', 0 ) );
+
+			if ( ! $autocancel_minutes ) {
+				return;
+			}
+
+			$query = $wpdb->prepare( "
+				UPDATE
+					{$table_name_txs}
+				SET
+					status = 'cancelled'
+				WHERE
+					status IN ( 'unconfirmed', 'pending' ) AND
+					created_time < NOW() - INTERVAL %d MINUTE
+				",
+				$autocancel_minutes
+			);
+
+			$result = $wpdb->query( $query );
+
+			if ( false === $result ) {
+				error_log(
+					sprintf(
+						'%s: Failed with: %s',
+						__FUNCTION__,
+						$wpdb->last_error
+					)
+				);
+			}
 		}
 
 		private function call_cron_on_all_adapters() {
@@ -512,21 +550,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			);
 
 			add_settings_section(
-				'wallets_cron_aggregating_section',
-				__( 'Old transaction aggregation', 'wallets' ),
-				array( &$this, 'wallets_cron_aggregating_section_cb' ),
+				'wallets_cron_old_section',
+				__( 'Old transactions', 'wallets' ),
+				array( &$this, 'wallets_cron_old_section_cb' ),
 				'wallets-menu-cron'
 			);
 
 			add_settings_field(
 				'wallets_cron_aggregating',
-				__( 'Batch old transactions', 'wallets' ),
+				__( 'Batch old transactions and clean', 'wallets' ),
 				array( &$this, 'settings_select_cb' ),
 				'wallets-menu-cron',
-				'wallets_cron_aggregating_section',
+				'wallets_cron_old_section',
 				array(
 					'label_for'   => 'wallets_cron_aggregating',
-					'description' => __( 'Choose how to aggregate similar past internal transactions that are in a "done" state.', 'wallets' ),
+					'description' => __( 'Choose how to aggregate similar past internal transactions that are in a "done" state. Old "failed" or "cancelled" internal transactions will be deleted.', 'wallets' ),
 					'options'     => array(
 						'never'  => __( 'Never', 'wallets' ),
 						'weekly' => __( 'Weekly', 'wallets' ),
@@ -537,6 +575,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			register_setting(
 				'wallets-menu-cron',
 				'wallets_cron_aggregating'
+			);
+
+			add_settings_field(
+				'wallets_cron_autocancel',
+				__( 'Cancel old unconfirmed/pending transactions ', 'wallets' ),
+				array( &$this, 'settings_integer_cb' ),
+				'wallets-menu-cron',
+				'wallets_cron_old_section',
+				array(
+					'label_for'   => 'wallets_cron_autocancel',
+					'description' => __( 'Time to wait before cancelling an unconfirmed or pending transaction, in minutes (0 = do not cancel).', 'wallets' ),
+					'min'         => 0,
+					'max'         => 7 * DAY_IN_SECONDS / MINUTE_IN_SECONDS,
+					'step'        => 10,
+					'required'    => true,
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_cron_autocancel'
 			);
 
 		}
@@ -621,11 +680,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			<?php
 		}
 
-		public function wallets_cron_aggregating_section_cb() {
+		public function wallets_cron_old_section_cb() {
 			?>
 			<p>
 			<?php
-				esc_html_e( 'You can control whether similar old internal transactions are aggregated. Aggregating past transactions saves space on the DB. Aggregation is performed in batches so as not to overwhelm the DB.  Old "failed" or "cancelled" internal transactions will be deleted.', 'wallets' );
+				esc_html_e( 'You can control whether similar old internal transactions are aggregated. Aggregating past transactions saves space on the DB. Aggregation is performed in batches so as not to overwhelm the DB.', 'wallets' );
 			?>
 			</p>
 			<?php

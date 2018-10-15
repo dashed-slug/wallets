@@ -284,7 +284,7 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_status( $item ) {
 		$actions = array();
-		if ( ! ( 'deposit' == $item['category'] || 'trade' == $item['category'] ) ) { // cannot cancel incoming deposits or trades with other people
+		if ( ! ( 'trade' == $item['category'] ) ) { // cannot cancel trades with other people
 			if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
 				if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
 					$actions['cancel_tx'] = sprintf(
@@ -308,8 +308,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			}
 		}
 
-		if ( 'trade' !== $item['category'] ) {
-			if ( 'cancelled' == $item['status'] || 'failed' == $item['status'] ) { // cannot retry trades
+		if ( 'trade' !== $item['category'] ) { // cannot retry trades
+			if ( 'cancelled' == $item['status'] || 'failed' == $item['status'] ) {
 				$actions['retry_tx'] = sprintf(
 					'<a class="button" href="%s" title="%s">%s</a>',
 					add_query_arg(
