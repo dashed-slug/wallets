@@ -1318,18 +1318,26 @@ EMAIL
 		}
 
 		public function cron() {
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs') );
+		}
 
-				global $wpdb;
-				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
-					switch_to_blog( $blog_id );
-					$this->confirm_transactions();
-					$this->auto_confirm_transactions();
+		public function cron_tasks_on_all_blogs() {
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+
+				$sites = get_sites();
+				shuffle( $sites );
+				foreach ( $sites as $site ) {
+					switch_to_blog( $site->blog_id );
+					$this->cron_confirm_transactions();
+					$this->cron_auto_confirm_transactions();
 					restore_current_blog();
+					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
+						break;
+					}
 				}
 			} else {
-				$this->confirm_transactions();
-				$this->auto_confirm_transactions();
+				$this->cron_confirm_transactions();
+				$this->cron_auto_confirm_transactions();
 			}
 		}
 
@@ -1337,7 +1345,7 @@ EMAIL
 		 * Change status of transactions from unconfirmed to pending, depending on whether
 		 * admin or user confirmation is required and has been given. Attached to cron.
 		 */
-		public function confirm_transactions() {
+		public function cron_confirm_transactions() {
 			global $wpdb;
 
 			// if this option does not exist, uninstall script might be already running.
@@ -1404,7 +1412,7 @@ EMAIL
 			}
 		}
 
-		public function auto_confirm_transactions() {
+		public function cron_auto_confirm_transactions() {
 			global $wpdb;
 
 			$batch_size     = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size' );

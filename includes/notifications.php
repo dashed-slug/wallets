@@ -184,7 +184,7 @@ NOTIFICATION
 			);
 
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_enabled', 'on' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_subject', __( 'You have received funds from another user. - ###COMMENT###', 'wallets' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_subject', __( 'You have received ###SYMBOL### from another user. - ###COMMENT###', 'wallets' ) );
 			call_user_func(
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_message', __(
 <<<NOTIFICATION
@@ -212,7 +212,7 @@ NOTIFICATION
 
 ###ACCOUNT###,
 
-You have deposited ###AMOUNT### from address ###ADDRESS###.
+You have deposited ###AMOUNT_WITHOUT_FEE### from address ###ADDRESS###.
 
 Please note that the funds may not be yet available to you before the required amount of network confirmations is reached.
 
@@ -773,9 +773,11 @@ NOTIFICATION
 						<dt><code>###TXID###</code></dt>
 						<dd><?php esc_html_e( 'Transaction ID. ( This is normally the same as the txid on the blockchain. Internal transactions are also assigned a unique ID. )', 'wallets' ); ?></dd>
 						<dt><code>###AMOUNT###</code></dt>
-						<dd><?php esc_html_e( 'The amount transacted.', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'The amount transacted including fees.', 'wallets' ); ?></dd>
+						<dt><code>###AMOUNT_WITHOUT_FEE###</code></dt>
+						<dd><?php esc_html_e( 'The amount transacted with fees subtracted.', 'wallets' ); ?></dd>
 						<dt><code>###FEE###</code></dt>
-						<dd><?php esc_html_e( 'For withdrawals and transfers, the fees paid to the site.', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'For withdrawals and transfers, the fees paid to the site. For deposits, fees paid externally to the site.', 'wallets' ); ?></dd>
 						<dt><code>###SYMBOL###</code></dt>
 						<dd><?php esc_html_e( 'The coin symbol for this transaction (e.g. "BTC" for Bitcoin)', 'wallets' ); ?></dd>
 						<dt><code>###CREATED_TIME_LOCAL###</code></dt>
@@ -1129,6 +1131,15 @@ NOTIFICATION
 				$replace_pairs['###FEE###']              = sprintf( $sprintf, abs( $tx_data->fee ) );
 			}
 
+			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {
+				if ( $replace_pairs['###AMOUNT###'] > 0 ) {
+					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  =   $replace_pairs['###AMOUNT###'] - $replace_pairs['###FEE###'];
+				} else {
+
+					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = - $replace_pairs['###AMOUNT###'] - $replace_pairs['###FEE###'];
+				}
+			}
+
 			$replace_pairs['###SYMBOL###']               = $tx_data->symbol;
 			$replace_pairs['###CREATED_TIME###']         = $tx_data->created_time;
 			$replace_pairs['###CREATED_TIME_LOCAL###']   = get_date_from_gmt( $tx_data->created_time );
@@ -1150,7 +1161,13 @@ NOTIFICATION
 			}
 
 			if ( isset( $tx_data->tags ) && $tx_data->tags ) {
-				$replace_pairs['###TAGS###']                 = $tx_data->tags;
+				$replace_pairs['###TAGS###']             = $tx_data->tags;
+			}
+
+			if ( isset( $tx_data->last_error ) && $tx_data->last_error ) {
+				$replace_pairs['###LAST_ERROR###']       = $tx_data->last_error;
+			} else {
+				$replace_pairs['###LAST_ERROR###']       = 'n/a';
 			}
 
 			// variable substitution

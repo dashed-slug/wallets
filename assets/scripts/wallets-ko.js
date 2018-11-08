@@ -212,7 +212,7 @@
 						var coins = self.coins();
 						var coin = self.selectedCoin();
 						if ( 'object' == typeof( coins[ coin ] ) ) {
-							if ( coins[ coin ].deposit_address ) {
+							if ( ! coins[ coin ].is_fiat && coins[ coin ].deposit_address ) {
 								$deposits.each( function( n, el ) {
 									var $deposit = $( el );
 									var $qrcode = $( '.qrcode', $deposit );

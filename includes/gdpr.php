@@ -236,7 +236,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_GDPR' ) ) {
 					WHERE
 						account = %d
 					",
-					$user->ID,
 					$user->ID
 				);
 
@@ -285,7 +284,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_GDPR' ) ) {
 					WHERE
 						account = %d
 					",
-					$user->ID,
 					$user->ID
 				);
 

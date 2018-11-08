@@ -17,6 +17,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 			add_action( 'personal_options_update', array( &$this, 'update_extra_profile_fields' ) );
 			add_action( 'edit_user_profile_update', array( &$this, 'update_extra_profile_fields' ) );
 
+			add_action( 'deleted_user', array( &$this, 'action_deleted_user' ), 10, 2 );
+			add_action( 'wpmu_delete_user', array( &$this, 'action_deleted_user' ) );
 		}
 
 		public function action_user_profile( $profileuser ) {
@@ -217,7 +219,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 		<?php
 		}
 
-		function update_extra_profile_fields( $user_id ) {
+		public function update_extra_profile_fields( $user_id ) {
 			if ( current_user_can( 'edit_user', $user_id ) ) {
 				if ( isset( $_POST['wallets_base_symbol'] ) && is_string( $_POST['wallets_base_symbol'] ) ) {
 					update_user_meta( $user_id, 'wallets_base_symbol', $_POST['wallets_base_symbol'] );
@@ -225,6 +227,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 				update_user_meta( $user_id, 'wallets_disable_emails', isset( $_POST['wallets_disable_emails'] ) );
 			}
 		}
+
+		public function action_deleted_user( $user_id = 0, $reassign = false ) {
+			global $wpdb;
+			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+			if ( ! $user_id ) {
+				return;
+			}
+
+			$wpdb->flush();
+
+			if ( $reassign ) {
+				error_log( "Assigning deposit addresses associated with user $user_id to user $reassign" );
+				$query = $wpdb->prepare( "UPDATE {$table_name_adds} SET account = %d WHERE account = %d", $reassign, $user_id );
+			} else {
+				error_log( "Deleting deposit addresses associated with user $user_id" );
+				$query = $wpdb->prepare( "DELETE FROM {$table_name_adds} WHERE account = %d", $user_id );
+			}
+
+			if ( false === $wpdb->query( $query ) ) {
+				error_log( "Failed: " . $wpdb->last_error );
+			} else {
+				error_log( "Success!" );
+			}
+
+			$wpdb->flush();
+
+			if ( $reassign ) {
+				error_log( "Assigning transactions associated with user $user_id to user $reassign" );
+				$query = $wpdb->prepare( "UPDATE {$table_name_txs} SET account = %d WHERE account = %d", $reassign, $user_id );
+			} else {
+				error_log( "Deleting transactions associated with user $user_id" );
+				$query = $wpdb->prepare( "DELETE FROM {$table_name_txs} WHERE account = %d", $user_id );
+			}
+
+			if ( false === $wpdb->query( $query ) ) {
+				error_log( "Failed: " . $wpdb->last_error );
+			} else {
+				error_log( "Success!" );
+			}
+		}
+
 
 	}
 	new Dashed_Slug_Wallets_Admin_Users();

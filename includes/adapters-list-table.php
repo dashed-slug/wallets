@@ -152,10 +152,16 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			case 'adapter_name':
 			case 'pending_wds':
 				return esc_html( $item[ $column_name ] );
+
 			case 'total_fees':
 			case 'balance':
-				return
-					sprintf( $item['sprintf'], $item[ $column_name ] );
+				// if amount is zero, show a dash
+				if ( ! $item[ $column_name ] ) {
+					return '&mdash;';
+				}
+				// else show formatted amount
+				return sprintf( $item['sprintf'], $item[ $column_name ] );
+
 			default:
 				return '';
 		}

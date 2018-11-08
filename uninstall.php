@@ -33,10 +33,10 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	}
 
 	// remove cron settings
+	wallets_delete_option( 'wallets_cron_nonce' );
 	wallets_delete_option( 'wallets_retries_withdraw' );
 	wallets_delete_option( 'wallets_retries_move' );
 	wallets_delete_option( 'wallets_cron_batch_size' );
-	wallets_delete_option( 'wallets_cron_referer_skip' );
 	wallets_delete_option( 'wallets_last_cron_run' );
 	wallets_delete_option( 'wallets_secrets_retain_minutes' );
 	wallets_delete_option( 'wallets_cron_aggregating' );

@@ -37,22 +37,221 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		}
 
 		public function cron() {
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			add_action( 'shutdown', array( &$this, 'cron_mark_retried_deposits_as_done' ), 10 );
+			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs' ), 20 );
+			add_action( 'shutdown', array( &$this, 'cron_old_transactions_aggregating' ), 30 );
+			add_action( 'shutdown', array( &$this, 'cron_old_unconfirmed_pending_transactions_cancel' ), 40 );
+		}
 
-				global $wpdb;
-				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
-					switch_to_blog( $blog_id );
-					$this->fail_transactions();
-					$this->execute_pending_moves();
-					$this->execute_pending_withdrawals();
+		public function cron_tasks_on_all_blogs() {
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+
+				$sites = get_sites();
+				shuffle( $sites );
+				foreach ( $sites as $site ) {
+					switch_to_blog( $site->blog_id );
+					$this->cron_fail_transactions();
+					$this->cron_execute_pending_moves();
+					$this->cron_execute_pending_withdrawals();
 					restore_current_blog();
+					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
+						break;
+					}
 				}
 			} else {
-				$this->fail_transactions();
-				$this->execute_pending_moves();
-				$this->execute_pending_withdrawals();
+				$this->cron_fail_transactions();
+				$this->cron_execute_pending_moves();
+				$this->cron_execute_pending_withdrawals();
 			}
 		}
+
+		public function cron_old_transactions_aggregating() {
+			global $wpdb;
+
+			$table_name_txs       = Dashed_Slug_Wallets::$table_name_txs;
+			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'never' );
+
+			if ( 'never' == $aggregating_interval ) {
+				return;
+			}
+
+			// start db transaction and lock tables
+			$wpdb->flush();
+			$wpdb->query( 'SET autocommit=0' );
+
+			try {
+
+				// STEP 1: Determine first week with multiple done internal transactions that have not yet been batched into aggregates
+
+				$query = "
+					SELECT
+						YEARWEEK( MIN( created_time ) ) AS earliest_week
+					FROM
+						$table_name_txs
+					WHERE
+						status = 'done'
+						AND category = 'move'
+						AND LOCATE( 'aggregate', tags ) = 0
+				";
+
+				$earliest_week = $wpdb->get_var( $query );
+				if ( false === $earliest_week ) {
+					throw new Exception( 'Could not aggregate transactions because the earliest applicable interval was not found: ' . $wpdb->last_error );
+				}
+				$earliest_week = absint( $earliest_week );
+
+				if ( ! $earliest_week ) {
+					return;
+				}
+
+				// STEP 2: Batch transactions for that week into aggregates.
+
+				$wpdb->flush();
+				$query = $wpdb->prepare(
+					"
+					INSERT INTO
+					$table_name_txs(
+						blog_id,
+						category,
+						tags,
+						account,
+						other_account,
+						address,
+						extra,
+						txid,
+						symbol,
+						amount,
+						fee,
+						comment,
+						created_time,
+						updated_time,
+						confirmations,
+						status,
+						retries,
+						admin_confirm,
+						user_confirm,nonce
+					)
+					SELECT
+						blog_id,
+						'move' AS category,
+						CONCAT( 'aggregate ', tags ) AS tags,
+						account,
+						other_account,
+						'' as address,
+						'' as extra,
+						NULL as txid,
+						symbol,
+						SUM( amount ) AS amount,
+						SUM( fee ) AS fee,
+						CONCAT( 'Sum of ', COUNT( id ), ' txs for week ', WEEK( MIN( created_time ) ) + 1, ' of year ', YEAR( MIN( created_time ) ) ) AS comment,
+						MIN( created_time ) AS created_time,
+						MAX( created_time ) AS updated_time,
+						NULL AS confirmations,
+						'done' AS status,
+						0 AS retries,
+						0 AS admin_confirm,
+						0 AS user_confirm,
+						NULL AS nonce
+					FROM
+						$table_name_txs
+					WHERE
+						status = 'done'
+						AND category = 'move'
+						AND LOCATE( 'aggregate', tags ) = 0
+						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
+						AND YEARWEEK( created_time ) = %d
+					GROUP BY
+						blog_id,
+						tags,
+						account,
+						other_account,
+						symbol
+					ORDER BY
+						created_time
+					",
+					$earliest_week
+				);
+
+				$result = $wpdb->query( $query );
+				if ( false === $result ) {
+					throw new Exception( sprintf( 'Could not aggregate transactions for yearweek %d: %s ', $earliest_week, $wpdb->last_error ) );
+				} else {
+					if ( $result > 0 ) {
+						error_log( sprintf( 'Created %d aggregate transactions for yearweek %s', $result, $earliest_week ) );
+					}
+				}
+
+				// STEP 3: Delete old non-aggregated internal transactions for that week, plus any failed or cancelled internal transactions during that week.
+				$wpdb->flush();
+				$query = $wpdb->prepare(
+					"
+					DELETE FROM
+						$table_name_txs
+					WHERE
+						status IN ( 'done', 'failed', 'cancelled' )
+						AND category = 'move'
+						AND LOCATE( 'aggregate', tags ) = 0
+						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
+						AND YEARWEEK( created_time ) = %d
+					",
+					$earliest_week
+				);
+
+				$result = $wpdb->query( $query );
+
+				if ( false === $result ) {
+					throw new Exception( "Could not delete transactions for yearweek {$earliest_week}: " . $wpdb->last_error );
+				} else {
+					if ( $result > 0 ) {
+						error_log( sprintf( 'Deleted %d aggregated internal transactions or failed/cancelled transactions for yearweek %s', $result, $earliest_week ) );
+					}
+				}
+			} catch ( Exception $e ) {
+				$wpdb->query( 'ROLLBACK' );
+				$wpdb->query( 'SET autocommit=1' );
+				error_log( __FUNCTION__ . '() error:' . $e->getMessage() );
+				return;
+			}
+
+			$wpdb->query( 'COMMIT' );
+			$wpdb->query( 'SET autocommit=1' );
+		}
+
+		public function cron_old_unconfirmed_pending_transactions_cancel() {
+			global $wpdb;
+
+			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
+			$autocancel_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_cron_autocancel', 0 ) );
+
+			if ( ! $autocancel_minutes ) {
+				return;
+			}
+
+			$query = $wpdb->prepare( "
+				UPDATE
+					{$table_name_txs}
+				SET
+					status = 'cancelled'
+				WHERE
+					status IN ( 'unconfirmed', 'pending' ) AND
+					updated_time < NOW() - INTERVAL %d MINUTE
+				",
+				$autocancel_minutes
+			);
+
+			$result = $wpdb->query( $query );
+
+			if ( false === $result ) {
+				error_log(
+					sprintf(
+						'%s: Failed with: %s',
+						__FUNCTION__,
+						$wpdb->last_error
+					)
+				);
+			}
+		}
+
 
 		public function redirect_if_no_sort_params() {
 			// make sure that sorting params are set
@@ -131,7 +330,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			<?php
 		}
 
-		public function fail_transactions() {
+		private function cron_fail_transactions() {
 			global $wpdb;
 
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
@@ -157,8 +356,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$wpdb->query( $fail_txs_update_query );
 		}
 
+		/**
+		 * Deposits do not need to be confirmed. If any deposits are cancelled and then retried,
+		 * they are set to an 'unconfirmed' state. These deposits are now marked 'done'.
+		 * This is mostly needed for fiat deposits (with the fiat coin adapter).
+		 */
+		public function cron_mark_retried_deposits_as_done() {
+			global $wpdb;
 
-		public function execute_pending_moves() {
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+			$deposits_update_query = $wpdb->prepare(
+				"
+				UPDATE
+					{$table_name_txs}
+				SET
+					status = 'done',
+					updated_time = %s
+				WHERE
+					status = 'unconfirmed' AND
+					category = 'deposit'
+				",
+				current_time( 'mysql', true )
+			);
+
+			$wpdb->query( $deposits_update_query );
+		}
+
+		private function cron_execute_pending_moves() {
 			// if this option does not exist, uninstall script might be already running.
 			// 0 batch size forces this function to not do anything
 			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 1 );
@@ -344,7 +569,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 		} // end function execute_pending_moves
 
-		public function execute_pending_withdrawals() {
+		private function cron_execute_pending_withdrawals() {
 			// if this option does not exist, uninstall script might be already running.
 			// 0 batch size forces this function to not do anything
 			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 1 );

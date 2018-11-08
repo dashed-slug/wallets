@@ -447,7 +447,18 @@ CFG;
 			);
 
 			if ( false === $result ) {
-				throw new Exception( sprintf( __( '%1$s->%2$s() failed to send with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				$m = sprintf(
+					__(
+						'%1$s->%2$s() failed to send with status="%3$s" and error="%4$s"',
+						'wallets'
+					),
+					__CLASS__,
+					__FUNCTION__,
+					$this->rpc->status,
+					$this->rpc->error
+				);
+				error_log( $m );
+				throw new Exception( $m );
 			}
 			return $result;
 		}

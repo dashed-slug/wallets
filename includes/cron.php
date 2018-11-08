@@ -7,6 +7,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 	class Dashed_Slug_Wallets_Cron {
 
 		public function __construct() {
+			if ( ! isset( $_SERVER['REQUEST_TIME'] ) ) {
+				$_SERVER['REQUEST_TIME'] = time();
+			}
+
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 			register_deactivation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_deactivate' ) );
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
@@ -26,47 +30,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
 			}
 
-			$referer_skip = Dashed_Slug_Wallets::get_option( 'wallets_cron_referer_skip', false );
-
-			if ( ! $referer_skip ) {
-
-				if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
-					$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
-					$notices->warning(
-						__(
-							'WordPress cron is disabled. Check wp-config.php for the constant DISABLE_WP_CRON. ' .
-							'Until you fix this, transactions will not be executed. ' .
-							'Check the accompanying PDF manual for ways to debug and solve the issue.', 'wallets'
-						),
-						'wallets-cron-disabled'
-					);
-				} else {
-					$schedules     = $this->filter_cron_schedules( array() );
-					$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-					$interval      = $schedules[ $cron_interval ]['interval'];
-
-					$last_cron_run = absint( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
-					if ( time() - $last_cron_run > 4 * HOUR_IN_SECONDS ) {
-						Dashed_Slug_Wallets_Admin_Notices::get_instance()->error(
-							__(
-								'The <code>wp_cron</code> job has not run in a while and might be disabled. Until you fix this, transactions can be delayed. ' .
-								'Triggering a cron run now. Check the Troubleshooting section in the accompanying PDF manual for ways to debug and solve the issue.',
-								'wallets'
-							),
-							'wallets-cron-not-running'
-						);
-
-						add_action( 'shutdown', 'Dashed_Slug_Wallets_Cron::trigger_cron' );
-					}
-				}
+			$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+			$last_cron_run = absint( Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', 0 ) );
+			if ( time() - $last_cron_run > 4 * HOUR_IN_SECONDS ) {
+				$notices::get_instance()->error(
+					__(
+						'The <code>wp_cron</code> tasks have not run in the past 4 hours.' .
+						'You must either enable auto-triggering or trigger cron manually via curl/system-cron.',
+						'wallets'
+					),
+					'wallets-cron-not-running'
+				);
 			}
 		}
 
-		public static function trigger_cron() {
-			do_action( 'wallets_periodic_checks' );
-		}
-
 		public static function action_activate( $network_active ) {
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_nonce', md5( rand() . uniqid() ) );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_interval', 'wallets_three_minutes' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw', 3 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move', 1 );
@@ -164,217 +143,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 *
 		 */
 		public function cron() {
-			$referer_skip = Dashed_Slug_Wallets::get_option( 'wallets_cron_referer_skip', false );
-			if ( $referer_skip && isset( $_SERVER['HTTP_REFERER'] ) ) {
-				return;
-			}
-
 			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-				global $wpdb;
-				foreach ( $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) as $blog_id ) {
-					switch_to_blog( $blog_id );
-					$this->call_cron_on_all_adapters();
+			add_action( 'shutdown', array( &$this, 'cron_adapter_tasks_on_all_blogs' ) );
+		}
+
+		public function cron_adapter_tasks_on_all_blogs() {
+			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+
+				$sites = get_sites();
+				shuffle( $sites );
+				foreach ( $sites as $site ) {
+					switch_to_blog( $site->blog_id );
+					$this->cron_adapter_tasks_on_current_blog();
 					restore_current_blog();
+					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
+						break;
+					}
 				}
 			} else {
-				$this->call_cron_on_all_adapters();
-			}
-
-			$this->old_transactions_aggregating();
-
-			$this->old_unconfirmed_pending_transactions_cancel();
-		}
-
-		public function old_transactions_aggregating() {
-			global $wpdb;
-
-			$table_name_txs       = Dashed_Slug_Wallets::$table_name_txs;
-			$aggregating_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_aggregating', 'never' );
-
-			if ( 'never' == $aggregating_interval ) {
-				return;
-			}
-
-			// start db transaction and lock tables
-			$wpdb->flush();
-			$wpdb->query( 'SET autocommit=0' );
-
-			try {
-
-				// STEP 1: Determine first week with multiple done internal transactions that have not yet been batched into aggregates
-
-				$query = "
-					SELECT
-						YEARWEEK( MIN( created_time ) ) AS earliest_week
-					FROM
-						$table_name_txs
-					WHERE
-						status = 'done'
-						AND category = 'move'
-						AND LOCATE( 'aggregate', tags ) = 0
-				";
-
-				$earliest_week = $wpdb->get_var( $query );
-				if ( false === $earliest_week ) {
-					throw new Exception( 'Could not aggregate transactions because the earliest applicable interval was not found: ' . $wpdb->last_error );
-				}
-				$earliest_week = absint( $earliest_week );
-
-				if ( ! $earliest_week ) {
-					return;
-				}
-
-				// STEP 2: Batch transactions for that week into aggregates.
-
-				$wpdb->flush();
-				$query = $wpdb->prepare(
-					"
-					INSERT INTO
-					$table_name_txs(
-						blog_id,
-						category,
-						tags,
-						account,
-						other_account,
-						address,
-						extra,
-						txid,
-						symbol,
-						amount,
-						fee,
-						comment,
-						created_time,
-						updated_time,
-						confirmations,
-						status,
-						retries,
-						admin_confirm,
-						user_confirm,nonce
-					)
-					SELECT
-						blog_id,
-						'move' AS category,
-						CONCAT( 'aggregate ', tags ) AS tags,
-						account,
-						other_account,
-						'' as address,
-						'' as extra,
-						NULL as txid,
-						symbol,
-						SUM( amount ) AS amount,
-						SUM( fee ) AS fee,
-						CONCAT( 'Sum of ', COUNT( id ), ' txs for week ', WEEK( MIN( created_time ) ) + 1, ' of year ', YEAR( MIN( created_time ) ) ) AS comment,
-						MIN( created_time ) AS created_time,
-						MAX( created_time ) AS updated_time,
-						NULL AS confirmations,
-						'done' AS status,
-						0 AS retries,
-						0 AS admin_confirm,
-						0 AS user_confirm,
-						NULL AS nonce
-					FROM
-						$table_name_txs
-					WHERE
-						status = 'done'
-						AND category = 'move'
-						AND LOCATE( 'aggregate', tags ) = 0
-						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
-						AND YEARWEEK( created_time ) = %d
-					GROUP BY
-						blog_id,
-						tags,
-						account,
-						other_account,
-						symbol
-					ORDER BY
-						created_time
-					",
-					$earliest_week
-				);
-
-				$result = $wpdb->query( $query );
-				if ( false === $result ) {
-					throw new Exception( sprintf( 'Could not aggregate transactions for yearweek %d: %s ', $earliest_week, $wpdb->last_error ) );
-				} else {
-					if ( $result > 0 ) {
-						error_log( sprintf( 'Created %d aggregate transactions for yearweek %s', $result, $earliest_week ) );
-					}
-				}
-
-				// STEP 3: Delete old non-aggregated internal transactions for that week, plus any failed or cancelled internal transactions during that week.
-				$wpdb->flush();
-				$query = $wpdb->prepare(
-					"
-					DELETE FROM
-						$table_name_txs
-					WHERE
-						status IN ( 'done', 'failed', 'cancelled' )
-						AND category = 'move'
-						AND LOCATE( 'aggregate', tags ) = 0
-						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
-						AND YEARWEEK( created_time ) = %d
-					",
-					$earliest_week
-				);
-
-				$result = $wpdb->query( $query );
-
-				if ( false === $result ) {
-					throw new Exception( "Could not delete transactions for yearweek {$earliest_week}: " . $wpdb->last_error );
-				} else {
-					if ( $result > 0 ) {
-						error_log( sprintf( 'Deleted %d aggregated internal transactions or failed/cancelled transactions for yearweek %s', $result, $earliest_week ) );
-					}
-				}
-			} catch ( Exception $e ) {
-				$wpdb->query( 'ROLLBACK' );
-				$wpdb->query( 'SET autocommit=1' );
-				error_log( __FUNCTION__ . '() error:' . $e->getMessage() );
-				return;
-			}
-
-			$wpdb->query( 'COMMIT' );
-			$wpdb->query( 'SET autocommit=1' );
-		}
-
-		private function old_unconfirmed_pending_transactions_cancel() {
-			global $wpdb;
-
-			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
-			$autocancel_minutes = absint( Dashed_Slug_Wallets::get_option( 'wallets_cron_autocancel', 0 ) );
-
-			if ( ! $autocancel_minutes ) {
-				return;
-			}
-
-			$query = $wpdb->prepare( "
-				UPDATE
-					{$table_name_txs}
-				SET
-					status = 'cancelled'
-				WHERE
-					status IN ( 'unconfirmed', 'pending' ) AND
-					created_time < NOW() - INTERVAL %d MINUTE
-				",
-				$autocancel_minutes
-			);
-
-			$result = $wpdb->query( $query );
-
-			if ( false === $result ) {
-				error_log(
-					sprintf(
-						'%s: Failed with: %s',
-						__FUNCTION__,
-						$wpdb->last_error
-					)
-				);
+				$this->cron_adapter_tasks_on_current_blog();
 			}
 		}
 
-		private function call_cron_on_all_adapters() {
+		private function cron_adapter_tasks_on_current_blog() {
 			$adapters = apply_filters(
 				'wallets_api_adapters', array(), array(
 					'online_only' => true,
@@ -404,7 +196,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			add_settings_section(
 				'wallets_cron_settings_section',
-				__( 'Perioric checks', 'wallets' ),
+				__( 'Perioric tasks', 'wallets' ),
 				array( &$this, 'wallets_cron_section_cb' ),
 				'wallets-menu-cron'
 			);
@@ -418,6 +210,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				array(
 					'label_for'   => 'wallets_cron_interval',
 					'description' => __( 'How often to run the cron job.', 'wallets' ),
+					'disabled'    => defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON,
 				)
 			);
 
@@ -488,31 +281,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets-menu-cron',
 				'wallets_retries_move'
 			);
-
-			add_settings_field(
-				'wallets_cron_referer_skip',
-				__( 'Skip run when HTTP_REFERER is set', 'wallets' ),
-				array( &$this, 'settings_checkbox_cb' ),
-				'wallets-menu-cron',
-				'wallets_cron_settings_section',
-				array(
-					'label_for'   => 'wallets_cron_referer_skip',
-					'description' => __( 'If this is enabled, cron tasks will only run on HTTP requests ' .
-						'that do not have HTTP_REFERER set. This ensures somewhat better performance for end users, ' .
-						'but you MUST set up a unix cron job that periodically triggers this site, ' .
-						'or transactions will NOT be processed. Usually requests originating from browsers ' .
-						'will have HTTP_REFERER set, while curl requests originating from unix cron may not. (Default: disabled)',
-						'wallets'
-					),
-				)
-			);
-
-			register_setting(
-				'wallets-menu-cron',
-				'wallets_cron_referer_skip'
-			);
-
-
 
 			add_settings_section(
 				'wallets_cron_withdrawals_section',
@@ -661,12 +429,57 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public function wallets_cron_section_cb() {
+			$cron_nonce = Dashed_Slug_Wallets::get_option( 'wallets_cron_nonce', '' );
+			$cron_trigger_url = network_site_url(
+				sprintf(
+					'?__wallets_action=do_cron&__wallets_apiversion=%d&__wallets_cron_nonce=%s',
+					Dashed_Slug_Wallets_JSON_API::LATEST_API_VERSION,
+					$cron_nonce
+				)
+			);
 			?>
 			<p>
 			<?php
 				esc_html_e( 'You can set the frequency, batch size and number of retries for the cron job.', 'wallets' );
 			?>
 			</p>
+			<div class="card">
+			<?php
+			if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ):
+				?>
+				<p>
+					<?php
+					echo __(
+						'The WordPress cron tasks are disabled via the <code>DISABLE_WP_CRON</code> constant ' .
+						'in <code>wp-config.php</code>. You must set up a system cron job ' .
+						'that triggers the following URL at regular intervals:',
+						'wallets'
+					);
+					?>
+				</p>
+				<?php
+				printf ('<a href="%1$s">%1$s</a>', $cron_trigger_url );
+
+			else:
+				?>
+				<p>
+					<strong><?php esc_html_e( 'PRO TIP:', 'wallets' ); ?></strong>
+					<?php
+					echo __(
+						'To speed up frontend performance, you can disable WordPress cron tasks ' .
+						'with the <code>DISABLE_WP_CRON</code> constant in <code>wp-config.php</code>. ' .
+						'If you do this, you must then set up a system cron job that triggers ' .
+						'the following URL at regular intervals:',
+						'wallets'
+					);
+					?>
+				</p>
+				<?php
+				printf ('<a href="%1$s">%1$s</a>', $cron_trigger_url );
+
+			endif;
+			?>
+			</div>
 			<?php
 		}
 
@@ -710,7 +523,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			$selected_value = Dashed_Slug_Wallets::get_option( $arg['label_for'] );
 
 			?>
-			<select name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" >
+			<select
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				<?php disabled( $arg['disabled'], true, true ); ?>>
 			<?php
 
 			foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ) :

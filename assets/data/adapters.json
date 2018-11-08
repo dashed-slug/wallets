@@ -29,5 +29,13 @@
 		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension",
 		"support": "https://www.dashed-slug.net/forums/forum/full-node-multi-coin-adapter-extension-support/",
 		"slug": "wallets-multiadapter"
+	},
+
+	{
+		"name": "Monero Coin Adapter",
+		"description": "Connect to a Monero wallet, or to any other wallet that is a fork of CryptoNote.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/monero-coin-adapter-extension-support/",
+		"slug": "wallets-monero"
 	}
 ]

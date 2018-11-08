@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.7.4
+Stable tag: 3.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,9 +59,10 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 
 - [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - hundreds of coins supported, easy to use cloud wallet
 - [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/) - BTC, LTC, DOGE cloud wallet
-- [Full Node Multi Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/) - supports most Bitcoin-like wallets (LTC, etc), must set up manually on server
+- [Full Node Multi Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/) - supports most Bitcoin-like wallets (LTC, etc), must be set up manually on server
 - [Fiat Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/fiat-coin-adapter-extension/) - for use with the Exchange extension, can accept manual entries from e.g. bank deposits
 - [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) - use this as a reference implementation for new adapters
+- [Monero Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/) - supports most [CryptoNote-based coins](https://cryptonote.org/coins) (Monero, Bytecoin, DigitalNote, Aeon, Haven, etc), must be set up manually on server
 
 ...plus more!
 
@@ -150,6 +151,8 @@ By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that y
 Using the built-in coin adapter you can connect to a Bitcoin core full node.
 
 You can connect to any Bitcoin-like full node that you manage yourself using the *[Bitcoin and Altcoin Wallets: Full Node Multi Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq")*. This would include coins such as Litecoin, Dogecoin, etc.
+
+You can connect to any [CryptoNote-based coin](https://cryptonote.org/coins) using the *[Bitcoin and Altcoin Wallets: Monero Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/)*. This would include coins such as Monero, Bytecoin, DigitalNote, Aeon, Haven, etc.
 
 Also, if you are OK with using a web wallet service, then you can install the *[CoinPayments adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq)*. You then automatically get [all of the coins that platform supports](https://www.coinpayments.net/supported-coins).
 
@@ -332,6 +335,24 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.8.0 =
+- Improve: Massively simplified cron mechanism. All cron tasks are unified and they all run on shutdown.
+- Improve: Plugin bails out of executing cron tasks if PHP execution time is nearing <code>max_execution_time</code> minus 5 seconds.
+- Improve: Cron tasks can now be triggered via a custom URL. Useful in conjunction with <code>WP_DISABLE_CRON</code>.
+- Change: Cron tasks do not auto-trigger if trigerring is disabled. Instead, a warning is displayed.
+- Improve: On a network-activated multisite installation with too many blogs, the plugin will only process tasks for a few blogs on each run.
+- Fix: When an admin cancels a deposit, such as a fiat coin adapter deposit, the deposit can now be re-executed if the admin retries the deposit.
+- Fix: In deposit notifications/emails, the amount displayed is the net amount deposited (i.e. no longer includes the transaction fee.)
+- Fix: In the coin adapters list, the displayed total amount of fees paid no longer includes deposit fees, since these are external to the site's wallet.
+- Fix: On a network-activated multisite installation, the coin adapter setting "Min withdraw" is now saved.
+- Add: When a user is deleted by an admin, their transactions and deposit addresses are now deleted. Any user balance is deallocated and returns to the site.
+- Fix: Guard clause protects against warning for missing optional `qrsize` argument to the deposit widget.
+- Fix: The coin icon is now shown in the coin adapter settings admin page.
+- Improve: All amounts in the coin adapters list admin page are shown as dashes if equal to zero, to improve visibility of non-zero values.
+- Fix: When current user does not have the <code>has_wallets</code> capability, the balances menu item is not rendered.
+- Improve: Failed withdrawal notifications/emails now include any error messages originating from the wallet to aid in troubleshooting.
+- Change: Deposit QR codes are no longer rendered for fiat coins. The deposit codes are only shown as text.
 
 = 3.7.4 =
 - Improve: JavaScript var `walletsUserData.recommendApiVersion` can be used by extensions to access latest version of JSON API.
@@ -744,7 +765,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 = 2.9.0 =
 - Add: Notifications can now be sent either as emails or as BuddyPress private messages (or both).
-- Fix: When upgrading database sche,a, suppress logging of some errors  that are to be expected.
+- Fix: When upgrading database schema, suppress logging of some errors that are to be expected.
 
 = 2.8.2 =
 - Fix: Bug introduced in 2.8.1 where deposits could be duplicated in some situations.
@@ -1032,7 +1053,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.7.4 brings some minor feature improvements.
+Version 3.8.0 brings simplifications and improvements to the cron tasks, as well as a number of other bug fixes and improvements.
 
 == Donating ==
 

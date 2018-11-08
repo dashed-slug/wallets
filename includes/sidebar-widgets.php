@@ -136,8 +136,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 						type="text"
 						id="<?php echo $this->get_field_id( 'columns' ); ?>"
 						name="<?php echo $this->get_field_name( 'columns' ); ?>"
-						value="<?php echo esc_attr( $instance['columns'] ); ?>">
-					</input>
+						value="<?php echo esc_attr( $instance['columns'] ); ?>" />
 
 					<p class="description"><?php esc_html_e(
 						'Some transaction templates such as the default template accept a columns argument. '.
@@ -159,8 +158,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 						step="1"
 						id="<?php echo $this->get_field_id( 'qrsize' ); ?>"
 						name="<?php echo $this->get_field_name( 'qrsize' ); ?>"
-						value="<?php echo esc_attr( $instance['qrsize'] ); ?>">
-					</input>
+						value="<?php echo isset( $instance['qrsize'] ) ? esc_attr( $instance['qrsize'] ) : ''; ?>" />
 
 					<p class="description"><?php esc_html_e(
 						'Size of the deposit QR code, in pixels. If this is left empty, no size is set.',

@@ -303,14 +303,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			}
 
 			?>
-			<h1><img src="<?php esc_attr( $this->get_icon_url() ); ?>" style="height: 1em;" />
+			<h1><img src="<?php echo esc_attr( $this->get_icon_url() ); ?>" style="height: 1em;" />
 			<?php
 				echo esc_html( sprintf( __( 'Coin adapter settings for %s', 'wallets' ), $this->get_adapter_name() ) );
 			?>
 			</h1>
 			<div><p>
 			<?php
-				echo esc_html( sprintf( __( 'These are the settings for this %s adapter', 'wallets' ), $this->get_name() ) );
+				echo esc_html( sprintf( __( 'These are the settings for this adapter to %s.', 'wallets' ), $this->get_name() ) );
 			?>
 			</p></div>
 
@@ -347,6 +347,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			check_admin_referer( "{$this->menu_slug}-options" );
 
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-enabled", filter_input( INPUT_POST, "{$this->option_slug}-general-enabled", FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-minwithdraw", filter_input( INPUT_POST, "{$this->option_slug}-general-minwithdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move", filter_input( INPUT_POST, "{$this->option_slug}-fees-move", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-move-proportional", filter_input( INPUT_POST, "{$this->option_slug}-fees-move-proportional", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-fees-withdraw", filter_input( INPUT_POST, "{$this->option_slug}-fees-withdraw", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ) );

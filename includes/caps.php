@@ -45,8 +45,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-3.7.4.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-3.7.4.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-3.8.0.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-3.8.0.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -55,7 +55,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'3.7.4'
+				'3.8.0'
 			);
 		}
 
@@ -101,20 +101,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 				}
 
-				if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
-					foreach ( get_editable_roles() as $role_name => $role_info ) {
-						if ( 'administrator' != $role_name ) {
-							foreach ( $this->caps as $capability => $description ) {
-								$this->update_cap( $role_name, $capability );
-							}
-						}
-					}
-				} else {
-					global $wpdb;
-					$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
 
-					foreach ( $blog_ids as $blog_id ) {
-						switch_to_blog( $blog_id );
+					foreach ( get_sites() as $site ) {
+						switch_to_blog( $site->blog_id );
 						foreach ( get_editable_roles() as $role_name => $role_info ) {
 							if ( 'administrator' != $role_name ) {
 								foreach ( $this->caps as $capability => $description ) {
@@ -123,6 +113,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 							}
 						}
 						restore_current_blog();
+					}
+				} else {
+					foreach ( get_editable_roles() as $role_name => $role_info ) {
+						if ( 'administrator' != $role_name ) {
+							foreach ( $this->caps as $capability => $description ) {
+								$this->update_cap( $role_name, $capability );
+							}
+						}
 					}
 				}
 			}

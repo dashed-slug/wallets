@@ -192,6 +192,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			$vars[] = '__wallets_notify_type';
 			$vars[] = '__wallets_notify_message';
 
+			$vars[] = '__wallets_cron_nonce';
+
 			return $vars;
 		}
 
@@ -896,7 +898,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 					} catch ( Exception $e ) {
 						error_log( $e->getMessage() );
-						throw new Exception( __( 'Could not process notification.', 'wallets' ) );
+						throw new Exception(
+							sprintf(
+								__( 'Could not process notification: %s', 'wallets' ),
+								$e->getMessage()
+							)
+						);
+					}
+				} elseif ( 'do_cron' == $action ) {
+					try {
+
+						$cron_nonce         = Dashed_Slug_Wallets::get_option( 'wallets_cron_nonce', '' );
+						$request_cron_nonce = sanitize_text_field( $query->query_vars['__wallets_cron_nonce'] );
+
+						if ( $cron_nonce == $request_cron_nonce ) {
+							do_action( 'wallets_periodic_checks' );
+							$response['result'] = 'success';
+
+						} else {
+							throw new Exception(
+								__( 'You must supply the cron nonce.', 'wallets' )
+							);
+						}
+
+					} catch ( Exception $e ) {
+						error_log( $e->getMessage() );
+						throw new Exception(
+							sprintf(
+								__( 'Error while trigerring cron tasks: %s', 'wallets' ),
+								$e->getMessage()
+							)
+						);
 					}
 				} elseif ( ! is_user_logged_in() ) {
 					throw new Exception( __( 'Must be logged in' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN );
@@ -1139,7 +1171,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								'amount'  => $amount,
 								'comment' => $comment,
 							)
-							);
+						);
 
 					} catch ( Exception $e ) {
 						throw new Exception( sprintf( __( 'Could not withdraw %s', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_DO_WITHDRAW, $e );
@@ -1202,7 +1234,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								'tags'               => $tags,
 								'check_capabilities' => true,
 							)
-							);
+						);
 
 					} catch ( Exception $e ) {
 						throw new Exception( sprintf( __( 'Could not move %s', 'wallets' ), $symbol ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE, $e );
