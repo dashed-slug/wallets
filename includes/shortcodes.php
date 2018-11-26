@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.8.0.min.js' ) ) {
-					$script = 'bs58check-3.8.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-3.9.0.min.js' ) ) {
+					$script = 'bs58check-3.9.0.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -70,15 +70,38 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			$view = preg_replace( '/^wallets_/', '', $tag );
 
 			$defaults = array(
-				'template'  => 'default',
-				'views_dir' => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
-			);
 
-			if ( 'transactions' == $view ) {
-				$defaults['columns'] = implode( ',', self::$tx_columns );
-			} elseif ( 'deposit' == $view ) {
-				$defaults['qrsize'] = false;
-			}
+				// The file name of the view.
+				'template'   => 'default',
+
+				// The directory that the current views are found. This is a server path.
+				'views_dir'  => apply_filters( 'wallets_views_dir', __DIR__ . '/views' ),
+
+				// For static shortcodes, the ID of the user whose data to show.
+				'user_id'    => get_current_user_id(),
+
+				// For static shortcodes, the login name of the user whose data to show.
+				'user'       => false,
+
+				// For static shortcodes, the symbol of the coin whose data to show.
+				'symbol'     => false,
+
+				// For the deposit shortcode, the size of the QR code.
+				'qrsize'     => false,
+
+				// For transactions shortcodes, a comma separated list of columns to render in the same order as specified.
+				'columns'    => implode( ',', self::$tx_columns ),
+
+				// For static transactions shortcodes, a comma separated list of transaction categories to retrieve.
+				'categories' => array( 'deposit', 'withdraw', 'move', 'trade' ),
+
+				// For static transactions shortcodes, a comma separated list of transaction tags to look for, or empty for all.
+				'tags'       => array(),
+
+				// For static transactions shortcodes, the amount of most recent transactions to retrieve.
+				'rowcount'   => 10,
+
+			);
 
 			$atts = shortcode_atts(
 				$defaults,
@@ -86,38 +109,87 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				"wallets_$view"
 			);
 
-			if ( ! (
-				isset( $this->shortcodes_caps[ $tag ] ) &&
-				current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
-				current_user_can( $this->shortcodes_caps[ $tag ] )
-			) ) {
-				// user not allowed to view this shortcode
-				return '';
-			}
-
-			if ( 'wallets_total_balances' == $tag ) {
-				$adapters       = apply_filters( 'wallets_api_adapters', array() );
-				$fiat_symbol    = Dashed_Slug_Wallets_Rates::get_fiat_selection();
-				$total_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
-				ksort( $adapters );
-			}
-
-			// turn $atts[cols] to array and make sure it contains only valid transaction columns
-			if ( 'wallets_transactions' == $tag && 'default' == $atts['template'] ) {
-				$columns = explode( ',', $atts['columns'] );
-				$atts['columns'] = array_intersect( $columns, self::$tx_columns );
-			}
-
 			ob_start();
 			try {
-				include trailingslashit( $atts['views_dir'] ) . "$view/$atts[template].php";
+				$view_file = trailingslashit( $atts['views_dir'] ) . "$view/$atts[template].php";
+
+				// turn $atts[cols] to array and make sure it contains only valid transaction columns
+				$columns = explode( ',', $atts['columns'] );
+				$atts['columns'] = array_intersect( $columns, self::$tx_columns );
+				unset( $columns );
+
+				$atts['rowcount'] = absint( $atts['rowcount'] );
+
+				if ( is_string( $atts['categories'] ) ) {
+					$atts['categories'] = explode( ',', $atts['categories'] );
+				}
+
+				if ( is_string( $atts['tags'] ) ) {
+					$atts['tags'] = explode( ',', $atts['tags'] );
+				}
+
+				if ( ! is_user_logged_in() ) {
+					throw new Exception( 'User is not logged in!' );
+				}
+
+				if ( isset( $atts['user'] ) && $atts['user'] ) {
+					$user_data = get_user_by( 'login', $atts['user'] );
+					if ( $user_data ) {
+						$atts['user_id'] = $user_data->ID;
+					} else {
+						throw new Exception(
+							sprintf(
+								'User with login name "%s" not found!',
+								$atts['user']
+							)
+						);
+					}
+					unset( $user_data );
+				}
+
+				if ( isset( $atts['user_id'] ) && $atts['user_id'] ) {
+					$user_data = get_user_by( 'id', $atts['user_id'] );
+					if ( ! $user_data ) {
+						throw new Exception(
+							sprintf(
+								'User with ID "%d" not found!',
+								$atts['user_id']
+							)
+						);
+					}
+				}
+
+				if ( ! (
+					isset( $this->shortcodes_caps[ $tag ] ) &&
+					user_can( $atts['user_id'], Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) &&
+					user_can( $atts['user_id'], $this->shortcodes_caps[ $tag ] )
+				) ) {
+					throw new Exception(
+						sprintf(
+							"User #%d does not have the necessary capabilities to view this shortcode.",
+							$atts['user_id']
+						)
+					);
+				}
+
+				if ( file_exists( $view_file ) ) {
+					if ( is_readable( $view_file ) ) {
+						include $view_file;
+					} else throw new Exception( "File $view_file is not readable!" );
+				} else throw new Exception( "File $view_file was not found!" );
+
 			} catch ( Exception $e ) {
 				ob_end_clean();
 
 				return
 					"<div class=\"dashed-slug-wallets $view error\">" .
-					sprintf( esc_html( 'Error while rendering <code>%s</code> template in <code>%s</code>: ' ), $atts['template'], $atts['views_dir'] ) .
-					$e->getMessage() .
+						sprintf(
+							'Error while rendering the <code>%s</code> shortcode with its <code>%s</code> template in <code>%s</code>: ',
+							$view,
+							$atts['template'],
+							$view_file
+						) .
+						$e->getMessage() .
 					'</div>';
 			}
 			return ob_get_clean();

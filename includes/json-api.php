@@ -396,7 +396,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								'from'    => $from,
 								'count'   => $count,
 								'symbol'  => $symbol,
-								'minconf' => 0,
 							)
 						);
 
@@ -688,7 +687,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								'from'    => $from,
 								'count'   => $count,
 								'symbol'  => $symbol,
-								'minconf' => 0,
 							)
 						);
 
@@ -1031,7 +1029,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								'from'    => $from,
 								'count'   => $count,
 								'symbol'  => $symbol,
-								'minconf' => 0,
 							)
 						);
 

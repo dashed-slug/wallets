@@ -1,12 +1,18 @@
-<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly
 
-<div class="dashed-slug-wallets total-balances wallets-ready" data-bind="if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() }">
+
+$adapters       = apply_filters( 'wallets_api_adapters', array() );
+$fiat_symbol    = Dashed_Slug_Wallets_Rates::get_fiat_selection();
+$total_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+ksort( $adapters );
+?>
+
+<div class="dashed-slug-wallets total-balances total-balances-<?php echo basename( __FILE__ ); ?> wallets-ready" data-bind="if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_total_balances' );
 	?>
 
-	<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { coinsDirty( false ); ko.tasks.runEarly(); coinsDirty( true ); }"></span>
 	<table>
 		<thead>
 			<tr>
@@ -33,18 +39,18 @@
 						</span>
 						<span class="fiat-amount" >
 							<?php
-								try {
-									$rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
-										$fiat_symbol,
-										$symbol
-									);
+								$rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
+									$fiat_symbol,
+									$symbol
+								);
+
+								if ( $rate ) {
 									echo sprintf(
 										'%01.2f %s',
 										$rate * $total_balances[ $symbol ],
 										$fiat_symbol
 									);
-
-								} catch ( Exception $e ) {
+								} else {
 									echo '&mdash;';
 								}
 							?>
@@ -62,3 +68,6 @@
 		do_action( 'wallets_ui_after' );
 	?>
 </div>
+<?php
+	unset( $adapters, $fiat_symbol, $total_balances );
+?>

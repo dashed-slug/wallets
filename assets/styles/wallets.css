@@ -253,9 +253,9 @@
 }
 
 .menu-item .wallets-menu-icon {
-	background-repeat: no-repeat;
-	background-size: 1.5em 1.5em;
-	background-position: calc(100% - 20px) 50%;
+	background-repeat: no-repeat !important;
+	background-size: 1.5em 1.5em !important;
+	background-position: calc(100% - 20px) 50% !important;
 }
 
 .dashed-slug-wallets .wallets-clipboard-copy {

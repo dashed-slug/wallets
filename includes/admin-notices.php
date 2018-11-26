@@ -49,11 +49,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 		}
 
 		public function action_admin_enqueue_scripts() {
+
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-3.9.0.min.js' ) ) {
+				$script = 'wallets-notify-3.9.0.min.js';
+			} else {
+				$script = 'wallets-notify.js';
+			}
+
 			wp_enqueue_script(
 				'wallets-notify',
-				plugins_url( 'assets/scripts/wallets-notify-3.8.0.min.js', DSWALLETS_PATH . '/wallets.php' ),
+				plugins_url( "assets/scripts/$script", DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'3.8.0'
+				'3.9.0'
 			);
 
 		}

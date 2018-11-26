@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<div class="dashed-slug-wallets rates rates-list" data-bind="if: Object.keys( coins() ).length > 0 && 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__ ); ?>" data-bind="if: Object.keys( coins() ).length > 0 && 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_rates' );

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.8.0
+Stable tag: 3.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,7 @@ Premium members also get auto-updates for any installed extensions. [Instruction
 The dashed-slug is a social slug:
 
 - Facebook: [https://www.facebook.com/dashedslug](https://www.facebook.com/dashedslug)
+- Twitter: [https://twitter.com/DashedSlug](https://twitter.com/DashedSlug)
 - Google+: [https://plus.google.com/103549774963556626441](https://plus.google.com/103549774963556626441)
 - RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
 - SteemIt: [https://steemit.com/@dashed-slug.net](https://steemit.com/@dashed-slug.net)
@@ -335,6 +336,21 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.9.0 =
+- Add: New static templates for the following shortcodes: <code>[wallets_deposit]</code>, <code>[wallets_balance]</code>, <code>[wallets_transactions]</code>, <code>[wallets_account_value]</code>, <code>[wallets_rates]</code>.
+- Add: Static template for <code>[wallets_transactions]</code> can now filter displayed transactions based on categories and/or tags.
+- Improve: Widget form of the UIs is now refactored and improved. User input is accepted to reflect additions in allowed shortcode attributes.
+- Add: If a shortcode cannot be rendered due to some error, a meaningful error message is shown in the frontend.
+- Add: Admin table listing user balances.
+- Add: Admin table listing user deposit addresses.
+- Add: New PHP API endpoint to cancel transactions.
+- Add: New PHP API endpoint to retry cancelled transactions.
+- Fix: Custom menu item for displaying balances did not render correctly in twenty-nineteen theme, now fixed.
+- Add: Can now disable automatic cron job triggering, by setting "Run every" to "(never)".
+- Fix: Filter <code>wallets_api_deposit_address</code> now correctly checks the capabilities of the user when called with a user argument (other than current user).
+- Improve: Performance of admin transaction list rendering improved.
+- Improve: Performance improvements in exchange rates code, when the price of a coin in the default fiat currency is not the same as that provided by the exchange rate provider service.
 
 = 3.8.0 =
 - Improve: Massively simplified cron mechanism. All cron tasks are unified and they all run on shutdown.
@@ -1053,7 +1069,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.8.0 brings simplifications and improvements to the cron tasks, as well as a number of other bug fixes and improvements.
+Version 3.9.0 introduces static shortcodes, two new admin tables, and various other bugfixes and improvements.
 
 == Donating ==
 

@@ -103,7 +103,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 					'description' => __(
 						'THIS MUST BE DISABLED FOR PROOF-OF-STAKE COINS. ' .
 						'Only enable for purely Proof-of-Work coins, ' .
-						'and only if you wish users to receive mining rewards.',
+						'and only if you wish the site to receive mining rewards.',
 						'wallets' ),
 				)
 			);

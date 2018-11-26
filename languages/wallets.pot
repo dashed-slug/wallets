@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.8.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.9.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-11-08 09:04:38+00:00\n"
+"POT-Creation-Date: 2018-11-26 11:27:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,7 +17,9 @@ msgstr ""
 msgid "Adapter name"
 msgstr ""
 
-#: includes/adapters-list-table.php:20 includes/transactions-list.php:34
+#: includes/adapters-list-table.php:20 includes/addresses-list-table.php:36
+#: includes/balances-list-table.php:37 includes/sidebar-widgets.php:159
+#: includes/transactions-list-table.php:35
 msgid "Coin"
 msgstr ""
 
@@ -104,31 +106,29 @@ msgid "Could not reset user deposit addresses for %1$s: %2$s"
 msgstr ""
 
 #: includes/adapters-list.php:157 includes/adapters-list.php:176
-#: includes/adapters-list.php:218 includes/admin-menu.php:63
+#: includes/adapters-list.php:218 includes/addresses-list.php:52
+#: includes/admin-menu.php:63 includes/balances-list.php:52
 #: includes/caps.php:101 includes/caps.php:166
 #: includes/coin-adapter-bitcoin.php:58 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:303 includes/coin-adapter-rpc.php:312
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:140
-#: includes/confirmations.php:676 includes/cron.php:388
+#: includes/confirmations.php:676 includes/cron.php:392
 #: includes/frontend-settings.php:194 includes/notifications.php:724
 #: includes/rates.php:317 includes/transactions.php:290
-#: includes/transactions.php:1160 includes/transactions.php:1367
-#: includes/transactions.php:1389 includes/transactions.php:1411
-#: includes/transactions.php:1432 includes/transactions.php:1453
-#: includes/transactions.php:1477
+#: includes/transactions.php:1160 includes/transactions.php:1305
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:163 includes/adapters-list.php:182
-#: includes/caps.php:96 includes/cold-storage.php:119 includes/json-api.php:455
-#: includes/json-api.php:498 includes/json-api.php:748
-#: includes/json-api.php:791 includes/json-api.php:1090
-#: includes/json-api.php:1156 includes/json-api.php:1199
-#: includes/transactions.php:1166 includes/transactions.php:1371
-#: includes/transactions.php:1393 includes/transactions.php:1415
-#: includes/transactions.php:1436 includes/transactions.php:1457
-#: includes/transactions.php:1481
+#: includes/caps.php:96 includes/cold-storage.php:119 includes/json-api.php:454
+#: includes/json-api.php:497 includes/json-api.php:746
+#: includes/json-api.php:789 includes/json-api.php:1087
+#: includes/json-api.php:1153 includes/json-api.php:1196
+#: includes/transactions.php:1166 includes/transactions.php:1369
+#: includes/transactions.php:1387 includes/transactions.php:1405
+#: includes/transactions.php:1422 includes/transactions.php:1439
+#: includes/transactions.php:1455
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -147,8 +147,37 @@ msgstr ""
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
-#: includes/admin-menu.php:41 includes/wallets-core.php:254
-#: includes/wallets-core.php:264
+#: includes/addresses-list-table.php:35 includes/balances-list-table.php:36
+#: includes/coin-adapter-rpc.php:161 includes/sidebar-widgets.php:142
+msgid "User"
+msgstr ""
+
+#: includes/addresses-list-table.php:37 includes/gdpr.php:112
+msgid "Address"
+msgstr ""
+
+#: includes/addresses-list-table.php:38
+msgid "Extra info"
+msgstr ""
+
+#: includes/addresses-list-table.php:39 includes/transactions-list-table.php:43
+msgid "Time"
+msgstr ""
+
+#: includes/addresses-list-table.php:40 includes/transactions-list-table.php:45
+msgid "Status"
+msgstr ""
+
+#: includes/addresses-list-table.php:44 includes/balances-list-table.php:42
+msgid "Blog ID"
+msgstr ""
+
+#: includes/addresses-list.php:57
+msgid "Bitcoin and Altcoin Wallets Addresses"
+msgstr ""
+
+#: includes/admin-menu.php:41 includes/wallets-core.php:255
+#: includes/wallets-core.php:265
 msgid "Wallets"
 msgstr ""
 
@@ -324,6 +353,14 @@ msgid ""
 "via email."
 msgstr ""
 
+#: includes/balances-list-table.php:38 includes/menu-item.php:109
+msgid "Balance"
+msgstr ""
+
+#: includes/balances-list.php:57
+msgid "Bitcoin and Altcoin Wallets user balances"
+msgstr ""
+
 #: includes/caps.php:27
 msgid ""
 "Can configure all settings related to wallets. This is for administrators "
@@ -487,10 +524,6 @@ msgstr ""
 msgid ""
 "The TCP port where the daemon listens for JSON-RPC connections. It should "
 "match the <code>rpcport</code> setting in your daemon."
-msgstr ""
-
-#: includes/coin-adapter-rpc.php:161
-msgid "User"
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:167
@@ -733,7 +766,7 @@ msgstr ""
 msgid "Withdraw %s to cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:278 includes/transactions-list.php:35
+#: includes/cold-storage.php:278 includes/transactions-list-table.php:36
 msgid "Amount"
 msgstr ""
 
@@ -1049,137 +1082,143 @@ msgstr ""
 msgid "Auto-confirm withdrawals (days)"
 msgstr ""
 
-#: includes/cron.php:90
+#: includes/cron.php:92
 msgid "minute"
 msgstr ""
 
-#: includes/cron.php:95
+#: includes/cron.php:97
 msgid "three minutes"
 msgstr ""
 
-#: includes/cron.php:100
+#: includes/cron.php:102
 msgid "five minutes"
 msgstr ""
 
-#: includes/cron.php:105
+#: includes/cron.php:107
 msgid "ten minutes"
 msgstr ""
 
-#: includes/cron.php:110
+#: includes/cron.php:112
 msgid "twenty minutes"
 msgstr ""
 
-#: includes/cron.php:115
+#: includes/cron.php:117
 msgid "half an hour"
 msgstr ""
 
-#: includes/cron.php:199
+#: includes/cron.php:203
 msgid "Perioric tasks"
 msgstr ""
 
-#: includes/cron.php:206
+#: includes/cron.php:210
 msgid "Run every"
 msgstr ""
 
-#: includes/cron.php:212
-msgid "How often to run the cron job."
+#: includes/cron.php:216
+msgid ""
+"How often to run the cron job. If you plan to trigger the external URL via "
+"a system cron, choose \"never\"."
 msgstr ""
 
-#: includes/cron.php:224
+#: includes/cron.php:228
 msgid "Max batch size"
 msgstr ""
 
-#: includes/cron.php:230
+#: includes/cron.php:234
 msgid ""
 "Up to this many transactions (withdrawals and internal transfers) will be "
 "attempted per run of the cron job. Make sure that your hardware can handle "
 "the batch size you set here, or the plugin may misbehave."
 msgstr ""
 
-#: includes/cron.php:245
+#: includes/cron.php:249
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: includes/cron.php:251
+#: includes/cron.php:255
 msgid ""
 "Failed withdrawals will be attempted up to this many times, while the "
 "adapter is unlocked."
 msgstr ""
 
-#: includes/cron.php:266
+#: includes/cron.php:270
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: includes/cron.php:272
+#: includes/cron.php:276
 msgid "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: includes/cron.php:287
+#: includes/cron.php:291
 msgid "Withdrawal locks"
 msgstr ""
 
-#: includes/cron.php:294
+#: includes/cron.php:298
 msgid "Time to retain withdrawal secrets"
 msgstr ""
 
-#: includes/cron.php:322
+#: includes/cron.php:326
 msgid "Old transactions"
 msgstr ""
 
-#: includes/cron.php:329
+#: includes/cron.php:333
 msgid "Batch old transactions and clean"
 msgstr ""
 
-#: includes/cron.php:335
+#: includes/cron.php:339
 msgid ""
 "Choose how to aggregate similar past internal transactions that are in a "
 "\"done\" state. Old \"failed\" or \"cancelled\" internal transactions will "
 "be deleted."
 msgstr ""
 
-#: includes/cron.php:337
+#: includes/cron.php:341
 msgid "Never"
 msgstr ""
 
-#: includes/cron.php:338
+#: includes/cron.php:342
 msgid "Weekly"
 msgstr ""
 
-#: includes/cron.php:350
+#: includes/cron.php:354
 msgid "Cancel old unconfirmed/pending transactions "
 msgstr ""
 
-#: includes/cron.php:356
+#: includes/cron.php:360
 msgid ""
 "Time to wait before cancelling an unconfirmed or pending transaction, in "
 "minutes (0 = do not cancel)."
 msgstr ""
 
-#: includes/cron.php:391
+#: includes/cron.php:395
 msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: includes/cron.php:443
+#: includes/cron.php:447
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron "
 "job."
 msgstr ""
 
-#: includes/cron.php:466
+#: includes/cron.php:470
 msgid "PRO TIP:"
 msgstr ""
 
-#: includes/cron.php:490
+#: includes/cron.php:495
 msgid ""
 "You can control how wallet secrets are stored. Wallet secrets are needed "
 "for performing withdrawals."
 msgstr ""
 
-#: includes/cron.php:500
+#: includes/cron.php:505
 msgid ""
 "You can control whether similar old internal transactions are aggregated. "
 "Aggregating past transactions saves space on the DB. Aggregation is "
 "performed in batches so as not to overwhelm the DB."
+msgstr ""
+
+#: includes/cron.php:537
+msgid "(never)"
 msgstr ""
 
 #: includes/frontend-settings.php:36
@@ -1256,10 +1295,6 @@ msgstr ""
 msgid "Coin symbol"
 msgstr ""
 
-#: includes/gdpr.php:112
-msgid "Address"
-msgstr ""
-
 #: includes/gdpr.php:119 includes/gdpr.php:190
 msgid "Address extra field"
 msgstr ""
@@ -1304,26 +1339,27 @@ msgstr ""
 msgid "Could not delete cryptocurrency transactions for %1$s: %2$s"
 msgstr ""
 
-#: includes/json-api.php:267 includes/json-api.php:589
+#: includes/json-api.php:267 includes/json-api.php:588
 msgid "Could not process notification."
 msgstr ""
 
-#: includes/json-api.php:270 includes/json-api.php:592
-#: includes/json-api.php:934
+#: includes/json-api.php:270 includes/json-api.php:591
+#: includes/json-api.php:932
 msgid "Must be logged in"
 msgstr ""
 
 #: includes/json-api.php:283 includes/json-api.php:312
-#: includes/json-api.php:386 includes/json-api.php:431
-#: includes/json-api.php:449 includes/json-api.php:492
-#: includes/json-api.php:602 includes/json-api.php:678
-#: includes/json-api.php:724 includes/json-api.php:742
-#: includes/json-api.php:785 includes/json-api.php:945
-#: includes/json-api.php:1021 includes/json-api.php:1067
-#: includes/json-api.php:1084 includes/json-api.php:1150
-#: includes/json-api.php:1193 includes/php-api.php:149 includes/php-api.php:244
-#: includes/php-api.php:309 includes/php-api.php:408 includes/php-api.php:636
-#: includes/php-api.php:827 includes/transactions.php:1118
+#: includes/json-api.php:386 includes/json-api.php:430
+#: includes/json-api.php:448 includes/json-api.php:491
+#: includes/json-api.php:601 includes/json-api.php:677
+#: includes/json-api.php:722 includes/json-api.php:740
+#: includes/json-api.php:783 includes/json-api.php:943
+#: includes/json-api.php:1019 includes/json-api.php:1064
+#: includes/json-api.php:1081 includes/json-api.php:1147
+#: includes/json-api.php:1190 includes/php-api.php:160 includes/php-api.php:255
+#: includes/php-api.php:338 includes/php-api.php:463 includes/php-api.php:691
+#: includes/php-api.php:888 includes/php-api.php:997 includes/php-api.php:1094
+#: includes/transactions.php:1118
 msgid "Not allowed"
 msgstr ""
 
@@ -1331,43 +1367,43 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:405 includes/json-api.php:697
-#: includes/json-api.php:1040
+#: includes/json-api.php:404 includes/json-api.php:695
+#: includes/json-api.php:1037
 msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
-#: includes/json-api.php:417 includes/json-api.php:709
-#: includes/json-api.php:1052
+#: includes/json-api.php:416 includes/json-api.php:707
+#: includes/json-api.php:1049
 msgid "Could not get \"%s\" transactions"
 msgstr ""
 
-#: includes/json-api.php:476 includes/json-api.php:769
-#: includes/json-api.php:1177
+#: includes/json-api.php:475 includes/json-api.php:767
+#: includes/json-api.php:1174
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:520 includes/json-api.php:832
-#: includes/json-api.php:1240
+#: includes/json-api.php:519 includes/json-api.php:830
+#: includes/json-api.php:1237
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:813 includes/json-api.php:1221
+#: includes/json-api.php:811 includes/json-api.php:1218
 msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 
-#: includes/json-api.php:903
+#: includes/json-api.php:901
 msgid "Could not process notification: %s"
 msgstr ""
 
-#: includes/json-api.php:920
+#: includes/json-api.php:918
 msgid "You must supply the cron nonce."
 msgstr ""
 
-#: includes/json-api.php:928
+#: includes/json-api.php:926
 msgid "Error while trigerring cron tasks: %s"
 msgstr ""
 
-#: includes/json-api.php:1111 includes/json-api.php:1129
+#: includes/json-api.php:1108 includes/json-api.php:1126
 msgid "Could not get new %s address"
 msgstr ""
 
@@ -1385,10 +1421,6 @@ msgstr ""
 
 #: includes/menu-item.php:107
 msgid "Crypto Wallet Balances"
-msgstr ""
-
-#: includes/menu-item.php:109
-msgid "Balance"
 msgstr ""
 
 #: includes/menu-item.php:120
@@ -1573,40 +1605,48 @@ msgid ""
 "transaction."
 msgstr ""
 
-#: includes/php-api.php:413
+#: includes/php-api.php:468
 msgid "You must specify a withdrawal address"
 msgstr ""
 
-#: includes/php-api.php:422
+#: includes/php-api.php:477
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:435 includes/transactions.php:712
+#: includes/php-api.php:490 includes/transactions.php:712
 msgid "Minimum witdrawal amount for \"%1$s\" is %2$f"
 msgstr ""
 
-#: includes/php-api.php:478
+#: includes/php-api.php:533
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/php-api.php:521 includes/php-api.php:692
+#: includes/php-api.php:576 includes/php-api.php:747
 msgid "Amount after deducting fees must be positive"
 msgstr ""
 
-#: includes/php-api.php:527 includes/php-api.php:699
+#: includes/php-api.php:582 includes/php-api.php:754
 msgid "Insufficient funds: %1$s > %2$s"
 msgstr ""
 
-#: includes/php-api.php:641
+#: includes/php-api.php:696
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/php-api.php:651
+#: includes/php-api.php:706
 msgid "Adapter for \"%s\" is not online for move action"
 msgstr ""
 
-#: includes/php-api.php:880
+#: includes/php-api.php:935
 msgid "Adapter for \"%s\" is not online for getting a deposit address"
+msgstr ""
+
+#: includes/php-api.php:1001 includes/php-api.php:1098
+msgid "Must specify a TXID string"
+msgstr ""
+
+#: includes/php-api.php:1054 includes/php-api.php:1154
+msgid "No transactions found!"
 msgstr ""
 
 #: includes/rates.php:75
@@ -1690,7 +1730,7 @@ msgid ""
 "providers (for debugging). "
 msgstr ""
 
-#: includes/rates.php:286 includes/sidebar-widgets.php:283
+#: includes/rates.php:286 includes/sidebar-widgets.php:480
 msgid "Exchange rates"
 msgstr ""
 
@@ -1710,85 +1750,91 @@ msgid ""
 "exchange rates provider."
 msgstr ""
 
-#: includes/sidebar-widgets.php:118
+#: includes/sidebar-widgets.php:127
 msgid "Template"
 msgstr ""
 
-#: includes/sidebar-widgets.php:134
-msgid "Columns"
+#: includes/sidebar-widgets.php:212
+msgid "Deposit to wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:153
+#: includes/sidebar-widgets.php:230
 msgid "QR code size (px)"
 msgstr ""
 
-#: includes/sidebar-widgets.php:163
+#: includes/sidebar-widgets.php:240
 msgid ""
 "Size of the deposit QR code, in pixels. If this is left empty, no size is "
 "set."
 msgstr ""
 
-#: includes/sidebar-widgets.php:199
-msgid "Deposit to wallet"
-msgstr ""
-
-#: includes/sidebar-widgets.php:200
-msgid ""
-"A form that will let the user know which address they can send coins to if "
-"they wish to make a deposit."
-msgstr ""
-
-#: includes/sidebar-widgets.php:211
+#: includes/sidebar-widgets.php:268
 msgid "Withdraw from wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:212
+#: includes/sidebar-widgets.php:269
 msgid "A form that will let the user withdraw funds."
 msgstr ""
 
-#: includes/sidebar-widgets.php:223
+#: includes/sidebar-widgets.php:280
 msgid "Transfer to user wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:224
+#: includes/sidebar-widgets.php:281
 msgid "A form that lets the user transfer coins to other users on your site."
 msgstr ""
 
-#: includes/sidebar-widgets.php:235
+#: includes/sidebar-widgets.php:292
 msgid "Wallet balance"
 msgstr ""
 
-#: includes/sidebar-widgets.php:236
+#: includes/sidebar-widgets.php:293
 msgid "The current user's balances in all enabled coins."
 msgstr ""
 
-#: includes/sidebar-widgets.php:247
+#: includes/sidebar-widgets.php:304
 msgid "Wallet transactions"
 msgstr ""
 
-#: includes/sidebar-widgets.php:248
+#: includes/sidebar-widgets.php:305
 msgid ""
 "An interactive table that shows past deposits, withdrawals and transfers "
 "for the user."
 msgstr ""
 
-#: includes/sidebar-widgets.php:259
+#: includes/sidebar-widgets.php:323
+msgid "Columns"
+msgstr ""
+
+#: includes/sidebar-widgets.php:345
+msgid "Categories"
+msgstr ""
+
+#: includes/sidebar-widgets.php:378 includes/transactions-list-table.php:42
+msgid "Tags"
+msgstr ""
+
+#: includes/sidebar-widgets.php:396
+msgid "Rows count"
+msgstr ""
+
+#: includes/sidebar-widgets.php:456
 msgid "Account value"
 msgstr ""
 
-#: includes/sidebar-widgets.php:260
+#: includes/sidebar-widgets.php:457
 msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
-#: includes/sidebar-widgets.php:271
+#: includes/sidebar-widgets.php:468
 msgid "Total user balances"
 msgstr ""
 
-#: includes/sidebar-widgets.php:272
+#: includes/sidebar-widgets.php:469
 msgid "Shows the total user balances for each coin."
 msgstr ""
 
-#: includes/sidebar-widgets.php:284
+#: includes/sidebar-widgets.php:481
 msgid ""
 "Shows exchange rates for online cryptocurrencies, expressed in the default "
 "fiat currency."
@@ -1836,111 +1882,99 @@ msgstr ""
 msgid "%1$s local time %3$s (%2$s GMT time)"
 msgstr ""
 
-#: includes/transactions-list.php:32
+#: includes/transactions-list-table.php:33
 msgid "TXID"
 msgstr ""
 
-#: includes/transactions-list.php:33
+#: includes/transactions-list-table.php:34
 msgid "Type"
 msgstr ""
 
-#: includes/transactions-list.php:36
+#: includes/transactions-list-table.php:37
 msgid "Fee"
 msgstr ""
 
-#: includes/transactions-list.php:37
+#: includes/transactions-list-table.php:38
 msgid "Amount (+fee)"
 msgstr ""
 
-#: includes/transactions-list.php:38
+#: includes/transactions-list-table.php:39
 msgid "From"
 msgstr ""
 
-#: includes/transactions-list.php:39
+#: includes/transactions-list-table.php:40
 msgid "To"
 msgstr ""
 
-#: includes/transactions-list.php:40
+#: includes/transactions-list-table.php:41
 msgid "Comment"
 msgstr ""
 
-#: includes/transactions-list.php:41
-msgid "Tags"
-msgstr ""
-
-#: includes/transactions-list.php:42
-msgid "Time"
-msgstr ""
-
-#: includes/transactions-list.php:43
+#: includes/transactions-list-table.php:44
 msgid "Confirms"
 msgstr ""
 
-#: includes/transactions-list.php:44
-msgid "Status"
-msgstr ""
-
-#: includes/transactions-list.php:45
+#: includes/transactions-list-table.php:46
 msgid "Retries"
 msgstr ""
 
-#: includes/transactions-list.php:46
+#: includes/transactions-list-table.php:47
 msgid "Accepted by admin"
 msgstr ""
 
-#: includes/transactions-list.php:47
+#: includes/transactions-list-table.php:48
 msgid "Verified by user"
 msgstr ""
 
-#: includes/transactions-list.php:304
+#: includes/transactions-list-table.php:305
 msgid "Transaction will be CANCELLED."
 msgstr ""
 
-#: includes/transactions-list.php:305
+#: includes/transactions-list-table.php:306
 msgid "&#x1F5D9; Cancel"
 msgstr ""
 
-#: includes/transactions-list.php:327
+#: includes/transactions-list-table.php:327
 msgid "Transaction will be RETRIED."
 msgstr ""
 
-#: includes/transactions-list.php:328
+#: includes/transactions-list-table.php:328
 msgid "&#8635; Retry"
 msgstr ""
 
-#: includes/transactions-list.php:362
+#: includes/transactions-list-table.php:362
 msgid ""
 "Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if "
 "admin confirmation is required."
 msgstr ""
 
-#: includes/transactions-list.php:363
+#: includes/transactions-list-table.php:363
 msgid "&#x2717; Admin unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:380
+#: includes/transactions-list-table.php:380
 msgid "Transaction will be marked as CONFIRMED by admin."
 msgstr ""
 
-#: includes/transactions-list.php:381
+#: includes/transactions-list-table.php:381
 msgid "&#x2713; Admin accept"
 msgstr ""
 
-#: includes/transactions-list.php:420
+#: includes/transactions-list-table.php:420
 msgid ""
 "Mark this transaction as NOT CONFIRMED by user. A new confirmation email "
 "will be sent to the user."
 msgstr ""
 
-#: includes/transactions-list.php:421
+#: includes/transactions-list-table.php:421
 msgid "&#x2717; User unaccept"
 msgstr ""
 
-#: includes/transactions-list.php:438
+#: includes/transactions-list-table.php:438
 msgid "Transaction will be marked as CONFIRMED by user."
 msgstr ""
 
-#: includes/transactions-list.php:439
+#: includes/transactions-list-table.php:439
 msgid "&#x2713; User accept"
 msgstr ""
 
@@ -1980,92 +2014,92 @@ msgstr ""
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:255 includes/wallets-core.php:265
+#: includes/wallets-core.php:256 includes/wallets-core.php:266
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:256 includes/wallets-core.php:266
+#: includes/wallets-core.php:257 includes/wallets-core.php:267
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:379
+#: includes/wallets-core.php:380
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:387
+#: includes/wallets-core.php:388
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:513
+#: includes/wallets-core.php:514
 msgid ""
 "You are using WordPress %1$s. This plugin has been tested with %2$s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:605
+#: includes/wallets-core.php:606
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:606
+#: includes/wallets-core.php:607
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:607
+#: includes/wallets-core.php:608
 msgid "Web Server"
 msgstr ""
 
-#: includes/wallets-core.php:608
+#: includes/wallets-core.php:609
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:609
+#: includes/wallets-core.php:610
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:610
+#: includes/wallets-core.php:611
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:611
+#: includes/wallets-core.php:612
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:612
+#: includes/wallets-core.php:613
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:613
+#: includes/wallets-core.php:614
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:614
+#: includes/wallets-core.php:615
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:631
+#: includes/wallets-core.php:632
 msgid "Loaded"
 msgstr ""
 
-#: includes/wallets-core.php:631
+#: includes/wallets-core.php:632
 msgid "Not loaded"
 msgstr ""
 
-#: includes/wallets-core.php:663
+#: includes/wallets-core.php:664
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:1211
+#: includes/wallets-core.php:1212
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1215
+#: includes/wallets-core.php:1216
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 

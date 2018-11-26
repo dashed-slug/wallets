@@ -4,7 +4,7 @@
 defined( 'ABSPATH' ) || die( -1 );
 
 if ( 'wallets-menu-transactions' == filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ) {
-	include_once( 'transactions-list.php' );
+	include_once( 'transactions-list-table.php' );
 }
 
 if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
@@ -290,7 +290,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			$txs_list = new DSWallets_Admin_Menu_TX_List();
+			$txs_list = new DSWallets_Admin_Menu_TX_List_Table();
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets Transactions', 'wallets' ); ?></h1>
 
@@ -1291,7 +1291,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 
 		public function actions_handler() {
-
 			$action       = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); // slug of action in transactions admin panel
 			$id           = filter_input( INPUT_GET, 'tx_id', FILTER_SANITIZE_NUMBER_INT ); // primary key to the clicked transaction row
 			$nonce        = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING ); // the _wpnonce coming from the action link
@@ -1302,6 +1301,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$affected_rows  = 0;
 
 			if ( $action && $id && $nonce ) {
+				if ( ! current_user_can( 'manage_wallets' ) ) {
+					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
+				}
 
 				$ids = array( $id => null );
 
@@ -1363,10 +1365,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				switch ( $action ) {
 
 					case 'user_unconfirm':
-						if ( ! current_user_can( 'manage_wallets' ) ) {
-							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-						}
-
 						if ( ! wp_verify_nonce( $nonce, "wallets-user-unconfirm-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
@@ -1385,10 +1383,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						break;
 
 					case 'user_confirm':
-						if ( ! current_user_can( 'manage_wallets' ) ) {
-							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-						}
-
 						if ( ! wp_verify_nonce( $nonce, "wallets-user-confirm-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
@@ -1407,10 +1401,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						break;
 
 					case 'admin_unconfirm':
-						if ( ! current_user_can( 'manage_wallets' ) ) {
-							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-						}
-
 						if ( ! wp_verify_nonce( $nonce, "wallets-admin-unconfirm-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
@@ -1428,10 +1418,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						break;
 
 					case 'admin_confirm':
-						if ( ! current_user_can( 'manage_wallets' ) ) {
-							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-						}
-
 						if ( ! wp_verify_nonce( $nonce, "wallets-admin-confirm-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
@@ -1449,54 +1435,33 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						break;
 
 					case 'cancel_tx':
-						if ( ! current_user_can( 'manage_wallets' ) ) {
-							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-						}
-
 						if ( ! wp_verify_nonce( $nonce, "wallets-cancel-tx-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(
-							"
-							UPDATE
-								$table_name_txs
-							SET
-								status = 'cancelled'
-							WHERE
-								id IN ( $set_of_ids ) AND
-								( status IN ( 'unconfirmed', 'pending' ) OR
-								( status = 'done' && category IN ( 'move', 'deposit' ) ) )
-							"
-						);
+						try {
+							do_action( 'wallets_api_cancel_transaction', array( 'txid' => $tx_data->txid ) );
+							$affected_rows = true;
+
+						} catch ( Exception $e ) {
+							wp_die( $e->getMessage() );
+						}
 
 						break;
 
 					case 'retry_tx':
-						if ( ! current_user_can( 'manage_wallets' ) ) {
-							wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
-						}
 
 						if ( ! wp_verify_nonce( $nonce, "wallets-retry-tx-$id" ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						$affected_rows = $wpdb->query(
-							$wpdb->prepare(
-								"
-								UPDATE
-									$table_name_txs
-								SET
-									retries = IF( category='withdraw', %d, %d ),
-									status = 'unconfirmed'
-								WHERE
-									id IN ( $set_of_ids ) AND
-									status IN ( 'cancelled', 'failed' )
-								",
-								Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
-								Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 )
-							)
-						);
+						try {
+							do_action( 'wallets_api_retry_transaction', array( 'txid' => $tx_data->txid ) );
+							$affected_rows = true;
+
+						} catch ( Exception $e ) {
+							wp_die( $e->getMessage() );
+						}
 
 						break;
 				}

@@ -1,5 +1,6 @@
-<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
-<?php require_once __DIR__ .'/default/fragments.php'; // load knockout templates to interpolate columns ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly
+
+require_once __DIR__ .'/default/fragments.php'; // load knockout templates to interpolate columns ?>
 
 	<form class="dashed-slug-wallets transactions" data-bind="if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': ! transactionsDirty() }" onsubmit="return false;">
 		<?php

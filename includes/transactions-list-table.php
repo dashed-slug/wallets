@@ -11,12 +11,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
+class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 
 	const PER_PAGE = 10;
 
 	private $order;
 	private $orderby;
+	private $adapters = false;
 
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
@@ -140,6 +141,11 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			self::PER_PAGE
 		);
 		$this->items = $wpdb->get_results( $sql_query, ARRAY_A );
+
+		// also retrieve adapters so we can render amounts and pull coin names
+		if ( ! $this->adapters ) {
+			$this->adapters = apply_filters( 'wallets_api_adapters', array() );
+		}
 	}
 
 	public function column_default( $item, $column_name ) {
@@ -149,9 +155,6 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 			case 'category':
 			case 'symbol':
 			case 'tags':
-			case 'status':
-			case 'from':
-			case 'to':
 				return esc_html( $item[ $column_name ] );
 
 			case 'admin_confirm':
@@ -164,9 +167,8 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 				if ( 0 == $item[ $column_name ] ) {
 					return '&mdash;'; // no amount
 				}
-				$adapters = apply_filters( 'wallets_api_adapters', array() );
-				if ( isset( $adapters[ $item['symbol'] ] ) ) {
-					$adapter = $adapters[ $item['symbol'] ];
+				if ( isset( $this->adapters[ $item['symbol'] ] ) ) {
+					$adapter = $this->adapters[ $item['symbol'] ];
 					return sprintf( $adapter->get_sprintf(), $item[ $column_name ] );
 				} else {
 					return $item[ $column_name ];
@@ -284,27 +286,25 @@ class DSWallets_Admin_Menu_TX_List extends WP_List_Table {
 
 	public function column_status( $item ) {
 		$actions = array();
-		if ( ! ( 'trade' == $item['category'] ) ) { // cannot cancel trades with other people
-			if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
-				if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
-					$actions['cancel_tx'] = sprintf(
-						'<a class="button" href="%s" title="%s">%s</a>',
-						add_query_arg(
-							array(
-								'page'     => 'wallets-menu-transactions',
-								'action'   => 'cancel_tx',
-								'tx_id'    => $item['id'],
-								'paged'    => $this->get_pagenum(),
-								'order'    => $this->order,
-								'orderby'  => $this->orderby,
-								'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] ),
-							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+		if ( 'cancelled' != $item['status'] && 'failed' != $item['status'] ) { // cannot cancel already cancelled or failed txs
+			if ( ! ( 'withdraw' == $item['category'] && 'done' == $item['status'] ) ) { // cannot cancel if already on blockchain
+				$actions['cancel_tx'] = sprintf(
+					'<a class="button" href="%s" title="%s">%s</a>',
+					add_query_arg(
+						array(
+							'page'     => 'wallets-menu-transactions',
+							'action'   => 'cancel_tx',
+							'tx_id'    => $item['id'],
+							'paged'    => $this->get_pagenum(),
+							'order'    => $this->order,
+							'orderby'  => $this->orderby,
+							'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] ),
 						),
-						__( 'Transaction will be CANCELLED.', 'wallets' ),
-						__( '&#x1F5D9; Cancel', 'wallets' )
-					);
-				}
+						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+					),
+					__( 'Transaction will be CANCELLED.', 'wallets' ),
+					__( '&#x1F5D9; Cancel', 'wallets' )
+				);
 			}
 		}
 

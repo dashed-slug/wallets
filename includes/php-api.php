@@ -41,25 +41,36 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		/** Error code for exception thrown due to insufficient capabilities. */
 		const ERR_NOT_ALLOWED = -107;
 
+		/** Error code for exception thrown while cancelling a transaction. */
+		const ERR_DO_CANCEL = -108;
+
+		/** Error code for exception thrown while retrying a transaction. */
+		const ERR_DO_RETRY = -109;
+
 		/** @internal */
 		private $_adapters = array();
 
 		/** @internal */
 		private $_notices;
 
+		private $network_active = false;
+
 		/** @internal */
 		public function __construct() {
-			add_action( 'plugins_loaded', array( &$this, 'action_plugins_loaded' ) );
-
+			$this->network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
 			$this->_notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
+			add_action( 'plugins_loaded', array( &$this, 'action_plugins_loaded' ) );
+
 			// PHP API v2
-			add_action( 'wallets_api_move', array( &$this, 'api_move_action' ) );
-			add_action( 'wallets_api_withdraw', array( &$this, 'api_withdraw_action' ) );
-			add_filter( 'wallets_api_adapters', array( &$this, 'api_adapters_filter' ), 10, 2 );
-			add_filter( 'wallets_api_balance', array( &$this, 'api_balance_filter' ), 10, 2 );
-			add_filter( 'wallets_api_deposit_address', array( &$this, 'api_deposit_address_filter' ), 10, 2 );
-			add_filter( 'wallets_api_transactions', array( &$this, 'api_transactions_filter' ), 10, 2 );
+			add_action( 'wallets_api_move',               array( &$this, 'api_move_action' ) );
+			add_action( 'wallets_api_withdraw',           array( &$this, 'api_withdraw_action' ) );
+			add_filter( 'wallets_api_adapters',           array( &$this, 'api_adapters_filter' ), 10, 2 );
+			add_filter( 'wallets_api_balance',            array( &$this, 'api_balance_filter' ), 10, 2 );
+			add_filter( 'wallets_api_deposit_address',    array( &$this, 'api_deposit_address_filter' ), 10, 2 );
+			add_filter( 'wallets_api_transactions',       array( &$this, 'api_transactions_filter' ), 10, 2 );
+			add_action( 'wallets_api_cancel_transaction', array( &$this, 'api_cancel_transaction_action' ) );
+			add_action( 'wallets_api_retry_transaction',  array( &$this, 'api_retry_transaction_action' ) );
 		}
 
 		/**
@@ -126,7 +137,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      ) );
 		 *
 		 * @api
-		 * @since 3.0.0
+		 * @since 3.0.0 Introduced
 		 * @param float $balance The balance. Initialize to zero before the filter call.
 		 * @param array $args Array of arguments to this filter:
 		 *      - string 'symbol' &rarr; The coin to get the balance of.
@@ -220,7 +231,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      }
 		 *
 		 * @api
-		 * @since 3.0.0
+		 * @since 3.0.0 Introduced
 		 * @param array $adapters The adapters. Initialize to empty array before the filter call.
 		 * @param array $args Array of arguments to this filter:
 		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
@@ -258,38 +269,54 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			return $adapters;
 		}
 
-		 /**
-		  * Accesses user transactions.
-		  *
-		  * Example: Ten most recent Bitcoin transactions of current user:
-		  *
-		  *     $btc_txs = apply_filters( 'wallets_api_balance', array(), array( 'symbol' => 'BTC' ) );
-		  *
-		  * Example: Litecoin transactions #10 to #14 of of user 2 with more than 3 confirmations:
-		  *
-		  *     $btc_txs = apply_filters( 'wallets_api_transactions', array(), array(
-		  *         'symbol' => 'LTC',
-		  *         'user_id' => 2,
-		  *         'from' => 10,
-		  *         'count' => 5,
-		  *         'minconf' => 3,
-		  *     ) );
-		  *
-		  * @api
-		  * @since 3.0.0
-		  * @param array $txs The transactions. Initialize to empty array before the filter call.
-		  * @param array $args Array of arguments to this filter:
-		  *     - string 'symbol' &rarr; The coin to get transactions of.
-		  *     - integer 'user_id' &rarr; (Optional) WordPress ID of the user whose transactions to get. Default is the current user.
-		  *     - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
-		  *     - integer 'from' &rarr; (Optional) Return range of transactions starting from this count. Default is `0`.
-		  *     - integer 'count' &rarr; (Optional) Number of transactions starting from this count. Default is `10`.
-		  *     - integer 'minconf' &rarr; (Optional) If set to number *N*, only include transactions with a minimum of *N* confirmations.
-		  *                                             If `null` or not set (default), only include transactions with more than the mimimum number of confirmations
-		  *                                             as specified in the coin adapter settings for the specified symbol.
-		  * @throws Exception    If capability checking fails.
-		  * @return float The transactions for the specified coin, user and range.
-		  */
+		/**
+		 * Accesses user transactions.
+		 *
+		 * Example: Ten most recent Bitcoin transactions of current user:
+		 *
+		 *     $btc_txs = apply_filters( 'wallets_api_transactions', array(), array( 'symbol' => 'BTC' ) );
+		 *
+		 * Example: Litecoin transactions #10 to #14 of of user #2 with more than 3 confirmations:
+		 *
+		 *     $ltc_txs = apply_filters( 'wallets_api_transactions', array(), array(
+		 *         'symbol' => 'LTC',
+		 *         'user_id' => 2,
+		 *         'from' => 10,
+		 *         'count' => 5,
+		 *     ) );
+		 *
+		 * Example: Ten most recent Dogecoin faucet payouts for the current user:
+		 *
+		 *     $doge_payouts = apply_filters( 'wallets_api_transactions', array(), array(
+		 *         'symbol' => 'DOGE',
+		 *         'categories' => 'move',
+		 *         'tags' => 'wallets-faucet payout',
+		 *     ) );
+		 *
+		 * Example: 100 most recent Litecoin deposits and withdrawals of user #3.
+		 *
+		 *     $ltc_wds = apply_filters( 'wallets_api_transactions', array(), array(
+		 *         'symbol' => 'LTC',
+		 *         'user_id' => 3,
+		 *         'count' => 100,
+		 *         'categories' => array( 'deposit', 'withdraw' ),
+		 *     ) );
+		 *
+		 * @api
+		 * @since 3.9.0 'minconf' argument is now ignored, 'categories' and 'tags' arguments added.
+		 * @since 3.0.0 Introduced
+		 * @param array $txs The transactions. Initialize to empty array before the filter call.
+		 * @param array $args Array of arguments to this filter:
+		 *     - string         'symbol' &rarr; The coin to get transactions of.
+		 *     - integer        'user_id' &rarr; (Optional) WordPress ID of the user whose transactions to get. Default is the current user.
+		 *     - boolean        'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
+		 *     - integer        'from' &rarr; (Optional) Return range of transactions starting from this count. Default is `0`.
+		 *     - integer        'count' &rarr; (Optional) Number of transactions starting from this count. Default is `10`.
+		 *     - string|array   'categories' &rarr; (Optional) Filter by categories, can be any of: deposit, withdraw, move, trade. Default is empty array, which means do not filter by categories.
+		 *     - string|array   'tags' &rarr; (Optional) Filter by tags. Returns transactions with any one of the specified tags. Default is empty array, which means do not filter by tags.
+		 * @throws Exception    If capability checking fails.
+		 * @return float The transactions for the specified coin, user and range.
+		 */
 		public function api_transactions_filter( $txs = array(), $args = array() ) {
 			$args = wp_parse_args(
 				$args, array(
@@ -297,7 +324,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					'user_id'            => get_current_user_id(),
 					'count'              => 10,
 					'from'               => 0,
-					'minconf'            => null,
+					'categories'         => array(),
+					'tags'               => array(),
+					'symbol'             => '',
 				)
 			);
 
@@ -309,52 +338,78 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 			}
 
-			$adapters = apply_filters( 'wallets_api_adapters', array() );
-			if ( isset( $adapters[ $args['symbol'] ] ) ) {
-				$adapter = $adapters[ $args['symbol'] ];
-
-				if ( ! is_int( $args['minconf'] ) ) {
-					$args['minconf'] = $adapter->get_minconf();
-				} else {
-					$args['minconf'] = absint( $args['minconf'] );
-				}
-
-				$args['from']  = absint( $args['from'] );
-				$args['count'] = absint( $args['count'] );
-
-				global $wpdb;
-				$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-				$sql            = $wpdb->prepare(
-					"
-						SELECT
-							txs.*,
-							u.user_login other_account_name
-						FROM
-							$table_name_txs txs
-						LEFT JOIN
-							{$wpdb->users} u
-						ON ( u.ID = txs.other_account )
-						WHERE
-							( blog_id = %d || %d ) AND
-							txs.account = %d AND
-							txs.symbol = %s AND
-							( txs.confirmations >= %d OR txs.category NOT IN ( 'deposit', 'withdraw' ) )
-						ORDER BY
-							created_time DESC
-						LIMIT
-							%d, %d
-					",
-					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-					$args['user_id'],
-					$args['symbol'],
-					$args['minconf'],
-					$args['from'],
-					$args['count']
-				);
-
-				$txs = $wpdb->get_results( $sql );
+			if ( is_string( $args['categories'] ) ) {
+				$args['categories'] = explode( ',', $args['categories'] );
 			}
+
+			$args['categories'] = array_intersect(
+				$args['categories'],
+				array( 'deposit', 'withdraw', 'move', 'trade' )
+			);
+
+			if ( is_string( $args['tags'] ) ) {
+				$args['tags'] = explode( ',', $args['tags'] );
+			}
+
+			$args['from']  = absint( $args['from'] );
+			$args['count'] = absint( $args['count'] );
+
+			global $wpdb;
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+			$sql            = $wpdb->prepare(
+				"
+					SELECT
+						txs.*,
+						u.user_login other_account_name
+					FROM
+						$table_name_txs txs
+					LEFT JOIN
+						{$wpdb->users} u ON ( u.ID = txs.other_account )
+					WHERE
+						txs.account = %d
+						AND txs.symbol = %s
+				",
+				$args['user_id'],
+				$args['symbol']
+			);
+
+			if ( ! $this->network_active ) {
+				$sql .= $wpdb->prepare( " AND blog_id = %d", get_current_blog_id() );
+			}
+
+			if ( $args['categories'] ) {
+				if ( 1 == count( $args['categories'] ) ) {
+					$sql .= $wpdb->prepare( " AND category = %s", $args['categories'][ 0 ] );
+				} else {
+					$sql .= " AND category IN ('" . implode( "','", $args['categories'] ) . "')";
+				}
+			}
+
+			if ( $args['tags'] ) {
+				$pattern      = array();
+				$like_phrases = array();
+
+				foreach ( $args['tags'] as $tag ) {
+					$pattern[]      = 'tags LIKE "%%%s%%"';
+					$like_phrases[] = $wpdb->esc_like( $tag );
+				}
+				$pattern = ' AND ( ' . implode( ' OR ', $pattern ) . ')';
+
+				$sql .= $wpdb->prepare( $pattern, $like_phrases );
+			}
+
+			$sql .= $wpdb->prepare(
+				"
+					ORDER BY
+						created_time DESC
+					LIMIT
+						%d, %d
+				",
+				$args['from'],
+				$args['count']
+			);
+			$txs = $wpdb->get_results( $sql );
+
 			return $txs;
 		}
 
@@ -373,7 +428,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *     ) );
 		 *
 		 * @api
-		 * @since 3.0.0
+		 * @since 3.0.0 Introduced
 		 * @param array $args Array of arguments to this action:
 		 *      - string 'symbol' &rarr; The coin to get transactions of.
 		 *      - string 'address' &rarr; The blockchain destination address to send the funds to.
@@ -593,7 +648,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *     ) );
 		 *
 		 * @api
-		 * @since 3.0.0
+		 * @since 3.0.0 Introduced
 		 * @param array $args Array of arguments to this action:
 		 *      - string 'symbol' &rarr; The coin to get transactions of.
 		 *      - float 'amount' &rarr; The amount to transfer, including any applicable fee.
@@ -798,7 +853,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      ) );
 		 *
 		 * @api
-		 * @since 3.0.0
+		 * @since 3.0.0 Introduced
 		 * @param string $address The address. Initialize to an empty string before the filter call.
 		 * @param array $args Array of arguments to this filter:
 		 *      - string 'symbol' &rarr; The coin to get the deposit address of.
@@ -821,16 +876,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				)
 			);
 
-			if ( $args['check_capabilities'] &&
-				( ! user_can( $args['user_id'], Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) )
-			) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
-			}
-
 			if ( ! ( isset( $args['user_id'] ) && $args['user_id'] ) ) {
 				$args['user_id'] = get_current_user_id();
 			} else {
 				$args['user_id'] = absint( $args['user_id'] );
+			}
+
+			if ( $args['check_capabilities'] &&
+				( ! user_can( $args['user_id'], Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
 			}
 
 			if ( $args['force_new'] ) {
@@ -902,6 +957,203 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
 			return $address;
 		}
+
+		/**
+		 * Allows a transaction to be cancelled. Requires `manage_wallets` capability.
+		 *
+		 * Example: Cancel an internal move transaction with TXID `move-5beb31b1c658e1.51082864-send`. This will also cancel `move-5beb31b1c658e1.51082864-receive` (total of 2 transactions).
+		 *
+		 *      do_action( 'wallets_api_cancel_transaction', array( 'txid' => 'move-5beb31b1c658e1.51082864-send' ) );`
+		 *
+		 * Example: Cancel a trade transaction with TXID `T-BTC-DOGE-O5be995f006796-O5be99619d1f2d-2`. This will also cancel transactions ending with `-1`, `-3` and `-4` (total of 4 transactions).
+		 *
+		 * @api
+		 * @since 3.9.0 Introduced
+		 * @param array $args Array of arguments to this filter:
+		 *      - string 'txid' &rarr; The unique transaction ID string. If this corresponds to a move-XXX-send or move-XXX-receive transaction, its counterpart is also affected.
+		 *      - integer 'user_id' &rarr; (Optional) WordPress ID of the user who is performing the action. Default is the current user.
+		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
+		 * @throws Exception     If capability checking fails or if the transaction is not found.
+		 */
+		public function api_cancel_transaction_action( $args = array() ) {
+			$args = wp_parse_args(
+				$args, array(
+					'txid'               => false,
+					'user_id'            => get_current_user_id(),
+					'check_capabilities' => false,
+				)
+			);
+
+			if ( ! ( isset( $args['user_id'] ) && $args['user_id'] ) ) {
+				$args['user_id'] = get_current_user_id();
+			} else {
+				$args['user_id'] = absint( $args['user_id'] );
+			}
+
+			if (
+				$args['check_capabilities'] &&
+				( ! user_can( $args['user_id'], Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
+			if ( ! is_string( $args['txid'] ) ) {
+				throw new Exception( __( 'Must specify a TXID string', 'wallets' ), self::ERR_DO_CANCEL );
+			}
+
+			global $wpdb;
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+			$txids = array( "$args[txid]" => null );
+
+			if ( preg_match( '/^(move-.*-)(send|receive)$/', $args['txid'], $matches ) ) {
+				$txid_prefix = $matches[ 1 ];
+			} elseif ( preg_match( '/^(T-[\w\d]+-[\w\d]+-O[0-9a-f]+-O[0-9a-f]+-)[1234]$/', $args['txid'], $matches ) ) {
+				$txid_prefix = $matches[ 1 ];
+			}
+
+			if ( isset( $txid_prefix ) ) {
+				$tx_group = $wpdb->get_results(
+					$wpdb->prepare(
+						"
+						SELECT
+							*
+						FROM
+							$table_name_txs
+						WHERE
+							txid LIKE %s
+						",
+						"$txid_prefix%"
+					)
+				);
+
+				if ( $tx_group ) {
+					foreach ( $tx_group as $tx ) {
+						$txids[ $tx->txid ] = null;
+					}
+				}
+			}
+
+			$set_of_txids = "'" . implode( "','", array_keys( $txids ) ) . "'";
+
+			$affected_rows = $wpdb->query(
+				"
+				UPDATE
+					$table_name_txs
+				SET
+					status = 'cancelled'
+				WHERE
+					txid IN ( $set_of_txids )
+					AND (
+						status IN ( 'unconfirmed', 'pending' )
+						OR ( status = 'done' AND category != 'withdraw' )
+					)
+				"
+			);
+
+			if ( ! $affected_rows ) {
+				throw new Exception( __( 'No transactions found!', 'wallets' ), self::ERR_DO_CANCEL );
+			}
+		}
+
+		/**
+		 * Allows a transaction to be retried. Requires `manage_wallets` capability.
+		 *
+		 * Example: Retry an internal move transaction with TXID `move-5beb31b1c658e1.51082864-send`. This will also retry `move-5beb31b1c658e1.51082864-receive` (total of 2 transactions).
+		 *
+		 *      do_action( 'wallets_api_retry_transaction', array( 'txid' => 'move-5beb31b1c658e1.51082864-send' ) );`
+		 *
+		 * Example: Retry a trade transaction with TXID `T-BTC-DOGE-O5be995f006796-O5be99619d1f2d-2`. This will also retry transactions ending with `-1`, `-3` and `-4` (total of 4 transactions).
+		 *
+		 * @api
+		 * @since 3.9.0 Introduced
+		 * @param array $args Array of arguments to this filter:
+		 *      - string 'txid' &rarr; The unique transaction ID string. If this corresponds to a move-XXX-send or move-XXX-receive transaction, its counterpart is also affected.
+		 *      - integer 'user_id' &rarr; (Optional) WordPress ID of the user who is performing the action. Default is the current user.
+		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
+		 * @throws Exception     If capability checking fails or if the transaction is not found.
+		 */
+		public function api_retry_transaction_action( $args = array() ) {
+			$args = wp_parse_args(
+				$args, array(
+					'txid'               => false,
+					'user_id'            => get_current_user_id(),
+					'check_capabilities' => false,
+				)
+			);
+
+			if ( ! ( isset( $args['user_id'] ) && $args['user_id'] ) ) {
+				$args['user_id'] = get_current_user_id();
+			} else {
+				$args['user_id'] = absint( $args['user_id'] );
+			}
+
+			if (
+				$args['check_capabilities'] &&
+				( ! user_can( $args['user_id'], Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
+			if ( ! is_string( $args['txid'] ) ) {
+				throw new Exception( __( 'Must specify a TXID string', 'wallets' ), self::ERR_DO_RETRY );
+			}
+
+			global $wpdb;
+			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+			$txids = array( "$args[txid]" => null );
+
+			if ( preg_match( '/^(move-.*-)(send|receive)$/', $args['txid'], $matches ) ) {
+				$txid_prefix = $matches[ 1 ];
+			} elseif ( preg_match( '/^(T-[\w\d]+-[\w\d]+-O[0-9a-f]+-O[0-9a-f]+-)[1234]$/', $args['txid'], $matches ) ) {
+				$txid_prefix = $matches[ 1 ];
+			}
+
+			if ( isset( $txid_prefix ) ) {
+				$tx_group = $wpdb->get_results(
+					$wpdb->prepare(
+						"
+						SELECT
+							*
+						FROM
+							$table_name_txs
+						WHERE
+							txid LIKE %s
+						",
+						"$txid_prefix%"
+					)
+				);
+
+				if ( $tx_group ) {
+					foreach ( $tx_group as $tx ) {
+						$txids[ $tx->txid ] = null;
+					}
+				}
+			}
+
+			$set_of_txids = "'" . implode( "','", array_keys( $txids ) ) . "'";
+
+			$affected_rows = $wpdb->query(
+				$wpdb->prepare(
+					"
+					UPDATE
+						$table_name_txs
+					SET
+						retries = CASE category WHEN 'withdraw' THEN %d WHEN 'move' THEN %d ELSE 1 END,
+						status = 'unconfirmed'
+					WHERE
+						txid IN ( $set_of_txids )
+						AND status IN ( 'cancelled', 'failed' )
+						AND category IN ( 'withdraw', 'move', 'deposit' )
+					",
+					absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ) ),
+					absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ) )
+				)
+			);
+
+			if ( ! $affected_rows ) {
+				throw new Exception( __( 'No transactions found!', 'wallets' ), self::ERR_DO_RETRY );
+			}
+		} // end function api_retry_transaction_action
 
 	} // end class
 	new Dashed_Slug_Wallets_PHP_API();

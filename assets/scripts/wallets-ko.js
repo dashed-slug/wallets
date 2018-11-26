@@ -137,7 +137,7 @@
 						url: walletsUserData.home_url,
 						dataType: 'json',
 						cache: false,
-						asunc: true,
+						async: true,
 						timeout: timeout_millis,
 						data: {
 							'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,

@@ -865,9 +865,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) && ! isset( $obj->error ) && isset( $obj->rates ) ) {
+						$default_base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 						foreach ( $obj->rates as $s => $r ) {
 							if ( ! self::is_crypto( $s ) ) {
 								$rates[ "{$s}_{$obj->base}" ] = $r;
+
+								$rates[ "{$s}_{$default_base_symbol}"] = $r / $obj->rates->{$default_base_symbol};
 							}
 						}
 					}

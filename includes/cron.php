@@ -27,7 +27,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
 				$cron_interval = Dashed_Slug_Wallets::get_option( 'wallets_cron_interval', 'wallets_five_minutes' );
-				wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
+				if ( 'never' != $cron_interval ) {
+					wp_schedule_event( time(), $cron_interval, 'wallets_periodic_checks' );
+				}
 			}
 
 			$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
@@ -129,7 +131,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				}
 
 				if ( false === wp_next_scheduled( 'wallets_periodic_checks' ) ) {
-					wp_schedule_event( time(), $new_value, 'wallets_periodic_checks' );
+					if ( 'never' != $new_value ) {
+						wp_schedule_event( time(), $new_value, 'wallets_periodic_checks' );
+					}
 				}
 			}
 			return $new_value;
@@ -209,7 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				'wallets_cron_settings_section',
 				array(
 					'label_for'   => 'wallets_cron_interval',
-					'description' => __( 'How often to run the cron job.', 'wallets' ),
+					'description' => __( 'How often to run the cron job. If you plan to trigger the external URL via a system cron, choose "never".', 'wallets' ),
 					'disabled'    => defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON,
 				)
 			);
@@ -467,8 +471,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					<?php
 					echo __(
 						'To speed up frontend performance, you can disable WordPress cron tasks ' .
-						'with the <code>DISABLE_WP_CRON</code> constant in <code>wp-config.php</code>. ' .
-						'If you do this, you must then set up a system cron job that triggers ' .
+						'by setting <emph>Run every</emph> to <emph>(never)<emph>. Alternatively you disable all cron tasks with ' .
+						'the <code>DISABLE_WP_CRON</code> constant in <code>wp-config.php</code>. ' .
+						'If you do one of the above, you must then set up a system cron job that triggers ' .
 						'the following URL at regular intervals:',
 						'wallets'
 					);
@@ -527,21 +532,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				<?php disabled( $arg['disabled'], true, true ); ?>>
-			<?php
 
-			foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ) :
-				if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
-					?>
-					<option value="<?php echo esc_attr( $cron_interval_slug ); ?>"
-						<?php if ( $cron_interval_slug == $selected_value ): ?>selected="selected"<?php endif; ?>>
+				<option value="never"<?php if ( 'never' == $selected_value ): ?> selected="selected"<?php endif; ?>>
+					<?php esc_html_e( '(never)', 'wallets' ); ?>
+				</option>
+				<?php
 
-						<?php echo $cron_interval['display']; ?>
-					</option>
-					<?php
-				endif;
-			endforeach;
+				foreach ( $cron_intervals as $cron_interval_slug => $cron_interval ) :
+					if ( ( strlen( $cron_interval_slug ) > 7 ) && ( 'wallets' == substr( $cron_interval_slug, 0, 7 ) ) ) :
+						?>
+						<option value="<?php echo esc_attr( $cron_interval_slug ); ?>"
+							<?php if ( $cron_interval_slug == $selected_value ): ?>selected="selected"<?php endif; ?>>
 
-			?>
+							<?php echo $cron_interval['display']; ?>
+						</option>
+						<?php
+					endif;
+				endforeach;
+
+				?>
 			</select>
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php

@@ -37,7 +37,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			$view            = preg_replace( '/^wallets_/', '', $widget );
 			$templates_dir   = trailingslashit( $this->views_dir ) . $view;
 
-			$this->templates = $this->get_templates( $templates_dir );
+			$this->user_id   = get_current_user_id();
+			$this->rowcount  = 10;
+
+			// option arrays for dropdowns
+			$this->templates  = $this->get_templates( $templates_dir );
+			$this->adapters   = apply_filters( 'wallets_api_adapters', array() );
+			$this->all_cats   = array( 'deposit', 'move', 'withdraw', 'trade' );
 
 			$widget_ops = array(
 				'classname'   => $classname,
@@ -71,9 +77,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			if ( is_user_logged_in() ) {
 				$allowed = true;
 				foreach ( $this->capabilities as $capability ) {
-					$allowed = $allowed && current_user_can( $capability );
+					$allowed = $allowed && user_can( $this->user_id, $capability );
 				}
-				if ( false === array_search( $instance['template'], $this->templates ) ) {
+				if ( ! isset( $instance['template'] ) || false === array_search( $instance['template'], $this->templates ) ) {
 					$instance['template'] = 'default';
 				}
 
@@ -84,11 +90,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					$shortcode = "[{$this->widget}";
 					$shortcode .= " template=\"{$instance['template']}\"";
 					$shortcode .= " views_dir=\"{$this->views_dir}\"";
-					if ( isset( $instance['columns'] ) && $instance['columns'] ) {
-						$shortcode .= " columns=\"$instance[columns]\"";
-					}
-					if ( isset( $instance['qrsize'] ) && $instance['qrsize'] ) {
-						$shortcode .= " qrsize=\"$instance[qrsize]\"";
+
+					foreach ( array( 'symbol', 'columns', 'qrsize', 'user_id', 'rowcount', 'categories', 'tags' ) as $field ) {
+						if ( isset( $instance[ $field ] ) && $instance[ $field ] ) {
+							$shortcode .= " $field=\"$instance[$field]\"";
+						}
 					}
 					$shortcode .= ']';
 
@@ -112,6 +118,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			if ( ! isset( $instance['columns'] ) ) {
 				$instance['columns'] = implode( ',', Dashed_Slug_Wallets_Shortcodes::$tx_columns );
 			}
+			if ( ! isset( $instance['symbol'] ) ) {
+				$instance['symbol'] = '';
+			}
 
 			?>
 			<label>
@@ -129,44 +138,51 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 				</select>
 			</label>
 
-			<?php if ( 'wallets_transactions' == $this->widget && 'default' == $instance['template'] ): ?>
 			<label>
-				<?php esc_html_e( 'Columns', 'wallets' ); ?><br />
-					<input
-						type="text"
-						id="<?php echo $this->get_field_id( 'columns' ); ?>"
-						name="<?php echo $this->get_field_name( 'columns' ); ?>"
-						value="<?php echo esc_attr( $instance['columns'] ); ?>" />
+				<?php esc_html_e( 'User', 'wallets' ); ?><br />
 
-					<p class="description"><?php esc_html_e(
-						'Some transaction templates such as the default template accept a columns argument. '.
-						'This is a comma separated list of the transaction columns that you want displayed. '.
-						'Valid values are: type, tags, time, amount, fee, from_user, to_user, txid, comment,' .
-						'confirmations, status, retries, admin_confirm, user_confirm.',
+				<?php wp_dropdown_users( array(
+					'id'       => $this->get_field_id(   'user_id' ),
+					'name'     => $this->get_field_name( 'user_id' ),
+					'selected' => isset( $instance['user_id'] ) ? $instance['user_id'] : 0,
 
-						'wallets'
-					); ?></p>
+				) ); ?>
+
+				<p class="description"><?php esc_html_e(
+					'Only for some static shortcode views, the user whose data to show. ' .
+					'For all other shortcodes, this is ignored.',
+					'wallets'
+				); ?></p>
 			</label>
 
-			<?php elseif ( 'wallets_deposit' == $this->widget ): ?>
 			<label>
-				<?php esc_html_e( 'QR code size (px)', 'wallets' ); ?><br />
-					<input
-						type="number"
-						min="0"
-						max="1024"
-						step="1"
-						id="<?php echo $this->get_field_id( 'qrsize' ); ?>"
-						name="<?php echo $this->get_field_name( 'qrsize' ); ?>"
-						value="<?php echo isset( $instance['qrsize'] ) ? esc_attr( $instance['qrsize'] ) : ''; ?>" />
+				<?php esc_html_e( 'Coin', 'wallets' ); ?><br />
 
-					<p class="description"><?php esc_html_e(
-						'Size of the deposit QR code, in pixels. If this is left empty, no size is set.',
+				<select
+					id="<?php echo $this->get_field_id( 'symbol' ); ?>"
+					name="<?php echo $this->get_field_name( 'symbol' ); ?>"
+					class="widefat"
+					style="width:100%;">
 
-						'wallets'
-					); ?></p>
+					<?php foreach ( $this->adapters as $adapter ) : ?>
+					<option
+						<?php selected( $instance['symbol'], $adapter->get_symbol() ); ?>
+						value="<?php echo $adapter->get_symbol(); ?>">
+
+						<?php echo esc_html( sprintf( '%s (%s)', $adapter->get_name(), $adapter->get_symbol() ) ); ?>
+					</option>
+					<?php endforeach; ?>
+
+				</select>
+
+				<p class="description"><?php esc_html_e(
+					'Only for some static shortcode views, the coin to display data for. ' .
+					'For all other shortcodes, this is ignored.',
+					'wallets'
+				); ?></p>
+
 			</label>
-			<?php endif;
+			<?php
 		}
 
 		/**
@@ -178,14 +194,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		public function update( $new_instance, $old_instance ) {
 			$instance['template'] = $new_instance['template'];
 
-			if ( isset( $new_instance['columns'] ) ) {
-				$columns = explode( ',', $new_instance['columns'] );
-				$columns = array_map( 'trim', $columns );
-				$columns = array_intersect( $columns, Dashed_Slug_Wallets_Shortcodes::$tx_columns );
-				$instance['columns'] = implode( ',', $columns );
-
-			} elseif ( isset( $new_instance['qrsize'] ) ) {
-				$instance['qrsize'] = $new_instance['qrsize'] ? absint( $new_instance['qrsize'] ) : '';
+			if ( isset( $new_instance['user_id'] ) ) {
+				$instance['user_id'] = absint( $new_instance['user_id'] );
+			}
+			if ( isset( $new_instance['symbol'] ) ) {
+				$instance['symbol'] = $new_instance['symbol'];
 			}
 
 			return $instance;
@@ -197,10 +210,54 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			parent::__construct(
 				'wallets_deposit',
 				__( 'Deposit to wallet', 'wallets-front' ),
-				__( 'A form that will let the user know which address they can send coins to if they wish to make a deposit.', 'wallets' ),
+				__( 'A form that will let the user know which address ' .
+					'they can send coins to if they wish to make a deposit.',
+					'wallets' ),
 				array( 'has_wallets' ),
 				__CLASS__
 			);
+		}
+
+		public function form( $instance ) {
+			parent::form( $instance );
+
+			if ( ! isset( $instance['qrsize'] ) ) {
+				$instance['qrsize'] = 10;
+			}
+
+			?>
+			<label>
+				<?php esc_html_e( 'QR code size (px)', 'wallets' ); ?><br />
+				<input
+					type="number"
+					min="0"
+					max="1024"
+					step="1"
+					id="<?php echo $this->get_field_id( 'qrsize' ); ?>"
+					name="<?php echo $this->get_field_name( 'qrsize' ); ?>"
+					value="<?php echo esc_attr( absint( $instance['qrsize'] ) ); ?>" />
+
+				<p class="description"><?php esc_html_e(
+					'Size of the deposit QR code, in pixels. If this is left empty, no size is set.',
+					'wallets'
+				); ?></p>
+			</label>
+			<?php
+		}
+
+		/**
+		 * Processing widget options on save
+		 *
+		 * @param array $new_instance The new options
+		 * @param array $old_instance The previous options
+		 */
+		public function update( $new_instance, $old_instance ) {
+			$instance = parent::update( $new_instance, $old_instance );
+
+			if ( isset( $new_instance['qrsize'] ) ) {
+				$instance['qrsize'] = absint( $new_instance['qrsize'] );
+			}
+			return $instance;
 		}
 	}
 
@@ -245,10 +302,150 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			parent::__construct(
 				'wallets_transactions',
 				__( 'Wallet transactions', 'wallets-front' ),
-				__( 'An interactive table that shows past deposits, withdrawals and transfers for the user.', 'wallets' ),
+				__(
+					'An interactive table that shows past deposits, withdrawals and transfers for the user.',
+					'wallets'
+				),
 				array( 'has_wallets', 'list_wallet_transactions' ),
 				__CLASS__
 			);
+		}
+
+		public function form( $instance ) {
+			parent::form( $instance );
+
+			if ( ! isset( $instance['categories'] ) ) {
+				$instance['categories'] = '';
+			}
+
+			?>
+			<label>
+				<?php esc_html_e( 'Columns', 'wallets' ); ?><br />
+					<input
+						type="text"
+						id="<?php echo $this->get_field_id( 'columns' ); ?>"
+						name="<?php echo $this->get_field_name( 'columns' ); ?>"
+						value="<?php echo esc_attr(
+							isset( $instance['columns'] ) ?
+							$instance['columns'] :
+							implode( ',', Dashed_Slug_Wallets_Shortcodes::$tx_columns ) );
+						?>" />
+
+					<p class="description"><?php esc_html_e(
+						'Some transaction templates such as the default template accept a columns argument. '.
+						'This is a comma separated list of the transaction columns that you want displayed. '.
+						'Valid values are: type, tags, time, amount, fee, from_user, to_user, txid, comment,' .
+						'confirmations, status, retries, admin_confirm, user_confirm.',
+
+						'wallets'
+					); ?></p>
+			</label>
+
+			<label>
+				<?php esc_html_e( 'Categories', 'wallets' ); ?><br />
+
+				<select
+					multiple="multiple"
+					id="<?php echo $this->get_field_id( 'categories' ); ?>"
+					name="<?php echo $this->get_field_name( 'categories' ); ?>[]"
+					class="widefat"
+					style="width:100%;">
+
+					<?php
+
+					$selected_categories = explode( ',', $instance['categories'] );
+
+					foreach ( array( 'deposit', 'withdraw', 'move', 'trade' ) as $category ) : ?>
+					<option
+						<?php selected( false !== array_search( $category, $selected_categories ) ); ?>
+						value="<?php echo $category; ?>">
+
+						<?php echo $category; ?>
+					</option>
+					<?php endforeach; ?>
+
+				</select>
+
+				<p class="description"><?php esc_html_e(
+					'Only for static shortcode views, the transaction categories to display. ' .
+					'For all other shortcode views, this is ignored.',
+					'wallets'
+				); ?></p>
+
+			</label>
+
+			<label>
+				<?php esc_html_e( 'Tags', 'wallets' ); ?><br />
+
+					<input
+						type="text"
+						id="<?php echo $this->get_field_id( 'tags' ); ?>"
+						name="<?php echo $this->get_field_name( 'tags' ); ?>"
+						value="<?php echo esc_attr( isset( $instance['tags'] ) ? $instance['tags'] : '' ); ?>" />
+
+				<p class="description"><?php esc_html_e(
+					'Only for static shortcode views, comma-separated list of the transaction tags to search for. ' .
+					'Transactions with any one of these tags are returned. ' .
+					'For all other shortcode views, this is ignored.',
+					'wallets'
+				); ?></p>
+
+			</label>
+
+			<label>
+				<?php esc_html_e( 'Rows count', 'wallets' ); ?><br />
+
+				<input
+					type="number"
+					min="2"
+					max="1024"
+					step="1"
+					id="<?php echo $this->get_field_id( 'rowcount' ); ?>"
+					name="<?php echo $this->get_field_name( 'rowcount' ); ?>"
+					value="<?php echo isset( $instance['rowcount'] ) ? esc_attr( $instance['rowcount'] ) : 10; ?>" />
+
+				<p class="description"><?php esc_html_e(
+					'Only for static shortcode views, the maximum number of transactions to display. ' .
+					'For all other shortcode views, this is ignored.',
+					'wallets'
+				); ?></p>
+
+			</label>
+			<?php
+		}
+
+		public function update( $new_instance, $old_instance ) {
+			$instance = parent::update( $new_instance, $old_instance );
+
+			if ( isset( $new_instance['columns'] ) ) {
+				$columns = explode( ',', $new_instance['columns'] );
+				$columns = array_map( 'trim', $columns );
+				$columns = array_intersect( $columns, Dashed_Slug_Wallets_Shortcodes::$tx_columns );
+				$instance['columns'] = implode( ',', $columns );
+			}
+
+			if ( isset( $new_instance['categories'] ) ) {
+				$categories = array_map( 'trim', $new_instance['categories'] );
+				$categories = array_intersect( $categories, array( 'deposit', 'withdraw', 'move', 'trade' ) );
+				$instance['categories'] = implode( ',', $categories );
+			}
+
+			if ( isset( $new_instance['tags'] ) ) {
+				$tags = explode( ',', $new_instance['tags'] );
+				$tags = array_map( 'trim', $tags );
+				$instance['tags'] = implode( ',', $tags );
+			}
+
+			if ( isset( $new_instance['qrsize'] ) ) {
+				$instance['qrsize'] = $new_instance['qrsize'] ? absint( $new_instance['qrsize'] ) : '';
+			}
+
+			if ( isset( $new_instance['rowcount'] ) ) {
+				$instance['rowcount'] = $new_instance['rowcount'] ? absint( $new_instance['rowcount'] ) : 10;
+			}
+			// TODO
+
+			return $instance;
 		}
 	}
 
@@ -281,7 +478,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			parent::__construct(
 				'wallets_rates',
 				__( 'Exchange rates', 'wallets-front' ),
-				__( 'Shows exchange rates for online cryptocurrencies, expressed in the default fiat currency.', 'wallets' ),
+				__(
+					'Shows exchange rates for online cryptocurrencies, expressed in the default fiat currency.',
+					'wallets'
+				),
 				array( 'has_wallets' ),
 				__CLASS__
 			);
