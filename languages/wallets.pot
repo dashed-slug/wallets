@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.9.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 3.9.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2018-11-26 11:27:16+00:00\n"
+"POT-Creation-Date: 2018-12-04 14:25:20+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -121,10 +121,10 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:163 includes/adapters-list.php:182
-#: includes/caps.php:96 includes/cold-storage.php:119 includes/json-api.php:454
-#: includes/json-api.php:497 includes/json-api.php:746
-#: includes/json-api.php:789 includes/json-api.php:1087
-#: includes/json-api.php:1153 includes/json-api.php:1196
+#: includes/caps.php:96 includes/cold-storage.php:119 includes/json-api.php:452
+#: includes/json-api.php:495 includes/json-api.php:742
+#: includes/json-api.php:785 includes/json-api.php:1081
+#: includes/json-api.php:1147 includes/json-api.php:1190
 #: includes/transactions.php:1166 includes/transactions.php:1369
 #: includes/transactions.php:1387 includes/transactions.php:1405
 #: includes/transactions.php:1422 includes/transactions.php:1439
@@ -1204,20 +1204,26 @@ msgstr ""
 msgid "PRO TIP:"
 msgstr ""
 
-#: includes/cron.php:495
+#: includes/cron.php:489
+msgid ""
+"Looking for an easy to setup cron job service? Try <a href=\"%s\" "
+"title=\"%s\">EasyCron</a>!"
+msgstr ""
+
+#: includes/cron.php:506
 msgid ""
 "You can control how wallet secrets are stored. Wallet secrets are needed "
 "for performing withdrawals."
 msgstr ""
 
-#: includes/cron.php:505
+#: includes/cron.php:516
 msgid ""
 "You can control whether similar old internal transactions are aggregated. "
 "Aggregating past transactions saves space on the DB. Aggregation is "
 "performed in batches so as not to overwhelm the DB."
 msgstr ""
 
-#: includes/cron.php:537
+#: includes/cron.php:548
 msgid "(never)"
 msgstr ""
 
@@ -1339,26 +1345,26 @@ msgstr ""
 msgid "Could not delete cryptocurrency transactions for %1$s: %2$s"
 msgstr ""
 
-#: includes/json-api.php:267 includes/json-api.php:588
+#: includes/json-api.php:267 includes/json-api.php:586
 msgid "Could not process notification."
 msgstr ""
 
-#: includes/json-api.php:270 includes/json-api.php:591
-#: includes/json-api.php:932
+#: includes/json-api.php:270 includes/json-api.php:589
+#: includes/json-api.php:928
 msgid "Must be logged in"
 msgstr ""
 
 #: includes/json-api.php:283 includes/json-api.php:312
-#: includes/json-api.php:386 includes/json-api.php:430
-#: includes/json-api.php:448 includes/json-api.php:491
-#: includes/json-api.php:601 includes/json-api.php:677
-#: includes/json-api.php:722 includes/json-api.php:740
-#: includes/json-api.php:783 includes/json-api.php:943
-#: includes/json-api.php:1019 includes/json-api.php:1064
-#: includes/json-api.php:1081 includes/json-api.php:1147
-#: includes/json-api.php:1190 includes/php-api.php:160 includes/php-api.php:255
-#: includes/php-api.php:338 includes/php-api.php:463 includes/php-api.php:691
-#: includes/php-api.php:888 includes/php-api.php:997 includes/php-api.php:1094
+#: includes/json-api.php:384 includes/json-api.php:428
+#: includes/json-api.php:446 includes/json-api.php:489
+#: includes/json-api.php:599 includes/json-api.php:673
+#: includes/json-api.php:718 includes/json-api.php:736
+#: includes/json-api.php:779 includes/json-api.php:939
+#: includes/json-api.php:1013 includes/json-api.php:1058
+#: includes/json-api.php:1075 includes/json-api.php:1141
+#: includes/json-api.php:1184 includes/php-api.php:160 includes/php-api.php:266
+#: includes/php-api.php:367 includes/php-api.php:492 includes/php-api.php:720
+#: includes/php-api.php:917 includes/php-api.php:1026 includes/php-api.php:1123
 #: includes/transactions.php:1118
 msgid "Not allowed"
 msgstr ""
@@ -1367,43 +1373,43 @@ msgstr ""
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:404 includes/json-api.php:695
-#: includes/json-api.php:1037
+#: includes/json-api.php:402 includes/json-api.php:691
+#: includes/json-api.php:1031
 msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
-#: includes/json-api.php:416 includes/json-api.php:707
-#: includes/json-api.php:1049
+#: includes/json-api.php:414 includes/json-api.php:703
+#: includes/json-api.php:1043
 msgid "Could not get \"%s\" transactions"
 msgstr ""
 
-#: includes/json-api.php:475 includes/json-api.php:767
-#: includes/json-api.php:1174
+#: includes/json-api.php:473 includes/json-api.php:763
+#: includes/json-api.php:1168
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:519 includes/json-api.php:830
-#: includes/json-api.php:1237
+#: includes/json-api.php:517 includes/json-api.php:826
+#: includes/json-api.php:1231
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:811 includes/json-api.php:1218
+#: includes/json-api.php:807 includes/json-api.php:1212
 msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 
-#: includes/json-api.php:901
+#: includes/json-api.php:897
 msgid "Could not process notification: %s"
 msgstr ""
 
-#: includes/json-api.php:918
+#: includes/json-api.php:914
 msgid "You must supply the cron nonce."
 msgstr ""
 
-#: includes/json-api.php:926
+#: includes/json-api.php:922
 msgid "Error while trigerring cron tasks: %s"
 msgstr ""
 
-#: includes/json-api.php:1108 includes/json-api.php:1126
+#: includes/json-api.php:1102 includes/json-api.php:1120
 msgid "Could not get new %s address"
 msgstr ""
 
@@ -1605,47 +1611,47 @@ msgid ""
 "transaction."
 msgstr ""
 
-#: includes/php-api.php:468
+#: includes/php-api.php:497
 msgid "You must specify a withdrawal address"
 msgstr ""
 
-#: includes/php-api.php:477
+#: includes/php-api.php:506
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:490 includes/transactions.php:712
+#: includes/php-api.php:519 includes/transactions.php:712
 msgid "Minimum witdrawal amount for \"%1$s\" is %2$f"
 msgstr ""
 
-#: includes/php-api.php:533
+#: includes/php-api.php:562
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/php-api.php:576 includes/php-api.php:747
+#: includes/php-api.php:605 includes/php-api.php:776
 msgid "Amount after deducting fees must be positive"
 msgstr ""
 
-#: includes/php-api.php:582 includes/php-api.php:754
+#: includes/php-api.php:611 includes/php-api.php:783
 msgid "Insufficient funds: %1$s > %2$s"
 msgstr ""
 
-#: includes/php-api.php:696
+#: includes/php-api.php:725
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/php-api.php:706
+#: includes/php-api.php:735
 msgid "Adapter for \"%s\" is not online for move action"
 msgstr ""
 
-#: includes/php-api.php:935
+#: includes/php-api.php:964
 msgid "Adapter for \"%s\" is not online for getting a deposit address"
 msgstr ""
 
-#: includes/php-api.php:1001 includes/php-api.php:1098
+#: includes/php-api.php:1030 includes/php-api.php:1127
 msgid "Must specify a TXID string"
 msgstr ""
 
-#: includes/php-api.php:1054 includes/php-api.php:1154
+#: includes/php-api.php:1083 includes/php-api.php:1183
 msgid "No transactions found!"
 msgstr ""
 

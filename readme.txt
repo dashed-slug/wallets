@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 3.9.0
+Stable tag: 3.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,7 +198,6 @@ This is a wallet based on `bitcoinj` and does not store the blockchain locally. 
 
 A downside is that the `walletnotify` mechanism and the `listtransactions` command are not implemented. **This means that there is no easy way for the plugin to be notified of deposits.** Deposits will not be recorded in the transactions table. Users will not be emailed when they perform deposits and they will not be able to see their deposits in the `[wallets_transactions]` UI. Deposits will correctly affect users' balances. You have been warned.
 
-
 = Can you install/configure the plugin for me? / I am having trouble with the bitcoin.conf file =
 
 I am available to answer any specific questions if you attempt to install the plugin and you face some problem. Unfortunately I do not undertake installation and configuration of the plugin.
@@ -206,6 +205,10 @@ I am available to answer any specific questions if you attempt to install the pl
 Keep in mind that no software is set-and-forget. Once you install software, it then needs to be maintained. If you find that you are having trouble installing the plugin or connecting it to a wallet, even with help, this is a good indication that you should not be running a wallet with people's money on it.
 
 Remember that you have two options: stand-alone wallets or web wallets. Running a web wallet is considerably easier than a stand-alone wallet, as it does not require system administration skills. As a general rule, if you have trouble using Linux from the command line, you will be better off installing a web wallet.
+
+= I am setting up a Bitcoin full node. In my .conf file I have provided the rpcuser and rpcpass parameters. Instead, the plugin recommends the rpcauth parameter. =
+
+You should *either* use `rpcuser` and `rpcpass` to specify login credentials to the RPC API, *or* `rpcauth`, but not both. The `rpcauth` parameter is simply a way to specify a hashed/salted version of the username and password, rather than the plaintext values. The plugin recommends a hash that contains the username and password you have provided in the coin adapter settings. It uses the algorithm from [`rpcauth.py`](https://github.com/bitcoin/bitcoin/tree/master/share/rpcauth).
 
 = How can I integrate the plugin with my site? =
 
@@ -304,6 +307,20 @@ If you have evidence that your funds were stolen you should go to the police. In
 
 I plan to build a plugin extension that will allow you to pay for membership via cryptocurrencies. When ready, this extension will also be made available as a dashed-slug premium extension. In the meantime, you may contact me directly at [info@dashed-slug.net](mailto:info@dashed-slug.net) if you wish to send a Bitcoin payment and I will activate your membership manually.
 
+= I want to do changes to the plugin's code. Where can I find X function/variable/command/etc? =
+
+The plugin and its extensions are yours to edit and you are free to hack them as much as you like. However, you are generally discouraged from doing so:
+
+Firstly, I cannot provide support to modified versions of the plugin. Editing code can have unintended consequences.
+
+But more importantly, if you do any modifications to the code, any subsequent update will overwrite your changes. Therefore, it is [not recommended](https://iandunn.name/2014/01/10/the-right-way-to-customize-a-wordpress-plugin/) to simply fire away your favorite editor and hack away themes or plugins.
+
+Here's what you should do instead: If possible, use an existing hook ([action](https://developer.wordpress.org/reference/functions/add_action/) or [filter](https://developer.wordpress.org/reference/functions/add_filter/)) to modify the behavior of the plugin. Then, add your code to a [child theme](https://codex.wordpress.org/Child_Themes) or in separate plugin file (any PHP file [with the right headers](https://codex.wordpress.org/File_Header) is a valid plugin file).
+
+If you can't find a hook that allows you to do the modifications you need, contact me to discuss about your need and I might be able to add a hook to the next patch of the plugin.
+
+Additionally, if the change you intend to do is helpful to other users, I might be able to add it to the plugin code.
+
 = How can I get support or submit feedback? =
 
 Please use the [support forum on WordPress.org](https://wordpress.org/support/plugin/wallets) for all issues and inquiries regarding the plugin.
@@ -336,6 +353,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.9.1 =
+- Fix: When activating/deactivating exchange rates providers, all rates are now deleted so that no stale rates remain in DB.
+- Improve: Coin adapters are now checked somewhat less frequently for a "responding" state to improve performance.
+- Improve: Remove some unneeded CSS from reload button.
+- Add: Link to EasyCron service.
+- Fix: Added guard clause to cron job that checks RPC wallets for past transactions. No longer logs a warning if no transactions are found.
 
 = 3.9.0 =
 - Add: New static templates for the following shortcodes: <code>[wallets_deposit]</code>, <code>[wallets_balance]</code>, <code>[wallets_transactions]</code>, <code>[wallets_account_value]</code>, <code>[wallets_rates]</code>.
@@ -1069,7 +1093,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.9.0 introduces static shortcodes, two new admin tables, and various other bugfixes and improvements.
+Version 3.9.1 brings some bugfixes and improvements to the plugin.
 
 == Donating ==
 

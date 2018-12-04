@@ -743,8 +743,10 @@ CFG;
 
 				// save last encountered transaction for next time
 				// every 8 hours the entire chain of txids will be rescanned
-				Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_txid_$symbol", $txid, 8 * HOUR_IN_SECONDS );
-				Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_time_$symbol", $time, 8 * HOUR_IN_SECONDS );
+				if ( isset( $txid ) && $txid && isset( $time ) && $time ) {
+					Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_txid_$symbol", $txid, 8 * HOUR_IN_SECONDS );
+					Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_time_$symbol", $time, 8 * HOUR_IN_SECONDS );
+				}
 
 				// if listtransactions returned empty array end the loop
 				if ( 0 == count( $result ) ) {

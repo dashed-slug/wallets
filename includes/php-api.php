@@ -230,12 +230,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *          error_log( 'you do not have access to wallets' );
 		 *      }
 		 *
+		 * Example: Get all the *online* coin adapters. Do not use a cached state of the adapters;
+		 *          instead, make sure that the adapters are each queried one by one to determine if they are online.
+		 *
+		 *      $adapters = apply_filters( 'wallets_api_adapters', array(), array(
+		 *          'online_only' => true,
+		 *          'force_online_check' => true,
+		 *      ) );
+		 *
 		 * @api
 		 * @since 3.0.0 Introduced
 		 * @param array $adapters The adapters. Initialize to empty array before the filter call.
 		 * @param array $args Array of arguments to this filter:
 		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
 		 *      - boolean 'online_only' &rarr; (Optional) Whether to return *only* the coin adapters that are currently responding. Default is `false`.
+		 *      - boolean 'force_online_check' &rarr; (Optional) When requesting only responding, the status of the wallet is cached. Set to `true` to return a live state or `false` to return a state that can be cached for up to 30 seconds. Default is `false`.
+		 *
 		 * @throws Exception     If capability checking fails.
 		 * @return array Associative array of coin symbols to coin adapter objects.
 		 * @see Dashed_Slug_Wallets_Coin_Adapter
@@ -245,6 +255,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				$args, array(
 					'check_capabilities' => false,
 					'online_only'        => false,
+					'force_online_check' => false,
 				)
 			);
 
@@ -256,14 +267,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			}
 
 			foreach ( $this->_adapters as $symbol => $adapter ) {
-				if ( ! $args['online_only'] ) {
-					$adapters[ $symbol ] = $this->_adapters[ $symbol ];
-				} else {
-					try {
-						$this->_adapters[ $symbol ]->get_balance();
-						$adapters[ $symbol ] = $this->_adapters[ $symbol ];
-					} catch ( Exception $e ) {
+				if ( $args['online_only'] ) {
+
+					if ( $args['force_online_check'] ) {
+						$is_online = false;
+					} else {
+						$is_online = Dashed_Slug_Wallets::get_transient( "undefined_adapter_online_$symbol", 'online' );
 					}
+
+					if ( false === $is_online ) {
+						try {
+							$this->_adapters[ $symbol ]->get_balance();
+							$adapters[ $symbol ] = $this->_adapters[ $symbol ];
+							// adapter was contacted & found to be online
+							$is_online = 'online';
+						} catch ( Exception $e ) {
+							// adapter was contacted & found to be offline
+							$is_online = 'offline';
+						}
+						Dashed_Slug_Wallets::set_transient( "undefined_adapter_online_$symbol", $is_online, 30 );
+					}
+
+					if ( 'online' == $is_online ) {
+						$adapters[ $symbol ] = $this->_adapters[ $symbol ];
+					}
+				} else {
+					$adapters[ $symbol ] = $this->_adapters[ $symbol ];
 				}
 			}
 			return $adapters;

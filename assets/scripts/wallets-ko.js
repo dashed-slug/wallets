@@ -763,15 +763,18 @@
 		// init the viewmodel
 		ko.options.deferUpdates = true;
 		var walletsViewModel = new WalletsViewModel();
+
 		// let's pollute the global wp object a bit!!1
 		if ( 'undefined' == typeof wp ) {
 			window.wp = {};
 		}
-		wp.wallets = {
-			viewModels: {
-				wallets: walletsViewModel
-			}
-		};
+		if ( 'undefined' == typeof wp.wallets ) {
+			window.wp.wallets = {};
+		}
+		if ( 'undefined' == typeof wp.wallets.viewModels ) {
+			window.wp.wallets.viewModels = {};
+		}
+		wp.wallets.viewModels.wallets = walletsViewModel;
 
 		// bind the viewmodel
 		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value,.rates' ).each( function( i, el ) {

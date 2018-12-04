@@ -481,9 +481,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				</p>
 				<?php
 				printf ('<a href="%1$s">%1$s</a>', $cron_trigger_url );
-
-			endif;
-			?>
+				endif;
+				?>
+				<p style="font-style: italic;">
+					<?php
+					printf(
+						__(
+							'Looking for an easy to setup cron job service? Try <a href="%s" title="%s">EasyCron</a>!',
+							'wallets'
+						),
+						'https://www.easycron.com/?ref=124245',
+						'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.'
+					);
+					?>
+				</p>
 			</div>
 			<?php
 		}

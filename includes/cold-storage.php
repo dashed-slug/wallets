@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.9.0.min.js' ) ) {
-				$script = 'wallets-cold-storage-3.9.0.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.9.1.min.js' ) ) {
+				$script = 'wallets-cold-storage-3.9.1.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.9.0',
+				'3.9.1',
 				true
 			);
 		}

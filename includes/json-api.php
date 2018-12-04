@@ -312,16 +312,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
 
-					$all_adapters = apply_filters( 'wallets_api_adapters', array() );
+					$all_adapters = apply_filters( 'wallets_api_adapters', array(
+						'online_only' => true,
+					) );
 
 					$response['coins'] = array();
 
 					foreach ( $all_adapters as $symbol => $adapter ) {
 						try {
-							// Test connectivity. Only report to the frontend
-							// adapters that are connected and respond with no exceptions.
-							$adapter->get_balance();
-
 							// gather info
 							$format = $adapter->get_sprintf();
 
@@ -601,16 +599,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
 
-					$all_adapters = apply_filters( 'wallets_api_adapters', array() );
+					$all_adapters = apply_filters( 'wallets_api_adapters', array(
+						'online_only' => true,
+					) );
 
 					$response['coins'] = array();
 
 					foreach ( $all_adapters as $symbol => $adapter ) {
 						try {
-							// Test connectivity. Only report to the frontend
-							// adapters that are connected and respond with no exceptions.
-							$adapter->get_balance();
-
 							// gather info
 							$format = $adapter->get_sprintf();
 
@@ -943,16 +939,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
 
-					$all_adapters = apply_filters( 'wallets_api_adapters', array() );
+					$all_adapters = apply_filters( 'wallets_api_adapters', array(), array(
+						'online_only' => true,
+					) );
 
 					$response['coins'] = array();
 
 					foreach ( $all_adapters as $symbol => $adapter ) {
 						try {
-							// Test connectivity. Only report to the frontend
-							// adapters that are connected and respond with no exceptions.
-							$adapter->get_balance();
-
 							// gather info
 							$format = $adapter->get_sprintf();
 

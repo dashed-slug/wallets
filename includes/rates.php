@@ -562,8 +562,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			<?php
 		}
 
+		/**
+		 * When providers are updated, existing data is deleted.
+		 *
+		 * @param unknown $new
+		 * @param unknown $old
+		 * @return unknown
+		 */
+
 		public function filter_pre_update_option( $new, $old ) {
-			Dashed_Slug_Wallets::delete_transient( 'wallets_rates_last_run' );
+			if ( $new != $old ) {
+				Dashed_Slug_Wallets::delete_option( 'wallets_rates' );
+				Dashed_Slug_Wallets::delete_option( 'wallets_rates_cryptos' );
+				Dashed_Slug_Wallets::delete_option( 'wallets_rates_fiats' );
+				Dashed_Slug_Wallets::delete_transient( 'wallets_rates_last_run' );
+			}
 			return $new;
 		}
 
