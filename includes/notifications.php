@@ -1129,6 +1129,8 @@ NOTIFICATION
 
 			if ( isset( $tx_data->fee ) && is_numeric( $tx_data->fee ) ) {
 				$replace_pairs['###FEE###']              = sprintf( $sprintf, abs( $tx_data->fee ) );
+			} else {
+				$replace_pairs['###FEE###']              = sprintf( $sprintf, 0 );
 			}
 
 			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {

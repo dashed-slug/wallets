@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 4.9.8
+Tested up to: 5.0.1
 Requires PHP: 5.6
-Stable tag: 3.9.1
+Stable tag: 3.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -206,9 +206,9 @@ Keep in mind that no software is set-and-forget. Once you install software, it t
 
 Remember that you have two options: stand-alone wallets or web wallets. Running a web wallet is considerably easier than a stand-alone wallet, as it does not require system administration skills. As a general rule, if you have trouble using Linux from the command line, you will be better off installing a web wallet.
 
-= I am setting up a Bitcoin full node. In my .conf file I have provided the rpcuser and rpcpass parameters. Instead, the plugin recommends the rpcauth parameter. =
+= I am setting up a Bitcoin full node. In my .conf file I have provided the rpcuser and rpcpassword parameters. Instead, the plugin recommends the rpcauth parameter. =
 
-You should *either* use `rpcuser` and `rpcpass` to specify login credentials to the RPC API, *or* `rpcauth`, but not both. The `rpcauth` parameter is simply a way to specify a hashed/salted version of the username and password, rather than the plaintext values. The plugin recommends a hash that contains the username and password you have provided in the coin adapter settings. It uses the algorithm from [`rpcauth.py`](https://github.com/bitcoin/bitcoin/tree/master/share/rpcauth).
+You should *either* use `rpcuser` and `rpcpassword` to specify login credentials to the RPC API, *or* `rpcauth`, but not both. The `rpcauth` parameter is simply a way to specify a hashed/salted version of the username and password, rather than the plaintext values. The plugin recommends a hash that contains the username and password you have provided in the coin adapter settings. It uses the algorithm from [`rpcauth.py`](https://github.com/bitcoin/bitcoin/tree/master/share/rpcauth).
 
 = How can I integrate the plugin with my site? =
 
@@ -353,6 +353,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.9.2 =
+- Fix: Eliminate a JS error caused when a theme has already loaded an old version of knockout.js.
+- Add: Show an error message in frontend UIs when there are no coin adapters online.
+- Fix: Can now cancel withdrawals again from the admin interface (bug was introduced in 3.9.0).
+- Fix: Eliminated some PHP warnings in the notifications mechanism.
+- Fix: The instructions for resolving connectivity to an RPC wallet now recommend using the latest JSON API version in the notification URLs.
+- Add: New debug option "transients broken" can now circumvent the use of transients throughout the plugin, at the cost of decreased performance.
 
 = 3.9.1 =
 - Fix: When activating/deactivating exchange rates providers, all rates are now deleted so that no stale rates remain in DB.
@@ -1093,7 +1101,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.9.1 brings some bugfixes and improvements to the plugin.
+Version 3.9.2 brings some minor bugfixes and improvements to the plugin.
 
 == Donating ==
 

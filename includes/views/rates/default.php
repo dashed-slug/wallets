@@ -1,11 +1,15 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__ ); ?>" data-bind="if: Object.keys( coins() ).length > 0 && 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__, '.php' ); ?>" data-bind="if: 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_rates' );
 	?>
+	<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
+	<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+	<!-- /ko -->
 
+	<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->
 	<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { coinsDirty( false ); ko.tasks.runEarly(); coinsDirty( true ); }"></span>
 	<table>
 		<thead>
@@ -27,6 +31,7 @@
 			</tr>
 		</tbody>
 	</table>
+	<!-- /ko -->
 	<?php
 		do_action( 'wallets_ui_after_rates' );
 		do_action( 'wallets_ui_after' );

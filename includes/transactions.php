@@ -1439,12 +1439,28 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						try {
-							do_action( 'wallets_api_cancel_transaction', array( 'txid' => $tx_data->txid ) );
-							$affected_rows = true;
+						if ( $tx_data->txid ) {
 
-						} catch ( Exception $e ) {
-							wp_die( $e->getMessage() );
+							try {
+								do_action( 'wallets_api_cancel_transaction', array( 'txid' => $tx_data->txid ) );
+								$affected_rows = true;
+
+							} catch ( Exception $e ) {
+								wp_die( $e->getMessage() );
+							}
+
+						} else {
+							// for withdrawals that have not yet executed we do not yet have a TXID - cancel manually
+							$affected_rows = $wpdb->query(
+								"
+								UPDATE
+									$table_name_txs
+								SET
+									status = 'cancelled'
+								WHERE
+									id IN ( $set_of_ids )
+								"
+							);
 						}
 
 						break;
@@ -1455,12 +1471,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
 						}
 
-						try {
-							do_action( 'wallets_api_retry_transaction', array( 'txid' => $tx_data->txid ) );
-							$affected_rows = true;
+						if ( $tx_data->txid ) {
 
-						} catch ( Exception $e ) {
-							wp_die( $e->getMessage() );
+							try {
+								do_action( 'wallets_api_retry_transaction', array( 'txid' => $tx_data->txid ) );
+								$affected_rows = true;
+
+							} catch ( Exception $e ) {
+								wp_die( $e->getMessage() );
+							}
+						} else {
+							// for withdrawals that have not yet executed we do not yet have a TXID - retry manually
+							$affected_rows = $wpdb->query(
+								$wpdb->prepare(
+									"
+									UPDATE
+										$table_name_txs
+									SET
+										retries = CASE category WHEN 'withdraw' THEN %d WHEN 'move' THEN %d ELSE 1 END,
+										status = 'unconfirmed'
+									WHERE
+										id IN ( $set_of_ids )
+										AND status IN ( 'cancelled', 'failed' )
+										AND category IN ( 'withdraw', 'move', 'deposit' )
+									",
+									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ) ),
+									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ) )
+								)
+							);
 						}
 
 						break;

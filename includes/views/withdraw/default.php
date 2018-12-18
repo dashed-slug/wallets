@@ -1,11 +1,15 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<form class="dashed-slug-wallets withdraw" data-bind="submit: doWithdraw, if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() && ajaxSemaphore() < 1 }">
+<form class="dashed-slug-wallets withdraw" data-bind="submit: doWithdraw, css: { 'wallets-ready': !coinsDirty() && ajaxSemaphore() < 1 }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_withdraw' );
 	?>
-	<table>
+	<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
+	<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+	<!-- /ko -->
+
+	<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->	<table>
 		<colgroup>
 			<?php echo str_repeat( '<col>', 6 ); ?>
 		</colgroup>
@@ -68,6 +72,7 @@
 			</tr>
 		</tbody>
 	</table>
+	<!-- /ko -->
 	<?php
 		do_action( 'wallets_ui_after_withdraw' );
 		do_action( 'wallets_ui_after' );

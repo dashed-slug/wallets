@@ -6,7 +6,7 @@ $fiat_symbol    = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 ksort( $adapters );
 ?>
 
-<div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__ ); ?> wallets-ready">
+<div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_rates' );

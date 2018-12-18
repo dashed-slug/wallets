@@ -2,11 +2,16 @@
 
 require_once __DIR__ .'/default/fragments.php'; // load knockout templates to interpolate columns ?>
 
-	<form class="dashed-slug-wallets transactions" data-bind="if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': ! transactionsDirty() }" onsubmit="return false;">
+	<form class="dashed-slug-wallets transactions" data-bind="css: { 'wallets-ready': ! transactionsDirty() }" onsubmit="return false;">
 		<?php
 			do_action( 'wallets_ui_before' );
 			do_action( 'wallets_ui_before_transactions' );
 		?>
+		<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
+		<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+		<!-- /ko -->
+
+		<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->
 		<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { transactionsDirty( false ); ko.tasks.runEarly(); transactionsDirty( true ); }"></span>
 		<table>
 			<colgroup>
@@ -89,6 +94,7 @@ require_once __DIR__ .'/default/fragments.php'; // load knockout templates to in
 
 			</tbody>
 		</table>
+		<!-- /ko -->
 		<?php
 			do_action( 'wallets_ui_after_transactions' );
 			do_action( 'wallets_ui_after' );

@@ -481,6 +481,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					'extra'              => '',
 					'from_user_id'       => get_current_user_id(),
 					'comment'            => '',
+					'fee'                => false,
 				)
 			);
 
@@ -599,9 +600,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					)
 				);
 
-				$fee = $adapter->get_withdraw_fee() + $args['amount'] * $adapter->get_withdraw_fee_proportional();
+				if ( false === $args['fee'] ) {
+					$args['fee'] = $adapter->get_withdraw_fee() + $args['amount'] * $adapter->get_withdraw_fee_proportional();
+				}
 
-				if ( $args['amount'] <= $fee ) {
+				if ( $args['amount'] <= $args['fee'] ) {
 					throw new Exception( __( 'Amount after deducting fees must be positive', 'wallets' ), self::ERR_DO_WITHDRAW );
 				}
 				if ( $balance < $args['amount'] ) {
@@ -626,7 +629,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					'extra'        => $args['extra'],
 					'symbol'       => $args['symbol'],
 					'amount'       => -number_format( $args['amount'], 10, '.', '' ),
-					'fee'          => number_format( $fee, 10, '.', '' ),
+					'fee'          => number_format( $args['fee'], 10, '.', '' ),
 					'created_time' => $time,
 					'updated_time' => $time,
 					'comment'      => $args['comment'],
@@ -682,7 +685,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      - string 'symbol' &rarr; The coin to get transactions of.
 		 *      - float 'amount' &rarr; The amount to transfer, including any applicable fee.
 		 *      - float 'fee' &rarr; (Optional) The amount to charge as an internal transaction fee. Subtracted from amount.
-		 *                                                  Default: as specified in the coin adapter settings.
+		 *                                                  Default: Fees specified by the coin adapter settings.
 		 *      - integer 'from_user_id' &rarr; (Optional) WordPress ID of the user who will send the coins. Default is the current user.
 		 *      - integer 'to_user_id' &rarr; WordPress ID of the user who will receive the coins.
 		 *      - string 'comment' &rarr; (Optional) A textual description that will be attached to the transaction.
@@ -701,6 +704,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					'from_user_id'       => get_current_user_id(),
 					'comment'            => '',
 					'tags'               => '',
+					'fee'                => false,
 				)
 			);
 
@@ -742,7 +746,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			$adapter = $adapters[ $args['symbol'] ];
 
 			// calc fees if not already specified
-			if ( ! isset( $args['fee'] ) ) {
+			if ( false === $args['fee'] ) {
 				$args['fee'] = $adapter->get_move_fee() + $args['amount'] * $adapter->get_move_fee_proportional();
 			}
 

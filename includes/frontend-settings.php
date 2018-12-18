@@ -173,6 +173,35 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				'wallets_legacy_json_apis'
 			);
 
+			add_settings_field(
+				'wallets_transients_broken',
+				__( 'Disable transients (debug)', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-frontend-settings',
+				'wallets_json_api_section',
+				array(
+					'label_for'   => 'wallets_transients_broken',
+					'description' => __(
+						'Various plugin data, such as the output of the JSON API, ' .
+						'are cached for performance reasons, using WordPress transients. ' .
+						'Transients are normally stored either on the options DB table, or on ' .
+						'your server\'s object cache. A misconfigured object cache can sometimes ' .
+						'return stale data that should have expired under normal circumstances.' .
+						'Disable transients ONLY to debug this issue. Disabling transients can ' .
+						'negatively affect the plugin\'s performance and for this reason it is ' .
+						'generally not recommended. This switch will only affect the operation of ' .
+						'transients belonging to this plugin and its extensions.'
+
+						, 'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-frontend-settings',
+				'wallets_transients_broken'
+			);
+
 		}
 
 		public function action_admin_menu() {

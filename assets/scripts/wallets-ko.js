@@ -761,7 +761,10 @@
 		} // end viewmodel object
 
 		// init the viewmodel
-		ko.options.deferUpdates = true;
+		if ( 'object' == typeof( ko ) && 'object' == typeof( ko.options ) ) {
+			ko.options.deferUpdates = true;
+		}
+
 		var walletsViewModel = new WalletsViewModel();
 
 		// let's pollute the global wp object a bit!!1

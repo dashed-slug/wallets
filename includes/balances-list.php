@@ -63,6 +63,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Balances' ) ) {
 			?>
 			</div>
 
+			<p class="card"><?php esc_html_e( '&#x1F6C8; Zero user balances are not shown.', 'wallets' ); ?></p>
+
 			<?php
 		}
 	}

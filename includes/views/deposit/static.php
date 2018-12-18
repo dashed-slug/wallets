@@ -17,7 +17,7 @@ unset( $adapters );
 
 ?>
 
-<form class="dashed-slug-wallets deposit deposit-<?php echo basename( __FILE__ ); ?> wallets-ready" >
+<form class="dashed-slug-wallets deposit deposit-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready" >
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_deposit' );

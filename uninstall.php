@@ -132,6 +132,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_qrcode_enabled' );
 	wallets_delete_option( 'wallets_zlib_disabled' );
 	wallets_delete_option( 'wallets_legacy_json_apis' );
+	wallets_delete_option( 'wallets_transients_broken' );
 	wallets_delete_option( 'wallets_visibility_check_enabled' );
 	wallets_delete_option( 'wallets_poll_interval_transactions' );
 	wallets_delete_option( 'wallets_poll_interval_coin_info' );

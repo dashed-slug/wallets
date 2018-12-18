@@ -7,11 +7,15 @@ $total_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 ksort( $adapters );
 ?>
 
-<div class="dashed-slug-wallets total-balances total-balances-<?php echo basename( __FILE__ ); ?> wallets-ready" data-bind="if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets total-balances total-balances-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready" data-bind="css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_total_balances' );
 	?>
+
+	<?php if ( ! $adapters ): ?>
+		<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+	<?php else: ?>
 
 	<table>
 		<thead>
@@ -63,6 +67,7 @@ ksort( $adapters );
 			?>
 		</tbody>
 	</table>
+	<?php endif; ?>
 	<?php
 		do_action( 'wallets_ui_after_total_balances' );
 		do_action( 'wallets_ui_after' );

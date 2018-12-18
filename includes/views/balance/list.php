@@ -1,10 +1,15 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<form class="dashed-slug-wallets balance balance-<?php echo basename( __FILE__ ); ?>" onsubmit="return false;" data-bind="if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() }">
+<form class="dashed-slug-wallets balance balance-<?php echo basename( __FILE__, '.php' ); ?>" onsubmit="return false;" data-bind="css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_balance' );
 	?>
+	<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
+	<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+	<!-- /ko -->
+
+	<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->
 	<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { coinsDirty( false ); ko.tasks.runEarly(); coinsDirty( true ); }"></span>
 
 	<table>
@@ -28,6 +33,7 @@
 			</tr>
 		</tbody>
 	</table>
+	<!-- /ko -->
 	<?php
 		do_action( 'wallets_ui_after_balance' );
 		do_action( 'wallets_ui_after' );

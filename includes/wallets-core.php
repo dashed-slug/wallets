@@ -128,8 +128,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_wp_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.9.1.min.css' ) ) {
-				$front_styles = 'wallets-3.9.1.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.9.2.min.css' ) ) {
+				$front_styles = 'wallets-3.9.2.min.css';
 			} else {
 				$front_styles = 'wallets.css';
 			}
@@ -138,7 +138,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'3.9.1'
+				'3.9.2'
 			);
 
 
@@ -177,8 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.9.1.min.js' ) ) {
-					$script = 'wallets-ko-3.9.1.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.9.2.min.js' ) ) {
+					$script = 'wallets-ko-3.9.2.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -187,7 +187,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.9.1',
+					'3.9.2',
 					true
 				);
 
@@ -214,8 +214,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.9.1.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.9.1.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.9.2.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.9.2.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -224,7 +224,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.9.1',
+					'3.9.2',
 					true
 				);
 
@@ -508,12 +508,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '4.9.8' ) < 0 ) {
+			if ( version_compare( $wp_version, '5.0.1' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %1$s. This plugin has been tested with %2$s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'4.9.8'
+						'5.0.1'
 					),
 					'old-wp-ver'
 				);
@@ -603,8 +603,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.9.1';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = 'd18927df';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.9.2';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '16b59612';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -809,6 +809,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		/**
 		 * This helper delegates to get_site_transient if the plugin is network activated on a multisite install, or to get_transient otherwise.
 		 *
+		 * @since 3.9.2 Will always return false if the option "wallets_transients_broken" is set.
 		 * @since 2.11.1 Added
 		 * @link https://codex.wordpress.org/Function_Reference/get_site_transient
 		 * @link https://codex.wordpress.org/Function_Reference/get_transient
@@ -817,6 +818,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @return bool The result of the wrapped function.
 		 */
 		public static function get_transient( $transient, $default = false ) {
+			$transients_broken = self::get_option( 'wallets_transients_broken' );
+			if ( $transients_broken ) {
+				return false;
+			}
 			$val = call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_transient' : 'get_transient', $transient );
 			return false === $val ? $default : $val;
 		}

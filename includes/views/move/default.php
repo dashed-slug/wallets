@@ -1,10 +1,15 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<form class="dashed-slug-wallets move move-<?php echo basename( __FILE__ ); ?>" data-bind="submit: doMove, if: Object.keys( coins() ).length > 0, css: { 'wallets-ready': !coinsDirty() && ajaxSemaphore() < 1 }">
+<form class="dashed-slug-wallets move move-<?php echo basename( __FILE__, '.php' ); ?>" data-bind="submit: doMove, css: { 'wallets-ready': !coinsDirty() && ajaxSemaphore() < 1 }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_move' );
 	?>
+	<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
+	<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+	<!-- /ko -->
+
+	<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->
 	<table>
 		<colgroup>
 			<?php echo str_repeat( '<col>', 6 ); ?>
@@ -56,7 +61,7 @@
 	</table>
 
 	<input type="hidden" name="__wallets_move_tags" value="move" />
-
+	<!-- /ko -->
 	<?php
 		do_action( 'wallets_ui_after_move' );
 		do_action( 'wallets_ui_after' );
