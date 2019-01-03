@@ -14,7 +14,7 @@ ksort( $adapters );
 	?>
 
 	<?php if ( ! $adapters ): ?>
-		<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+		<p class="no-coins-message"><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
 	<?php else: ?>
 
 	<table>
@@ -32,7 +32,7 @@ ksort( $adapters );
 				?>
 				<tr>
 					<td class="icon">
-						<img src="<?php echo esc_attr( $adapter->get_icon_url() ); ?>" alt="<?php echo esc_attr( $adapter->get_name() ); ?>" />
+						<img src="<?php echo esc_attr( apply_filters( "wallets_coin_icon_url_$symbol", $adapter->get_icon_url() ) ); ?>" alt="<?php echo esc_attr( $adapter->get_name() ); ?>" />
 					</td>
 					<td class="coin"><?php echo $adapter->get_name(); ?></td>
 					<td class="total_balances">

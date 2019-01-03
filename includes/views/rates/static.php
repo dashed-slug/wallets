@@ -28,7 +28,7 @@ ksort( $adapters );
 				<tr>
 					<td class="icon">
 						<img
-							src="<?php echo esc_attr( $adapter->get_icon_url() ); ?>"
+							src="<?php echo esc_attr( apply_filters( "wallets_coin_icon_url_$symbol", $adapter->get_icon_url() ) ); ?>"
 							alt="<?php echo esc_attr( $adapter->get_name() ); ?>"
 						/>
 					</td>

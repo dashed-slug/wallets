@@ -110,7 +110,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 			$new_row = array(
 				'sprintf'             => $format,
-				'icon'                => $adapter->get_icon_url(),
+				'icon'                => apply_filters( "wallets_coin_icon_url_$symbol", $adapter->get_icon_url() ),
 				'symbol'              => $adapter->get_symbol(),
 				'name'                => $adapter->get_name(),
 				'adapter_name'        => $adapter->get_adapter_name(),

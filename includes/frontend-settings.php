@@ -262,6 +262,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_legacy_json_apis', filter_input( INPUT_POST, 'wallets_legacy_json_apis', FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			Dashed_Slug_Wallets::update_option( 'wallets_visibility_check_enabled', filter_input( INPUT_POST, 'wallets_visibility_check_enabled', FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_transients_broken', filter_input( INPUT_POST, 'wallets_transients_broken', FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_transactions', filter_input( INPUT_POST, 'wallets_poll_interval_transactions', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_coin_info', filter_input( INPUT_POST, 'wallets_poll_interval_coin_info', FILTER_SANITIZE_NUMBER_INT ) );

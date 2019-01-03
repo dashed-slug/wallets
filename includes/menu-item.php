@@ -47,8 +47,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-3.9.2.min.js' ) ) {
-				$script = 'wallets-admin-menu-item-3.9.2.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-3.9.3.min.js' ) ) {
+				$script = 'wallets-admin-menu-item-3.9.3.min.js';
 			} else {
 				$script = 'wallets-admin-menu-item.js';
 			}
@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.9.2',
+				'3.9.3',
 				true
 			);
 		}
@@ -145,7 +145,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 						$coin_name_str = esc_html( $adapter->get_name() );
 						$pattern       = apply_filters( 'wallets_sprintf_pattern_' . $symbol, $adapter->get_sprintf() );
 						$balance_str   = esc_html( sprintf( $pattern, $balance ) );
-						$icon_url      = $adapter->get_icon_url();
+						$icon_url      = apply_filters( 'wallets_coin_icon_url_' . $symbol, $adapter->get_icon_url() );
 
 						?>
 						<li class="menu-item">

@@ -77,7 +77,7 @@
 
 			// the structure that describes online coins and the user balance for those coins
 			self.coinsResponse = {};
-			self.coinsDirty = ko.observable( false );
+			self.coinsDirty = ko.observable( true );
 			self.coins = ko.computed( function() {
 
 				if ( self.coinsDirty() ) {
@@ -130,7 +130,7 @@
 
 			// the nonces necessary to perform actions over the JSON API
 			self.noncesResponse = {};
-			self.noncesDirty = ko.observable( false );
+			self.noncesDirty = ko.observable( true );
 			self.nonces = ko.computed( function() {
 				if ( self.noncesDirty() ) {
 					$.ajax({
@@ -267,17 +267,29 @@
 				validation: [
 					{
 						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
 							return val > 0;
 						},
 						message: wallets_ko_i18n.amount_positive
 					},
 					{
 						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
 							var coins = self.coins();
 							var coin = self.selectedCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
-									return coins[ coin ].balance >= parseFloat( val );
+									var fee = parseFloat( coins[ coin ].move_fee );
+									fee += parseFloat( coins[ coin ].move_fee_proportional ) * parseFloat( self.moveAmount() );
+									if ( isNaN( fee ) ) {
+										fee = 0;
+									}
+
+									return coins[ coin ].balance >= parseFloat( val ) && parseFloat( val ) >= fee;
 								}
 							}
 							return true;
@@ -471,17 +483,29 @@
 				validation: [
 					{
 						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
 							return val > 0;
 						},
 						message: wallets_ko_i18n.amount_positive
 					},
 					{
 						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
 							var coins = self.coins();
 							var coin = self.selectedCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
-									return coins[ coin ].balance >= parseFloat( val );
+									var fee = parseFloat( coins[ coin ].withdraw_fee );
+									fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
+									if ( isNaN( fee ) ) {
+										fee = 0;
+									}
+
+									return coins[ coin ].balance >= parseFloat( val ) && parseFloat( val ) >= fee;
 								}
 							}
 							return true;
@@ -664,7 +688,7 @@
 
 			// a page of transactions to show in the [wallets_transactions] view
 			self.transactionsResponse = [];
-			self.transactionsDirty = ko.observable( false );
+			self.transactionsDirty = ko.observable( true );
 			self.selectedCoin.subscribe( function() {
 				self.transactionsDirty( false );
 				ko.tasks.runEarly();

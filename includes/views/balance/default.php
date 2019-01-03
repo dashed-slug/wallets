@@ -11,7 +11,7 @@
 	<label class="balance"><?php echo apply_filters( 'wallets_ui_text_balance', esc_html__( 'Balance', 'wallets-front' ) ); ?>: <span data-bind="text: currentCoinBalance()">-</span><span class="fiat-amount" data-bind="text: currentCoinFiatBalance" ></span></label>
 	<!-- /ko -->
 	<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
-	<p><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
+	<p class="no-coins-message"><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
 	<!-- /ko -->
 	<?php
 		do_action( 'wallets_ui_after_balance' );

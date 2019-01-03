@@ -509,6 +509,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 								$wpdb->query( $success_update_query );
 
+								$move_tx_send->status           = 'done';
+								$move_tx_receive->status        = 'done';
+								$move_tx_send->retries         -= 1;
+								$move_tx_receive->retries      -= 1;
+
 								$move_tx_send->user             = get_userdata( $move_tx_send->account );
 								$move_tx_send->other_user       = get_userdata( $move_tx_send->other_account );
 								$pending_actions_move_send[]    = $move_tx_send;
@@ -543,6 +548,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								$wpdb->query( $fail_update_query );
 
 								if ( 1 == $move_tx_send->retries ) {
+									$move_tx_send->status               = 'failed';
+									$move_tx_send->retries             -= 1;
 									$move_tx_send->user                 = get_userdata( $move_tx_send->account );
 									$move_tx_send->other_user           = get_userdata( $move_tx_send->other_account );
 									$pending_actions_move_send_failed[] = $move_tx_send;
@@ -748,8 +755,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						array( '%d' )
 					);
 
-					$wd_tx->txid = $txid;
-					$wd_tx->user = get_userdata( $wd_tx->account );
+					$wd_tx->txid     = $txid;
+					$wd_tx->user     = get_userdata( $wd_tx->account );
+					$wd_tx->retries -= 1;
+					$wd_tx->status   = 'done';
 
 					$pending_actions_withdraw[] = $wd_tx;
 
@@ -773,7 +782,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 					if ( $wd_tx->retries <= 1 ) {
 						$wd_tx->last_error = $e->getMessage();
-						$wd_tx->user = get_userdata( $wd_tx->account );
+						$wd_tx->user       = get_userdata( $wd_tx->account );
+						$wd_tx->retries   -= 1;
+						$wd_tx->status     = 'failed';
+
 						$pending_actions_withdraw_failed[] = $wd_tx;
 					}
 				}

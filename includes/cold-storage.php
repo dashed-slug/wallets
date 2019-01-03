@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.9.2.min.js' ) ) {
-				$script = 'wallets-cold-storage-3.9.2.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-3.9.3.min.js' ) ) {
+				$script = 'wallets-cold-storage-3.9.3.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'3.9.2',
+				'3.9.3',
 				true
 			);
 		}
@@ -76,7 +76,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					if ( wp_verify_nonce( $cold_storage_nonce, "{$cold_storage_action}_{$cold_storage_symbol}" ) ) {
 
 						$cold_storage_address = filter_input( INPUT_POST, 'wallets_cs_address', FILTER_SANITIZE_STRING );
-						$cold_storage_amount  = filter_input( INPUT_POST, 'wallets_cs_amount', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+						$cold_storage_extra   = filter_input( INPUT_POST, 'wallets_cs_extra',   FILTER_SANITIZE_STRING );
+						$cold_storage_amount  = filter_input( INPUT_POST, 'wallets_cs_amount',  FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 
 						if ( $cold_storage_address && $cold_storage_amount ) {
 							$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
@@ -89,11 +90,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								return;
 							}
 
+							if ( ! $cold_storage_extra ) {
+								$cold_storage_extra = null;
+							}
+
 							try {
 								$txid = $adapter->do_withdraw(
 									$cold_storage_address,
 									$cold_storage_amount,
-									__( 'Withdrawal to cold storage', 'wallets' )
+									__( 'Withdrawal to cold storage', 'wallets' ),
+									$cold_storage_extra
 								);
 
 								$msg = sprintf(
@@ -256,7 +262,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 					<img
 						style="position:absolute;right:20px;top:20px;border-radius:32px;box-shadow:5px 5px 5px gray;width:64px"
-						src="<?php echo esc_attr( $adapter->get_icon_url() ); ?>" />
+						src="<?php echo esc_attr( apply_filters( "wallets_coin_icon_url_$cold_storage_symbol", $adapter->get_icon_url() ) ); ?>" />
 
 					<?php $this->helper_text( $cold_storage_symbol ); ?>
 
@@ -287,6 +293,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 						size="35" />
 
 					<input
+						type="text"
+						name="wallets_cs_extra"
+						placeholder="<?php echo esc_attr( $adapter->get_extra_field_description() ); ?>"
+						size="35" />
+
+					<input
 						type="submit"
 						class="button"
 						value="<?php esc_html_e( 'Withdraw to storage', 'wallets' ); ?>" />
@@ -305,7 +317,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 					<img
 						style="position:absolute;right:20px;top:20px;border-radius:32px;box-shadow:5px 5px 5px gray;width:64px"
-						src="<?php echo esc_attr( $adapter->get_icon_url() ); ?>" />
+						src="<?php echo esc_attr( apply_filters( "wallets_coin_icon_url_$cold_storage_symbol", $adapter->get_icon_url() ) ); ?>" />
 
 					<?php $this->helper_text( $cold_storage_symbol ); ?>
 

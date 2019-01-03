@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.0.1
+Tested up to: 5.0.2
 Requires PHP: 5.6
-Stable tag: 3.9.2
+Stable tag: 3.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,17 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.9.3 =
+- Add: When performing a cold storage withdrawal, it is now possible to specify an extra destination argument such as Payment ID, Memo, etc.
+- Fix: When enabling an RPC coin adapter and unlocking it with a passphrase at the same time, the plugin no longer crashes.
+- Fix: Frontend coin images now have alt texts to conform to HTML standard.
+- Fix: After an internal transfer or a withdrawal is successfully submitted, the form UI no longer shows a validation error on the emptied amount field.
+- Fix: In the frontend internal transfers or withdrawals forms, there is now a validation error if the total amount to be transacted is less than what would need to be paid in fees.
+- Fix: The frontend error message "No currencies are currently enabled." is no longer momentarily shown before the currencies are loaded, but only if the information is loaded and there are actually no coins.
+- Fix: The *Disable transients (debug)* setting can now be updated in multisite installs.
+- Fix: The `wallets_coin_icon_url_SYMBOL` filters now affect coin icons as they are shown in menu items, static frontend UIs and in the cold storage admin section.
+- Fix: The notification actions `wallets_withdraw` and `wallets_move_*` now report the latest status and retries count for all transactions; previously the reported status was "pending".
 
 = 3.9.2 =
 - Fix: Eliminate a JS error caused when a theme has already loaded an old version of knockout.js.
@@ -1101,7 +1112,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.9.2 brings some minor bugfixes and improvements to the plugin.
+Version 3.9.3 fixes several minor bugs/defects.
 
 == Donating ==
 

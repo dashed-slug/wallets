@@ -517,6 +517,10 @@ CFG;
 				$retain_minutes = 1;
 			}
 
+			if ( is_null( $this->rpc ) ) {
+				return;
+			}
+
 			$result = $this->rpc->walletpassphrase(
 				$secret,
 				absint( $retain_minutes ) * MINUTE_IN_SECONDS

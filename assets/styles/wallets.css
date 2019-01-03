@@ -13,6 +13,14 @@
 	opacity: 1;
 }
 
+.dashed-slug-wallets .no-coins-message {
+	display: none;
+}
+
+.dashed-slug-wallets.wallets-ready .no-coins-message {
+	display: inherit;
+}
+
 .dashed-slug-wallets .wallets-reload-button {
 	float: right;
 	width: 32px;
