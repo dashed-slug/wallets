@@ -78,20 +78,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 		}
 
 		/**
-		 * Users who have a deposit address for the specified symbol will be assigned a new deposit address from the adapter.
+		 * Users who have a deposit address for the specified currency
+		 * will be assigned a new deposit address from the adapter.
 		 * Additionally, the cold storage deposit address is refreshed.
 		 *
 		 * @param string $symbol
 		 */
 		private function new_deposit_addresses( $adapter ) {
-			$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
 			$symbol = $adapter->get_symbol();
 
 			try {
 				$new_cold_storage_deposit_address = $adapter->get_new_address();
 			} catch ( Exception $e ) {
-				$notices->error(
+				error_log(
 					sprintf(
 						__( 'Could not reset cold storage deposit address for %1$s: %2$s', 'wallets' ),
 						$symbol,
@@ -127,7 +127,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			$result = $wpdb->query( $query );
 
 			if ( false === $result ) {
-				$notices->error(
+				error_log(
 					sprintf(
 						__( 'Could not reset user deposit addresses for %1$s: %2$s', 'wallets' ),
 						$symbol,
@@ -137,6 +137,70 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			}
 		}
 
+		/**
+		 * Users who do not yet have a deposit address for the specified currency
+		 * will be assigned a new deposit address from the adapter.
+		 *
+		 * @param string $symbol
+		 */
+		private function all_deposit_addresses( $adapter ) {
+
+			$symbol        = $adapter->get_symbol();
+			$users         = get_users( );
+			$count_all     = 0;
+			$count_success = 0;
+
+			foreach ( $users as $user ) {
+
+				if ( $user->has_cap( 'has_wallets' ) ) {
+
+					$count_all++;
+
+					try {
+						$new_address = apply_filters(
+							'wallets_api_deposit_address',
+							'',
+							array(
+								'symbol'             => $symbol,
+								'user_id'            => $user->ID,
+								'check_capabilities' => false,
+								'force_new'          => false,
+							)
+						);
+						error_log(
+							sprintf(
+								'%s deposit address %s is assigned to user %s',
+								$symbol,
+								$new_address,
+								$user->user_login
+							)
+						);
+
+						$count_success++;
+
+					} catch ( Exception $e ) {
+						error_log(
+							sprintf(
+								'Could not assign a %s deposit address to user %s: %s',
+								$symbol,
+								$new_address,
+								$user->user_login,
+								$e->getMessage()
+							)
+						);
+					}
+				}
+			}
+
+			error_log(
+				sprintf(
+					'%d users with wallets were processed. %d users have deposit addresses for %s.',
+					$count_all,
+					$count_success,
+					$symbol
+				)
+			);
+		}
 
 		public function actions_handler() {
 
@@ -191,7 +255,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 					wp_redirect(
 						add_query_arg(
 							array(
-								'page' => 'wallets-menu-adapters',
+								'page' => 'wallets-menu-addresses',
+							),
+							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						)
+					);
+					exit;
+
+				case 'all_deposits':
+					if ( ! current_user_can( 'manage_wallets' ) ) {
+						wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
+					}
+
+					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+
+					if ( ! wp_verify_nonce( $nonce, "wallets-all-deposits-$symbol" ) ) {
+						wp_die( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ) );
+					}
+
+					error_log( "Creating all missing deposit addresses for $symbol" );
+
+					if ( is_object( $adapter ) ) {
+						$this->all_deposit_addresses( $adapter );
+					}
+
+					wp_redirect(
+						add_query_arg(
+							array(
+								'page' => 'wallets-menu-addresses',
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						)

@@ -599,7 +599,21 @@ CFG;
 			$result = $this->rpc->gettransaction( $txid );
 
 			if ( false === $result ) {
-				error_log( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception(
+					sprintf(
+						__(
+							'%1$s->%2$s( %5$s ) failed with status="%3$s" and error="%4$s" for %6$s coin.',
+							'wallets'
+						),
+						__CLASS__,
+						__FUNCTION__,
+						$this->rpc->status,
+						$this->rpc->error,
+						$txid,
+						$this->get_symbol()
+					),
+					$this->rpc->status
+				);
 				return;
 			}
 
@@ -665,7 +679,21 @@ CFG;
 			$result->block  = $this->rpc->getblock( $blockhash );
 
 			if ( false === $result->block ) {
-				error_log( sprintf( __( '%1$s::%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+				throw new Exception(
+					sprintf(
+						__(
+							'%1$s->%2$s( %5$s ) failed with status="%3$s" and error="%4$s" for %6$s coin.',
+							'wallets'
+						),
+						__CLASS__,
+						__FUNCTION__,
+						$this->rpc->status,
+						$this->rpc->error,
+						$blockhash,
+						$this->get_symbol()
+					),
+					$this->rpc->status
+				);
 				return;
 			}
 

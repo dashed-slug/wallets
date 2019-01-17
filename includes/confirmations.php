@@ -458,17 +458,20 @@ EMAIL
 					$headers[] = "From: $email_from";
 				}
 
-				try {
-					wp_mail(
-						$email,
-						$subject,
-						$message,
-						$headers
-					);
-				} catch ( Exception $e ) {
-					$this->_notices->error(
-						__( "The following errors occured while sending confirmation request email to $email: ", 'wallets' ) .
-						$e->getMessage()
+				$result = wp_mail(
+					$email,
+					$subject,
+					$message,
+					$headers
+				);
+
+				if ( ! $result ) {
+					error_log(
+						sprintf(
+							'%s: A wp_mail() error occured while sending confirmation request email to %s',
+							__FUNCTION__,
+							$email
+						)
 					);
 				}
 			}
@@ -556,9 +559,11 @@ EMAIL
 				);
 
 				if ( ! $result ) {
-					$this->_notices->error(
-						__( "The following errors occured while sending confirmation request email to admins: ", 'wallets' ) .
-						$e->getMessage()
+					error_log(
+						sprintf(
+							'%s: A wp_mail() error occcured while sending confirmation request emails to admins',
+							__FUNCTION__
+						)
 					);
 				}
 			}
@@ -649,9 +654,12 @@ EMAIL
 				);
 
 				if ( ! $result ) {
-					$this->_notices->error(
-						__( "The following errors occured while sending notice about receiving a transaction that requires confirmation to $email: ", 'wallets' ) .
-						$e->getMessage()
+					error_log(
+						sprintf(
+							'%s: A wp_mail() error occurred while sending a notice to %s about receiving a transaction that requires confirmation',
+							__FUNCTION__,
+							$email
+						)
 					);
 				}
 			}

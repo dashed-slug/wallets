@@ -514,6 +514,9 @@
 					},
 					{
 						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
 							var coins = self.coins();
 							var coin = self.selectedCoin();
 							if ( coin ) {

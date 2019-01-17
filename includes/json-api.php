@@ -25,11 +25,94 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 		const LATEST_API_VERSION = 3;
 
-		public function __construct() {
+		private $admin_notices;
 
+		public function __construct() {
+			$this->admin_notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
+
+			add_action( 'init', array( &$this, 'warn_wp_super_cache' ) );
+			add_action( 'init', array( &$this, 'warn_w3_total_cache' ) );
 			add_action( 'init', array( &$this, 'json_api_init' ) );
 			add_filter( 'query_vars', array( &$this, 'json_api_query_vars' ), 0 );
 			add_action( 'parse_request', array( &$this, 'json_api_parse_request' ), 0 );
+		}
+
+		/**
+		 * Checks WP Super cache settings and warns if settings can interfere with JSON API responses.
+		 */
+		public function warn_wp_super_cache() {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				return;
+			}
+
+			global $wp_cache_not_logged_in, $wp_cache_no_cache_for_get, $cache_rejected_uri;
+
+			if ( isset( $wp_cache_not_logged_in ) && ! $wp_cache_not_logged_in ) {
+				if ( isset( $wp_cache_no_cache_for_get ) && ! $wp_cache_no_cache_for_get ) {
+					$this->admin_notices->warning(
+						__(
+							'You have WP Super Cache installed, and it is enabled for logged in users. ' .
+							'You should enable the setting "Don’t cache pages with GET parameters. (?x=y at the end of a url)". ' .
+							'This will ensure that the JSON API responses are not cached.',
+							'wallets'
+						),
+						'wallets_wp_super_cache_get'
+					);
+				}
+
+				if ( isset( $cache_rejected_uri ) && false === array_search( 'wallets/api.*', $cache_rejected_uri ) ) {
+					$this->admin_notices->warning(
+						__(
+							'You have WP Super Cache installed, and it is enabled for logged in users. ' .
+							'You should exclude URL strings with the following pattern "wallets/api.*": ' .
+							'This will ensure that the JSON API responses are not cached.',
+							'wallets'
+						),
+						'wallets_wp_super_cache_exclusions'
+					);
+
+				}
+			}
+		}
+
+		/**
+		 * Checks W3 Total cache settings and warns if settings can interfere with JSON API responses.
+		 */
+		public function warn_w3_total_cache() {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				return;
+			}
+
+			if ( class_exists( '\W3TC\Dispatcher' ) ) {
+				$config = \W3TC\Dispatcher::config();
+				$pgcache_cache_query = $config->get( 'pgcache.cache.query' );
+				$pgcache_reject_logged = $config->get( 'pgcache.reject.logged' );
+
+				if ( $pgcache_cache_query ) {
+					$this->admin_notices->warning(
+						__(
+							'You have W3 Total Cache installed, and it is enabled for pages with GET query variables. ' .
+							'You should uncheck "Cache URIs with query string variables" in the Page Cache general settings. ' .
+							'This will ensure that the JSON API responses are not cached.',
+							'wallets'
+						),
+						'wallets_w3_total_cache_get'
+					);
+				}
+
+				if ( ! $pgcache_reject_logged ) {
+					$this->admin_notices->warning(
+						__(
+							'You have W3 Total Cache installed, and it is enabled for logged in users. ' .
+							'You should check "Don\'t cache pages for logged in users" in the Page Cache general settings. ' .
+							'This will ensure that the JSON API responses are not cached.',
+							'wallets'
+						),
+						'wallets_w3_total_cache_logged'
+					);
+				}
+
+			}
 		}
 
 		//////// JSON API v1 ////////
@@ -896,7 +979,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							sprintf(
 								__( 'Could not process notification: %s', 'wallets' ),
 								$e->getMessage()
-							)
+							),
+							$e->getCode()
 						);
 					}
 				} elseif ( 'do_cron' == $action ) {

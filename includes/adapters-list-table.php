@@ -292,6 +292,22 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			__( 'Renew deposit addresses', 'wallets' ) // link text
 		);
 
+		$actions['all_deposits'] = sprintf(
+			'<a href="?page=%s&action=%s&symbol=%s&_wpnonce=%s" onclick="return confirm(\'%s\')" title="%s">%s</a>',
+			esc_attr( filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) ), // page
+			'all_deposits', // action
+			esc_attr( $item['symbol'] ), // symbol
+			wp_create_nonce( 'wallets-all-deposits-' . $item['symbol'] ), // _wpnonce
+			esc_attr__(
+				'Are you sure you wish to create deposit addresses for all users? ' .
+				'Normally, deposit addresses are generated and assigned when needed (i.e. when users log in to your site). ' .
+				'A new deposit address for the selected coin will be assigned to any users who do not already have one. ' .
+				'Any users who already have a deposit address for this coin, will not be affected.', 'wallets'
+				), // confirm string
+			esc_attr__( 'Creates deposit addresses for all users with the "has_wallets" capability. Use this only if you need it.', 'wallets' ), // title
+			__( 'Create deposit addresses now for all users', 'wallets' ) // link text
+		);
+
 		return sprintf( '%1$s %2$s', $item['adapter_name'], $this->row_actions( $actions ) );
 	}
 }

@@ -1514,6 +1514,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 
 						break;
+
+					default:
+						// some other action
+						return;
 				}
 
 				$redirect_args = array(

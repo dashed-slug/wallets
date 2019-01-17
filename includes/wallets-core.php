@@ -128,8 +128,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_wp_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.9.3.min.css' ) ) {
-				$front_styles = 'wallets-3.9.3.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-3.9.4.min.css' ) ) {
+				$front_styles = 'wallets-3.9.4.min.css';
 			} else {
 				$front_styles = 'wallets.css';
 			}
@@ -138,7 +138,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'3.9.3'
+				'3.9.4'
 			);
 
 
@@ -177,8 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.9.3.min.js' ) ) {
-					$script = 'wallets-ko-3.9.3.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-3.9.4.min.js' ) ) {
+					$script = 'wallets-ko-3.9.4.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -187,7 +187,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'3.9.3',
+					'3.9.4',
 					true
 				);
 
@@ -214,8 +214,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.9.3.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-3.9.3.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-3.9.4.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-3.9.4.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -224,7 +224,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'3.9.3',
+					'3.9.4',
 					true
 				);
 
@@ -315,7 +315,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				KEY  account_idx  (account),
 				KEY  blogid_idx  (blog_id),
 				UNIQUE KEY  uq_tx_idx (txid,address,symbol)
-				);";
+				) ENGINE = InnoDB;";
 
 				dbDelta( $sql );
 
@@ -332,7 +332,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				KEY retrieve_idx (account,symbol),
 				KEY lookup_idx (address),
 				UNIQUE KEY  uq_ad_idx (address,symbol,extra)
-				);";
+				) ENGINE = InnoDB;";
 
 				dbDelta( $sql );
 
@@ -367,6 +367,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @internal
 		 */
 		public function db_schema_checks() {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				return;
+			}
+
 			self::db_schema();
 
 			global $wpdb;
@@ -488,6 +492,51 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				);
 				Dashed_Slug_Wallets::delete_option( 'wallets_db_revision' );
 			}
+
+			// Check the DB storage engine. We need InnoDB for its transactional features.
+
+			$engines = $wpdb->get_results(
+				$wpdb->prepare(
+					"
+					SELECT
+						table_name,
+						engine
+					FROM
+						information_schema.tables
+					WHERE
+						table_schema = %s
+						AND table_name LIKE '{$wpdb->prefix}wallets_%'
+						AND table_comment != 'VIEW'
+						AND engine NOT IN ( 'InnoDB', 'NDB' );
+					",
+					DB_NAME
+				),
+				OBJECT_K
+			);
+
+			if ( $engines ) {
+				$sql_alter_engine_commands = '';
+				foreach ( $engines as $table_name => $table_row ) {
+					$sql_alter_engine_commands .= "ALTER TABLE $table_name ENGINE=InnoDB;\n";
+				}
+
+				$this->_notices->error(
+					sprintf(
+						__(
+							'<p><strong>CAUTION:</strong> One or more of the <emph>Bitcoin and Altcoin Wallets</emph> database tables ' .
+							'are using a storage engine that does not offer transactional capabilities. ' .
+							'This is known to cause serious problems, including loss of funds!</p> ' .
+							'<p>Before using the plugin in production, make sure to use the InnoDB storage engine ' .
+							'for these tables. Backup your database, then copy the following SQL commands ' .
+							'and paste them into your MySQL console or phpMyAdmin interface:</p>' .
+							'<pre>%s</pre>' .
+							'<p>This message will disappear once the tables are set to use InnoDB.</p>',
+							'wallets'
+						),
+						$sql_alter_engine_commands
+					)
+				);
+			}
 		}
 
 		/** @internal */
@@ -508,12 +557,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '5.0.2' ) < 0 ) {
+			if ( version_compare( $wp_version, '5.0.3' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %1$s. This plugin has been tested with %2$s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'5.0.2'
+						'5.0.3'
 					),
 					'old-wp-ver'
 				);
@@ -603,8 +652,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.9.3';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = 'a53386f3';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '3.9.4';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = 'cdc2d549';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -615,13 +664,36 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$data[ __( 'PHP max execution time', 'wallets' ) ] = ini_get( 'max_execution_time' );
 
 			foreach ( array(
+				'wallets_txs',
+				'wallets_adds',
+			) as $table ) {
+				$engine = $wpdb->get_var(
+					$wpdb->prepare(
+						"
+						SELECT
+							engine
+						FROM
+							information_schema.tables
+						WHERE
+							table_schema = %s
+							AND table_name = %s
+						",
+						DB_NAME,
+						$wpdb->prefix . $table
+					)
+				);
+				$data[ sprintf( __( "DB storage engine for '%s'", 'wallets' ), $wpdb->prefix . $table ) ] = $engine;
+			}
+
+			foreach ( array(
 				'WP_DEBUG',
 				'WP_DEBUG_LOG',
 				'WP_DEBUG_DISPLAY',
 				'DISABLE_WP_CRON',
 				'DSWALLETS_FILE',
 			) as $const ) {
-				$data[ "Constant '$const'" ] = defined( $const ) ? constant( $const ) : 'n/a';
+				$data[ sprintf( __( "Constant '%s'", 'wallets' ), $const ) ] =
+					defined( $const ) ? constant( $const ) : __( 'n/a', 'wallets' );
 			}
 
 			foreach ( array(
@@ -629,7 +701,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'mbstring',
 				'zlib',
 			) as $extension ) {
-				$data[ "PHP Extension '$extension'" ] = extension_loaded( $extension ) ? __( 'Loaded', 'wallets' ) : __( 'Not loaded', 'wallets' );
+				$data[ sprintf( __( "PHP Extension '%s'", 'wallets' ), $extension ) ] = extension_loaded( $extension ) ? __( 'Loaded', 'wallets' ) : __( 'Not loaded', 'wallets' );
 			}
 
 			$active_exts     = array();

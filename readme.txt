@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.0.2
+Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 3.9.3
+Stable tag: 3.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,18 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 3.9.4 =
+- Add: Can now force the plugin to generate deposit addresses for all users in advance.
+- Improve: When creating DB tables for the first time, the MySQL DB is explicitly instructed to use InnoDB.
+- Add: Warn admins if the DB tables are using a non-transactional DB storage engine, such as MyISAM.
+- Add: Warn admins if *W3 Total Cache* is misconfigured so that it can interfere with the JSON API.
+- Add: Warn admins if *WP Super Cache* is misconfigured so that it can interfere with the JSON API.
+- Fix: In the frontend withdrawal form UI, if no amount is entered, there is no longer a validation error shown.
+- Improve: If for some reason a wallet responds to a `getnewaddress` RPC command with an empty string (no address), this error is now logged.
+- Fix: Several errors related to email sending failures are now logged.
+- Fix: In deposit notification emails, the deposited amount is no longer shown as `0`.
+- Improve: If the notification API receives an invalid TXID or block hash, the TXID or hash is logged.
 
 = 3.9.3 =
 - Add: When performing a cold storage withdrawal, it is now possible to specify an extra destination argument such as Payment ID, Memo, etc.
@@ -1112,7 +1124,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.9.3 fixes several minor bugs/defects.
+Version 3.9.4 introduces an important security warning to admins, several minor bugfixes, some new logs for debugging, and one user-requested feature.
 
 == Donating ==
 

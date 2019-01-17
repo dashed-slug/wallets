@@ -1127,18 +1127,21 @@ NOTIFICATION
 				$replace_pairs['###AMOUNT###']           = sprintf( $sprintf, abs( $tx_data->amount ) );
 			}
 
-			if ( isset( $tx_data->fee ) && is_numeric( $tx_data->fee ) ) {
+			if ( ! isset( $tx_data->fee ) ) {
+				$tx_data->fee = 0;
+			}
+
+			if ( is_numeric( $tx_data->fee ) ) {
 				$replace_pairs['###FEE###']              = sprintf( $sprintf, abs( $tx_data->fee ) );
 			} else {
 				$replace_pairs['###FEE###']              = sprintf( $sprintf, 0 );
 			}
 
 			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {
-				if ( $replace_pairs['###AMOUNT###'] > 0 ) {
-					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  =   $replace_pairs['###AMOUNT###'] - $replace_pairs['###FEE###'];
+				if ( $tx_data->amount > 0 ) {
+					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = sprintf( $sprintf,   $tx_data->amount - abs( $tx_data->fee ) );
 				} else {
-
-					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = - $replace_pairs['###AMOUNT###'] - $replace_pairs['###FEE###'];
+					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = sprintf( $sprintf, - $tx_data->amount - abs( $tx_data->fee ) );
 				}
 			}
 
@@ -1200,17 +1203,20 @@ NOTIFICATION
 				$headers[] = 'Bcc: ' . implode( ', ', $admin_emails );
 			}
 
-			try {
-				wp_mail(
-					$email_to,
-					$subject,
-					$message,
-					$headers
-				);
-			} catch ( Exception $e ) {
-				$this->_notices->error(
-					__( "The following error occured while sending a notification to $email_to: ", 'wallets' ) .
-					$e->getMessage()
+			$result = wp_mail(
+				$email_to,
+				$subject,
+				$message,
+				$headers
+			);
+
+			if ( ! $result ) {
+				error_log(
+					sprintf(
+						'%s: A wp_mail() error occurred while sending a notification to %s',
+						__FUNCTION__,
+						$email_to
+					)
 				);
 			}
 		}

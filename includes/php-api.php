@@ -894,7 +894,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
 		 *      - boolean 'force_new' &rarr; (Optional) If `true`, generate a new address. A new address will also be generated if there is no
 		 *                                                  already existing address in the database, the first time a user logs in or uses this wallet. Default is `false`.
-		 * @throws Exception     If capability checking fails.
+		 * @throws Exception     If capability checking fails, or if the adapter does not respond with a string.
 		 * @return string|array Usually the address is a string. In special cases like Monero or Ripple where an extra argument may be needed,
 		 *                                  (e.g. Payment ID, Destination Tag, etc.) the filter returns an `stdClass`, with two fields:
 		 *                                  An 'address' field pointing to the address string and an 'extra' field pointing to the extra argument.
@@ -973,7 +973,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
 				$adapter = $adapters[ $args['symbol'] ];
 
-				$address              = $adapter->get_new_address();
+				try {
+					$address = $adapter->get_new_address();
+				} catch ( Exception $e ) {
+					throw new Exception(
+						sprintf(
+							__( 'Adapter for "%s" failed to return a deposit address: %s', 'wallets' ),
+							$args['symbol'],
+							$e->getMessage()
+						)
+					);
+				}
+
 				$address_row          = new stdClass();
 				$address_row->account = $args['user_id'];
 				$address_row->symbol  = $args['symbol'];
@@ -982,6 +993,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					$address_row->extra   = $address[1];
 				} elseif ( is_string( $address ) ) {
 					$address_row->address = $address;
+				} else {
+					throw new Exception(
+						sprintf(
+							__( 'Adapter for "%s" did not respond to the getnewaddress RPC command with a valid address string.', 'wallets' ),
+							$args['symbol']
+						)
+					);
 				}
 
 				// insert new user-address mapping to db
