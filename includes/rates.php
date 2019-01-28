@@ -15,6 +15,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		private static $cryptos   = array();
 		private static $fiats     = array();
 
+		private static $symbol_to_gecko_id = array();
+		private static $gecko_id_to_symbol = array();
+
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
@@ -106,7 +109,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					__(
 						'The fixer.io service needs to be enabled for any kind of conversion between fiat currencies and cryptocurrencies. ' .
 						'You will need to <a href="https://fixer.io/product" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
-						'You can then provide the API key in this field.', 'wallets'
+						'You can then provide the API key in this field.',
+						'wallets'
 					),
 				)
 			);
@@ -115,6 +119,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets-menu-rates',
 				'wallets_rates_fixer_key'
 			);
+
+			add_settings_field(
+				'wallets_rates_coinmarketcap_key',
+				__( 'CoinMarketCap API key', 'wallets' ),
+				array( &$this, 'text_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'label_for'   => 'wallets_rates_coinmarketcap_key',
+					'description' =>
+					__(
+						'If you decide to use CoinMarketCap, it is best to <a href="https://coinmarketcap.io/product" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
+						'If you do not provide a key, the exchange rates of only the top 100 currencies will be retrieved.',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_rates_coinmarketcap_key'
+			);
+
 
 			add_settings_field(
 				'wallets_rates_cache_expiry',
@@ -126,10 +153,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					'label_for'   => 'wallets_rates_cache_expiry',
 					'description' => __(
 						'The exchange rates will be cached for this many minutes before being updated. ' .
-						'Currency symbols are always cached for one hour.', 'wallets'
+						'If you set this to run very often you can quickly run out of usage credits in some APIs. ' .
+						'(Default: 1 hour)',
+						'wallets'
 					),
 					'min'         => 1,
-					'max'         => 30,
+					'max'         => 240,
 					'step'        => 1,
 					'required'    => true,
 				)
@@ -450,10 +479,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			?>
 			<p class="count"><?php echo sprintf( esc_html( 'Number of records: %d', 'wallets' ), count( $data ) ); ?></p>
 			<textarea
+				id="ta-<?php echo esc_attr( $arg['label_for'] ); ?>"
 				rows="8"
 				cols="32"
-				disabled="disabled"
+				readonly="readonly"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_html( print_r( $data, true ) ); ?></textarea>
+
+			<span class="button" onclick="jQuery('#ta-<?php echo esc_attr( $arg['label_for'] ); ?>')[0].select();document.execCommand('copy');"><?php echo __( '&#x1F4CB; Copy' ); ?></span>
 
 			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
 			<?php
@@ -585,8 +617,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_providers', array( 'fixer', 'cryptocompare' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry', 5 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_providers', array( 'fixer', 'coingecko' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry', 60 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled', '' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip', '127.0.0.1' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_port', 9050 );
@@ -623,13 +655,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		// this simple caching mechanism only serves so as to not download the same URL twice in the same request
 		private static $cache = array();
 
-		private static function file_get_contents( $url, $cache_seconds = false ) {
+		private static function file_get_contents( $url, $cache_seconds = false, $headers = array() ) {
 			$cache_seconds = absint( $cache_seconds );
 			if ( ! $cache_seconds ) {
 				$cache_seconds = Dashed_Slug_Wallets::get_option( 'wallets_rates_cache_expiry', 5 ) * MINUTE_IN_SECONDS;
 			}
 
-			$hash            = 'wallets_rates_' . md5( $url );
+			$hash            = 'wallets_rates_' . md5( $url . serialize( $headers ) );
 			$cached_response = Dashed_Slug_Wallets::get_transient( $hash );
 			if ( false !== $cached_response ) {
 				return $cached_response;
@@ -641,6 +673,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				curl_setopt( $ch, CURLOPT_HTTPGET, false );
 				curl_setopt( $ch, CURLOPT_ENCODING, '' );
 				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+				if ( $headers ) {
+					curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
+				}
 
 				if ( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_enabled', false ) ) {
 					$tor_host = Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_ip', '127.0.0.1' );
@@ -862,6 +897,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( is_array( $obj ) ) {
 					foreach ( $obj as $currency ) {
 						$cryptos[] = strtoupper( $currency->symbol );
+						self::$symbol_to_gecko_id[ strtoupper( $currency->symbol ) ] = $currency->id;
+						self::$gecko_id_to_symbol[ $currency->id ] = strtoupper( $currency->symbol );
 					}
 				}
 			}
@@ -896,17 +933,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 
 		public static function filter_rates_coinmarketcap( $rates ) {
-			$url  = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_array( $obj ) ) {
-					foreach ( $obj as $market ) {
-						if ( isset( $market->price_usd ) ) {
-							$rates[ "USD_{$market->symbol}" ] = $market->price_usd;
+			$api_key = Dashed_Slug_Wallets::get_option( 'wallets_rates_coinmarketcap_key' );
+
+			if ( ! $api_key ) {
+				$url  = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_array( $obj ) ) {
+						foreach ( $obj as $market ) {
+							if ( isset( $market->price_usd ) ) {
+								$rates[ "USD_{$market->symbol}" ] = $market->price_usd;
+							}
+							if ( isset( $market->price_btc ) ) {
+								$rates[ "BTC_{$market->symbol}" ] = $market->price_btc;
+							}
 						}
-						if ( isset( $market->price_btc ) ) {
-							$rates[ "BTC_{$market->symbol}" ] = $market->price_btc;
+					}
+				}
+			} else {
+
+				$adapters    = apply_filters( 'wallets_api_adapters', array() );
+				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+				if ( 'none' == $fiat_symbol ) {
+					$fiat_symbol = 'USD';
+				}
+
+				$url = add_query_arg(
+					array(
+						'symbol' => implode( ',', array_keys( $adapters ) ),
+						'convert' => $fiat_symbol,
+					),
+					'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+				);
+
+				$json = self::file_get_contents( $url, false, array( "X-CMC_PRO_API_KEY: $api_key" ) );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_object( $obj ) && is_object( $obj->data ) ) {
+						foreach ( $obj->data as $currency ) {
+							foreach ( $currency->quote as $base_symbol => $data ) {
+								$m = strtoupper( "{$base_symbol}_{$currency->symbol}" );
+								$rates[ $m ] = $data->price;
+							}
 						}
 					}
 				}
@@ -1091,31 +1160,44 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_coingecko( $rates ) {
-			$url  = 'https://api.coingecko.com/api/v3/exchange_rates';
+			$ids = array();
+			$adapters = apply_filters( 'wallets_api_adapters', array() );
+			foreach ( array_keys( $adapters ) as $symbol ) {
+				$ids[] = self::$symbol_to_gecko_id[ $symbol ];
+			}
+
+			$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+			if ( 'none' == $fiat_symbol ) {
+				$fiat_symbol = 'USD';
+			}
+			$vs_ids = array( 'BTC', $fiat_symbol );
+
+			$url = add_query_arg(
+				array(
+					'ids'           => implode( ',', $ids ),
+					'vs_currencies' => implode( ',', $vs_ids ),
+				),
+				'https://api.coingecko.com/api/v3/simple/price'
+			);
+
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) ) {
-					foreach ( $obj->rates as $symbol => $market ) {
-						if ( isset( $market->value ) && $market->value ) {
-							$m           = strtoupper( $symbol ) . '_BTC';
-							$rates[ $m ] = $market->value;
+					foreach ( $obj as $id => $data ) {
+						if ( isset( self::$gecko_id_to_symbol[ $id ] ) ) {
+							$symbol_quote = self::$gecko_id_to_symbol[ $id ];
+							foreach ( $data as $symbol_base => $rate ) {
+								if ( $symbol_base != $symbol_quote ) {
+									$m = strtoupper( $symbol_base . '_' . $symbol_quote );
+									$rates[ $m ] = $rate;
+								}
+							}
 						}
 					}
 				}
 			}
 
-			$url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_array( $obj ) ) {
-					foreach ( $obj as $market ) {
-						$m           = 'BTC_' . strtoupper( $market->symbol );
-						$rates[ $m ] = $market->current_price;
-					}
-				}
-			}
 			return $rates;
 		}
 

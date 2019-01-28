@@ -131,15 +131,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 					$adapters = apply_filters( 'wallets_api_adapters', array() );
 					foreach ( $adapters as $adapter ) {
 						try {
-							$symbol          = $adapter->get_symbol();
-							$balance         = apply_filters(
+							$symbol = $adapter->get_symbol();
+
+							$balance = apply_filters(
 								'wallets_api_balance', 0, array(
 									'user_id'            => $profileuser->ID,
 									'check_capabilities' => false,
 									'symbol'             => $symbol,
 								)
 							);
-							$balance_str     = sprintf( $adapter->get_sprintf(), $balance );
+							$balance_str = sprintf( $adapter->get_sprintf(), $balance );
+
+							$available_balance = apply_filters(
+								'wallets_api_available_balance', 0, array(
+									'user_id'            => $profileuser->ID,
+									'check_capabilities' => false,
+									'symbol'             => $symbol,
+								)
+							);
+							$available_balance_str = sprintf( $adapter->get_sprintf(), $available_balance );
+
 							$deposit_address = apply_filters(
 								'wallets_api_deposit_address', '', array(
 									'user_id' => $profileuser->ID,
@@ -162,6 +173,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 											type="text"
 											disabled="disabled"
 											value="<?php echo esc_attr( $balance_str ); ?>" />
+
+										<?php echo esc_html( 'Available balance:', 'wallets' ); ?>
+
+										<input
+											type="text"
+											disabled="disabled"
+											value="<?php echo esc_attr( $available_balance_str ); ?>" />
 
 										<?php
 										echo esc_html( 'Deposit address:', 'wallets' );

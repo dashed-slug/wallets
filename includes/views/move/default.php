@@ -18,7 +18,7 @@
 		<tbody>
 			<tr>
 				<td colspan="3">
-					<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( coins() ).map(function(o){return coins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
+					<label class="coin"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( coins() ).map(function(o){return coins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
 				</td>
 				<td colspan="3">
 					<label class="user"><?php echo apply_filters( 'wallets_ui_text_recipientuser', esc_html__( 'Recipient user', 'wallets-front' ) ); ?>: <input type="text" required="required" placeholder="<?php echo apply_filters( 'wallets_ui_text_enterusernameoremail', esc_html__( 'Enter a valid username, login name or email', 'wallets-front' ) ); ?>" data-bind="value: moveUser, valueUpdate: ['afterkeydown', 'input']"></input></label>

@@ -67,6 +67,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			add_action( 'wallets_api_withdraw',           array( &$this, 'api_withdraw_action' ) );
 			add_filter( 'wallets_api_adapters',           array( &$this, 'api_adapters_filter' ), 10, 2 );
 			add_filter( 'wallets_api_balance',            array( &$this, 'api_balance_filter' ), 10, 2 );
+			add_filter( 'wallets_api_available_balance',  array( &$this, 'api_available_balance_filter' ), 0, 2 );
 			add_filter( 'wallets_api_deposit_address',    array( &$this, 'api_deposit_address_filter' ), 10, 2 );
 			add_filter( 'wallets_api_transactions',       array( &$this, 'api_transactions_filter' ), 10, 2 );
 			add_action( 'wallets_api_cancel_transaction', array( &$this, 'api_cancel_transaction_action' ) );
@@ -137,12 +138,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *      ) );
 		 *
 		 * @api
+		 * @since 4.0.0 Now displays total balance. To get available balance, use `wallets_api_available_balance` instead.
+		 * @since 4.0.0 Added memoize argument.
 		 * @since 3.0.0 Introduced
 		 * @param float $balance The balance. Initialize to zero before the filter call.
 		 * @param array $args Array of arguments to this filter:
 		 *      - string 'symbol' &rarr; The coin to get the balance of.
 		 *      - integer 'user_id' &rarr; (Optional) WordPress ID of the user to get the balance of. Default is the current user.
 		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
+		 *      - boolean 'memoize' &rarr; (Optional) If enabled, the balances will be memoized to speed up subsequent calls within the same request. If disabled, balances are recalculated every time. Default is `true`.
 		 * @throws Exception     If capability checking fails.
 		 * @return float The balance for the specified coin and user.
 		 */
@@ -151,18 +155,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				$args, array(
 					'user_id'            => get_current_user_id(),
 					'check_capabilities' => false,
+					'memoize'            => true,
 				)
 			);
 
-			if ( $args['check_capabilities'] &&
-				( ! user_can( $args['user_id'], Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) )
-			) {
-				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
-			}
-
 			static $user_balances = array();
 
-			if ( ! $user_balances ) {
+			if ( ! $user_balances || ! $args['memoize'] ) {
 
 				global $wpdb;
 				$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
@@ -178,11 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 						$table_name_txs
 
 					WHERE
-						( blog_id = %d || %d ) AND
-						(
-							( amount < 0 && status NOT IN ( 'cancelled', 'failed' ) ) OR
-							( amount > 0 && status = 'done' )
-						)
+						( blog_id = %d OR %d ) AND
+						status = 'done'
 
 					GROUP BY
 						account,
@@ -191,11 +187,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					get_current_blog_id(),
 
 					// if net active, bypass blog_id check, otherwise look for blog_id
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+					$this->network_active ? 1 : 0
 				);
 
 				$user_balances_results = $wpdb->get_results( $user_balances_query );
-
+				$user_balances = array();
 				foreach ( $user_balances_results as $user_balance_row ) {
 					if ( ! isset( $user_balances[ $user_balance_row->account ] ) ) {
 						$user_balances[ $user_balance_row->account ] = new stdClass();
@@ -206,8 +202,107 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
 			$user_id = absint( $args['user_id'] );
 
+			if ( $args['check_capabilities'] &&
+				( ! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) )
+			) {
+				throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
 			if ( isset( $user_balances[ $user_id ] ) && isset( $user_balances[ $user_id ]->{ $args['symbol'] } ) ) {
 				return $user_balances[ $user_id ]->{ $args['symbol'] };
+			}
+			return 0;
+		}
+
+		/**
+		 * Accesses the available balance of a user. This is the balance that can be used right now.
+		 * Excludes amounts locked in pending withdrawals, pending internal transfers, trades etc.
+		 *
+		 * Example: Available Bitcoin balance of current user:
+		 *
+		 *      $btc_balance = apply_filters( 'wallets_api_available_balance', 0, array( 'symbol' => 'BTC' ) );
+		 *
+		 * Example: Available Litecoin balance of user 2:
+		 *
+		 *      $btc_balance = apply_filters( 'wallets_api_available_balance', 0, array(
+		 *          'symbol' => 'LTC',
+		 *          'user_id' => 2,
+		 *      ) );
+		 *
+		 * @api
+		 * @since 4.0.0 Introduced
+		 * @param float $balance The available balance. Initialize to zero before the filter call.
+		 * @param array $args Array of arguments to this filter:
+		 *      - string 'symbol' &rarr; The coin to get the balance of.
+		 *      - integer 'user_id' &rarr; (Optional) WordPress ID of the user to get the balance of. Default is the current user.
+		 *      - boolean 'check_capabilities' &rarr; (Optional) Whether to check for the appropriate user capabilities. Default is `false`.
+		 *      - boolean 'memoize' &rarr; (Optional) If enabled, the balances will be memoized to speed up subsequent calls within the same request. If disabled, balances are recalculated every time. Default is `true`.
+		 * @throws Exception     If capability checking fails.
+		 * @return float The available balance for the specified coin and user.
+		 */
+		public function api_available_balance_filter( $balance, $args = array() ) {
+			$args = wp_parse_args(
+				$args, array(
+					'user_id'            => get_current_user_id(),
+					'check_capabilities' => false,
+					'memoize'            => true,
+				)
+			);
+
+			static $available_user_balances = array();
+
+			if ( ! $available_user_balances || ! $args['memoize'] ) {
+
+				global $wpdb;
+				$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
+
+				$user_balances_query = $wpdb->prepare(
+					"
+					SELECT
+						account,
+						symbol,
+						SUM( IF( amount > 0, amount - fee, amount ) ) AS balance
+
+					FROM
+						$table_name_txs
+
+					WHERE
+						( blog_id = %d OR %d ) AND
+						(
+							( amount < 0 && status IN ( 'unconfirmed', 'pending', 'done' ) ) OR
+							( amount > 0 && status = 'done' )
+						)
+
+					GROUP BY
+						account,
+						symbol
+					",
+					get_current_blog_id(),
+
+					// if net active, bypass blog_id check, otherwise look for blog_id
+					$this->network_active ? 1 : 0
+				);
+
+				$user_balances_results = $wpdb->get_results( $user_balances_query );
+				$available_user_balances = array();
+				foreach ( $user_balances_results as $user_balance_row ) {
+					if ( ! isset( $available_user_balances[ $user_balance_row->account ] ) ) {
+						$available_user_balances[ $user_balance_row->account ] = new stdClass();
+					}
+					$available_user_balances[ $user_balance_row->account ]->{ $user_balance_row->symbol } = floatval( $user_balance_row->balance );
+				}
+			}
+
+			$user_id = absint( $args['user_id'] );
+
+			if ( $args['check_capabilities'] &&
+				( ! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) )
+			) {
+					throw new Exception( __( 'Not allowed', 'wallets' ), self::ERR_NOT_ALLOWED );
+			}
+
+			if ( isset( $available_user_balances[ $user_id ] ) && isset( $available_user_balances[ $user_id ]->{ $args['symbol'] } ) ) {
+				return $available_user_balances[ $user_id ]->{ $args['symbol'] };
 			}
 			return 0;
 		}
@@ -578,22 +673,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 				return;
 			}
 
-			// start db transaction and lock tables
+			// start db transaction
 			$wpdb->query( 'SET autocommit=0' );
-			$wpdb->query(
-				"
-				LOCK TABLES
-					$table_name_txs WRITE,
-					$table_name_options WRITE,
-					$table_name_adds a READ,
-					$wpdb->users u READ
-			"
-			);
 
 			try {
 
 				$balance = apply_filters(
-					'wallets_api_balance', 0, array(
+					'wallets_api_available_balance', 0, array(
 						'symbol'             => $args['symbol'],
 						'user_id'            => $args['from_user_id'],
 						'check_capabilities' => $args['check_capabilities'],
@@ -611,7 +697,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					$format = $adapter->get_sprintf();
 					throw new Exception(
 						sprintf(
-							__( 'Insufficient funds: %1$s > %2$s', 'wallets' ),
+							__( 'Insufficient available funds: %1$s > %2$s', 'wallets' ),
 							sprintf( $format, $args['amount'] ),
 							sprintf( $format, $balance )
 						),
@@ -651,12 +737,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );
-				$wpdb->query( 'UNLOCK TABLES' );
 				$wpdb->query( 'SET autocommit=1' );
 				throw $e;
 			}
 			$wpdb->query( 'COMMIT' );
-			$wpdb->query( 'UNLOCK TABLES' );
 			$wpdb->query( 'SET autocommit=1' );
 
 			if ( ! $args['skip_confirm'] && isset( $txrow['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_withdraw_user_enabled' ) ) {
@@ -756,20 +840,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			$table_name_adds    = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
-			// start db transaction and lock tables
+			// start db transaction
 			$wpdb->query( 'SET autocommit=0' );
-			$wpdb->query(
-				"
-				LOCK TABLES
-					$table_name_txs WRITE,
-					$table_name_options WRITE,
-					$table_name_adds READ
-			"
-			);
 
 			try {
 				$balance = apply_filters(
-					'wallets_api_balance', 0, array(
+					'wallets_api_available_balance', 0, array(
 						'symbol'             => $args['symbol'],
 						'user_id'            => $args['from_user_id'],
 						'check_capabilities' => $args['check_capabilities'],
@@ -784,7 +860,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 					$format = $adapter->get_sprintf();
 					throw new Exception(
 						sprintf(
-							__( 'Insufficient funds: %1$s > %2$s', 'wallets' ),
+							__( 'Insufficient available funds: %1$s > %2$s', 'wallets' ),
 							sprintf( $format, $args['amount'] ),
 							sprintf( $format, $balance )
 						),
@@ -856,12 +932,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );
-				$wpdb->query( 'UNLOCK TABLES' );
 				$wpdb->query( 'SET autocommit=1' );
 				throw $e;
 			}
 			$wpdb->query( 'COMMIT' );
-			$wpdb->query( 'UNLOCK TABLES' );
 			$wpdb->query( 'SET autocommit=1' );
 
 			if ( ! $args['skip_confirm'] && isset( $txrow1['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {

@@ -96,6 +96,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 	// remove exchange rate providers settings
 	wallets_delete_option( 'wallets_rates_fixer_key' );
+	wallets_delete_option( 'wallets_rates_coinmarketcap_key' );
 	wallets_delete_option( 'wallets_rates_providers' );
 	wallets_delete_option( 'wallets_rates_cache_expiry' );
 	wallets_delete_option( 'wallets_rates_tor_enabled' );

@@ -47,7 +47,9 @@
 		// fault-tolerant way of making sure that select2 is not applied to the dropdowns of this plugin
 		function removeSelect2() {
 			setTimeout( function() {
-				ko.tasks.runEarly();
+				if ( 'object' == typeof ko.tasks ) {
+					ko.tasks.runEarly();
+				}
 				$( '.dashed-slug-wallets select.select2-hidden-accessible' ).each( function ( i, el ) {
 					if ( $( el ).data( 'select2' ) ) {
 						$( el ).select2( 'destroy' );
@@ -74,6 +76,10 @@
 
 			// currently selected coin. all views are synchronized to show this coin.
 			self.selectedCoin = ko.observable();
+
+			// views that can only show crypto or fiat use this selected coin instead.
+			self.selectedCryptoCoin = ko.observable();
+			self.selectedFiatCoin = ko.observable();
 
 			// the structure that describes online coins and the user balance for those coins
 			self.coinsResponse = {};
@@ -118,6 +124,45 @@
 				}
 				return self.coinsResponse;
 			} );
+
+			self.cryptoCoins = ko.computed( function() {
+				var coins = self.coins();
+				var cryptoCoins = {};
+				for ( var symbol in coins ) {
+					if ( ! coins[ symbol ].is_fiat ) {
+						cryptoCoins[ symbol ] = coins[ symbol ];
+					}
+				}
+				return cryptoCoins;
+			} );
+
+			self.fiatCoins = ko.computed( function() {
+				var coins = self.coins();
+				var fiatCoins = {};
+				for ( var symbol in coins ) {
+					if ( coins[ symbol ].is_fiat ) {
+						fiatCoins[ symbol ] = coins[ symbol ];
+					}
+				}
+				return fiatCoins;
+			} );
+
+			self.selectedCoin.subscribe( function() {
+				if ( 'object' === typeof( self.cryptoCoins()[ self.selectedCoin() ] ) ) {
+					self.selectedCryptoCoin( self.selectedCoin() );
+				}
+				if ( 'object' === typeof( self.fiatCoins()[ self.selectedCoin() ] ) ) {
+					self.selectedFiatCoin( self.selectedCoin() );
+				}
+			} );
+
+			self.selectedFiatCoin.subscribe( function() {
+				self.selectedCoin( self.selectedFiatCoin() );
+			});
+
+			self.selectedCryptoCoin.subscribe( function() {
+				self.selectedCoin( self.selectedCryptoCoin() );
+			});
 
 			self.coins.subscribe( removeSelect2 );
 			self.coins.subscribe( function() {
@@ -203,16 +248,40 @@
 				return '';
 			});
 
+			// available balance of the currently selected coin, string-formatted for that coin
+			self.currentCoinAvailableBalance = ko.computed( function() {
+				var coins = self.coins();
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					return sprintf( coins[ coin ].sprintf, coins[ coin ].available_balance );
+				}
+				return '';
+			});
+
+			// available balance of the currently selected coin, in a fiat currency, string-formatted for that currency
+			self.currentCoinFiatAvailableBalance = ko.computed( function() {
+				if ( walletsUserData.fiatSymbol ) {
+					var coins = self.coins();
+					var coin = self.selectedCoin();
+					if ( 'object' == typeof( coins[ coin ] ) ) {
+						if ( coins[ coin ].rate ) {
+							return sprintf( walletsUserData.fiatSymbol + ' %01.2f', coins[ coin ].available_balance * coins[ coin ].rate );
+						}
+					}
+				}
+				return '';
+			});
+
 			self.updateQrCode = function() {
 				setTimeout( function() {
 					if ( 'undefined' !== typeof( self.coins ) ) {
 						var $deposits = $( '.dashed-slug-wallets.deposit' );
 						$('.qrcode', $deposits ).empty();
 
-						var coins = self.coins();
-						var coin = self.selectedCoin();
+						var coins = self.cryptoCoins();
+						var coin = self.selectedCryptoCoin();
 						if ( 'object' == typeof( coins[ coin ] ) ) {
-							if ( ! coins[ coin ].is_fiat && coins[ coin ].deposit_address ) {
+							if ( coins[ coin ].deposit_address ) {
 								$deposits.each( function( n, el ) {
 									var $deposit = $( el );
 									var $qrcode = $( '.qrcode', $deposit );
@@ -289,7 +358,7 @@
 										fee = 0;
 									}
 
-									return coins[ coin ].balance >= parseFloat( val ) && parseFloat( val ) >= fee;
+									return coins[ coin ].available_balance >= parseFloat( val ) && parseFloat( val ) >= fee;
 								}
 							}
 							return true;
@@ -505,7 +574,7 @@
 										fee = 0;
 									}
 
-									return coins[ coin ].balance >= parseFloat( val ) && parseFloat( val ) >= fee;
+									return coins[ coin ].available_balance >= parseFloat( val ) && parseFloat( val ) >= fee;
 								}
 							}
 							return true;
@@ -677,7 +746,9 @@
 			self.currentPage = ko.observable( 1 ).extend({ rateLimit: 500 });
 			self.currentPage.subscribe( function() {
 				self.transactionsDirty( false );
-				ko.tasks.runEarly();
+				if ( 'object' == typeof ko.tasks ) {
+					ko.tasks.runEarly();
+				}
 				self.transactionsDirty( true );
 			});
 
@@ -685,7 +756,9 @@
 			self.rowsPerPage = ko.observable( 10 ).extend({ rateLimit: 500 });
 			self.rowsPerPage.subscribe( function() {
 				self.transactionsDirty( false );
-				ko.tasks.runEarly();
+				if ( 'object' == typeof ko.tasks ) {
+					ko.tasks.runEarly();
+				}
 				self.transactionsDirty( true );
 			});
 
@@ -694,7 +767,9 @@
 			self.transactionsDirty = ko.observable( true );
 			self.selectedCoin.subscribe( function() {
 				self.transactionsDirty( false );
-				ko.tasks.runEarly();
+				if ( 'object' == typeof ko.tasks ) {
+					ko.tasks.runEarly();
+				}
 				self.transactionsDirty( true );
 			});
 
@@ -860,7 +935,9 @@
 						return;
 					}
 					walletsViewModel.coinsDirty( false );
-					ko.tasks.runEarly();
+					if ( 'object' == typeof ko.tasks ) {
+						ko.tasks.runEarly();
+					}
 					walletsViewModel.coinsDirty( true );
 				}, minutes * 60 * 1000 );
 			}
@@ -870,7 +947,9 @@
 		// two seconds after doc ready, load transactions and start interval
 		setTimeout( function() {
 			walletsViewModel.transactionsDirty( false );
-			ko.tasks.runEarly();
+			if ( 'object' == typeof ko.tasks ) {
+				ko.tasks.runEarly();
+			}
 			walletsViewModel.transactionsDirty( true );
 
 			var minutes = parseFloat( walletsUserData.pollIntervalTransactions );
@@ -881,7 +960,9 @@
 						return;
 					}
 					walletsViewModel.transactionsDirty( false );
-					ko.tasks.runEarly();
+					if ( 'object' == typeof ko.tasks ) {
+						ko.tasks.runEarly();
+					}
 					walletsViewModel.transactionsDirty( true );
 				}, minutes * 60 * 1000 );
 			}
@@ -892,7 +973,9 @@
 			window.document.addEventListener( 'visibilitychange', function() {
 				if ( ! window.document.hidden ) {
 					walletsViewModel.coinsDirty( false );
-					ko.tasks.runEarly();
+					if ( 'object' == typeof ko.tasks ) {
+						ko.tasks.runEarly();
+					}
 					walletsViewModel.coinsDirty( true );
 				}
 			});

@@ -386,23 +386,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		private function cron_execute_pending_moves() {
 			// if this option does not exist, uninstall script might be already running.
 			// 0 batch size forces this function to not do anything
-			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 1 );
+			$batch_size = Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 0 );
 
 			global $wpdb;
 			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
 			$table_name_adds    = Dashed_Slug_Wallets::$table_name_adds;
 			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
 
-			$wpdb->query(
-				"
-				LOCK TABLES
-				$table_name_txs WRITE,
-				$table_name_options WRITE,
-				$table_name_adds READ,
-				$wpdb->users READ,
-				$wpdb->usermeta READ
-			"
-			);
+			// guard against race condition due to concurrent runs of cron tasks with a semaphore lock
+			$semaphore = Dashed_Slug_Wallets::get_transient( 'wallets_cron_semaphore', 0 );
+			if ( $semaphore ) {
+				return;
+			}
+			Dashed_Slug_Wallets::set_transient( 'wallets_cron_semaphore', 1, absint( ini_get( 'max_execution_time' ) ) );
 
 			$move_txs_send_query = $wpdb->prepare(
 				"
@@ -463,29 +459,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					if ( ! is_null( $move_tx_receive ) ) {
 						$current_time_gmt = current_time( 'mysql', true );
 
-						$balance_query = $wpdb->prepare(
-							"
-							SELECT
-								SUM( IF( amount > 0, amount - fee, amount ) )
-							FROM
-								{$table_name_txs}
-							WHERE
-								( blog_id = %d || %d ) AND
-								status = 'done' AND
-								symbol = %s AND
-								account = %d
-							",
-							get_current_blog_id(),
-							is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-							$move_tx_send->symbol,
-							$move_tx_send->account
+						$available_balance = apply_filters(
+							'wallets_api_available_balance',
+							0,
+							array(
+								'user_id' => $move_tx_send->account,
+								'symbol'  => $move_tx_send->symbol,
+								'memoize' => false,
+							)
 						);
 
-						$balance = $wpdb->get_var( $balance_query );
+						if ( $available_balance ) {
 
-						if ( ! is_null( $balance ) ) {
-
-							if ( ( floatval( $balance ) + floatval( $move_tx_send->amount ) ) >= 0 ) {
+							if ( $available_balance >= 0 ) {
 
 								$success_update_query = $wpdb->prepare(
 									"
@@ -560,7 +546,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				} // end if move has send tag
 			} // end foreach move
 
-			$wpdb->query( 'UNLOCK TABLES' );
+			// release the semaphore lock
+			Dashed_Slug_Wallets::delete_transient( 'wallets_cron_semaphore' );
 
 			foreach ( $pending_actions_move_send as $move_tx_send ) {
 				do_action( 'wallets_move_send', $move_tx_send );
@@ -600,16 +587,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				return;
 			}
 
-			$wpdb->query(
-				"
-				LOCK TABLES
-				$table_name_txs WRITE,
-				$table_name_options WRITE,
-				$table_name_adds READ,
-				$wpdb->users READ,
-				$wpdb->usermeta READ
-			"
-			);
+			// guard against race condition due to concurrent runs of cron tasks with a semaphore lock
+			$semaphore = Dashed_Slug_Wallets::get_transient( 'wallets_cron_semaphore', 0 );
+			if ( $semaphore ) {
+				return;
+			}
+			Dashed_Slug_Wallets::set_transient( 'wallets_cron_semaphore', 1, absint( ini_get( 'max_execution_time' ) ) );
 
 			$in_symbols = "'" . implode( "','", $withdrawal_symbols ) . "'";
 
@@ -677,32 +660,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						);
 					}
 
-					$balance_query = $wpdb->prepare(
-						"
-						SELECT
-							SUM( IF( amount > 0, amount - fee, amount ) )
-						FROM
-							{$table_name_txs}
-						WHERE
-							( blog_id = %d || %d ) AND
-							symbol = %s AND
-							status = 'done' AND
-							account = %d
-						",
-						get_current_blog_id(),
-						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-						$wd_tx->symbol,
-						$wd_tx->account
+					$available_balance = apply_filters(
+						'wallets_api_available_balance',
+						0,
+						array(
+							'user_id' => $wd_tx->account,
+							'symbol'  => $wd_tx->symbol,
+							'memoize' => false,
+						)
 					);
 
-					$balance = $wpdb->get_var( $balance_query );
-
-					if ( is_null( $balance ) ) {
-						throw new Exception( 'Could not get balance' );
+					if ( is_null( $available_balance ) ) {
+						throw new Exception( 'Could not get available balance' );
 					}
 
-					if ( ( floatval( $balance ) + floatval( $wd_tx->amount ) ) < 0 ) {
-						throw new Exception( 'Insufficient balance' );
+					if ( $available_balance < 0 ) {
+						throw new Exception( 'Insufficient available balance' );
 					}
 
 					$adapter = $adapters[ $wd_tx->symbol ];
@@ -790,7 +763,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					}
 				}
 			} // end foreach withdrawal
-			$wpdb->query( 'UNLOCK TABLES' );
+
+			// release the semaphore lock
+			Dashed_Slug_Wallets::delete_transient( 'wallets_cron_semaphore' );
 
 			foreach ( $pending_actions_withdraw as $wd_tx ) {
 				do_action( 'wallets_withdraw', $wd_tx );

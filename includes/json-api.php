@@ -1046,7 +1046,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$coin_info->explorer_uri_address = apply_filters( 'wallets_explorer_uri_add_' . $coin_info->symbol, '' );
 							$coin_info->explorer_uri_tx      = apply_filters( 'wallets_explorer_uri_tx_' . $coin_info->symbol, '' );
 
-							$coin_info->balance = apply_filters( 'wallets_api_balance', 0, array( 'symbol' => $coin_info->symbol ) );
+							$coin_info->balance           = apply_filters( 'wallets_api_balance',           0, array( 'symbol' => $coin_info->symbol ) );
+							$coin_info->available_balance = apply_filters( 'wallets_api_available_balance', 0, array( 'symbol' => $coin_info->symbol ) );
 
 							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 
@@ -1232,11 +1233,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					}
 
 					try {
+						foreach ( array( 'symbol', 'withdraw_address', 'withdraw_amount' ) as $arg ) {
+							if ( ! isset ( $query->query_vars["__wallets_$arg" ] ) ) {
+								throw new Exception(
+									sprintf(
+										__( 'Required parameter missing: %s', 'wallets' ),
+										$arg
+									)
+								);
+							}
+						}
 						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
 						$address = sanitize_text_field( $query->query_vars['__wallets_withdraw_address'] );
 						$amount  = floatval( $query->query_vars['__wallets_withdraw_amount'] );
-						$comment = sanitize_text_field( $query->query_vars['__wallets_withdraw_comment'] );
-						$extra   = sanitize_text_field( $query->query_vars['__wallets_withdraw_extra'] );
+
+						if ( isset( $query->query_vars['__wallets_withdraw_comment'] ) ) {
+							$comment = sanitize_text_field( $query->query_vars['__wallets_withdraw_comment'] );
+						} else {
+							$comment = '';
+						}
+						if ( isset( $query->query_vars['__wallets_withdraw_extra'] ) ) {
+							$extra = sanitize_text_field( $query->query_vars['__wallets_withdraw_extra'] );
+						} else {
+							$extra = '';
+						}
 
 						do_action(
 							'wallets_api_withdraw', array(
@@ -1275,11 +1295,35 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					}
 
 					try {
+						foreach ( array( 'symbol', 'move_toaccount', 'move_amount' ) as $arg ) {
+							if ( ! isset ( $query->query_vars["__wallets_$arg" ] ) ) {
+								throw new Exception(
+									sprintf(
+										__( 'Required parameter missing: %s', 'wallets' ),
+										$arg
+									)
+								);
+							}
+						}
 						$symbol    = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
 						$toaccount = $query->query_vars['__wallets_move_toaccount'];
 						$amount    = floatval( $query->query_vars['__wallets_move_amount'] );
-						$comment   = sanitize_text_field( $query->query_vars['__wallets_move_comment'] );
-						$tags      = sanitize_text_field( $query->query_vars['__wallets_move_tags'] );
+
+						if ( isset( $query->query_vars['__wallets_move_comment'] ) ) {
+							$comment = sanitize_text_field( $query->query_vars['__wallets_move_comment'] );
+						} else {
+							$comment = '';
+						}
+						if ( isset( $query->query_vars['__wallets_move_extra'] ) ) {
+							$extra = sanitize_text_field( $query->query_vars['__wallets_move_extra'] );
+						} else {
+							$extra = '';
+						}
+						if ( isset( $query->query_vars['__wallets_move_tags'] ) ) {
+							$tags = sanitize_text_field( $query->query_vars['__wallets_move_tags'] );
+						} else {
+							$tags = '';
+						}
 
 						$to_user_id = false;
 						foreach ( array( 'slug', 'email', 'login' ) as $field ) {
@@ -1295,9 +1339,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								sprintf(
 									__( 'Could not find user %s. Please enter a valid slug, email, or login name.', 'wallets' ),
 									$toaccount
-									),
+								),
 								Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE
-								);
+							);
 						}
 
 						do_action(

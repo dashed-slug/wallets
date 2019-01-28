@@ -5,11 +5,11 @@
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_withdraw' );
 	?>
-	<!-- ko ifnot: ( Object.keys( coins() ).length > 0 ) -->
+	<!-- ko ifnot: ( Object.keys( cryptoCoins() ).length > 0 ) -->
 	<p class="no-coins-message"><?php echo apply_filters( 'wallets_ui_text_no_coins', esc_html__( 'No currencies are currently enabled.', 'wallets-front' ) );?></p>
 	<!-- /ko -->
 
-	<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->	<table>
+	<!-- ko if: ( Object.keys( cryptoCoins() ).length > 0 ) -->	<table>
 		<colgroup>
 			<?php echo str_repeat( '<col>', 6 ); ?>
 		</colgroup>
@@ -17,7 +17,7 @@
 		<tbody>
 			<tr>
 				<td colspan="6">
-					<label class="coin" data-bind="visible: Object.keys( coins() ).length > 1"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( coins() ).map(function(o){return coins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + coins()[ selectedCoin() ].icon_url + ')' }"></select></label>
+					<label class="coin"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( cryptoCoins() ).map(function(o){return cryptoCoins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCryptoCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + cryptoCoins()[ selectedCryptoCoin() ].icon_url + ')' }"></select></label>
 				</td>
 			</tr>
 			<tr>

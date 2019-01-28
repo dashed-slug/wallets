@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 3.9.4
+Stable tag: 4.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,26 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.0.0 =
+- Add: New PHP API filter `wallets_api_available_balance` now retrieves the balance of a user/coin pair that is not currently reserved in pending transactions or exchange trades.
+- Add: When placing a new `move` or `withdraw` transaction, the new *available balance* is checked, rather than the total account balance.
+- Add: When executing a pending `move` or `withdraw` transaction, the new *available balance* is checked, rather than the total account balance.
+- Add: The `[wallets_balance]` shortcode now also displays the *available balance* if it is different from the *total balance*.
+- Add: The *user profile* section now displays both the total and the available balance for each coin that a user holds.
+- Add: The *User Balances* admin screen now displays both the total and the available balance for each coin that a user holds.
+- Change: Always show coin selection dropdown in frontend, even if only one coin is available.
+- Change: In `[wallets_withdraw]` UI only show coins that are not known to be fiat. For fiat withdrawals, use `[wallets_fiat_withdraw]` in the upcoming release of the Fiat Coin Adapter.
+- Change: CoinMarketCap exchange rates provider can now use an API key to conform with latest changes to the 3rd party API. Only retrieves information about enabled coins, thus reducing bandwidth requirements and improving performance. Falls back to retrieving exchange rates for top 100 coins if no API key is provided.
+- Improve: Coingecko exchange rates provider can now retrieve information about only enabled coins, thus reducing bandwidth requirements and improving performance.
+- Improve: In Exchange Rates admin page, the debug views contents can now be easily copied to the clipboard.
+- Improve: In cases where a theme has loaded an old version of knockout.js, the plugin does not strictly require the `ko.tasks` object. (However it is recommended that the latest version of knockout is used with the plugin.)
+- Change: When placing a new `move` or `withdraw` transaction, the plugin no longer uses MySQL table locks as these are not strictly necessary. The hazard for race conditions is at transaction execution, not placement.
+- Fix: `do_move` JSON API now accepts optional `__wallets_move_tags` argument again.
+- Improve: `do_move` and `do_withdraw` JSON APIs no longer write to logs if the *comment* optional argument is not specified.
+- Improve: `do_move` and `do_withdraw` JSON APIs check explicitly if required arguments are passed.
+- Change: Cron job is now using custom-built semaphore locks instead of relying on MySQL table locks when executing `move` and `withdraw` transactions. This allows for extensions to hook into the new filter `wallets_api_available_balance` and do DB queries while the protected code is running.
+- Improve: Compacted some CSS rules.
 
 = 3.9.4 =
 - Add: Can now force the plugin to generate deposit addresses for all users in advance.
@@ -1124,7 +1144,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 3.9.4 introduces an important security warning to admins, several minor bugfixes, some new logs for debugging, and one user-requested feature.
+Version 4.0.0 introduces the concept of unavailable balances and a number of bugfixes and improvements. Please see the release notes at https://www.dashed-slug.net/unavailable-balance
 
 == Donating ==
 

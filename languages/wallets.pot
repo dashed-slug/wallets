@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 3.9.4\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-01-17 10:35:45+00:00\n"
+"POT-Creation-Date: 2019-01-28 14:54:54+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -125,8 +125,8 @@ msgstr ""
 #: includes/coin-adapter.php:302 includes/cold-storage.php:146
 #: includes/confirmations.php:684 includes/cron.php:392
 #: includes/frontend-settings.php:223 includes/notifications.php:724
-#: includes/rates.php:317 includes/transactions.php:290
-#: includes/transactions.php:1172 includes/transactions.php:1317
+#: includes/rates.php:346 includes/transactions.php:290
+#: includes/transactions.php:1147 includes/transactions.php:1292
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -134,12 +134,12 @@ msgstr ""
 #: includes/adapters-list.php:273 includes/caps.php:96
 #: includes/cold-storage.php:125 includes/json-api.php:535
 #: includes/json-api.php:578 includes/json-api.php:825
-#: includes/json-api.php:868 includes/json-api.php:1165
-#: includes/json-api.php:1231 includes/json-api.php:1274
-#: includes/transactions.php:1178 includes/transactions.php:1381
-#: includes/transactions.php:1399 includes/transactions.php:1417
-#: includes/transactions.php:1434 includes/transactions.php:1451
-#: includes/transactions.php:1483
+#: includes/json-api.php:868 includes/json-api.php:1166
+#: includes/json-api.php:1232 includes/json-api.php:1294
+#: includes/transactions.php:1153 includes/transactions.php:1356
+#: includes/transactions.php:1374 includes/transactions.php:1392
+#: includes/transactions.php:1409 includes/transactions.php:1426
+#: includes/transactions.php:1458
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -179,7 +179,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: includes/addresses-list-table.php:44 includes/balances-list-table.php:42
+#: includes/addresses-list-table.php:44 includes/balances-list-table.php:43
 msgid "Blog ID"
 msgstr ""
 
@@ -205,7 +205,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:96 includes/cold-storage.php:370
-#: includes/cold-storage.php:385 includes/rates.php:403
+#: includes/cold-storage.php:385 includes/rates.php:432
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -342,8 +342,8 @@ msgstr ""
 #: includes/admin-notices.php:45
 msgid ""
 "<strong>IMPORTANT</strong>: Read the <a "
-"href=\"https://www.dashed-slug.net/cron-jobs-performance\">release notes "
-"for version 3.8.0</a>."
+"href=\"https://www.dashed-slug.net/unavailable-balance\">release notes for "
+"version 4.0.0</a>."
 msgstr ""
 
 #: includes/admin-user.php:45
@@ -366,6 +366,10 @@ msgstr ""
 
 #: includes/balances-list-table.php:38 includes/menu-item.php:109
 msgid "Balance"
+msgstr ""
+
+#: includes/balances-list-table.php:39
+msgid "Available balance"
 msgstr ""
 
 #: includes/balances-list.php:57
@@ -1375,12 +1379,12 @@ msgstr ""
 #: includes/json-api.php:682 includes/json-api.php:756
 #: includes/json-api.php:801 includes/json-api.php:819
 #: includes/json-api.php:862 includes/json-api.php:1023
-#: includes/json-api.php:1097 includes/json-api.php:1142
-#: includes/json-api.php:1159 includes/json-api.php:1225
-#: includes/json-api.php:1268 includes/php-api.php:160 includes/php-api.php:266
-#: includes/php-api.php:367 includes/php-api.php:493 includes/php-api.php:724
-#: includes/php-api.php:921 includes/php-api.php:1048 includes/php-api.php:1145
-#: includes/transactions.php:1130
+#: includes/json-api.php:1098 includes/json-api.php:1143
+#: includes/json-api.php:1160 includes/json-api.php:1226
+#: includes/json-api.php:1288 includes/php-api.php:208 includes/php-api.php:301
+#: includes/php-api.php:361 includes/php-api.php:462 includes/php-api.php:588
+#: includes/php-api.php:808 includes/php-api.php:995 includes/php-api.php:1122
+#: includes/php-api.php:1219 includes/transactions.php:1105
 msgid "Not allowed"
 msgstr ""
 
@@ -1389,26 +1393,26 @@ msgid "Could not get info about users: "
 msgstr ""
 
 #: includes/json-api.php:485 includes/json-api.php:774
-#: includes/json-api.php:1115
+#: includes/json-api.php:1116
 msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
 #: includes/json-api.php:497 includes/json-api.php:786
-#: includes/json-api.php:1127
+#: includes/json-api.php:1128
 msgid "Could not get \"%s\" transactions"
 msgstr ""
 
 #: includes/json-api.php:556 includes/json-api.php:846
-#: includes/json-api.php:1252
+#: includes/json-api.php:1272
 msgid "Could not withdraw %s"
 msgstr ""
 
 #: includes/json-api.php:600 includes/json-api.php:909
-#: includes/json-api.php:1315
+#: includes/json-api.php:1359
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:890 includes/json-api.php:1296
+#: includes/json-api.php:890 includes/json-api.php:1340
 msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 
@@ -1424,8 +1428,12 @@ msgstr ""
 msgid "Error while trigerring cron tasks: %s"
 msgstr ""
 
-#: includes/json-api.php:1186 includes/json-api.php:1204
+#: includes/json-api.php:1187 includes/json-api.php:1205
 msgid "Could not get new %s address"
+msgstr ""
+
+#: includes/json-api.php:1240 includes/json-api.php:1302
+msgid "Required parameter missing: %s"
 msgstr ""
 
 #: includes/menu-item.php:39
@@ -1626,156 +1634,164 @@ msgid ""
 "transaction."
 msgstr ""
 
-#: includes/php-api.php:498
+#: includes/php-api.php:593
 msgid "You must specify a withdrawal address"
 msgstr ""
 
-#: includes/php-api.php:507
+#: includes/php-api.php:602
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:520 includes/transactions.php:719
+#: includes/php-api.php:615 includes/transactions.php:692
 msgid "Minimum witdrawal amount for \"%1$s\" is %2$f"
 msgstr ""
 
-#: includes/php-api.php:563
+#: includes/php-api.php:658
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/php-api.php:608 includes/php-api.php:780
+#: includes/php-api.php:694 includes/php-api.php:856
 msgid "Amount after deducting fees must be positive"
 msgstr ""
 
-#: includes/php-api.php:614 includes/php-api.php:787
-msgid "Insufficient funds: %1$s > %2$s"
+#: includes/php-api.php:700 includes/php-api.php:863
+msgid "Insufficient available funds: %1$s > %2$s"
 msgstr ""
 
-#: includes/php-api.php:729
+#: includes/php-api.php:813
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/php-api.php:739
+#: includes/php-api.php:823
 msgid "Adapter for \"%s\" is not online for move action"
 msgstr ""
 
-#: includes/php-api.php:968
+#: includes/php-api.php:1042
 msgid "Adapter for \"%s\" is not online for getting a deposit address"
 msgstr ""
 
-#: includes/php-api.php:981
+#: includes/php-api.php:1055
 msgid "Adapter for \"%s\" failed to return a deposit address: %s"
 msgstr ""
 
-#: includes/php-api.php:999
+#: includes/php-api.php:1073
 msgid ""
 "Adapter for \"%s\" did not respond to the getnewaddress RPC command with a "
 "valid address string."
 msgstr ""
 
-#: includes/php-api.php:1052 includes/php-api.php:1149
+#: includes/php-api.php:1126 includes/php-api.php:1223
 msgid "Must specify a TXID string"
 msgstr ""
 
-#: includes/php-api.php:1105 includes/php-api.php:1205
+#: includes/php-api.php:1179 includes/php-api.php:1279
 msgid "No transactions found!"
 msgstr ""
 
-#: includes/rates.php:75
+#: includes/rates.php:78
 msgid "Exchange rates settings"
 msgstr ""
 
-#: includes/rates.php:82
+#: includes/rates.php:85
 msgid "Exchange rates providers"
 msgstr ""
 
-#: includes/rates.php:88
+#: includes/rates.php:91
 msgid ""
 "Pick the APIs that you wish to use as sources of exchange rates between "
 "cryptocurrencies. "
 msgstr ""
 
-#: includes/rates.php:99
+#: includes/rates.php:102
 msgid "Fixer API key"
 msgstr ""
 
-#: includes/rates.php:121
+#: includes/rates.php:125
+msgid "CoinMarketCap API key"
+msgstr ""
+
+#: includes/rates.php:148
 msgid "Rates refresh rate (minutes)"
 msgstr ""
 
-#: includes/rates.php:145
+#: includes/rates.php:174
 msgid "Default fiat currency"
 msgstr ""
 
-#: includes/rates.php:166
+#: includes/rates.php:195
 msgid "Use tor to pull exchange rates"
 msgstr ""
 
-#: includes/rates.php:172
+#: includes/rates.php:201
 msgid ""
 "Enable this to pull exchange rates via tor. Does not work with Poloniex. "
 "You need to set up a tor proxy first. Only useful if setting up a hidden "
 "service. (Default: disabled)"
 msgstr ""
 
-#: includes/rates.php:183
+#: includes/rates.php:212
 msgid "Skip refreshing exchange rates when HTTP_REFERER is set"
 msgstr ""
 
-#: includes/rates.php:206
+#: includes/rates.php:235
 msgid "Tor proxy IP"
 msgstr ""
 
-#: includes/rates.php:212
+#: includes/rates.php:241
 msgid "This is the IP of your tor proxy. (Default: 127.0.0.1)"
 msgstr ""
 
-#: includes/rates.php:223
+#: includes/rates.php:252
 msgid "Tor proxy TCP port"
 msgstr ""
 
-#: includes/rates.php:232
+#: includes/rates.php:261
 msgid ""
 "This is the TCP port of your tor proxy. (Default: 9050, some newer tor "
 "bundles use 9150)"
 msgstr ""
 
-#: includes/rates.php:245
+#: includes/rates.php:274
 msgid "Exchange rates debug views"
 msgstr ""
 
-#: includes/rates.php:252
+#: includes/rates.php:281
 msgid "Known fiat currencies"
 msgstr ""
 
-#: includes/rates.php:258
+#: includes/rates.php:287
 msgid "View a list of known fiat currencies (for debugging). "
 msgstr ""
 
-#: includes/rates.php:269
+#: includes/rates.php:298
 msgid "Known cryptocurrencies"
 msgstr ""
 
-#: includes/rates.php:275
+#: includes/rates.php:304
 msgid ""
 "View a list of all known cryptocurrencies reported by the selected "
 "providers (for debugging). "
 msgstr ""
 
-#: includes/rates.php:286 includes/sidebar-widgets.php:480
+#: includes/rates.php:315 includes/sidebar-widgets.php:480
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/rates.php:292
+#: includes/rates.php:321
 msgid ""
 "View a list of all exhange rates reported by the selected providers (for "
 "debugging)."
 msgstr ""
 
-#: includes/rates.php:322
+#: includes/rates.php:351
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: includes/rates.php:561
+#: includes/rates.php:488
+msgid "&#x1F4CB; Copy"
+msgstr ""
+
+#: includes/rates.php:593
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
@@ -2025,23 +2041,23 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: includes/transactions.php:673
+#: includes/transactions.php:656
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this "
 "system."
 msgstr ""
 
-#: includes/transactions.php:1161
+#: includes/transactions.php:1136
 msgid "Could not get account for %1$s address %2$s"
 msgstr ""
 
-#: includes/transactions.php:1198
+#: includes/transactions.php:1173
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:1208
+#: includes/transactions.php:1183
 msgid "Failed to import file : %s"
 msgstr ""
 

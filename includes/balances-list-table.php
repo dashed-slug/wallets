@@ -33,9 +33,10 @@ class DSWallets_Admin_Menu_Balances_List_Table extends WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
-			'account_name'  => esc_html__( 'User', 'wallets' ),
-			'symbol'        => esc_html__( 'Coin', 'wallets' ),
-			'balance'       => esc_html__( 'Balance', 'wallets' ),
+			'account_name'      => esc_html__( 'User', 'wallets' ),
+			'symbol'            => esc_html__( 'Coin', 'wallets' ),
+			'balance'           => esc_html__( 'Balance', 'wallets' ),
+			'available_balance' => esc_html__( 'Available balance', 'wallets' ),
 		);
 
 		if ( $this->network_active ) {
@@ -116,10 +117,7 @@ class DSWallets_Admin_Menu_Balances_List_Table extends WP_List_Table {
 		}
 
 		$balances_query .= $wpdb->prepare( "
-			(
-				( t.amount < 0 AND t.status NOT IN ( 'cancelled', 'failed' ) ) OR
-				( t.amount > 0 AND t.status = 'done' )
-			)
+				t.status = 'done'
 
 			GROUP BY
 				t.account,
@@ -136,6 +134,17 @@ class DSWallets_Admin_Menu_Balances_List_Table extends WP_List_Table {
 		);
 
 		$this->items = $wpdb->get_results( $balances_query, ARRAY_A );
+
+		foreach ( $this->items as &$item ) {
+			$item['available_balance'] = apply_filters(
+				'wallets_api_available_balance',
+				0,
+				array(
+					'user_id' => $item['account'],
+					'symbol'  => $item['symbol'],
+				)
+			);
+		}
 
 		// also retrieve adapters so we can render amounts and pull coin names
 		if ( ! $this->adapters ) {
@@ -171,7 +180,19 @@ class DSWallets_Admin_Menu_Balances_List_Table extends WP_List_Table {
 		} else {
 			return $item['balance'];
 		}
+	}
 
+	public function column_available_balance( $item ) {
+		if ( 0 == $item['available_balance'] ) {
+			return '&mdash;'; // no amount
+		}
+
+		if ( isset( $this->adapters[ $item['symbol'] ] ) ) {
+			$adapter = $this->adapters[ $item['symbol'] ];
+			return sprintf( $adapter->get_sprintf(), $item['available_balance'] );
+		} else {
+			return $item['available_balance'];
+		}
 	}
 
 	public function column_account_name( $item ) {
