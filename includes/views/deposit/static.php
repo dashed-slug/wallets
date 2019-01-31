@@ -12,6 +12,8 @@ $deposit_address = apply_filters( 'wallets_api_deposit_address', '', array(
 $adapters = apply_filters( 'wallets_api_adapters', array() );
 if ( isset( $adapters[ $atts['symbol'] ] ) ) {
 	$extra_desc = $adapters[ $atts['symbol'] ]->get_extra_field_description();
+} else {
+	$extra_desc = '&mdash;';
 }
 unset( $adapters );
 
@@ -79,6 +81,4 @@ unset( $adapters );
 <?php
 
 unset( $deposit_address );
-if ( isset( $extra_desc ) ) {
-	unset( $extra_desc );
-};
+unset( $extra_desc );

@@ -128,8 +128,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_wp_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-4.0.0.min.css' ) ) {
-				$front_styles = 'wallets-4.0.0.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-4.0.1.min.css' ) ) {
+				$front_styles = 'wallets-4.0.1.min.css';
 			} else {
 				$front_styles = 'wallets.css';
 			}
@@ -138,7 +138,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'4.0.0'
+				'4.0.1'
 			);
 
 
@@ -177,8 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-4.0.0.min.js' ) ) {
-					$script = 'wallets-ko-4.0.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-4.0.1.min.js' ) ) {
+					$script = 'wallets-ko-4.0.1.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -187,7 +187,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' ),
-					'4.0.0',
+					'4.0.1',
 					true
 				);
 
@@ -214,8 +214,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-4.0.0.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-4.0.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-4.0.1.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-4.0.1.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -224,7 +224,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'4.0.0',
+					'4.0.1',
 					true
 				);
 
@@ -652,8 +652,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '4.0.0';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '42c80233';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '4.0.1';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '2a9b64c4';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -691,10 +691,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'WP_DEBUG_DISPLAY',
 				'DISABLE_WP_CRON',
 				'DSWALLETS_FILE',
+				'WP_MEMORY_LIMIT'
 			) as $const ) {
 				$data[ sprintf( __( "Constant '%s'", 'wallets' ), $const ) ] =
 					defined( $const ) ? constant( $const ) : __( 'n/a', 'wallets' );
 			}
+
+			foreach ( array(
+				'memory_limit'
+			) as $ini_setting ) {
+				$data[ sprintf( __( "PHP.ini '%s'", 'wallets' ), $ini_setting ) ] = ini_get( $ini_setting );
+			}
+
+			$data[ __( 'Cron jobs last ran on',        'wallets') ] = date( DATE_RFC822, Dashed_Slug_Wallets::get_option(' wallets_last_cron_run', 0 ) );
+			$data[ __( 'Cron jobs last runtime (sec)', 'wallets') ] = Dashed_Slug_Wallets::get_option(' wallets_last_elapsed_time', 'n/a' );
+			$data[ __( 'Cron jobs peak memory:',       'wallets') ] = Dashed_Slug_Wallets::get_option(' wallets_last_peak_mem',     'n/a' );
+			$data[ __( 'Cron jobs memory delta:',      'wallets') ] = Dashed_Slug_Wallets::get_option(' wallets_last_mem_delta',    'n/a' );
 
 			foreach ( array(
 				'curl',

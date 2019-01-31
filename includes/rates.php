@@ -18,6 +18,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		private static $symbol_to_gecko_id = array();
 		private static $gecko_id_to_symbol = array();
 
+		private static $start_time;
+		private static $start_memory;
+
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
@@ -617,12 +620,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_providers', array( 'fixer', 'coingecko' ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry', 60 );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled', '' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip', '127.0.0.1' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_port', 9050 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_providers',     array( 'fixer', 'coingecko' ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_cache_expiry',  60 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_enabled',   '' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_ip',        '127.0.0.1' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_rates_tor_port',      9050 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_default_base_symbol', 'USD' );
+		}
+
+		private static function log( $task = '' ) {
+			$verbose = Dashed_Slug_Wallets::get_option( 'wallets_cron_verbose' );
+
+			if ( $verbose ) {
+				error_log(
+					sprintf(
+						'Bitcoin and Altcoin Wallets %s. Elapsed: %d sec, Mem delta: %d bytes, Mem peak: %d bytes, PHP / WP mem limits: %d MB / %d MB',
+						$task,
+						time() - self::$start_time,
+						memory_get_usage() - self::$start_memory,
+						memory_get_peak_usage(),
+						ini_get( 'memory_limit' ),
+						WP_MEMORY_LIMIT
+					)
+				);
+			}
 		}
 
 		public static function action_shutdown() {
@@ -635,18 +656,28 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			$interval = Dashed_Slug_Wallets::get_option( 'wallets_rates_cache_expiry', 5 );
 
 			if ( time() > $last_run + $interval * MINUTE_IN_SECONDS ) {
+				self::$start_time = time();
+				self::$start_memory = memory_get_usage();
+
+				self::log( 'retrieving exchange rates STARTED' );
+
 				self::load_data();
 
 				self::$cryptos = array_unique( apply_filters( 'wallets_rates_cryptos', self::$cryptos ) );
+				self::log( 'retrieved known cryptocurrencies' );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates_cryptos', self::$cryptos );
 
 				self::$fiats = array_unique( apply_filters( 'wallets_rates_fiats', self::$fiats ) );
+				self::log( 'retrieved known fiat currencies' );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates_fiats', self::$fiats );
 
 				self::$rates = apply_filters( 'wallets_rates', self::$rates );
 				Dashed_Slug_Wallets::update_option( 'wallets_rates', self::$rates );
+				self::log( 'retrieved currency exchange rates' );
 
 				Dashed_Slug_Wallets::set_transient( 'wallets_rates_last_run', time() );
+
+				self::log( 'retrieving exchange rates FINISHED' );
 			}
 		}
 
@@ -709,7 +740,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				);
 			}
 
-			if ( is_string( $result ) ) {
+			if ( is_string( $result ) && $cache_seconds ) {
 				Dashed_Slug_Wallets::set_transient( $hash, $result, $cache_seconds );
 			}
 			return $result;
@@ -896,9 +927,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				$obj = json_decode( $json );
 				if ( is_array( $obj ) ) {
 					foreach ( $obj as $currency ) {
-						$cryptos[] = strtoupper( $currency->symbol );
-						self::$symbol_to_gecko_id[ strtoupper( $currency->symbol ) ] = $currency->id;
-						self::$gecko_id_to_symbol[ $currency->id ] = strtoupper( $currency->symbol );
+						$symbol = strtoupper( $currency->symbol );
+						$cryptos[] = $symbol;
+						self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
+						self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
 					}
 				}
 			}
@@ -1163,7 +1195,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			$ids = array();
 			$adapters = apply_filters( 'wallets_api_adapters', array() );
 			foreach ( array_keys( $adapters ) as $symbol ) {
-				$ids[] = self::$symbol_to_gecko_id[ $symbol ];
+				if ( isset ( self::$symbol_to_gecko_id[ $symbol ] ) ) {
+					$ids[] = self::$symbol_to_gecko_id[ $symbol ];
+				}
 			}
 
 			$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );

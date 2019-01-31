@@ -6,6 +6,10 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 	class Dashed_Slug_Wallets_Cron {
 
+		private $start_time;
+		private $start_memory;
+		private $already_ran = false;
+
 		public function __construct() {
 			if ( ! isset( $_SERVER['REQUEST_TIME'] ) ) {
 				$_SERVER['REQUEST_TIME'] = time();
@@ -52,6 +56,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw', 3 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move', 1 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_verbose', 0 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_secrets_retain_minutes', 0 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_aggregating', 'never' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_autocancel', 1440 );
@@ -68,13 +73,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		public function update_network_options() {
 			check_admin_referer( 'wallets-menu-cron-options' );
 
-			Dashed_Slug_Wallets::update_option( 'wallets_cron_interval', filter_input( INPUT_POST, 'wallets_cron_interval', FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_retries_withdraw', filter_input( INPUT_POST, 'wallets_retries_withdraw', FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_retries_move', filter_input( INPUT_POST, 'wallets_retries_move', FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size', filter_input( INPUT_POST, 'wallets_cron_batch_size', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_interval',          filter_input( INPUT_POST, 'wallets_cron_interval',          FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_retries_withdraw',       filter_input( INPUT_POST, 'wallets_retries_withdraw',       FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_retries_move',           filter_input( INPUT_POST, 'wallets_retries_move',           FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size',        filter_input( INPUT_POST, 'wallets_cron_batch_size',        FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_verbose',           filter_input( INPUT_POST, 'wallets_cron_verbose',           FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_secrets_retain_minutes', filter_input( INPUT_POST, 'wallets_secrets_retain_minutes', FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_cron_aggregating', filter_input( INPUT_POST, 'wallets_cron_aggregating', FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_cron_autocancel', filter_input( INPUT_POST, 'wallets_cron_autocancel', FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_aggregating',       filter_input( INPUT_POST, 'wallets_cron_aggregating',       FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_autocancel',        filter_input( INPUT_POST, 'wallets_cron_autocancel',        FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-cron', network_admin_url( 'admin.php' ) ) );
 			exit;
@@ -139,6 +145,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			return $new_value;
 		}
 
+		private function log( $task = '' ) {
+			$verbose = Dashed_Slug_Wallets::get_option( 'wallets_cron_verbose' );
+
+			if ( $verbose ) {
+				error_log(
+					sprintf(
+						'Bitcoin and Altcoin Wallets %s. Elapsed: %d sec, Mem delta: %d bytes, Mem peak: %d bytes, PHP / WP mem limits: %d MB / %d MB',
+						$task,
+						time() - $this->start_time,
+						memory_get_usage() - $this->start_memory,
+						memory_get_peak_usage(),
+						ini_get( 'memory_limit' ),
+						WP_MEMORY_LIMIT
+					)
+				);
+			}
+		}
+
 		/**
 		 * Trigger the cron function of each adapter.
 		 *
@@ -147,12 +171,28 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 *
 		 */
 		public function cron() {
-			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run', time() );
 
 			add_action( 'shutdown', array( &$this, 'cron_adapter_tasks_on_all_blogs' ) );
 		}
 
 		public function cron_adapter_tasks_on_all_blogs() {
+			// prevent executing multiple times in one request
+			if ( $this->already_ran ) {
+				return;
+			}
+			$this->already_ran = true;
+
+			// delete previous debug stats
+			Dashed_Slug_Wallets::delete_option( 'wallets_last_cron_run' );
+			Dashed_Slug_Wallets::delete_option( 'wallets_last_elapsed_time' );
+			Dashed_Slug_Wallets::delete_option( 'wallets_last_peak_mem' );
+			Dashed_Slug_Wallets::delete_option( 'wallets_last_mem_delta' );
+
+			$this->start_time = time();
+			$this->start_memory = memory_get_usage();
+
+			$this->log( 'cron jobs STARTED' );
+
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
 
 				$sites = get_sites();
@@ -162,12 +202,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					$this->cron_adapter_tasks_on_current_blog();
 					restore_current_blog();
 					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
+						if ( $this->verbose ) {
+							$this->log( "Stopping cron jobs after running on $site_count sites" );
+						}
 						break;
 					}
 				}
 			} else {
 				$this->cron_adapter_tasks_on_current_blog();
 			}
+
+			$this->log( 'cron jobs FINISHED' );
+			Dashed_Slug_Wallets::update_option( 'wallets_last_cron_run',     time() );
+			Dashed_Slug_Wallets::update_option( 'wallets_last_elapsed_time', time() - $this->start_time );
+			Dashed_Slug_Wallets::update_option( 'wallets_last_peak_mem',     memory_get_peak_usage() );
+			Dashed_Slug_Wallets::update_option( 'wallets_last_mem_delta',    memory_get_usage() - $this->start_memory );
 		}
 
 		private function cron_adapter_tasks_on_current_blog() {
@@ -180,6 +229,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			foreach ( $adapters as $adapter ) {
 				try {
 					$adapter->cron();
+
+					$this->log( $adapter->get_adapter_name() . ' cron job finished' );
+
 				} catch ( Exception $e ) {
 					error_log(
 						sprintf(
@@ -284,6 +336,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			register_setting(
 				'wallets-menu-cron',
 				'wallets_retries_move'
+			);
+
+			add_settings_field(
+				'wallets_cron_verbose',
+				__( 'Verbose log output (debug)', 'wallets' ),
+				array( &$this, 'settings_checkbox_cb' ),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for'   => 'wallets_cron_verbose',
+					'description' => __( 'Writes verbose memory info about cron jobs and exchange rates providers into the WordPress debug log. Useful for debugging out-of-memory issues. Requires <a href="https://codex.wordpress.org/Debugging_in_WordPress">enabled debug logs</a>.', 'wallets' ),
+					'disabled'    => ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_cron_verbose'
 			);
 
 			add_settings_section(
@@ -573,6 +643,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				type="checkbox"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
 				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				<?php if ( isset( $arg['disabled'] ) && $arg['disabled'] ): ?> disabled="disabled"<?php endif; ?>
 				<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
 
 			<p

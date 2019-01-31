@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 4.0.0
+Stable tag: 4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.0.1 =
+- Fix: Exchange rate provider responses do not get cached unless necessary. Reduces load on transient storage (DB).
+- Fix: Never run cron job more than once per request.
+- Add: Verbosity option controls whether memory debug info is written out to the WordPress log while running cron obs.
+- Add: Verbosity option controls whether memory debug info is written out to the WordPress log while retrieving exchange rate data.
+- Add: Display cron-job related memory debug info in the dashboard.
+- Add: Display PHP `memory_limit` ini setting and `WP_MEMORY_LIMIT` constant in dashboard.
 
 = 4.0.0 =
 - Add: New PHP API filter `wallets_api_available_balance` now retrieves the balance of a user/coin pair that is not currently reserved in pending transactions or exchange trades.
@@ -1144,7 +1152,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.0 introduces the concept of unavailable balances and a number of bugfixes and improvements. Please see the release notes at https://www.dashed-slug.net/unavailable-balance
+Version 4.0.1 addresses issues preventing cron jobs from running in systems with low memory, and adds ways to inspect/debug low memory issues.
 
 == Donating ==
 
