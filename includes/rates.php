@@ -485,8 +485,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				id="ta-<?php echo esc_attr( $arg['label_for'] ); ?>"
 				rows="8"
 				cols="32"
-				readonly="readonly"
-				name="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_html( print_r( $data, true ) ); ?></textarea>
+				readonly="readonly"><?php echo esc_html( print_r( $data, true ) ); ?></textarea>
 
 			<span class="button" onclick="jQuery('#ta-<?php echo esc_attr( $arg['label_for'] ); ?>')[0].select();document.execCommand('copy');"><?php echo __( '&#x1F4CB; Copy' ); ?></span>
 

@@ -12,6 +12,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 		public static $tx_columns = 'category,account,other_account,address,txid,symbol,amount,fee,comment,created_time,updated_time,confirmations,tags,blog_id,status,retries,admin_confirm,user_confirm';
 
+		private $start_time;
+		private $start_memory;
+
 		public function __construct() {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'init', array( &$this, 'import_handler' ) );
@@ -36,6 +39,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			return $existing_mimes;
 		}
 
+		private function log( $task = '' ) {
+			$verbose = Dashed_Slug_Wallets::get_option( 'wallets_cron_verbose' );
+
+			if ( $verbose ) {
+				error_log(
+					sprintf(
+						'Bitcoin and Altcoin Wallets %s. Elapsed: %d sec, Mem delta: %d bytes, Mem peak: %d bytes, PHP / WP mem limits: %d MB / %d MB',
+						$task,
+						time() - $this->start_time,
+						memory_get_usage() - $this->start_memory,
+						memory_get_peak_usage(),
+						ini_get( 'memory_limit' ),
+						WP_MEMORY_LIMIT
+					)
+				);
+			}
+		}
+
 		public function cron() {
 			add_action( 'shutdown', array( &$this, 'cron_mark_retried_deposits_as_done' ), 10 );
 			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs' ), 20 );
@@ -44,25 +65,44 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		}
 
 		public function cron_tasks_on_all_blogs() {
+			$this->start_time = time();
+			$this->start_memory = memory_get_usage();
+
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+				$this->log( 'transaction tasks STARTED on net-active mu' );
 
 				$sites = get_sites();
 				shuffle( $sites );
 				foreach ( $sites as $site ) {
 					switch_to_blog( $site->blog_id );
+					$this->log( 'transaction tasks STARTED on blog ' . $site->blog_id );
+
 					$this->cron_fail_transactions();
+					$this->log( 'fail transactions FINISHED on blog ' . $site->blog_id );
+
 					$this->cron_execute_pending_moves();
+					$this->log( 'execute pending moves FINISHED on blog ' . $site->blog_id );
+
 					$this->cron_execute_pending_withdrawals();
+					$this->log( 'execute pending withdrawals FINISHED on blog ' . $site->blog_id );
 					restore_current_blog();
+
 					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
+						$this->log( 'transaction tasks FINISHED on net-active mu' );
 						break;
 					}
 				}
+				$this->log( 'ALL transaction tasks FINISHED on net-active mu' );
 			} else {
+				$this->log( 'transaction tasks STARTED' );
 				$this->cron_fail_transactions();
+				$this->log( 'fail transactions FINISHED' );
 				$this->cron_execute_pending_moves();
+				$this->log( 'execute pending moves FINISHED' );
 				$this->cron_execute_pending_withdrawals();
+				$this->log( 'execute pending withdrawals FINISHED' );
 			}
+			$this->log( 'ALL transaction tasks FINISHED' );
 		}
 
 		public function cron_old_transactions_aggregating() {

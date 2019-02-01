@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.0.2 =
+- Add: Verbosity option introduced in `4.0.1` now also writes memory debug info while processing email notifications and while executing transactions.
+- Fix: Fixed bug introduced in `4.0.0` in Exchange Rates admin screen where the "Save Changes" button would also save the debug view contents in the DB as options.
 
 = 4.0.1 =
 - Fix: Exchange rate provider responses do not get cached unless necessary. Reduces load on transient storage (DB).
@@ -1152,7 +1156,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.1 addresses issues preventing cron jobs from running in systems with low memory, and adds ways to inspect/debug low memory issues.
+Version 4.0.2 improves debug logging introduced in 4.0.1 and fixes a bug introduced in 4.0.0.
 
 == Donating ==
 

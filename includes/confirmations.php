@@ -6,6 +6,9 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 	class Dashed_Slug_Wallets_Confirmations {
 
+		private $start_time;
+		private $start_memory;
+
 		public function __construct() {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
@@ -1325,28 +1328,62 @@ EMAIL
 			exit;
 		}
 
+		private function log( $task = '' ) {
+			$verbose = Dashed_Slug_Wallets::get_option( 'wallets_cron_verbose' );
+
+			if ( $verbose ) {
+				error_log(
+					sprintf(
+						'Bitcoin and Altcoin Wallets %s. Elapsed: %d sec, Mem delta: %d bytes, Mem peak: %d bytes, PHP / WP mem limits: %d MB / %d MB',
+						$task,
+						time() - $this->start_time,
+						memory_get_usage() - $this->start_memory,
+						memory_get_peak_usage(),
+						ini_get( 'memory_limit' ),
+						WP_MEMORY_LIMIT
+					)
+				);
+			}
+		}
+
 		public function cron() {
 			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs') );
 		}
 
 		public function cron_tasks_on_all_blogs() {
+			$this->start_time = time();
+			$this->start_memory = memory_get_usage();
+
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+				$this->log( 'confirm tasks STARTED on net-active mu' );
 
 				$sites = get_sites();
 				shuffle( $sites );
 				foreach ( $sites as $site ) {
 					switch_to_blog( $site->blog_id );
+					$this->log( 'confirm tasks STARTED on blog ' . $site->blog_id );
+
 					$this->cron_confirm_transactions();
+					$this->log( 'confirm transactions FINISHED on blog ' . $site->blog_id );
+
 					$this->cron_auto_confirm_transactions();
+					$this->log( 'auto confirm transactions FINISHED on blog ' . $site->blog_id );
+
 					restore_current_blog();
 					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
+						$this->log( 'confirm tasks FINISHED on net-active mu' );
 						break;
 					}
 				}
+				$this->log( 'ALL confirm tasks FINISHED on net-active mu' );
 			} else {
+				$this->log( 'confirm tasks STARTED' );
 				$this->cron_confirm_transactions();
+				$this->log( 'confirm transactions FINISHED' );
 				$this->cron_auto_confirm_transactions();
+				$this->log( 'auto confirm transactions FINISHED' );
 			}
+			$this->log( 'ALL confirm tasks FINISHED' );
 		}
 
 		/**
