@@ -438,11 +438,11 @@ CFG;
 				);
 			}
 
-			$amount = number_format( (float) $amount, 8, '.', '' );
+			$amount = round( $amount, 8 );
 
 			$result = $this->rpc->sendtoaddress(
 				"$address",
-				floatval( $amount ),
+				$amount,
 				"$comment",
 				"$comment_to"
 			);

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 4.0.2
+Stable tag: 4.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.0.3 =
+- Add: Use sweetalert.js for modal dialogs. This can be turned off to fall back to standard JavaScript alerts.
+- Fix: When requesting specific coins by name from CoinGecko or CoinMarketCap, URL-encode the names to avoid issues with special characters.
+- Improve: Cron jobs prioritized so that critical tasks run first.
+- Fix: The `[wallets_deposit]` shortcode no longer displays fiat currency deposit reference codes.
+- Fix: The `[wallets_withdraw]` shortcode no longer displays fiat currency information and does not interfere with shortcodes intended for fiat currencies.
+- Fix: The Exchange rates data stored in the DB is now validated to make sure it is of type array. Addresses previous issue where debug view outputs were saved as string.
+- Fix: When withdrawing using a JSON-RPC wallet API, do not convert the amount to float. This solves precision/rounding errors that previously would raise an exception.
 
 = 4.0.2 =
 - Add: Verbosity option introduced in `4.0.1` now also writes memory debug info while processing email notifications and while executing transactions.
@@ -1156,7 +1165,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.2 improves debug logging introduced in 4.0.1 and fixes a bug introduced in 4.0.0.
+Version 4.0.3 fixes a few minor bugs and introduces sweetalert modal boxes.
 
 == Donating ==
 

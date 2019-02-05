@@ -132,6 +132,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 	// remove frontend settings
 	wallets_delete_option( 'wallets_qrcode_enabled' );
+	wallets_delete_option( 'wallets_sweetalert_enabled' );
 	wallets_delete_option( 'wallets_zlib_disabled' );
 	wallets_delete_option( 'wallets_legacy_json_apis' );
 	wallets_delete_option( 'wallets_transients_broken' );

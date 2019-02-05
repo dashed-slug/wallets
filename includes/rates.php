@@ -27,8 +27,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'register_settings' ) );
 
-			// rates are pulled on shutdown
-			add_action( 'shutdown', array( __CLASS__, 'action_shutdown' ) );
+			// rates are pulled on shutdown after other tasks finish
+			add_action( 'shutdown', array( __CLASS__, 'action_shutdown' ), 40 );
 
 			// bind any enabled data filters
 			$enabled_providers = Dashed_Slug_wallets::get_option( 'wallets_rates_providers', array() );
@@ -61,14 +61,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function load_data() {
 			if ( ! self::$rates ) {
 				self::$rates = Dashed_Slug_Wallets::get_option( 'wallets_rates', array() );
+				if ( ! is_array( self::$rates ) ) {
+					self::$rates = array();
+				}
 			}
 
 			if ( ! self::$cryptos ) {
 				self::$cryptos = Dashed_Slug_Wallets::get_option( 'wallets_rates_cryptos', array( 'BTC' ) );
+				if ( ! is_array( self::$cryptos ) ) {
+					self::$cryptos = array();
+				}
 			}
 
 			if ( ! self::$fiats ) {
 				self::$fiats = Dashed_Slug_Wallets::get_option( 'wallets_rates_fiats', array( 'USD' ) );
+				if ( ! is_array( self::$fiats ) ) {
+					self::$fiats = array();
+				}
 			}
 		}
 
@@ -984,24 +993,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				}
 			} else {
 
-				$adapters    = apply_filters( 'wallets_api_adapters', array() );
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+
 				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 				if ( 'none' == $fiat_symbol ) {
 					$fiat_symbol = 'USD';
 				}
 
+				$crypto_symbols = array();
+				foreach ( $adapters as $symbol => $adapter ) {
+					if ( false === array_search( $symbol, self::$fiats ) ) {
+						$crypto_symbols[] = $symbol;
+					}
+				}
+
 				$url = add_query_arg(
 					array(
-						'symbol' => implode( ',', array_keys( $adapters ) ),
+						'symbol' => rawurlencode( implode( ',', $crypto_symbols ) ),
 						'convert' => $fiat_symbol,
 					),
 					'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
 				);
-
 				$json = self::file_get_contents( $url, false, array( "X-CMC_PRO_API_KEY: $api_key" ) );
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
-					if ( is_object( $obj ) && is_object( $obj->data ) ) {
+					if ( is_object( $obj ) && isset( $obj->data ) && is_object( $obj->data ) ) {
 						foreach ( $obj->data as $currency ) {
 							foreach ( $currency->quote as $base_symbol => $data ) {
 								$m = strtoupper( "{$base_symbol}_{$currency->symbol}" );
@@ -1207,7 +1223,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			$url = add_query_arg(
 				array(
-					'ids'           => implode( ',', $ids ),
+					'ids'           => rawurlencode( implode( ',', $ids ) ),
 					'vs_currencies' => implode( ',', $vs_ids ),
 				),
 				'https://api.coingecko.com/api/v3/simple/price'

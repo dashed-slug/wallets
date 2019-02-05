@@ -58,10 +58,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		}
 
 		public function cron() {
-			add_action( 'shutdown', array( &$this, 'cron_mark_retried_deposits_as_done' ), 10 );
-			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs' ), 20 );
+			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs' ), 10 );
+			add_action( 'shutdown', array( &$this, 'cron_mark_retried_deposits_as_done' ), 11 );
 			add_action( 'shutdown', array( &$this, 'cron_old_transactions_aggregating' ), 30 );
-			add_action( 'shutdown', array( &$this, 'cron_old_unconfirmed_pending_transactions_cancel' ), 40 );
+			add_action( 'shutdown', array( &$this, 'cron_old_unconfirmed_pending_transactions_cancel' ), 31 );
 		}
 
 		public function cron_tasks_on_all_blogs() {

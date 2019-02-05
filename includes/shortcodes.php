@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.0.2.min.js' ) ) {
-					$script = 'bs58check-4.0.2.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.0.3.min.js' ) ) {
+					$script = 'bs58check-4.0.3.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -63,6 +63,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 					'2.1.2',
 					true
 				);
+
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_sweetalert_enabled' ) ) {
+					wp_enqueue_script(
+						'sweetalert',
+						plugins_url( 'sweetalert.min.js', 'wallets/assets/scripts/sweetalert.min.js' ),
+						array(),
+						'2.1.2',
+						true
+					);
+				}
 			}
 		}
 

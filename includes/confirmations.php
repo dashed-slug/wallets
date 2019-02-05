@@ -1347,7 +1347,7 @@ EMAIL
 		}
 
 		public function cron() {
-			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs') );
+			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs' ), 20 );
 		}
 
 		public function cron_tasks_on_all_blogs() {

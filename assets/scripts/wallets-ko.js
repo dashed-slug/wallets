@@ -11,6 +11,14 @@
 		// localize moment.js
 		moment.locale( $( 'html' ).attr( 'lang' ).toLowerCase().split( '-' )[ 0 ] );
 
+		var wallets_alert = function( text ) {
+			if ( 'function' == typeof( swal ) ) {
+				swal( text );
+			} else {
+				alert( text );
+			}
+		};
+
 		// common error handlers for all requests
 
 		var xhrErrorHandler = function( jqXHR, textStatus, errorThrown ) {
@@ -23,7 +31,7 @@
 			} else if ( 401 == jqXHR.status ) {
 				$( '.dashed-slug-wallets' ).replaceWith( '<div class="dashed-slug-wallets">' + jqXHR.responseJSON.message + '</div>' );
 			} else {
-				alert( sprintf( wallets_ko_i18n.contact_fail, textStatus, errorThrown ) );
+				wallets_alert( sprintf( wallets_ko_i18n.contact_fail, textStatus, errorThrown ) );
 			}
 		};
 
@@ -37,9 +45,9 @@
 
 			if ( typeof(response.result) == 'string' ) {
 				if ( response.result == 'error' ) {
-					alert( sprintf( wallets_ko_i18n.op_failed_msg, response.message ) );
+					wallets_alert( sprintf( wallets_ko_i18n.op_failed_msg, response.message ) );
 				} else {
-					alert( wallets_ko_i18n.op_failed );
+					wallets_alert( wallets_ko_i18n.op_failed );
 				}
 			}
 		};
@@ -309,7 +317,7 @@
 			// the deposit address for the currently selected coin
 			self.currentCoinDepositAddress = ko.computed( function() {
 				var coins = self.coins();
-				var coin = self.selectedCoin();
+				var coin = self.selectedCryptoCoin();
 				if ( 'object' == typeof( coins[ coin ] ) ) {
 					return coins[ coin ].deposit_address;
 				}
@@ -319,7 +327,7 @@
 			// the deposit address extra field (e.g. payment id for XMR or XRP), for the currently selected coin, or empty if n/a
 			self.currentCoinDepositExtra = ko.computed( function() {
 				var coins = self.coins();
-				var coin = self.selectedCoin();
+				var coin = self.selectedCryptoCoin();
 				if ( 'object' == typeof( coins[ coin ] ) ) {
 					if ( 'string' == typeof (coins[ coin ].deposit_extra ) ) {
 						return coins[ coin ].deposit_extra;
@@ -565,7 +573,7 @@
 								return true;
 							}
 							var coins = self.coins();
-							var coin = self.selectedCoin();
+							var coin = self.selectedCryptoCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
 									var fee = parseFloat( coins[ coin ].withdraw_fee );
@@ -587,7 +595,7 @@
 								return true;
 							}
 							var coins = self.coins();
-							var coin = self.selectedCoin();
+							var coin = self.selectedCryptoCoin();
 							if ( coin ) {
 								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
 									return coins[ coin ].min_withdraw <= parseFloat( val );
@@ -607,7 +615,7 @@
 				if ( ! isNaN( amount ) ) {
 					if ( walletsUserData.fiatSymbol ) {
 						var coins = self.coins();
-						var coin = self.selectedCoin();
+						var coin = self.selectedCryptoCoin();
 						if ( 'object' == typeof( coins[ coin ] ) ) {
 							if ( coins[ coin ].rate ) {
 								return sprintf( walletsUserData.fiatSymbol + ' %01.2f', parseFloat( self.withdrawAmount() ) * coins[ coin ].rate );
@@ -627,7 +635,7 @@
 			// the label text describing what the "payment id" extra field is, used in the [wallets_withdraw] form
 			self.withdrawExtraDesc = ko.computed( function() {
 				var coins = self.coins();
-				var coin = self.selectedCoin();
+				var coin = self.selectedCryptoCoin();
 				if ( 'object' == typeof( coins[ coin ] ) ) {
 					return coins[ coin ].extra_desc;
 				}
@@ -639,7 +647,7 @@
 			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
 			self.withdrawFee = ko.computed( function() {
 				var coins = self.coins();
-				var coin = self.selectedCoin();
+				var coin = self.selectedCryptoCoin();
 				if ( 'object' == typeof( coins[ coin ] ) ) {
 					var fee = parseFloat( coins[ coin ].withdraw_fee );
 					fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
@@ -661,7 +669,7 @@
 			// returns array of two cells: string-formatted amount in cryptocurrency, and then in fiat currency
 			self.withdrawAmountAfterFee = ko.computed( function() {
 				var coins = self.coins();
-				var coin = self.selectedCoin();
+				var coin = self.selectedCryptoCoin();
 				if ( 'object' == typeof( coins[ coin ] ) ) {
 					var amount = parseFloat( self.withdrawAmount() );
 					if ( ! isNaN( amount ) ) {
@@ -688,7 +696,7 @@
 			// the withdraw action. activated when the button is clicked
 			self.doWithdraw = function( form ) {
 				var address = self.withdrawAddress(),
-					symbol = self.selectedCoin(),
+					symbol = self.selectedCryptoCoin(),
 					amount = self.withdrawAmount(),
 					comment = self.withdrawComment(),
 					extra = self.withdrawExtra(),
@@ -902,14 +910,14 @@
 		$( 'html' ).on( 'wallets_do_move', function( event, response, symbol, amount, toaccount, comment ) {
 			if ( response.result == 'success' ) {
 				walletsViewModel.resetMove();
-				alert( sprintf( wallets_ko_i18n.submit_tx, amount, symbol ) );
+				wallets_alert( sprintf( wallets_ko_i18n.submit_tx, amount, symbol ) );
 			}
 		});
 
 		$( 'html' ).on( 'wallets_do_withdraw', function( event, response, symbol, amount, address, comment, commentto ) {
 			if ( response.result == 'success' ) {
 				walletsViewModel.resetWithdraw();
-				alert( sprintf( wallets_ko_i18n.submit_wd, amount, symbol, address ) );
+				wallets_alert( sprintf( wallets_ko_i18n.submit_wd, amount, symbol, address ) );
 			}
 		} );
 

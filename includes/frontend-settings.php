@@ -21,6 +21,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 		public static function action_activate( $network_active ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_qrcode_enabled', 'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_sweetalert_enabled', 'on' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_zlib_disabled', '' );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_legacy_json_apis', '' );
 
@@ -32,9 +33,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 		public function action_admin_init() {
 			add_settings_section(
-				'wallets_qrcode_section',
-				__( 'QR Code display settings', 'wallets' ),
-				array( &$this, 'wallets_qrcode_section_cb' ),
+				'wallets_ui_section',
+				__( 'UI/display settings', 'wallets' ),
+				array( &$this, 'wallets_ui_section_cb' ),
 				'wallets-menu-frontend-settings'
 			);
 
@@ -43,10 +44,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				__( 'Enable QR Codes', 'wallets' ),
 				array( &$this, 'checkbox_cb' ),
 				'wallets-menu-frontend-settings',
-				'wallets_qrcode_section',
+				'wallets_ui_section',
 				array(
 					'label_for'   => 'wallets_qrcode_enabled',
-					'description' => __( 'Controls whether a QR Code is displayed.', 'wallets ' ),
+					'description' => __(
+						'<p>Controls whether a QR Code is displayed in the <code>[wallets_deposit]</code> shortcode, below the deposit address.</p>' .
+						'<p style="font-size: smaller;">"QR Code" is a registered trademark of DENSO WAVE INCORPORATED</p>',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-frontend-settings',
+				'wallets_qrcode_enabled'
+			);
+
+			add_settings_field(
+				'wallets_sweetalert_enabled',
+				__( 'Enable sweetalert', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-frontend-settings',
+				'wallets_ui_section',
+				array(
+					'label_for'   => 'wallets_sweetalert_enabled',
+					'description' => __(
+						'Controls whether <a href="https://sweetalert.js.org/">sweetalert.js</a> is used to display nicer modal boxes.',
+						'wallets'
+					),
 				)
 			);
 
@@ -275,7 +300,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			?>
 			<input name="<?php echo esc_attr( $arg['label_for'] ); ?>" id="<?php echo esc_attr( $arg['label_for'] ); ?>" type="checkbox"
 			<?php checked( Dashed_Slug_Wallets::get_option( $arg['label_for'] ), 'on' ); ?> />
-			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<p class="description"><?php echo $arg['description']; ?></p>
 			<?php
 		}
 
@@ -291,21 +316,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				max="<?php echo floatval( $arg['max'] ); ?>"
 				step="<?php echo floatval( $arg['step'] ); ?>" />
 
-			<p class="description"><?php echo esc_html( $arg['description'] ); ?></p>
+			<p class="description"><?php echo $arg['description']; ?></p>
 			<?php
 		}
 
-		public function wallets_qrcode_section_cb() {
+		public function wallets_ui_section_cb() {
 			?>
 			<p>
 			<?php
 				echo __(
-					'The <code>[wallets_deposit]</code> shortcode displays deposit addresses. ' .
-					'Here you can control whether these deposit addresses are also rendered as QR Codes.', 'wallets'
+					'These settings affect the display of frontend UIs.',
+					'wallets'
 				);
 			?>
 			</p>
-			<p style="font-size: smaller;"><?php esc_html_e( '"QR Code" is a registered trademark of DENSO WAVE INCORPORATED', 'wallets' ); ?></p>
 			<?php
 		}
 

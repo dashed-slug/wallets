@@ -172,7 +172,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 */
 		public function cron() {
 
-			add_action( 'shutdown', array( &$this, 'cron_adapter_tasks_on_all_blogs' ) );
+			add_action( 'shutdown', array( &$this, 'cron_adapter_tasks_on_all_blogs' ), 12 );
 		}
 
 		public function cron_adapter_tasks_on_all_blogs() {

@@ -244,7 +244,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			}
 
 			if ( $wallets_rules_count < 12 ) {
-				add_action( 'shutdown', 'Dashed_Slug_Wallets_JSON_API::flush_rules' );
+				add_action( 'shutdown', 'Dashed_Slug_Wallets_JSON_API::flush_rules', 5 );
 			}
 		}
 

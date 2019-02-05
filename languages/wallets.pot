@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.2\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-02-01 10:28:02+00:00\n"
+"POT-Creation-Date: 2019-02-05 17:28:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Pending withdrawals"
 msgstr ""
 
-#: includes/adapters-list-table.php:99 includes/wallets-core.php:697
+#: includes/adapters-list-table.php:99 includes/wallets-core.php:701
 msgid "n/a"
 msgstr ""
 
@@ -124,8 +124,8 @@ msgstr ""
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:146
 #: includes/confirmations.php:687 includes/cron.php:462
-#: includes/frontend-settings.php:223 includes/notifications.php:724
-#: includes/rates.php:349 includes/transactions.php:330
+#: includes/frontend-settings.php:248 includes/notifications.php:724
+#: includes/rates.php:358 includes/transactions.php:330
 #: includes/transactions.php:1187 includes/transactions.php:1332
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
@@ -187,8 +187,8 @@ msgstr ""
 msgid "Bitcoin and Altcoin Wallets Addresses"
 msgstr ""
 
-#: includes/admin-menu.php:41 includes/wallets-core.php:255
-#: includes/wallets-core.php:265
+#: includes/admin-menu.php:41 includes/wallets-core.php:259
+#: includes/wallets-core.php:269
 msgid "Wallets"
 msgstr ""
 
@@ -205,7 +205,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:96 includes/cold-storage.php:370
-#: includes/cold-storage.php:385 includes/rates.php:435
+#: includes/cold-storage.php:385 includes/rates.php:444
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -1255,70 +1255,76 @@ msgstr ""
 msgid "(never)"
 msgstr ""
 
-#: includes/frontend-settings.php:36
-msgid "QR Code display settings"
+#: includes/frontend-settings.php:37
+msgid "UI/display settings"
 msgstr ""
 
-#: includes/frontend-settings.php:43
+#: includes/frontend-settings.php:44
 msgid "Enable QR Codes"
 msgstr ""
 
-#: includes/frontend-settings.php:49
-msgid "Controls whether a QR Code is displayed."
+#: includes/frontend-settings.php:65
+msgid "Enable sweetalert"
 msgstr ""
 
-#: includes/frontend-settings.php:60
+#: includes/frontend-settings.php:71
+msgid ""
+"Controls whether <a href=\"https://sweetalert.js.org/\">sweetalert.js</a> "
+"is used to display nicer modal boxes."
+msgstr ""
+
+#: includes/frontend-settings.php:85
 msgid "Live polling settings"
 msgstr ""
 
-#: includes/frontend-settings.php:67
+#: includes/frontend-settings.php:92
 msgid "Coin info poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:73
+#: includes/frontend-settings.php:98
 msgid ""
 "How often information about coins, including user balances, is refreshed. "
 "(0 = no refresh)"
 msgstr ""
 
-#: includes/frontend-settings.php:89
+#: includes/frontend-settings.php:114
 msgid "Also load coin info when the page becomes visible"
 msgstr ""
 
-#: includes/frontend-settings.php:109
+#: includes/frontend-settings.php:134
 msgid "Transaction list poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:115
+#: includes/frontend-settings.php:140
 msgid "How often user transaction data is refreshed. (0 = no refresh)."
 msgstr ""
 
-#: includes/frontend-settings.php:131
+#: includes/frontend-settings.php:156
 msgid "JSON API Settings"
 msgstr ""
 
-#: includes/frontend-settings.php:138
+#: includes/frontend-settings.php:163
 msgid "Disable zlib compression for JSON API"
 msgstr ""
 
-#: includes/frontend-settings.php:158
+#: includes/frontend-settings.php:183
 msgid "Enable legacy JSON APIs"
 msgstr ""
 
-#: includes/frontend-settings.php:178
+#: includes/frontend-settings.php:203
 msgid "Disable transients (debug)"
 msgstr ""
 
-#: includes/frontend-settings.php:226
+#: includes/frontend-settings.php:251
 msgid "Bitcoin and Altcoin Wallets frontend settings"
 msgstr ""
 
-#: includes/frontend-settings.php:228
+#: includes/frontend-settings.php:253
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:308
-msgid "\"QR Code\" is a registered trademark of DENSO WAVE INCORPORATED"
+#: includes/frontend-settings.php:327
+msgid "These settings affect the display of frontend UIs."
 msgstr ""
 
 #: includes/gdpr.php:44 includes/gdpr.php:58
@@ -1701,110 +1707,110 @@ msgstr ""
 msgid "No transactions found!"
 msgstr ""
 
-#: includes/rates.php:81
+#: includes/rates.php:90
 msgid "Exchange rates settings"
 msgstr ""
 
-#: includes/rates.php:88
+#: includes/rates.php:97
 msgid "Exchange rates providers"
 msgstr ""
 
-#: includes/rates.php:94
+#: includes/rates.php:103
 msgid ""
 "Pick the APIs that you wish to use as sources of exchange rates between "
 "cryptocurrencies. "
 msgstr ""
 
-#: includes/rates.php:105
+#: includes/rates.php:114
 msgid "Fixer API key"
 msgstr ""
 
-#: includes/rates.php:128
+#: includes/rates.php:137
 msgid "CoinMarketCap API key"
 msgstr ""
 
-#: includes/rates.php:151
+#: includes/rates.php:160
 msgid "Rates refresh rate (minutes)"
 msgstr ""
 
-#: includes/rates.php:177
+#: includes/rates.php:186
 msgid "Default fiat currency"
 msgstr ""
 
-#: includes/rates.php:198
+#: includes/rates.php:207
 msgid "Use tor to pull exchange rates"
 msgstr ""
 
-#: includes/rates.php:204
+#: includes/rates.php:213
 msgid ""
 "Enable this to pull exchange rates via tor. Does not work with Poloniex. "
 "You need to set up a tor proxy first. Only useful if setting up a hidden "
 "service. (Default: disabled)"
 msgstr ""
 
-#: includes/rates.php:215
+#: includes/rates.php:224
 msgid "Skip refreshing exchange rates when HTTP_REFERER is set"
 msgstr ""
 
-#: includes/rates.php:238
+#: includes/rates.php:247
 msgid "Tor proxy IP"
 msgstr ""
 
-#: includes/rates.php:244
+#: includes/rates.php:253
 msgid "This is the IP of your tor proxy. (Default: 127.0.0.1)"
 msgstr ""
 
-#: includes/rates.php:255
+#: includes/rates.php:264
 msgid "Tor proxy TCP port"
 msgstr ""
 
-#: includes/rates.php:264
+#: includes/rates.php:273
 msgid ""
 "This is the TCP port of your tor proxy. (Default: 9050, some newer tor "
 "bundles use 9150)"
 msgstr ""
 
-#: includes/rates.php:277
+#: includes/rates.php:286
 msgid "Exchange rates debug views"
 msgstr ""
 
-#: includes/rates.php:284
+#: includes/rates.php:293
 msgid "Known fiat currencies"
 msgstr ""
 
-#: includes/rates.php:290
+#: includes/rates.php:299
 msgid "View a list of known fiat currencies (for debugging). "
 msgstr ""
 
-#: includes/rates.php:301
+#: includes/rates.php:310
 msgid "Known cryptocurrencies"
 msgstr ""
 
-#: includes/rates.php:307
+#: includes/rates.php:316
 msgid ""
 "View a list of all known cryptocurrencies reported by the selected "
 "providers (for debugging). "
 msgstr ""
 
-#: includes/rates.php:318 includes/sidebar-widgets.php:480
+#: includes/rates.php:327 includes/sidebar-widgets.php:480
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/rates.php:324
+#: includes/rates.php:333
 msgid ""
 "View a list of all exhange rates reported by the selected providers (for "
 "debugging)."
 msgstr ""
 
-#: includes/rates.php:354
+#: includes/rates.php:363
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: includes/rates.php:490
+#: includes/rates.php:499
 msgid "&#x1F4CB; Copy"
 msgstr ""
 
-#: includes/rates.php:595
+#: includes/rates.php:604
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
@@ -2074,124 +2080,124 @@ msgstr ""
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:256 includes/wallets-core.php:266
+#: includes/wallets-core.php:260 includes/wallets-core.php:270
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:257 includes/wallets-core.php:267
+#: includes/wallets-core.php:261 includes/wallets-core.php:271
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:384
+#: includes/wallets-core.php:388
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:392
+#: includes/wallets-core.php:396
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:563
+#: includes/wallets-core.php:567
 msgid ""
 "You are using WordPress %1$s. This plugin has been tested with %2$s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:655
+#: includes/wallets-core.php:659
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:656
+#: includes/wallets-core.php:660
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:657
+#: includes/wallets-core.php:661
 msgid "Web Server"
 msgstr ""
 
-#: includes/wallets-core.php:658
+#: includes/wallets-core.php:662
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:659
+#: includes/wallets-core.php:663
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:660
+#: includes/wallets-core.php:664
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:661
+#: includes/wallets-core.php:665
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:662
+#: includes/wallets-core.php:666
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:663
+#: includes/wallets-core.php:667
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:664
+#: includes/wallets-core.php:668
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:685
+#: includes/wallets-core.php:689
 msgid "DB storage engine for '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:696
+#: includes/wallets-core.php:700
 msgid "Constant '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:703
+#: includes/wallets-core.php:707
 msgid "PHP.ini '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:706
+#: includes/wallets-core.php:710
 msgid "Cron jobs last ran on"
 msgstr ""
 
-#: includes/wallets-core.php:707
+#: includes/wallets-core.php:711
 msgid "Cron jobs last runtime (sec)"
 msgstr ""
 
-#: includes/wallets-core.php:708
+#: includes/wallets-core.php:712
 msgid "Cron jobs peak memory:"
 msgstr ""
 
-#: includes/wallets-core.php:709
+#: includes/wallets-core.php:713
 msgid "Cron jobs memory delta:"
 msgstr ""
 
-#: includes/wallets-core.php:716
+#: includes/wallets-core.php:720
 msgid "PHP Extension '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:716
+#: includes/wallets-core.php:720
 msgid "Loaded"
 msgstr ""
 
-#: includes/wallets-core.php:716
+#: includes/wallets-core.php:720
 msgid "Not loaded"
 msgstr ""
 
-#: includes/wallets-core.php:748
+#: includes/wallets-core.php:752
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:1301
+#: includes/wallets-core.php:1305
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1305
+#: includes/wallets-core.php:1309
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 
