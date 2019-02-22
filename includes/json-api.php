@@ -380,7 +380,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							}
 						}
 					} catch ( Exception $e ) {
-						throw new Exception( __( 'Could not get info about users: ', 'wallets' ), $e );
+						throw new Exception(
+							__(
+								'Could not get info about users: ',
+								'wallets'
+							),
+							0,
+							$e
+						);
 					}
 					$response['result'] = 'success';
 
@@ -617,9 +624,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 			if ( ! headers_sent() ) {
 				if ( Dashed_Slug_Wallets::get_option( 'wallets_zlib_disabled' ) ) {
-					ini_set( 'zlib.output_compression', 0 );
+					ini_set( 'zlib.output_compression', 'Off' );
 				} else {
-					ini_set( 'zlib.output_compression', 1 );
+					ini_set( 'zlib.output_compression', 'On' );
 				}
 			}
 
@@ -926,9 +933,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 			if ( ! headers_sent() ) {
 				if ( Dashed_Slug_Wallets::get_option( 'wallets_zlib_disabled' ) ) {
-					ini_set( 'zlib.output_compression', 0 );
+					ini_set( 'zlib.output_compression', 'Off' );
 				} else {
-					ini_set( 'zlib.output_compression', 1 );
+					ini_set( 'zlib.output_compression', 'On' );
 				}
 			}
 
@@ -1186,9 +1193,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								sprintf(
 									__( 'Could not get new %s address', 'wallets' ),
 									$symbol
-								),
-								null,
-								$e
+								)
 							);
 						}
 
@@ -1205,7 +1210,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								__( 'Could not get new %s address', 'wallets' ),
 								$symbol
 							),
-							null,
+							0,
 							$e
 						);
 					}
@@ -1376,9 +1381,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 			if ( ! headers_sent() ) {
 				if ( Dashed_Slug_Wallets::get_option( 'wallets_zlib_disabled' ) ) {
-					ini_set( 'zlib.output_compression', 0 );
+					ini_set( 'zlib.output_compression', 'Off' );
 				} else {
-					ini_set( 'zlib.output_compression', 1 );
+					ini_set( 'zlib.output_compression', 'On' );
 				}
 			}
 

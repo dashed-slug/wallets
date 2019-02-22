@@ -194,13 +194,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			$this->log( 'cron jobs STARTED' );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
-
+				$site_count = 0;
 				$sites = get_sites();
 				shuffle( $sites );
 				foreach ( $sites as $site ) {
 					switch_to_blog( $site->blog_id );
 					$this->cron_adapter_tasks_on_current_blog();
 					restore_current_blog();
+					$site_count++;
 					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
 						if ( $this->verbose ) {
 							$this->log( "Stopping cron jobs after running on $site_count sites" );

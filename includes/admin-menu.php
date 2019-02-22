@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-4.0.3.min.js', 'wallets/assets/scripts/pay-now-button-4.0.3.min.js' ),
+				plugins_url( 'pay-now-button-4.0.4.min.js', 'wallets/assets/scripts/pay-now-button-4.0.4.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -129,10 +129,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				<h4><?php esc_html_e( 'Subscribe to the YouTube channel:', 'wallets' ); ?></h4>
 
 				<div class="g-ytsubscribe" data-channelid="UCZ1XhSSWnzvB2B_-Cy1tTjA" data-layout="full" data-count="default"></div>
-
-				<h4><?php esc_html_e( '+1 the Google+ page to learn the latest news:', 'wallets' ); ?></h4>
-
-				<div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/0/103549774963556626441" data-rel="publisher"></div>
 
 				<h4><?php esc_html_e( 'Like the Facebook page to learn the latest news:', 'wallets' ); ?></h4>
 

@@ -1,8 +1,11 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly
 
-
-$adapters       = apply_filters( 'wallets_api_adapters', array() );
-$fiat_symbol    = Dashed_Slug_Wallets_Rates::get_fiat_selection();
+$atts['decimals'] = absint( $atts['decimals'] );
+if ( $atts['decimals'] > 16 ) {
+	$atts['decimals'] = 16;
+}
+$adapters         = apply_filters( 'wallets_api_adapters', array() );
+$fiat_symbol      = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 ksort( $adapters );
 ?>
 
@@ -46,7 +49,7 @@ ksort( $adapters );
 								if ( $rate ) {
 									echo esc_attr(
 										sprintf(
-											'%01.2f %s',
+											"%01.{$atts['decimals']}f %s",
 											$rate,
 											$fiat_symbol
 										)

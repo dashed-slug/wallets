@@ -192,6 +192,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		 * @param array $old_instance The previous options
 		 */
 		public function update( $new_instance, $old_instance ) {
+			$instance = array();
 			$instance['template'] = $new_instance['template'];
 
 			if ( isset( $new_instance['user_id'] ) ) {

@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.0.3
+Tested up to: 5.1
 Requires PHP: 5.6
-Stable tag: 4.0.3
+Stable tag: 4.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,7 +91,6 @@ The dashed-slug is a social slug:
 
 - Facebook: [https://www.facebook.com/dashedslug](https://www.facebook.com/dashedslug)
 - Twitter: [https://twitter.com/DashedSlug](https://twitter.com/DashedSlug)
-- Google+: [https://plus.google.com/103549774963556626441](https://plus.google.com/103549774963556626441)
 - RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
 - SteemIt: [https://steemit.com/@dashed-slug.net](https://steemit.com/@dashed-slug.net)
 - Youtube channel: [https://www.youtube.com/dashedslugnet](https://www.youtube.com/dashedslugnet)
@@ -353,6 +352,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.0.4 =
+- Fix: Bug introduced in 4.0.3 that prevented user from enabling sweetalert.js modal dialogs now fixed.
+- Add: The `[wallets_rates]` shortcode now takes an optional argument "decimals" to control how many decimal digits to display exchange rates with.
+- Improve: Code that parses fixer.io exchange rates improved. Will now consider the site-wide default fiat currency when requesting prices.
+- Fix: Parser for cryptocompare list of currencies is now safer (produces less warnings).
+- Fix: Parser for cryptocompare currency prices is now safer (produces less warnings).
+- Fix: Several PHPdoc errors and other minor bugs fixed using static code analysis with phan.
+- Change: Social links to Google+ page are now removed, since the platform is to be decommissioned.
 
 = 4.0.3 =
 - Add: Use sweetalert.js for modal dialogs. This can be turned off to fall back to standard JavaScript alerts.
@@ -1165,7 +1173,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.3 fixes a few minor bugs and introduces sweetalert modal boxes.
+Version 4.0.4 fixes a few minor bugs.
 
 == Donating ==
 

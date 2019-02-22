@@ -66,7 +66,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 									<?php endif; ?>
 									value="">
 									<?php
-										echo sprintf(
+										printf(
 											esc_html( 'Site default (%s)', 'wallets' ),
 											$default_fiat_symbol
 										);

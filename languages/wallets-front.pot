@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.3\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-02-05 17:28:01+00:00\n"
+"POT-Creation-Date: 2019-02-22 18:22:40+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,8 +24,8 @@ msgstr ""
 #: includes/sidebar-widgets.php:159 includes/views/balance/default.php:10
 #: includes/views/balance/list.php:18 includes/views/deposit/default.php:15
 #: includes/views/deposit/list.php:18 includes/views/deposit/static.php:29
-#: includes/views/move/default.php:21 includes/views/rates/default.php:17
-#: includes/views/rates/static.php:19
+#: includes/views/move/default.php:21 includes/views/rates/default.php:23
+#: includes/views/rates/static.php:22
 #: includes/views/total_balances/default.php:23
 #: includes/views/transactions/default.php:23
 #: includes/views/transactions/rows.php:14
@@ -34,63 +34,63 @@ msgstr ""
 msgid "Coin"
 msgstr ""
 
-#: includes/sidebar-widgets.php:212
+#: includes/sidebar-widgets.php:213
 msgid "Deposit to wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:230
+#: includes/sidebar-widgets.php:231
 msgid "QR code size (px)"
 msgstr ""
 
-#: includes/sidebar-widgets.php:240
+#: includes/sidebar-widgets.php:241
 msgid ""
 "Size of the deposit QR code, in pixels. If this is left empty, no size is "
 "set."
 msgstr ""
 
-#: includes/sidebar-widgets.php:268
+#: includes/sidebar-widgets.php:269
 msgid "Withdraw from wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:269
+#: includes/sidebar-widgets.php:270
 msgid "A form that will let the user withdraw funds."
 msgstr ""
 
-#: includes/sidebar-widgets.php:280
+#: includes/sidebar-widgets.php:281
 msgid "Transfer to user wallet"
 msgstr ""
 
-#: includes/sidebar-widgets.php:281
+#: includes/sidebar-widgets.php:282
 msgid "A form that lets the user transfer coins to other users on your site."
 msgstr ""
 
-#: includes/sidebar-widgets.php:292
+#: includes/sidebar-widgets.php:293
 msgid "Wallet balance"
 msgstr ""
 
-#: includes/sidebar-widgets.php:293
+#: includes/sidebar-widgets.php:294
 msgid "The current user's balances in all enabled coins."
 msgstr ""
 
-#: includes/sidebar-widgets.php:304
+#: includes/sidebar-widgets.php:305
 msgid "Wallet transactions"
 msgstr ""
 
-#: includes/sidebar-widgets.php:305
+#: includes/sidebar-widgets.php:306
 msgid ""
 "An interactive table that shows past deposits, withdrawals and transfers "
 "for the user."
 msgstr ""
 
-#: includes/sidebar-widgets.php:323
+#: includes/sidebar-widgets.php:324
 msgid "Columns"
 msgstr ""
 
-#: includes/sidebar-widgets.php:345
+#: includes/sidebar-widgets.php:346
 msgid "Categories"
 msgstr ""
 
-#: includes/sidebar-widgets.php:378
+#: includes/sidebar-widgets.php:379
 #: includes/views/transactions/default/fragments.php:8
 #: includes/views/transactions/rows.php:28
 #: includes/views/transactions/rows.php:66
@@ -100,33 +100,33 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: includes/sidebar-widgets.php:396
+#: includes/sidebar-widgets.php:397
 msgid "Rows count"
 msgstr ""
 
-#: includes/sidebar-widgets.php:456 includes/views/account_value/default.php:9
+#: includes/sidebar-widgets.php:457 includes/views/account_value/default.php:9
 #: includes/views/account_value/static.php:33
 msgid "Account value"
 msgstr ""
 
-#: includes/sidebar-widgets.php:457
+#: includes/sidebar-widgets.php:458
 msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
-#: includes/sidebar-widgets.php:468
+#: includes/sidebar-widgets.php:469
 #: includes/views/total_balances/default.php:24
 msgid "Total user balances"
 msgstr ""
 
-#: includes/sidebar-widgets.php:469
+#: includes/sidebar-widgets.php:470
 msgid "Shows the total user balances for each coin."
 msgstr ""
 
-#: includes/sidebar-widgets.php:480
+#: includes/sidebar-widgets.php:481
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/sidebar-widgets.php:481
+#: includes/sidebar-widgets.php:482
 msgid ""
 "Shows exchange rates for online cryptocurrencies, expressed in the default "
 "fiat currency."
@@ -135,7 +135,7 @@ msgstr ""
 #: includes/views/account_value/default.php:8
 #: includes/views/balance/default.php:9 includes/views/balance/list.php:13
 #: includes/views/deposit/default.php:14 includes/views/deposit/list.php:14
-#: includes/views/rates/default.php:13
+#: includes/views/rates/default.php:19
 #: includes/views/transactions/default.php:15
 #: includes/views/transactions/rows.php:13
 msgid "Reload data from server"
@@ -152,7 +152,7 @@ msgstr ""
 
 #: includes/views/balance/default.php:15 includes/views/balance/list.php:9
 #: includes/views/deposit/default.php:10 includes/views/deposit/list.php:10
-#: includes/views/move/default.php:9 includes/views/rates/default.php:9
+#: includes/views/move/default.php:9 includes/views/rates/default.php:15
 #: includes/views/total_balances/default.php:17
 #: includes/views/transactions/default.php:11
 #: includes/views/transactions/rows.php:9 includes/views/withdraw/default.php:9
@@ -207,7 +207,7 @@ msgstr ""
 msgid "Reset form"
 msgstr ""
 
-#: includes/views/rates/default.php:18 includes/views/rates/static.php:20
+#: includes/views/rates/default.php:24 includes/views/rates/static.php:23
 msgid "Exchange Rate"
 msgstr ""
 

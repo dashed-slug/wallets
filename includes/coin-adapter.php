@@ -465,7 +465,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * Provides an easy way to quickly get a URI that can be used as a QR code.
 		 * Coin adapters that require additional info to be placed in the QR code can override this. (e.g. Ripple, Monero).
 		 *
-		 * @param strinng|array $address An  address for this coin. Can be the result of get_new_address().
+		 * @param string|array $address An address for this coin. Can be the result of get_new_address().
 		 * @since 2.8.1 Introduced
 		 * @see https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki
 		 * @return string The string to be used in a deposit QR code.
@@ -537,7 +537,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * This setting is used by {@link get_balance()} and is also part of the adapter API.
 		 *
 		 * @api
-		 * @return number Minimum amount of confirmations required to consider a transaction as confirmed.
+		 * @return int Minimum amount of confirmations required to consider a transaction as confirmed.
 		 */
 		public function get_minconf() {
 			return absint( $this->get_adapter_option( 'other-minconf', 1 ) );
@@ -547,7 +547,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * Minimum withdrawal amount allowed for this coin.
 		 *
 		 * @api
-		 * @return number The minimal withdrawal allowed
+		 * @return float The minimal withdrawal allowed
 		 */
 		public function get_minwithdraw() {
 			return floatval( $this->get_adapter_option( 'general-minwithdraw', 0 ) );
@@ -563,7 +563,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * paid when performing a transaction is set in your wallet daemon.
 		 *
 		 * @api
-		 * @return number The fixed part of the fee removed from a user's balance when they do a withdrawal.
+		 * @return float The fixed part of the fee removed from a user's balance when they do a withdrawal.
 		 */
 		public function get_withdraw_fee() {
 			return floatval( $this->get_adapter_option( 'fees-withdraw' ) );
@@ -576,7 +576,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * amount * get_withdraw_fee_proportional() + get_withdraw_fee()
 		 *
 		 *  @api
-		 *  @return number The proportional part of the fee removed from a user's balance when they do a withdrawal.
+		 *  @return float The proportional part of the fee removed from a user's balance when they do a withdrawal.
 		 *
 		 */
 		public function get_withdraw_fee_proportional() {
@@ -593,7 +593,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * The fee can be zero or any positive value you like.
 		 *
 		 * @api
-		 * @return number The fee removed from a user's balance when they transfer funds to another user.
+		 * @return float The fee removed from a user's balance when they transfer funds to another user.
 		 */
 		public function get_move_fee() {
 			return floatval( $this->get_adapter_option( 'fees-move' ) );
@@ -606,7 +606,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * amount * get_move_fee_proportional() + get_move_fee()
 		 *
 		 *  @api
-		 *  @return number The proportional part of the fee removed from a user's balance when they do a move.
+		 *  @return float The proportional part of the fee removed from a user's balance when they do a move.
 		 *
 		 */
 		public function get_move_fee_proportional() {
@@ -620,7 +620,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * is not included in this call.
 		 *
 		 * @api
-		 * @return number Total amount of coins held in the wallet that are available for spending.
+		 * @return float Total amount of coins held in the wallet that are available for spending.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public abstract function get_balance();
@@ -633,7 +633,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * not yet mature enough for spending.
 		 *
 		 * @api
-		 * @return number Total amount of coins held in the wallet that are not yet available for spending.
+		 * @return float Total amount of coins held in the wallet that are not yet available for spending.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public function get_unavailable_balance() {
@@ -756,7 +756,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * wallets_transaction action once for every transaction to be inserted or updated to the DB.
 		 *
 		 * @api
-		 * @param string $tx A transaction ID that has been updated.
+		 * @param string $txid A transaction ID that has been updated.
 		 * @throws Exception If communication with the wallet's API failed for some reason.
 		 */
 		public abstract function action_wallets_notify_wallet( $txid );

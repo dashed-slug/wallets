@@ -128,8 +128,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_wp_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-4.0.3.min.css' ) ) {
-				$front_styles = 'wallets-4.0.3.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-4.0.4.min.css' ) ) {
+				$front_styles = 'wallets-4.0.4.min.css';
 			} else {
 				$front_styles = 'wallets.css';
 			}
@@ -138,7 +138,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'4.0.3'
+				'4.0.4'
 			);
 
 
@@ -177,8 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-4.0.3.min.js' ) ) {
-					$script = 'wallets-ko-4.0.3.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-4.0.4.min.js' ) ) {
+					$script = 'wallets-ko-4.0.4.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -191,7 +191,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					$deps,
-					'4.0.3',
+					'4.0.4',
 					true
 				);
 
@@ -218,8 +218,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-4.0.3.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-4.0.3.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-4.0.4.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-4.0.4.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -228,7 +228,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'4.0.3',
+					'4.0.4',
 					true
 				);
 
@@ -561,12 +561,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '5.0.3' ) < 0 ) {
+			if ( version_compare( $wp_version, '5.1' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %1$s. This plugin has been tested with %2$s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'5.0.3'
+						'5.1'
 					),
 					'old-wp-ver'
 				);
@@ -656,8 +656,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '4.0.3';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '11b9f887';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '4.0.4';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = 'cb0c2b88';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -784,7 +784,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *
 		 * @param string $from The currency to convert from.
 		 * @param string $to The currency to convert to.
-		 * @return boolean|number Exchange rate or false.
+		 * @return boolean|float Exchange rate or false if not available.
 		 */
 		public static function get_exchange_rate( $from, $to ) {
 			return Dashed_Slug_Wallets_Rates::get_exchange_rate( $from, $to );
@@ -845,8 +845,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @link https://developer.wordpress.org/reference/functions/get_site_option/
 		 * @link https://developer.wordpress.org/reference/functions/get_option/
 		 * @param string $option The option name.
-		 * @param mixed $value The option value.
-		 * @return bool The result of the wrapped function.
+		 * @return mixed The result of the wrapped function.
 		 */
 		public static function get_option( $option, $default = false ) {
 			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'get_site_option' : 'get_option', $option, $default );
@@ -859,7 +858,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @link https://developer.wordpress.org/reference/functions/delete_site_option/
 		 * @link https://developer.wordpress.org/reference/functions/delete_option/
 		 * @param string $option The option name.
-		 * @param mixed $value The option value.
 		 * @return bool The result of the wrapped function.
 		 */
 		public static function delete_option( $option ) {
@@ -872,7 +870,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @since 2.11.1 Added
 		 * @link https://codex.wordpress.org/Function_Reference/set_site_transient
 		 * @link https://codex.wordpress.org/Function_Reference/set_transient
-		 * @param string $option The transient name.
+		 * @param string $transient The transient name.
 		 * @param mixed $value The transient value.
 		 * @param int $expiration Time until expiration in seconds from now, or 0 for never expires.
 		 * @return bool The result of the wrapped function.
@@ -887,7 +885,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @since 2.11.1 Added
 		 * @link https://codex.wordpress.org/Function_Reference/delete_site_transient
 		 * @link https://codex.wordpress.org/Function_Reference/delete_transient
-		 * @param string $option The transient name.
+		 * @param string $transient The transient name.
 		 * @return bool True if successful, false otherwise.
 		 */
 		public static function delete_transient( $transient ) {
@@ -903,7 +901,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @link https://codex.wordpress.org/Function_Reference/get_transient
 		 * @param string $option The transient name.
 		 * @param mixed $default The default value to return if transient was not found.
-		 * @return bool The result of the wrapped function.
+		 * @return mixed The result of the wrapped function.
 		 */
 		public static function get_transient( $transient, $default = false ) {
 			$transients_broken = self::get_option( 'wallets_transients_broken' );
@@ -939,7 +937,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @since 3.0.0 Changed to static.
 		 * @since 2.7 Introduced
 		 * @internal
-		 * @return An assoc array of symbols to total confirmed user balance sums.
+		 * @return array An assoc array of symbols to total confirmed user balance sums.
 		 */
 		public static function get_balance_totals_per_coin() {
 			static $balances = array();
@@ -981,7 +979,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 *
 		 * @since 3.6.0 Introduced
 		 * @internal
-		 * @return An assoc array of symbols to total fees paid by confirmed transactions.
+		 * @return array An assoc array of symbols to total fees paid by confirmed transactions.
 		 */
 		public static function get_fee_totals_per_coin() {
 			static $fees = array();

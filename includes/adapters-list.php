@@ -82,7 +82,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 		 * will be assigned a new deposit address from the adapter.
 		 * Additionally, the cold storage deposit address is refreshed.
 		 *
-		 * @param string $symbol
+		 * @param Dashed_Slug_Wallets_Coin_Adapter $adapter
 		 */
 		private function new_deposit_addresses( $adapter ) {
 
@@ -141,7 +141,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 		 * Users who do not yet have a deposit address for the specified currency
 		 * will be assigned a new deposit address from the adapter.
 		 *
-		 * @param string $symbol
+		 * @param Dashed_Slug_Wallets_Coin_Adapter $adapter
 		 */
 		private function all_deposit_addresses( $adapter ) {
 

@@ -606,11 +606,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		/**
-		 * When providers are updated, existing data is deleted.
+		 * When exchange rates providers are updated, existing data is deleted.
 		 *
-		 * @param unknown $new
-		 * @param unknown $old
-		 * @return unknown
+		 * @param array $new List of slugs of the newly selected exchange rates providers.
+		 * @param array $old List of slugs of the previously selected exchange rates providers.
+		 * @return array List of slugs of the newly selected exchange rates providers.
 		 */
 
 		public function filter_pre_update_option( $new, $old ) {
@@ -798,7 +798,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			$url  = 'https://min-api.cryptocompare.com/data/all/coinlist';
 			$json = self::file_get_contents( $url );
 			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
+				if ( defined( 'JSON_BIGINT_AS_STRING' ) ) {
+					$obj = json_decode( $json, false, 512, JSON_BIGINT_AS_STRING );
+				} else {
+					$obj = json_decode( $json );
+				}
 				if ( is_object( $obj ) && isset( $obj->Response ) && 'Success' == $obj->Response ) {
 					return array_merge( $cryptos, array_keys( get_object_vars( $obj->Data ) ) );
 				}
@@ -955,12 +959,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) && ! isset( $obj->error ) && isset( $obj->rates ) ) {
-						$default_base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+
+						// first, record all rates given
 						foreach ( $obj->rates as $s => $r ) {
 							if ( ! self::is_crypto( $s ) ) {
-								$rates[ "{$s}_{$obj->base}" ] = $r;
+								$rates[ "{$obj->base}_{$s}" ] = $r;
+							}
+						}
 
-								$rates[ "{$s}_{$default_base_symbol}"] = $r / $obj->rates->{$default_base_symbol};
+						// then, attempt to compute rates with the default base currency as base currency
+						$default_base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
+						if ( 'none' == $default_base_symbol ) {
+							$default_base_symbol = 'USD';
+						}
+						if ( isset( $rates[ "{$obj->base}_{$default_base_symbol}" ] ) ) {
+							$divisor = $rates[ "{$obj->base}_{$default_base_symbol}" ];
+							foreach ( $obj->rates as $s => $r ) {
+								$rates["{$default_base_symbol}_$s"] = $r / $divisor;
 							}
 						}
 					}
@@ -968,7 +983,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			}
 			return $rates;
 		}
-
 		// filters that pull cryptocurrency symbols
 
 
@@ -1047,9 +1061,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) ) {
 						foreach ( $obj as $quote => $rate_data ) {
-							foreach ( $rate_data as $base => $rate ) {
-								if ( $base != $quote ) {
-									$rates[ "{$base}_{$quote}" ] = $rate;
+							if ( is_object( $rate_data ) ) {
+								foreach ( $rate_data as $base => $rate ) {
+									if ( $base != $quote ) {
+										$rates[ "{$base}_{$quote}" ] = $rate;
+									}
 								}
 							}
 						}
@@ -1261,20 +1277,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		 *
 		 * amount_in_usd / value = amount_in_btc
 		 *
-		 * @param string $from The currency to convert from.
-		 * @param string $to The currency to convert to.
-		 * @return boolean|number Exchange rate or false.
+		 * @param string $from The ticker symbol for the currency to convert from.
+		 * @param string $to The ticker symbol for the currency to convert to.
+		 * @return boolean|float Exchange rate or false if not available.
 		 */
 		public static function get_exchange_rate( $from, $to ) {
 			self::load_data();
 
-			if ( isset( $memoize_rates[ "{$from}_{$to}" ] ) ) {
-				return $memoize_rates[ "{$from}_{$to}" ];
+			if ( isset( self::$memoize_rates[ "{$from}_{$to}" ] ) ) {
+				return self::$memoize_rates[ "{$from}_{$to}" ];
 			}
 
-			$memoize_rates[ "{$from}_{$to}" ] = self::get_exchange_rate_recursion( $from, $to );
+			self::$memoize_rates[ "{$from}_{$to}" ] = self::get_exchange_rate_recursion( $from, $to );
 
-			return $memoize_rates[ "{$from}_{$to}" ];
+			return self::$memoize_rates[ "{$from}_{$to}" ];
 		}
 
 		/**

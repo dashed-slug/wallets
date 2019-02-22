@@ -1,4 +1,10 @@
-<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
+<?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly
+
+$atts['decimals'] = absint( $atts['decimals'] );
+if ( $atts['decimals'] > 16 ) {
+	$atts['decimals'] = 16;
+}
+?>
 
 <div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__, '.php' ); ?>" data-bind="if: 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
 	<?php
@@ -26,7 +32,7 @@
 				</td>
 				<td class="coin" data-bind="text: name"></td>
 				<td class="rate">
-					<span data-bind="text: sprintf( '%01.4f %s', rate, walletsUserData.fiatSymbol )"></span>
+					<span data-bind="text: sprintf( '%01.<?php echo $atts['decimals']; ?>f %s', rate, walletsUserData.fiatSymbol )"></span>
 				</td>
 			</tr>
 		</tbody>

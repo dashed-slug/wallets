@@ -359,7 +359,15 @@ CFG;
 				$result = $this->rpc->getbalance( '*', $this->get_minconf() );
 
 				if ( false === $result ) {
-					throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+					throw new Exception(
+						sprintf(
+							__( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ),
+							__CLASS__,
+							__FUNCTION__,
+							$this->rpc->status,
+							$this->rpc->error
+						)
+					);
 				}
 				$result = floatval( $result );
 				Dashed_Slug_Wallets::set_transient( "wallets_get_balance_$symbol", $result, 30 );
@@ -592,7 +600,7 @@ CFG;
 		 * wallets_transaction action once for every transaction to be inserted or updated to the DB.
 		 *
 		 * @api
-		 * @param string $tx A transaction ID that has been updated.
+		 * @param string $txid A transaction ID that has been updated.
 		 * @throws Exception If communication with the daemon's RPC API failed for some reason.
 		 */
 		public function action_wallets_notify_wallet( $txid ) {

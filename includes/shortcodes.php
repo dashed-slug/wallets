@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.0.3.min.js' ) ) {
-					$script = 'bs58check-4.0.3.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.0.4.min.js' ) ) {
+					$script = 'bs58check-4.0.4.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			}
 		}
 
-		public function shortcode( $atts, $content = '', $tag ) {
+		public function shortcode( $atts, $content, $tag ) {
 			$view = preg_replace( '/^wallets_/', '', $tag );
 
 			$defaults = array(
@@ -110,6 +110,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 
 				// For static transactions shortcodes, the amount of most recent transactions to retrieve.
 				'rowcount'   => 10,
+
+				// For exchange rates, the number of decimal digits to show
+				'decimals'   => 5,
 
 			);
 
@@ -176,8 +179,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				) ) {
 					throw new Exception(
 						sprintf(
-							"User #%d does not have the necessary capabilities to view this shortcode.",
-							$atts['user_id']
+							"User with ID %d does not have the necessary capabilities to view this shortcode.",
+							absint( $atts['user_id'] )
 						)
 					);
 				}

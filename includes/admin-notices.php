@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-4.0.3.min.js' ) ) {
-				$script = 'wallets-notify-4.0.3.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-4.0.4.min.js' ) ) {
+				$script = 'wallets-notify-4.0.4.min.js';
 			} else {
 				$script = 'wallets-notify.js';
 			}
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( "assets/scripts/$script", DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'4.0.3'
+				'4.0.4'
 			);
 
 		}
@@ -150,7 +150,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 				case E_USER_NOTICE:
 				default:
-					$self->notice( $message );
+					$self->notice( 'error', $message, false );
 					break;
 			}
 
