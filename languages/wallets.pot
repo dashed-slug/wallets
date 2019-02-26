@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.4\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-02-22 18:22:40+00:00\n"
+"POT-Creation-Date: 2019-02-26 13:18:57+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -123,10 +123,10 @@ msgstr ""
 #: includes/coin-adapter-rpc.php:304 includes/coin-adapter-rpc.php:313
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:154
-#: includes/confirmations.php:687 includes/cron.php:463
+#: includes/confirmations.php:687 includes/cron.php:457
 #: includes/frontend-settings.php:248 includes/notifications.php:724
 #: includes/rates.php:358 includes/transactions.php:330
-#: includes/transactions.php:1187 includes/transactions.php:1332
+#: includes/transactions.php:1184 includes/transactions.php:1329
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -136,10 +136,10 @@ msgstr ""
 #: includes/json-api.php:585 includes/json-api.php:832
 #: includes/json-api.php:875 includes/json-api.php:1173
 #: includes/json-api.php:1237 includes/json-api.php:1299
-#: includes/transactions.php:1193 includes/transactions.php:1396
-#: includes/transactions.php:1414 includes/transactions.php:1432
-#: includes/transactions.php:1449 includes/transactions.php:1466
-#: includes/transactions.php:1498
+#: includes/transactions.php:1190 includes/transactions.php:1393
+#: includes/transactions.php:1411 includes/transactions.php:1429
+#: includes/transactions.php:1446 includes/transactions.php:1463
+#: includes/transactions.php:1495
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -224,47 +224,39 @@ msgid "See more here"
 msgstr ""
 
 #: includes/admin-menu.php:127
-msgid "Follow the slime:"
-msgstr ""
-
-#: includes/admin-menu.php:129
 msgid "Subscribe to the YouTube channel:"
 msgstr ""
 
-#: includes/admin-menu.php:133
-msgid "Like the Facebook page to learn the latest news:"
-msgstr ""
-
-#: includes/admin-menu.php:137
+#: includes/admin-menu.php:132
 msgid "The dashed-slug can also be found on SteemIt:"
 msgstr ""
 
-#: includes/admin-menu.php:144
+#: includes/admin-menu.php:137
 msgid "Get the free PDF manual!"
 msgstr ""
 
-#: includes/admin-menu.php:146
+#: includes/admin-menu.php:139
 msgid ""
 "Visit the dashed-slug <a "
 "href=\"https://dashed-slug.net/downloads\">download area</a>."
 msgstr ""
 
-#: includes/admin-menu.php:155
+#: includes/admin-menu.php:148
 msgid "RTFM! :-)"
 msgstr ""
 
-#: includes/admin-menu.php:160
+#: includes/admin-menu.php:153
 msgid "Have your say!"
 msgstr ""
 
-#: includes/admin-menu.php:163
+#: includes/admin-menu.php:156
 msgid ""
 "Did you find this plugin useful? Leave a review on <a "
 "href=\"https://wordpress.org/support/plugin/wallets/reviews/\">wordpress."
 "org</a>."
 msgstr ""
 
-#: includes/admin-menu.php:164
+#: includes/admin-menu.php:157
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a "
 "href=\"https://wordpress.org/support/plugin/wallets\">wordpress.org support "
@@ -273,62 +265,70 @@ msgid ""
 "forums for the extensions."
 msgstr ""
 
-#: includes/admin-menu.php:165
+#: includes/admin-menu.php:158
 msgid ""
 "Something else on your mind? <a "
 "href=\"https://dashed-slug.net/contact\">Contact me</a>."
 msgstr ""
 
-#: includes/admin-menu.php:170
+#: includes/admin-menu.php:163
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: includes/admin-menu.php:172
+#: includes/admin-menu.php:165
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: includes/admin-menu.php:175
+#: includes/admin-menu.php:168
 msgid "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: includes/admin-menu.php:231
+#: includes/admin-menu.php:224
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: includes/admin-menu.php:235
+#: includes/admin-menu.php:228
 msgid "App extensions"
 msgstr ""
 
-#: includes/admin-menu.php:237
+#: includes/admin-menu.php:230
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: includes/admin-menu.php:244
+#: includes/admin-menu.php:237
 msgid "Coin adapters"
 msgstr ""
 
-#: includes/admin-menu.php:246
+#: includes/admin-menu.php:239
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for "
 "additional cryptocurrencies. "
 msgstr ""
 
-#: includes/admin-menu.php:279
+#: includes/admin-menu.php:246
+msgid "Like the Facebook page to learn the latest news:"
+msgstr ""
+
+#: includes/admin-menu.php:251
+msgid "Follow the dashed-slug on twitter to learn the latest news:"
+msgstr ""
+
+#: includes/admin-menu.php:283
 msgid "Installed"
 msgstr ""
 
-#: includes/admin-menu.php:307
+#: includes/admin-menu.php:311
 msgid ""
 "Found <strong>Bitcoin and Altcoin Wallets</strong> useful? Want to help the "
 "project? "
 msgstr ""
 
-#: includes/admin-menu.php:312
+#: includes/admin-menu.php:316
 msgid ""
 "Please leave a <a "
 "href=\"https://wordpress.org/support/view/plugin-reviews/wallets?filter=5#"
@@ -1117,54 +1117,54 @@ msgstr ""
 msgid "half an hour"
 msgstr ""
 
-#: includes/cron.php:256
+#: includes/cron.php:250
 msgid "Perioric tasks"
 msgstr ""
 
-#: includes/cron.php:263
+#: includes/cron.php:257
 msgid "Run every"
 msgstr ""
 
-#: includes/cron.php:269
+#: includes/cron.php:263
 msgid ""
 "How often to run the cron job. If you plan to trigger the external URL via "
 "a system cron, choose \"never\"."
 msgstr ""
 
-#: includes/cron.php:281
+#: includes/cron.php:275
 msgid "Max batch size"
 msgstr ""
 
-#: includes/cron.php:287
+#: includes/cron.php:281
 msgid ""
 "Up to this many transactions (withdrawals and internal transfers) will be "
 "attempted per run of the cron job. Make sure that your hardware can handle "
 "the batch size you set here, or the plugin may misbehave."
 msgstr ""
 
-#: includes/cron.php:302
+#: includes/cron.php:296
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: includes/cron.php:308
+#: includes/cron.php:302
 msgid ""
 "Failed withdrawals will be attempted up to this many times, while the "
 "adapter is unlocked."
 msgstr ""
 
-#: includes/cron.php:323
+#: includes/cron.php:317
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: includes/cron.php:329
+#: includes/cron.php:323
 msgid "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: includes/cron.php:344
+#: includes/cron.php:338
 msgid "Verbose log output (debug)"
 msgstr ""
 
-#: includes/cron.php:350
+#: includes/cron.php:344
 msgid ""
 "Writes verbose memory info about cron jobs and exchange rates providers "
 "into the WordPress debug log. Useful for debugging out-of-memory issues. "
@@ -1173,81 +1173,81 @@ msgid ""
 "logs</a>."
 msgstr ""
 
-#: includes/cron.php:362
+#: includes/cron.php:356
 msgid "Withdrawal locks"
 msgstr ""
 
-#: includes/cron.php:369
+#: includes/cron.php:363
 msgid "Time to retain withdrawal secrets"
 msgstr ""
 
-#: includes/cron.php:397
+#: includes/cron.php:391
 msgid "Old transactions"
 msgstr ""
 
-#: includes/cron.php:404
+#: includes/cron.php:398
 msgid "Batch old transactions and clean"
 msgstr ""
 
-#: includes/cron.php:410
+#: includes/cron.php:404
 msgid ""
 "Choose how to aggregate similar past internal transactions that are in a "
 "\"done\" state. Old \"failed\" or \"cancelled\" internal transactions will "
 "be deleted."
 msgstr ""
 
-#: includes/cron.php:412
+#: includes/cron.php:406
 msgid "Never"
 msgstr ""
 
-#: includes/cron.php:413
+#: includes/cron.php:407
 msgid "Weekly"
 msgstr ""
 
-#: includes/cron.php:425
+#: includes/cron.php:419
 msgid "Cancel old unconfirmed/pending transactions "
 msgstr ""
 
-#: includes/cron.php:431
+#: includes/cron.php:425
 msgid ""
 "Time to wait before cancelling an unconfirmed or pending transaction, in "
 "minutes (0 = do not cancel)."
 msgstr ""
 
-#: includes/cron.php:466
+#: includes/cron.php:460
 msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: includes/cron.php:518
+#: includes/cron.php:512
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron "
 "job."
 msgstr ""
 
-#: includes/cron.php:541
+#: includes/cron.php:535
 msgid "PRO TIP:"
 msgstr ""
 
-#: includes/cron.php:560
+#: includes/cron.php:554
 msgid ""
 "Looking for an easy to setup cron job service? Try <a href=\"%s\" "
 "title=\"%s\">EasyCron</a>!"
 msgstr ""
 
-#: includes/cron.php:577
+#: includes/cron.php:571
 msgid ""
 "You can control how wallet secrets are stored. Wallet secrets are needed "
 "for performing withdrawals."
 msgstr ""
 
-#: includes/cron.php:587
+#: includes/cron.php:581
 msgid ""
 "You can control whether similar old internal transactions are aggregated. "
 "Aggregating past transactions saves space on the DB. Aggregation is "
 "performed in batches so as not to overwhelm the DB."
 msgstr ""
 
-#: includes/cron.php:619
+#: includes/cron.php:613
 msgid "(never)"
 msgstr ""
 
@@ -1399,7 +1399,7 @@ msgstr ""
 #: includes/json-api.php:1293 includes/php-api.php:208 includes/php-api.php:301
 #: includes/php-api.php:361 includes/php-api.php:462 includes/php-api.php:588
 #: includes/php-api.php:808 includes/php-api.php:995 includes/php-api.php:1122
-#: includes/php-api.php:1219 includes/transactions.php:1145
+#: includes/php-api.php:1219 includes/transactions.php:1142
 msgid "Not allowed"
 msgstr ""
 
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:615 includes/transactions.php:732
+#: includes/php-api.php:615 includes/transactions.php:729
 msgid "Minimum witdrawal amount for \"%1$s\" is %2$f"
 msgstr ""
 
@@ -2056,23 +2056,23 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: includes/transactions.php:696
+#: includes/transactions.php:693
 msgid ""
 "Cannot withdraw to address %s because it is a deposit address on this "
 "system."
 msgstr ""
 
-#: includes/transactions.php:1176
+#: includes/transactions.php:1173
 msgid "Could not get account for %1$s address %2$s"
 msgstr ""
 
-#: includes/transactions.php:1213
+#: includes/transactions.php:1210
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:1226
+#: includes/transactions.php:1223
 msgid "Failed to import file : %s"
 msgstr ""
 

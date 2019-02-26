@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-4.0.4.min.js', 'wallets/assets/scripts/pay-now-button-4.0.4.min.js' ),
+				plugins_url( 'pay-now-button-4.0.5.min.js', 'wallets/assets/scripts/pay-now-button-4.0.5.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -124,20 +124,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			</p></div>
 
 			<div class="card">
-				<h2><?php esc_html_e( 'Follow the slime:', 'wallets' ); ?></h2>
-
-				<h4><?php esc_html_e( 'Subscribe to the YouTube channel:', 'wallets' ); ?></h4>
-
+				<h2><?php esc_html_e( 'Subscribe to the YouTube channel:', 'wallets' ); ?></h2>
 				<div class="g-ytsubscribe" data-channelid="UCZ1XhSSWnzvB2B_-Cy1tTjA" data-layout="full" data-count="default"></div>
+			</div>
 
-				<h4><?php esc_html_e( 'Like the Facebook page to learn the latest news:', 'wallets' ); ?></h4>
-
-				<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdashedslug%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId=1048870338583588" width="500" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-
-				<h4><?php esc_html_e( 'The dashed-slug can also be found on SteemIt:', 'wallets' ); ?></h4>
-
+			<div class="card">
+				<h2><?php esc_html_e( 'The dashed-slug can also be found on SteemIt:', 'wallets' ); ?></h2>
 				<a href="https://steemit.com/@dashed-slug.net">https://steemit.com/@dashed-slug.net</a>
-
 			</div>
 
 			<div class="card">
@@ -247,6 +240,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 				<?php $this->showcase_plugin_extensions( DSWALLETS_PATH . '/assets/data/adapters.json' ); ?>
 
+			</div>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Like the Facebook page to learn the latest news:', 'wallets' ); ?></h2>
+				<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdashedslug%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId=1048870338583588" width="500" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+			</div>
+
+			<div class="card" style="max-height: 500px; overflow-y: scroll">
+				<h2><?php esc_html_e( 'Follow the dashed-slug on twitter to learn the latest news:', 'wallets' ); ?></h2>
+				<a class="twitter-timeline" href="https://twitter.com/DashedSlug?ref_src=twsrc%5Etfw">Tweets by DashedSlug</a>
+				<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 			</div>
 
 			<div style="clear: left;"></div>

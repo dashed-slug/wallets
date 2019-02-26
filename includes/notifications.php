@@ -32,7 +32,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 				if ( $this->emails_enabled ) {
 					add_action( 'wallets_withdraw', array( &$this, 'action_email_withdraw' ) );
 				}
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+				if ( $this->buddypress_enabled ) {
 					add_action( 'wallets_withdraw', array( &$this, 'action_buddypress_withdraw' ) );
 				}
 			}
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 				if ( $this->emails_enabled ) {
 					add_action( 'wallets_withdraw_failed', array( &$this, 'action_email_withdraw_failed' ) );
 				}
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+				if ( $this->buddypress_enabled ) {
 					add_action( 'wallets_withdraw_failed', array( &$this, 'action_buddypress_withdraw_failed' ) );
 				}
 			}
@@ -50,7 +50,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 				if ( $this->emails_enabled ) {
 					add_action( 'wallets_move_send', array( &$this, 'action_email_move_send' ) );
 				}
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+				if ( $this->buddypress_enabled ) {
 					add_action( 'wallets_move_send', array( &$this, 'action_buddypress_move_send' ) );
 				}
 			}
@@ -59,7 +59,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 				if ( $this->emails_enabled ) {
 					add_action( 'wallets_move_send_failed', array( &$this, 'action_email_move_send_failed' ) );
 				}
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+				if ( $this->buddypress_enabled ) {
 					add_action( 'wallets_move_send_failed', array( &$this, 'action_buddypress_move_send_failed' ) );
 				}
 			}
@@ -68,7 +68,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 				if ( $this->emails_enabled ) {
 					add_action( 'wallets_move_receive', array( &$this, 'action_email_move_receive' ) );
 				}
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+				if ( $this->buddypress_enabled ) {
 					add_action( 'wallets_move_receive', array( &$this, 'action_buddypress_move_receive' ) );
 				}
 			}
@@ -77,7 +77,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 				if ( $this->emails_enabled ) {
 					add_action( 'wallets_deposit', array( &$this, 'action_email_deposit' ) );
 				}
-				if ( $this->buddypress_enabled && function_exists( 'messages_new_message' ) ) {
+				if ( $this->buddypress_enabled ) {
 
 				}
 			}
@@ -935,14 +935,16 @@ NOTIFICATION
 			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_subject' ), $tx_data );
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_message' ), $tx_data );
 
-			messages_new_message(
-				array(
-					'sender_id'  => $tx_data->user->ID,
-					'recipients' => array( $tx_data->user->ID ),
-					'subject'    => $subject,
-					'content'    => $message,
-				)
-			);
+			if ( function_exists( 'messages_new_message' ) ) {
+				messages_new_message(
+					array(
+						'sender_id'  => $tx_data->user->ID,
+						'recipients' => array( $tx_data->user->ID ),
+						'subject'    => $subject,
+						'content'    => $message,
+					)
+				);
+			}
 
 		}
 		public function action_email_withdraw( $tx_data ) {
@@ -962,15 +964,16 @@ NOTIFICATION
 			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_subject' ), $tx_data );
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_withdraw_failed_message' ), $tx_data );
 
-			messages_new_message(
-				array(
-					'sender_id'  => $tx_data->user->ID,
-					'recipients' => array( $tx_data->user->ID ),
-					'subject'    => $subject,
-					'content'    => $message,
-				)
-			);
-
+			if ( function_exists( 'messages_new_message' ) ) {
+				messages_new_message(
+					array(
+						'sender_id'  => $tx_data->user->ID,
+						'recipients' => array( $tx_data->user->ID ),
+						'subject'    => $subject,
+						'content'    => $message,
+					)
+				);
+			}
 		}
 
 		public function action_email_withdraw_failed( $tx_data ) {
@@ -993,14 +996,16 @@ NOTIFICATION
 			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_subject' ), $tx_data );
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_message' ), $tx_data );
 
-			messages_new_message(
-				array(
-					'sender_id'  => $tx_data->user->ID,
-					'recipients' => array( $tx_data->user->ID ),
-					'subject'    => $subject,
-					'content'    => $message,
-				)
-			);
+			if ( function_exists( 'messages_new_message' ) ) {
+				messages_new_message(
+					array(
+						'sender_id'  => $tx_data->user->ID,
+						'recipients' => array( $tx_data->user->ID ),
+						'subject'    => $subject,
+						'content'    => $message,
+					)
+				);
+			}
 		}
 
 		public function action_email_move_send( $tx_data ) {
@@ -1020,14 +1025,16 @@ NOTIFICATION
 			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_subject' ), $tx_data );
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_message' ), $tx_data );
 
-			messages_new_message(
-				array(
-					'sender_id'  => $tx_data->user->ID,
-					'recipients' => array( $tx_data->user->ID ),
-					'subject'    => $subject,
-					'content'    => $message,
-				)
-			);
+			if ( function_exists( 'messages_new_message' ) ) {
+				messages_new_message(
+					array(
+						'sender_id'  => $tx_data->user->ID,
+						'recipients' => array( $tx_data->user->ID ),
+						'subject'    => $subject,
+						'content'    => $message,
+					)
+				);
+			}
 		}
 
 		public function action_email_move_send_failed( $tx_data ) {
@@ -1048,14 +1055,16 @@ NOTIFICATION
 			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_subject' ), $tx_data );
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_message' ), $tx_data );
 
-			messages_new_message(
-				array(
-					'sender_id'  => $tx_data->other_user->ID,
-					'recipients' => array( $tx_data->user->ID ),
-					'subject'    => $subject,
-					'content'    => $message,
-				)
-			);
+			if ( function_exists( 'messages_new_message' ) ) {
+				messages_new_message(
+					array(
+						'sender_id'  => $tx_data->other_user->ID,
+						'recipients' => array( $tx_data->user->ID ),
+						'subject'    => $subject,
+						'content'    => $message,
+					)
+				);
+			}
 		}
 
 		public function action_email_move_receive( $tx_data ) {
@@ -1075,14 +1084,16 @@ NOTIFICATION
 			$subject = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_subject' ), $tx_data );
 			$message = $this->apply_substitutions( Dashed_Slug_Wallets::get_option( 'wallets_email_deposit_message' ), $tx_data );
 
-			messages_new_message(
-				array(
-					'sender_id'  => $tx_data->user->ID,
-					'recipients' => array( $tx_data->user->ID ),
-					'subject'    => $subject,
-					'content'    => $message,
-				)
-			);
+			if ( function_exists( 'messages_new_message' ) ) {
+				messages_new_message(
+					array(
+						'sender_id'  => $tx_data->user->ID,
+						'recipients' => array( $tx_data->user->ID ),
+						'subject'    => $subject,
+						'content'    => $message,
+					)
+				);
+			}
 		}
 
 		public function action_email_deposit( $tx_data ) {

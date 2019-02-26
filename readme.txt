@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.1
 Requires PHP: 5.6
-Stable tag: 4.0.4
+Stable tag: 4.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,8 +353,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 == Changelog ==
 
+= 4.0.5 =
+- Fix: Issue introduced in `4.0.0` that caused internal transactions to stay in pending state and not fail if there was not enough available balance.
+- Fix: Bug that prevented BuddyPress notifications from being sent.
+- Fix: Issue that caused a warning about cron jobs not running to show, if the admin visited the admin screens at the exact moment the cron job was running.
+- Add: Official dashed-slug twitter feed added to the *About* seection of the admin screens.
+
 = 4.0.4 =
-- Fix: Bug introduced in 4.0.3 that prevented user from enabling sweetalert.js modal dialogs now fixed.
+- Fix: Bug introduced in `4.0.3` that prevented admin from enabling `sweetalert.js` modal dialogs now fixed.
 - Add: The `[wallets_rates]` shortcode now takes an optional argument "decimals" to control how many decimal digits to display exchange rates with.
 - Improve: Code that parses fixer.io exchange rates improved. Will now consider the site-wide default fiat currency when requesting prices.
 - Fix: Parser for cryptocompare list of currencies is now safer (produces less warnings).
@@ -1173,7 +1179,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.4 fixes a few minor bugs.
+Version 4.0.5 fixes a few minor bugs.
 
 == Donating ==
 

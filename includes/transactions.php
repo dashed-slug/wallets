@@ -509,79 +509,76 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							)
 						);
 
-						if ( $available_balance ) {
+						if ( $available_balance >= 0 ) {
 
-							if ( $available_balance >= 0 ) {
+							$success_update_query = $wpdb->prepare(
+								"
+								UPDATE
+									{$table_name_txs}
+								SET
+									status = 'done',
+									retries = retries - 1,
+									updated_time = %s
+								WHERE
+									( blog_id = %d || %d ) AND
+									status = 'pending' AND
+									txid IN ( %s, %s )
+								",
+								$current_time_gmt,
+								get_current_blog_id(),
+								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+								$move_tx_send->txid,
+								$move_tx_receive->txid
+							);
 
-								$success_update_query = $wpdb->prepare(
-									"
-									UPDATE
-										{$table_name_txs}
-									SET
-										status = 'done',
-										retries = retries - 1,
-										updated_time = %s
-									WHERE
-										( blog_id = %d || %d ) AND
-										status = 'pending' AND
-										txid IN ( %s, %s )
-									",
-									$current_time_gmt,
-									get_current_blog_id(),
-									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-									$move_tx_send->txid,
-									$move_tx_receive->txid
-								);
+							$wpdb->query( $success_update_query );
 
-								$wpdb->query( $success_update_query );
+							$move_tx_send->status           = 'done';
+							$move_tx_receive->status        = 'done';
+							$move_tx_send->retries         -= 1;
+							$move_tx_receive->retries      -= 1;
 
-								$move_tx_send->status           = 'done';
-								$move_tx_receive->status        = 'done';
-								$move_tx_send->retries         -= 1;
-								$move_tx_receive->retries      -= 1;
+							$move_tx_send->user             = get_userdata( $move_tx_send->account );
+							$move_tx_send->other_user       = get_userdata( $move_tx_send->other_account );
+							$pending_actions_move_send[]    = $move_tx_send;
 
-								$move_tx_send->user             = get_userdata( $move_tx_send->account );
-								$move_tx_send->other_user       = get_userdata( $move_tx_send->other_account );
-								$pending_actions_move_send[]    = $move_tx_send;
+							unset( $move_tx_receive->fee );
+							$move_tx_receive->user          = get_userdata( $move_tx_receive->account );
+							$move_tx_receive->other_user    = get_userdata( $move_tx_receive->other_account );
+							$pending_actions_move_receive[] = $move_tx_receive;
 
-								unset( $move_tx_receive->fee );
-								$move_tx_receive->user          = get_userdata( $move_tx_receive->account );
-								$move_tx_receive->other_user    = get_userdata( $move_tx_receive->other_account );
-								$pending_actions_move_receive[] = $move_tx_receive;
+						} else {
 
-							} else {
+							$fail_update_query = $wpdb->prepare(
+								"
+								UPDATE
+									{$table_name_txs}
+								SET
+									retries = IF( retries >= 1, retries - 1, 0 ),
+									status = IF( retries, 'pending', 'failed' ),
+									updated_time = %s
+								WHERE
+									( blog_id = %d || %d ) AND
+									status = 'pending' AND
+									txid IN ( %s, %s )
+								",
+								$current_time_gmt,
+								get_current_blog_id(),
+								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+								$move_tx_send->txid,
+								$move_tx_receive->txid
+							);
 
-								$fail_update_query = $wpdb->prepare(
-									"
-									UPDATE
-										{$table_name_txs}
-									SET
-										retries = IF( retries >= 1, retries - 1, 0 ),
-										status = IF( retries, 'pending', 'failed' ),
-										updated_time = %s
-									WHERE
-										( blog_id = %d || %d ) AND
-										status = 'pending' AND
-										txid IN ( %s, %s )
-									",
-									$current_time_gmt,
-									get_current_blog_id(),
-									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-									$move_tx_send->txid,
-									$move_tx_receive->txid
-								);
+							$wpdb->query( $fail_update_query );
 
-								$wpdb->query( $fail_update_query );
-
-								if ( 1 == $move_tx_send->retries ) {
-									$move_tx_send->status               = 'failed';
-									$move_tx_send->retries             -= 1;
-									$move_tx_send->user                 = get_userdata( $move_tx_send->account );
-									$move_tx_send->other_user           = get_userdata( $move_tx_send->other_account );
-									$pending_actions_move_send_failed[] = $move_tx_send;
-								}
-							} // end if not enough balance
-						} // end if user balance was retrieved successfully
+							if ( 1 == $move_tx_send->retries ) {
+								$move_tx_send->status               = 'failed';
+								$move_tx_send->retries             -= 1;
+								$move_tx_send->user                 = get_userdata( $move_tx_send->account );
+								$move_tx_send->other_user           = get_userdata( $move_tx_send->other_account );
+								$pending_actions_move_send_failed[] = $move_tx_send;
+							}
+						} // end if not enough balance
 					} // end if found move with receive tag
 				} // end if move has send tag
 			} // end foreach move

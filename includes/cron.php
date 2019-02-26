@@ -182,12 +182,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			}
 			$this->already_ran = true;
 
-			// delete previous debug stats
-			Dashed_Slug_Wallets::delete_option( 'wallets_last_cron_run' );
-			Dashed_Slug_Wallets::delete_option( 'wallets_last_elapsed_time' );
-			Dashed_Slug_Wallets::delete_option( 'wallets_last_peak_mem' );
-			Dashed_Slug_Wallets::delete_option( 'wallets_last_mem_delta' );
-
 			$this->start_time = time();
 			$this->start_memory = memory_get_usage();
 
