@@ -1082,6 +1082,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								$coin_info->deposit_extra   = $address[1];
 							}
 
+							$deposit_address_qrcode_uri = $adapter->address_to_qrcode_uri( $address );
+							if ( $address != $deposit_address_qrcode_uri ) {
+								$coin_info->deposit_address_qrcode_uri = $deposit_address_qrcode_uri;
+							}
+
 							$response['coins'][ $symbol ] = $coin_info;
 
 						} catch ( Exception $e ) {

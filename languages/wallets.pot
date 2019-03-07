@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.5\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-02-26 13:18:57+00:00\n"
+"POT-Creation-Date: 2019-03-07 08:57:43+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -63,47 +63,47 @@ msgstr ""
 msgid "Not responding"
 msgstr ""
 
-#: includes/adapters-list-table.php:246 includes/coin-adapter.php:287
+#: includes/adapters-list-table.php:248 includes/coin-adapter.php:287
 msgid "Wallet unlocked. Withdrawals will be processed."
 msgstr ""
 
-#: includes/adapters-list-table.php:248 includes/coin-adapter.php:289
+#: includes/adapters-list-table.php:250 includes/coin-adapter.php:289
 msgid "Wallet locked. Withdrawals will NOT be processed."
 msgstr ""
 
-#: includes/adapters-list-table.php:264
+#: includes/adapters-list-table.php:266
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: includes/adapters-list-table.php:265
+#: includes/adapters-list-table.php:267
 msgid "Settings"
 msgstr ""
 
-#: includes/adapters-list-table.php:276
+#: includes/adapters-list-table.php:278
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: includes/adapters-list-table.php:277
+#: includes/adapters-list-table.php:279
 msgid "Export"
 msgstr ""
 
-#: includes/adapters-list-table.php:291
+#: includes/adapters-list-table.php:293
 msgid ""
 "Creates new deposit addresses. Use this after switching to a different "
 "adapter."
 msgstr ""
 
-#: includes/adapters-list-table.php:292
+#: includes/adapters-list-table.php:294
 msgid "Renew deposit addresses"
 msgstr ""
 
-#: includes/adapters-list-table.php:307
+#: includes/adapters-list-table.php:309
 msgid ""
 "Creates deposit addresses for all users with the \"has_wallets\" "
 "capability. Use this only if you need it."
 msgstr ""
 
-#: includes/adapters-list-table.php:308
+#: includes/adapters-list-table.php:310
 msgid "Create deposit addresses now for all users"
 msgstr ""
 
@@ -134,8 +134,8 @@ msgstr ""
 #: includes/adapters-list.php:273 includes/caps.php:96
 #: includes/cold-storage.php:133 includes/json-api.php:542
 #: includes/json-api.php:585 includes/json-api.php:832
-#: includes/json-api.php:875 includes/json-api.php:1173
-#: includes/json-api.php:1237 includes/json-api.php:1299
+#: includes/json-api.php:875 includes/json-api.php:1178
+#: includes/json-api.php:1242 includes/json-api.php:1304
 #: includes/transactions.php:1190 includes/transactions.php:1393
 #: includes/transactions.php:1411 includes/transactions.php:1429
 #: includes/transactions.php:1446 includes/transactions.php:1463
@@ -1394,12 +1394,12 @@ msgstr ""
 #: includes/json-api.php:689 includes/json-api.php:763
 #: includes/json-api.php:808 includes/json-api.php:826
 #: includes/json-api.php:869 includes/json-api.php:1030
-#: includes/json-api.php:1105 includes/json-api.php:1150
-#: includes/json-api.php:1167 includes/json-api.php:1231
-#: includes/json-api.php:1293 includes/php-api.php:208 includes/php-api.php:301
-#: includes/php-api.php:361 includes/php-api.php:462 includes/php-api.php:588
-#: includes/php-api.php:808 includes/php-api.php:995 includes/php-api.php:1122
-#: includes/php-api.php:1219 includes/transactions.php:1142
+#: includes/json-api.php:1110 includes/json-api.php:1155
+#: includes/json-api.php:1172 includes/json-api.php:1236
+#: includes/json-api.php:1298 includes/php-api.php:209 includes/php-api.php:302
+#: includes/php-api.php:362 includes/php-api.php:463 includes/php-api.php:589
+#: includes/php-api.php:809 includes/php-api.php:996 includes/php-api.php:1123
+#: includes/php-api.php:1220 includes/transactions.php:1142
 msgid "Not allowed"
 msgstr ""
 
@@ -1408,26 +1408,26 @@ msgid "Could not get info about users: "
 msgstr ""
 
 #: includes/json-api.php:492 includes/json-api.php:781
-#: includes/json-api.php:1123
+#: includes/json-api.php:1128
 msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
 #: includes/json-api.php:504 includes/json-api.php:793
-#: includes/json-api.php:1135
+#: includes/json-api.php:1140
 msgid "Could not get \"%s\" transactions"
 msgstr ""
 
 #: includes/json-api.php:563 includes/json-api.php:853
-#: includes/json-api.php:1277
+#: includes/json-api.php:1282
 msgid "Could not withdraw %s"
 msgstr ""
 
 #: includes/json-api.php:607 includes/json-api.php:916
-#: includes/json-api.php:1364
+#: includes/json-api.php:1369
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:897 includes/json-api.php:1345
+#: includes/json-api.php:897 includes/json-api.php:1350
 msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 
@@ -1443,11 +1443,11 @@ msgstr ""
 msgid "Error while trigerring cron tasks: %s"
 msgstr ""
 
-#: includes/json-api.php:1194 includes/json-api.php:1210
+#: includes/json-api.php:1199 includes/json-api.php:1215
 msgid "Could not get new %s address"
 msgstr ""
 
-#: includes/json-api.php:1245 includes/json-api.php:1307
+#: includes/json-api.php:1250 includes/json-api.php:1312
 msgid "Required parameter missing: %s"
 msgstr ""
 
@@ -1649,57 +1649,57 @@ msgid ""
 "transaction."
 msgstr ""
 
-#: includes/php-api.php:593
+#: includes/php-api.php:594
 msgid "You must specify a withdrawal address"
 msgstr ""
 
-#: includes/php-api.php:602
+#: includes/php-api.php:603
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:615 includes/transactions.php:729
+#: includes/php-api.php:616 includes/transactions.php:729
 msgid "Minimum witdrawal amount for \"%1$s\" is %2$f"
 msgstr ""
 
-#: includes/php-api.php:658
+#: includes/php-api.php:659
 msgid "You cannot withdraw to one of your own deposit addresses on this system."
 msgstr ""
 
-#: includes/php-api.php:694 includes/php-api.php:856
+#: includes/php-api.php:695 includes/php-api.php:857
 msgid "Amount after deducting fees must be positive"
 msgstr ""
 
-#: includes/php-api.php:700 includes/php-api.php:863
+#: includes/php-api.php:701 includes/php-api.php:864
 msgid "Insufficient available funds: %1$s > %2$s"
 msgstr ""
 
-#: includes/php-api.php:813
+#: includes/php-api.php:814
 msgid "Cannot send funds to self"
 msgstr ""
 
-#: includes/php-api.php:823
+#: includes/php-api.php:824
 msgid "Adapter for \"%s\" is not online for move action"
 msgstr ""
 
-#: includes/php-api.php:1042
+#: includes/php-api.php:1043
 msgid "Adapter for \"%s\" is not online for getting a deposit address"
 msgstr ""
 
-#: includes/php-api.php:1055
+#: includes/php-api.php:1056
 msgid "Adapter for \"%s\" failed to return a deposit address: %s"
 msgstr ""
 
-#: includes/php-api.php:1073
+#: includes/php-api.php:1074
 msgid ""
 "Adapter for \"%s\" did not respond to the getnewaddress RPC command with a "
 "valid address string."
 msgstr ""
 
-#: includes/php-api.php:1126 includes/php-api.php:1223
+#: includes/php-api.php:1127 includes/php-api.php:1224
 msgid "Must specify a TXID string"
 msgstr ""
 
-#: includes/php-api.php:1179 includes/php-api.php:1279
+#: includes/php-api.php:1180 includes/php-api.php:1280
 msgid "No transactions found!"
 msgstr ""
 

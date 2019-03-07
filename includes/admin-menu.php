@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-4.0.5.min.js', 'wallets/assets/scripts/pay-now-button-4.0.5.min.js' ),
+				plugins_url( 'pay-now-button-4.0.6.min.js', 'wallets/assets/scripts/pay-now-button-4.0.6.min.js' ),
 				array( 'jquery' )
 			);
 		}

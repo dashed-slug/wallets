@@ -53,6 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		/** @internal */
 		private $_notices;
 
+		/** @internal */
 		private $network_active = false;
 
 		/** @internal */

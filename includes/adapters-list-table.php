@@ -212,23 +212,25 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 	}
 
 	public function column_balances( $item ) {
-		if ( ! isset( $item['balances'] ) ) {
+		if ( ! isset( $item['balances'] ) || ! is_numeric( $item['balances'] ) ) {
 			return '&mdash;';
 		}
 
-		if ( $item['balance'] + $item['unavailable_balance'] < $item['balances'] ) {
+		if ( is_numeric( $item['balance'] ) && is_numeric( $item['unavailable_balance'] ) ) {
 
-			return sprintf(
-				"<span style=\"color:red;\">$item[sprintf]</span>",
-				$item['balances']
-			);
+			if ( $item['balance'] + $item['unavailable_balance'] < $item['balances'] ) {
 
-		} else {
-			return sprintf(
-				"<span>$item[sprintf]</span>",
-				$item['balances']
-			);
+				return sprintf(
+					"<span style=\"color:red;\">$item[sprintf]</span>",
+					$item['balances']
+				);
+			}
 		}
+
+		return sprintf(
+			"<span>$item[sprintf]</span>",
+			$item['balances']
+		);
 	}
 
 	public function column_coin( $item ) {

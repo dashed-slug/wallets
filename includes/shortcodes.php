@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.0.5.min.js' ) ) {
-					$script = 'bs58check-4.0.5.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.0.6.min.js' ) ) {
+					$script = 'bs58check-4.0.6.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
@@ -194,15 +194,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			} catch ( Exception $e ) {
 				ob_end_clean();
 
+				$error_message_pattern = apply_filters(
+					'wallets_ui_text_shortcode_error',
+					__(
+						'Error while rendering the <code>%1$s</code> shortcode with its <code>%2$s</code> template in <code>%3$s</code>: %4$s',
+						'wallets-front'
+					)
+				);
+
 				return
 					"<div class=\"dashed-slug-wallets $view error\">" .
 						sprintf(
-							'Error while rendering the <code>%s</code> shortcode with its <code>%s</code> template in <code>%s</code>: ',
+							$error_message_pattern,
 							$view,
 							$atts['template'],
-							$view_file
+							$view_file,
+							$e->getMessage()
 						) .
-						$e->getMessage() .
 					'</div>';
 			}
 			return ob_get_clean();

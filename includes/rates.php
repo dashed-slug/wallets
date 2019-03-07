@@ -956,26 +956,25 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			if ( $apikey ) {
 				$url  = 'http://data.fixer.io/latest?access_key=' . $apikey;
 				$json = self::file_get_contents( $url, HOUR_IN_SECONDS );
+
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );
 					if ( is_object( $obj ) && ! isset( $obj->error ) && isset( $obj->rates ) ) {
 
-						// first, record all rates given
+						// first, record all rates as given (against EUR for free fixer plan)
 						foreach ( $obj->rates as $s => $r ) {
-							if ( ! self::is_crypto( $s ) ) {
-								$rates[ "{$obj->base}_{$s}" ] = $r;
-							}
+							$rates[ "{$obj->base}_{$s}" ] = 1 / $r;
 						}
 
-						// then, attempt to compute rates with the default base currency as base currency
+						// then, attempt to compute rates against the site-wide default base currency
 						$default_base_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 						if ( 'none' == $default_base_symbol ) {
 							$default_base_symbol = 'USD';
 						}
 						if ( isset( $rates[ "{$obj->base}_{$default_base_symbol}" ] ) ) {
-							$divisor = $rates[ "{$obj->base}_{$default_base_symbol}" ];
+							$rr = $rates[ "{$obj->base}_{$default_base_symbol}" ];
 							foreach ( $obj->rates as $s => $r ) {
-								$rates["{$default_base_symbol}_$s"] = $r / $divisor;
+								$rates["{$default_base_symbol}_{$s}"] = 1 / ( $r * $rr );
 							}
 						}
 					}

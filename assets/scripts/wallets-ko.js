@@ -289,7 +289,17 @@
 						var coins = self.cryptoCoins();
 						var coin = self.selectedCryptoCoin();
 						if ( 'object' == typeof( coins[ coin ] ) ) {
-							if ( coins[ coin ].deposit_address ) {
+
+							// choose to render qrcode_uri if specified, or deposit address string otherwise
+							var qrcode_uri = false;
+							if ( 'string' == typeof( coins[ coin ].deposit_address_qrcode_uri ) ) {
+								qrcode_uri = coins[ coin ].deposit_address_qrcode_uri;
+							} else if ( 'string' == typeof( coins[ coin ].deposit_address ) ) {
+								qrcode_uri = coins[ coin ].deposit_address;
+							}
+
+							// render qr code into all deposit UIs
+							if ( qrcode_uri ) {
 								$deposits.each( function( n, el ) {
 									var $deposit = $( el );
 									var $qrcode = $( '.qrcode', $deposit );
@@ -298,7 +308,7 @@
 										$qrcode.qrcode( {
 											width: width,
 											height: width,
-											text: coins[ coin ].deposit_address
+											text: qrcode_uri
 										} );
 									}
 								} );

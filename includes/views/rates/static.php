@@ -27,6 +27,7 @@ ksort( $adapters );
 		<tbody>
 			<?php
 			foreach ( $adapters as $symbol => $adapter ):
+				if ( $fiat_symbol != $symbol ):
 				?>
 				<tr>
 					<td class="icon">
@@ -62,6 +63,7 @@ ksort( $adapters );
 					</td>
 				</tr>
 				<?php
+				endif;
 			endforeach;
 			?>
 		</tbody>

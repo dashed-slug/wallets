@@ -218,6 +218,10 @@
 	content: "\201D"
 }
 
+.dashed-slug-wallets .icon img {
+	width: 100%;
+}
+
 .dashed-slug-wallets tbody td.icon {
 	width: 64px;
 	height: 64px;

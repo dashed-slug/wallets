@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.1
 Requires PHP: 5.6
-Stable tag: 4.0.5
+Stable tag: 4.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,14 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.0.6 =
+- Add: When unable to render a shortcode due to missing permissions or other problems, the error message displayed is now configurable via a WordPress filter.
+- Fix: The adapters list admin table no longer writes a warning to the logs if the total hot wallet balance is unavailable due to a bad network connection.
+- Add: The QR code in the `[wallets_deposit]` shortcode can contain a URI-style representation of the deposit address plus any optional payment id, if the coin adapter permits it.
+- Fix: Important bug with storing exchange rates from fixer.io to the DB, previously caused invalid exchange rates, now fixed.
+- Fix: The `[wallets_rates template="static"]` shortcode no longer displays an exchange rate of 1, between the selected fiat currency and itself.
+- Fix: Coin icons are now displayed in frontend UIs with the same size even if the files have different dimensions.
 
 = 4.0.5 =
 - Fix: Issue introduced in `4.0.0` that caused internal transactions to stay in pending state and not fail if there was not enough available balance.
@@ -1179,7 +1187,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.5 fixes a few minor bugs.
+Version 4.0.6 fixes a bug with exchange rates coming from fixer.io.
 
 == Donating ==
 
