@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.0.6\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-03-07 08:57:43+00:00\n"
+"POT-Creation-Date: 2019-03-18 16:34:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1251,6 +1251,186 @@ msgstr ""
 msgid "(never)"
 msgstr ""
 
+#. Plugin Name of the plugin/theme
+msgid "Bitcoin and Altcoin Wallets"
+msgstr ""
+
+#: includes/customizer.php:54
+msgid "Borders"
+msgstr ""
+
+#: includes/customizer.php:55
+msgid "Styling that affects the border or the wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:73 includes/customizer.php:281
+msgid "Color"
+msgstr ""
+
+#: includes/customizer.php:74
+msgid "Color of the surrounding border around wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:92
+msgid "Line style"
+msgstr ""
+
+#: includes/customizer.php:93
+msgid "Style of the surrounding border around wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:99
+msgid "None"
+msgstr ""
+
+#: includes/customizer.php:100
+msgid "Hidden"
+msgstr ""
+
+#: includes/customizer.php:101
+msgid "Dotted"
+msgstr ""
+
+#: includes/customizer.php:102
+msgid "Dashed"
+msgstr ""
+
+#: includes/customizer.php:103
+msgid "Solid"
+msgstr ""
+
+#: includes/customizer.php:104
+msgid "Double"
+msgstr ""
+
+#: includes/customizer.php:105
+msgid "Groove"
+msgstr ""
+
+#: includes/customizer.php:106
+msgid "Ridge"
+msgstr ""
+
+#: includes/customizer.php:107
+msgid "Inset"
+msgstr ""
+
+#: includes/customizer.php:108
+msgid "Outset"
+msgstr ""
+
+#: includes/customizer.php:124
+msgid "Width (px)"
+msgstr ""
+
+#: includes/customizer.php:125
+msgid "Width of the surrounding border around wallet UIs, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:149
+msgid "Padding width (px)"
+msgstr ""
+
+#: includes/customizer.php:150
+msgid "Padding width inside of the wallet UI borders, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:174 includes/customizer.php:411
+msgid "Shadow offset X (px)"
+msgstr ""
+
+#: includes/customizer.php:175
+msgid "Horizontal offset of the UI box shadows, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:199 includes/customizer.php:436
+msgid "Shadow offset Y (px)"
+msgstr ""
+
+#: includes/customizer.php:200
+msgid "Vertical offset of the UI box shadows, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:225 includes/customizer.php:462
+msgid "Shadow color"
+msgstr ""
+
+#: includes/customizer.php:226
+msgid "Color of the box shadows behind wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:245 includes/customizer.php:482
+msgid "Shadow blur radius (px)"
+msgstr ""
+
+#: includes/customizer.php:246
+msgid "Gaussian blur radius of the UI box shadows, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:262
+msgid "Text"
+msgstr ""
+
+#: includes/customizer.php:263
+msgid "Styling that affects the text within the wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:282
+msgid "Color of the text in the wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:301
+msgid "Font size (pt)"
+msgstr ""
+
+#: includes/customizer.php:302
+msgid "Size of the text font in the wallet UIs, measured in points."
+msgstr ""
+
+#: includes/customizer.php:327
+msgid "Label color"
+msgstr ""
+
+#: includes/customizer.php:328
+msgid "Color of the labels/headers in the wallet UIs."
+msgstr ""
+
+#: includes/customizer.php:347
+msgid "Label font size (pt)"
+msgstr ""
+
+#: includes/customizer.php:348
+msgid "Size of the labels/headers font in the wallet UIs, measured in points."
+msgstr ""
+
+#: includes/customizer.php:364
+msgid "Coin icons"
+msgstr ""
+
+#: includes/customizer.php:386
+msgid "Icon size (px)"
+msgstr ""
+
+#: includes/customizer.php:387
+msgid "The width of coin icons, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:412
+msgid "Horizontal offset of the drop shadows behind coin icons, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:437
+msgid "Vertical offset of the drop shadows behind coin icons, measured in pixels."
+msgstr ""
+
+#: includes/customizer.php:463
+msgid "Color of the drop shadows behind coin icons."
+msgstr ""
+
+#: includes/customizer.php:483
+msgid "Gaussian blur radius of the shadow behind coin icons, measured in pixels."
+msgstr ""
+
 #: includes/frontend-settings.php:37
 msgid "UI/display settings"
 msgstr ""
@@ -2195,10 +2375,6 @@ msgstr ""
 
 #: includes/wallets-core.php:1307
 msgid "The coin adapter for the symbol %s is not available."
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "Bitcoin and Altcoin Wallets"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

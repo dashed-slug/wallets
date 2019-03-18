@@ -1,6 +1,4 @@
 .dashed-slug-wallets {
-	padding: 1em;
-	border: 1px solid black;
 	opacity: 0.5;
 	position: relative;
 
@@ -79,6 +77,12 @@
 }
 
 .dashed-slug-wallets table td {
+	vertical-align: top;
+}
+
+.dashed-slug-wallets.withdraw table td,
+.dashed-slug-wallets.move table td,
+.dashed-slug-wallets.transactions table td {
 	vertical-align: bottom;
 }
 
@@ -223,8 +227,7 @@
 }
 
 .dashed-slug-wallets tbody td.icon {
-	width: 64px;
-	height: 64px;
+	max-width: none;
 }
 
 .dashed-slug-wallets.deposit.deposit-list tbody td.balance span {

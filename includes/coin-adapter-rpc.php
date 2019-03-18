@@ -512,7 +512,7 @@ CFG;
 				Dashed_Slug_Wallets::delete_option( "{$this->option_slug}-rpc-passphrase" );
 			}
 
-			return boolval( $is_unlocked );
+			return (bool) $is_unlocked;
 		}
 
 		protected function set_secret( $secret ) {

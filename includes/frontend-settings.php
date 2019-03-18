@@ -345,8 +345,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 					'displays your page, not when the browser is minimized or displays another tab. Here you can control the time ' .
 					'interval between polling requests.', 'wallets'
 				);
-				?>
-				</p>
+			?>
+			</p>
 			<?php
 		}
 
@@ -359,13 +359,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 					'This same API can also be used by third party components that need to interact with the plugin. ' .
 					'The API is documented in the accompanying PDF manual for this plugin.', 'wallets'
 				);
-				?>
-				</p>
+			?>
+			</p>
 			<?php
 		}
 
 		public function action_wp_enqueue_scripts() {
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_qrcode_enabled' ) ) {
+			if ( Dashed_Slug_Wallets::get_option( 'wallets_qrcode_enabled' ) && current_user_can( 'has_wallets' ) ) {
 				wp_enqueue_script(
 					'jquery-qrcode',
 					plugins_url( 'jquery.qrcode.min.js', 'wallets/assets/scripts/jquery.qrcode.min.js' ),

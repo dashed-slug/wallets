@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.1
+Tested up to: 5.1.1
 Requires PHP: 5.6
-Stable tag: 4.0.6
+Stable tag: 4.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.1.0 =
+- Add: Control the frontend UI styling using the WordPress Customizer.
+- Fix: The JavaScript library `jquery-qrcode` is only loaded if the user is logged in and has the capability `has_wallets`.
+- Change: Now using the latest version `1.1.1` of the JavaScript library `sprintf.js`.
 
 = 4.0.6 =
 - Add: When unable to render a shortcode due to missing permissions or other problems, the error message displayed is now configurable via a WordPress filter.
@@ -1187,7 +1192,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.0.6 fixes a bug with exchange rates coming from fixer.io.
+Version 4.1.0 introduces integration with the WordPress Customizer.
 
 == Donating ==
 
