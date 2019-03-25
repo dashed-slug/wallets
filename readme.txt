@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.1.1
 Requires PHP: 5.6
-Stable tag: 4.1.0
+Stable tag: 4.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,15 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.2.0 =
+- Add: New capability `access_wallets_api` controls whether a user can access the JSON API using key-based authentication.
+- Add: Users with `access_wallets_api` are shown their API key in their user profile admin screen.
+- Add: The `get_nonces` JSON API endpoint returns the API key when accessed via browser (with cookie-based authentication).
+- Add: The `do_reset_apikey` JSON API endpoint can be used to reset the API key to a new random value.
+- Add: The JSON API can now be accessed with an API key. Details in the accompanying documentation.
+- Add: The `[wallets_api_key]` shortcode shows the API key to the user and allows the key to be reset.
+- Change: Withdrawals with the RPC-based coin adapters no longer fail in some edge cases where wallets are picky about the amount format ("Invalid amount error").
 
 = 4.1.0 =
 - Add: Control the frontend UI styling using the WordPress Customizer.
@@ -1192,7 +1201,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.1.0 introduces integration with the WordPress Customizer.
+Version 4.2.0 introduces key-based authentication to the JSON API.
 
 == Donating ==
 

@@ -24,6 +24,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 	class Dashed_Slug_Wallets_JSON_API {
 
 		const LATEST_API_VERSION = 3;
+		const API_KEY_BYTES      = 32;
 
 		private $admin_notices;
 
@@ -256,6 +257,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 		public function json_api_query_vars( $vars ) {
 			$vars[] = '__wallets_action';
 			$vars[] = '__wallets_apiversion';
+
+			$vars[] = '__wallets_user_id';
+			$vars[] = '__wallets_api_key';
 
 			$vars[] = '__wallets_symbol';
 			$vars[] = '__wallets_tx_count';
@@ -1015,8 +1019,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							)
 						);
 					}
-				} elseif ( ! is_user_logged_in() ) {
-					throw new Exception( __( 'Must be logged in' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN );
+
+				} elseif( 'do_reset_apikey' == $action ) {
+
+					$ts = gmdate( 'D, d M Y H:i:s' ) . ' GMT';
+					header( "Expires: $ts" );
+					header( "Last-Modified: $ts" );
+					header( 'Pragma: no-cache' );
+					header( 'Cache-Control: no-store, must-revalidate' );
+
+					$user_id = $this->get_effective_user_id();
+
+					if (
+						! (
+							user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS        ) &&
+						    user_can( $user_id, Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API )
+						)
+					) {
+						throw new Exception(
+							__(
+								'Not allowed',
+								'wallets'
+							),
+							Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED
+						);
+					}
+
+					$trading_api_key = $this->generate_random_bytes();
+					update_user_meta( $user_id, 'wallets_apikey', $trading_api_key );
+
+					$response['new_key'] = $trading_api_key;
+					$response['result']  = 'success';
 
 				} elseif ( 'get_coins_info' == $action ) {
 
@@ -1026,8 +1059,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( 'Pragma: no-cache' );
 					header( 'Cache-Control: no-store, must-revalidate' );
 
-					if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
-						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
+					$user_id = $this->get_effective_user_id();
+
+					if ( ! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
+						throw new Exception(
+							__(
+								'Not allowed',
+								'wallets'
+							),
+							Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED
+						);
 					}
 
 					$all_adapters = apply_filters( 'wallets_api_adapters', array(), array(
@@ -1053,10 +1094,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$coin_info->explorer_uri_address = apply_filters( 'wallets_explorer_uri_add_' . $coin_info->symbol, '' );
 							$coin_info->explorer_uri_tx      = apply_filters( 'wallets_explorer_uri_tx_' . $coin_info->symbol, '' );
 
-							$coin_info->balance           = apply_filters( 'wallets_api_balance',           0, array( 'symbol' => $coin_info->symbol ) );
-							$coin_info->available_balance = apply_filters( 'wallets_api_available_balance', 0, array( 'symbol' => $coin_info->symbol ) );
+							$coin_info->balance           = apply_filters( 'wallets_api_balance',           0, array( 'symbol' => $coin_info->symbol, 'user_id' => $user_id ) );
+							$coin_info->available_balance = apply_filters( 'wallets_api_available_balance', 0, array( 'symbol' => $coin_info->symbol, 'user_id' => $user_id) );
 
-							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
+							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection( $user_id );
 
 							$coin_info->rate = false;
 							try {
@@ -1074,7 +1115,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 							$coin_info->withdraw_fee_proportional = $adapter->get_withdraw_fee_proportional();
 							$coin_info->min_withdraw              = $adapter->get_minwithdraw();
 
-							$address = apply_filters( 'wallets_api_deposit_address', null, array( 'symbol' => $symbol ) );
+							$address = apply_filters( 'wallets_api_deposit_address', null, array( 'symbol' => $symbol, 'user_id' => $user_id) );
 							if ( is_string( $address ) ) {
 								$coin_info->deposit_address = $address;
 							} elseif ( is_array( $address ) ) {
@@ -1103,9 +1144,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( "Expires: $ts" );
 					header( "Cache-Control: max-age=$seconds_to_cache" );
 
+					$user_id = $this->get_effective_user_id();
+
 					if (
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS )
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS )
 					) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
@@ -1120,6 +1163,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 								'from'    => $from,
 								'count'   => $count,
 								'symbol'  => $symbol,
+								'user_id' => $user_id,
 							)
 						);
 
@@ -1149,6 +1193,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( 'Pragma: no-cache' );
 					header( 'Cache-Control: no-store, must-revalidate' );
 
+					if ( array_key_exists( '__wallets_user_id', $query->query_vars ) && $query->query_vars['__wallets_user_id'] ) {
+						throw new Exception(
+							__(
+								'Nonces are not needed when accessing the API using a key.',
+								'wallets'
+							),
+							Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED
+						);
+					}
+
 					if (
 						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 					) {
@@ -1166,21 +1220,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( 'Pragma: no-cache' );
 					header( 'Cache-Control: no-store, must-revalidate' );
 
+					$user_id = $this->get_effective_user_id();
+
 					if (
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS )
 					) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
 
-					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+					if ( get_current_user_id() == $user_id ) {
+						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
-					if ( ! wp_verify_nonce( $nonce, 'wallets-do-new-address' ) ) {
-						throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+						if ( ! wp_verify_nonce( $nonce, 'wallets-do-new-address' ) ) {
+							throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+						}
 					}
 
 					try {
 						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
-						$user_id = get_current_user_id();
 
 						$new_address = apply_filters(
 							'wallets_api_deposit_address',
@@ -1229,17 +1286,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( 'Pragma: no-cache' );
 					header( 'Cache-Control: no-store, must-revalidate' );
 
+					$user_id = $this->get_effective_user_id();
+
 					if (
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET )
 					) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
 
-					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+					if ( get_current_user_id() == $user_id ) {
+						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
-					if ( ! wp_verify_nonce( $nonce, 'wallets-do-withdraw' ) ) {
-						throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+						if ( ! wp_verify_nonce( $nonce, 'wallets-do-withdraw' ) ) {
+							throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+						}
 					}
 
 					try {
@@ -1270,11 +1331,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 						do_action(
 							'wallets_api_withdraw', array(
-								'symbol'  => $symbol,
-								'address' => $address,
-								'extra'   => $extra,
-								'amount'  => $amount,
-								'comment' => $comment,
+								'symbol'       => $symbol,
+								'address'      => $address,
+								'extra'        => $extra,
+								'amount'       => $amount,
+								'comment'      => $comment,
+								'from_user_id' => $user_id,
 							)
 						);
 
@@ -1291,17 +1353,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					header( 'Pragma: no-cache' );
 					header( 'Cache-Control: no-store, must-revalidate' );
 
+					$user_id = $this->get_effective_user_id();
+
 					if (
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
-						! current_user_can( Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER )
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ||
+						! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER )
 					) {
 						throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 					}
 
-					$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+					if ( get_current_user_id() == $user_id ) {
+						$nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
 
-					if ( ! wp_verify_nonce( $nonce, 'wallets-do-move' ) ) {
-						throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+						if ( ! wp_verify_nonce( $nonce, 'wallets-do-move' ) ) {
+							throw new Exception( __( 'Possible request forgery detected. Please reload and try again.', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_DO_MOVE );
+						}
 					}
 
 					try {
@@ -1357,6 +1423,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						do_action(
 							'wallets_api_move', array(
 								'symbol'             => $symbol,
+								'from_user_id'       => $user_id,
 								'to_user_id'         => $to_user_id,
 								'amount'             => $amount,
 								'comment'            => $comment,
@@ -1401,6 +1468,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 		} // end function action_parse_request
 
 		public function json_api_3_nonces( $nonces ) {
+
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET ) ) {
 				$nonces->do_withdraw = wp_create_nonce( 'wallets-do-withdraw' );
 			}
@@ -1411,6 +1479,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 			$nonces->do_new_address = wp_create_nonce( 'wallets-do-new-address' );
 
+			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API ) ) {
+				$nonces->api_key = get_user_meta( get_current_user_id(), 'wallets_apikey', true );
+				if ( ! $nonces->api_key ) {
+					$nonces->api_key = $this->generate_random_bytes();
+					update_user_meta( get_current_user_id(), 'wallets_apikey', $nonces->api_key );
+				}
+			}
+
 			return $nonces;
 		}
 
@@ -1419,6 +1495,108 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 		private function coin_comparator( $a, $b ) {
 			return strcmp( $a->name, $b->name );
 		}
+
+		/**
+		 * Returns a hex-encoded string of self::API_KEY_BYTES random bytes.
+		 * The bytes are generated as securely as possible on the platform.
+		 * @return string Hex-encoded string of random bytes.
+		 */
+		private function generate_random_bytes() {
+			if ( function_exists( 'random_bytes' ) ) {
+				return bin2hex( random_bytes( self::API_KEY_BYTES ) );
+			} elseif ( function_exists( 'openssl_random_pseudo_bytes' ) ) {
+				return bin2hex( openssl_random_pseudo_bytes( self::API_KEY_BYTES ) );
+			} else {
+				// This code is not very secure, but we should never get here
+				// if PHP version is greater than 5.3 (recommended minimum is 5.6)
+				$bytes = '';
+				for ( $i = 0; $i < self::API_KEY_BYTES; $i++ ) {
+					$bytes .= chr( rand( 0, 255 ) );
+				}
+				return bin2hex( $bytes );
+			}
+		}
+		/**
+		 * In case of programmatic access, checks that the specified user_id matches with the API key passed.
+		 * Checks the the wallets_api_key GET parameter, the Bearer HTTP_AUTHORIZATION header, and the Authorization header.
+		 *
+		 * @return int The user id specified in the GET parameter, if the API key passed matches.
+		 * @throws Exception If passed API key does not match.
+		 */
+		private function get_effective_user_id() {
+			global $wp;
+
+			$user_id = false;
+			if ( array_key_exists( '__wallets_user_id', $wp->query_vars ) ) {
+				$user_id =  absint( $wp->query_vars['__wallets_user_id'] );
+			}
+
+			if ( ! $user_id ) {
+				if ( is_user_logged_in() ) {
+					return get_current_user_id();
+				} else {
+					throw new Exception(
+						__(
+							'Must be logged in',
+							'wallets-front'
+						),
+						Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN
+					);
+				}
+			}
+
+			if ( isset( $wp->query_vars['__wallets_api_key'] ) ) {
+				// key from GET parameter
+				$key = sanitize_text_field( $wp->query_vars['__wallets_api_key'] );
+			} elseif ( isset( $_SERVER['HTTP_AUTHORIZATION'] ) ) {
+				// key from HTTP request header
+				$val = trim( $_SERVER['HTTP_AUTHORIZATION'] );
+				if ( preg_match( '/^Bearer\s(\S+)$/', $val, $m ) ) {
+					$key = $m[1];
+				}
+			} elseif ( isset( $_SERVER['Authorization'] ) ) {
+				// key from HTTP request header
+				$val = trim( $_SERVER['Authorization'] );
+				if ( preg_match( '/^Bearer\s(\S+)$/', $val, $m ) ) {
+					$key = $m[1];
+				}
+			} else {
+				// no key
+				throw new Exception(
+					__( 'Not logged in and no API key was passed!', 'wallets' ),
+					Dashed_Slug_Wallets::ERR_NOT_ALLOWED
+				);
+			}
+
+			if ( ! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API ) ) {
+				throw new Exception(
+					sprintf(
+						__(
+							'User with user_id = %d does not have the %s capability!',
+							'wallets'
+						),
+						$user_id,
+						Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API
+					),
+					Dashed_Slug_Wallets::ERR_NOT_ALLOWED
+				);
+			}
+			// existing user key
+			$api_key = get_user_meta( $user_id, 'wallets_apikey', true );
+
+			// check the key
+			if ( $key != $api_key ) {
+				throw new Exception(
+					sprintf(
+						__( 'Invalid trading API key passed for user_id = %d', 'wallets' ),
+						$user_id
+					),
+					Dashed_Slug_Wallets::ERR_NOT_ALLOWED
+				);
+			}
+			return $user_id;
+		}
+
 
 	} // end class
 	new Dashed_Slug_Wallets_JSON_API();

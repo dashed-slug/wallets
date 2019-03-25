@@ -16,6 +16,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		const SEND_FUNDS_TO_USER         = 'send_funds_to_user';
 		const WITHDRAW_FUNDS_FROM_WALLET = 'withdraw_funds_from_wallet';
 		const VIEW_WALLETS_PROFILE       = 'view_wallets_profile';
+		const ACCESS_WALLETS_API         = 'access_wallets_api';
 
 		private $caps;
 
@@ -35,6 +36,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 						=> __( 'Can withdraw cryptocurrencies from the site to an external address.', 'wallets' ),
 					self::VIEW_WALLETS_PROFILE
 						=> __( 'Can view the Bitcoin and Altcoin Wallets section in the WordPress user profile admin screen.', 'wallets' ),
+					self::ACCESS_WALLETS_API
+					=> __( 'Can use the JSON API programmatically with key authentication.', 'wallets' ),
 				)
 			);
 
@@ -45,8 +48,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.1.0.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-4.1.0.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.2.0.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-4.2.0.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -55,7 +58,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'4.1.0'
+				'4.2.0'
 			);
 		}
 

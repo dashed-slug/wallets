@@ -759,6 +759,37 @@
 				self.withdrawExtra( '' );
 			};
 
+			self.doResetApikey = function() {
+				if ( confirm( wallets_ko_i18n.apikey_renew_confirm ) ) {
+					self.ajaxSemaphore( self.ajaxSemaphore() + 1 );
+
+					$.ajax(
+						{
+							url: 'object' === typeof( walletsUserData ) ? walletsUserData.home_url : null,
+							dataType: 'json',
+							cache: false,
+							timeout: timeout_millis,
+							data: {
+								'__wallets_apiversion' : walletsUserData.recommendApiVersion || 3,
+								'__wallets_action': 'do_reset_apikey'
+							},
+							success: function( response ) {
+								if ( response.result != 'success' ) {
+									return;
+								}
+
+								self.noncesDirty( false );
+								ko.tasks.runEarly();
+								self.noncesDirty( true );
+							},
+							complete: function( jqXHR, status ) {
+								self.ajaxSemaphore( self.ajaxSemaphore() - 1 );
+							},
+							error: xhrErrorHandler
+						}
+					);
+				}
+			};
 
 			// current page number in the [wallets_transactions] view
 			self.currentPage = ko.observable( 1 ).extend({ rateLimit: 500 });
@@ -900,7 +931,7 @@
 		wp.wallets.viewModels.wallets = walletsViewModel;
 
 		// bind the viewmodel
-		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value,.rates' ).each( function( i, el ) {
+		$( '.dashed-slug-wallets' ).filter( '.deposit,.withdraw,.move,.balance,.transactions,.account-value,.rates,.api-key' ).each( function( i, el ) {
 			ko.applyBindings( walletsViewModel, el );
 		} );
 

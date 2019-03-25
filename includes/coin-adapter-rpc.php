@@ -445,26 +445,61 @@ CFG;
 					)
 				);
 			}
-
-			$amount = round( $amount, 8 );
-
 			$result = $this->rpc->sendtoaddress(
 				"$address",
-				$amount,
+				round( $amount, 8 ),
 				"$comment",
 				"$comment_to"
 			);
 
-			if ( false === $result ) {
+			// The sendtoaddress arguments are json_encoded by EasyBitcoin.
+			//
+			// Some wallets don't like strings and respond with "500: value is type str, expected real"
+			//
+			// Some wallets can work with float amounts, but floats can have too many digits,
+			// due to rounding errors. Bitcoin then responds with "500: Invalid amount" in this case.
+			//
+			// If withdrawing a float amount fails, try again with a string amount.
+
+			if ( false === $result && 500 == $this->rpc->status ) {
+
 				$m = sprintf(
 					__(
-						'%1$s->%2$s() failed to send with status="%3$s" and error="%4$s"',
+						'%1$s->%2$s() failed to send %5$f %6$s with status="%3$s" and error="%4$s", ' .
+						'retrying with a string representation of the amount',
 						'wallets'
 					),
 					__CLASS__,
 					__FUNCTION__,
 					$this->rpc->status,
-					$this->rpc->error
+					$this->rpc->error,
+					$amount,
+					$this->get_symbol()
+
+				);
+				error_log( $m );
+
+				$result = $this->rpc->sendtoaddress(
+					"$address",
+					number_format( $amount, 8, '.', '' ),
+					"$comment",
+					"$comment_to"
+				);
+			}
+
+			if ( false === $result ) {
+				$m = sprintf(
+					__(
+						'%1$s->%2$s() failed to send %5$f %6$s %3$s with status="%4$s" and error="%5$s"',
+						'wallets'
+					),
+					__CLASS__,
+					__FUNCTION__,
+					$this->get_symbol(),
+					$this->rpc->status,
+					$this->rpc->error,
+					$amount,
+					$this->get_symbol()
 				);
 				error_log( $m );
 				throw new Exception( $m );

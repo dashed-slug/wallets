@@ -20,6 +20,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			'wallets_move'           => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER,
 			'wallets_total_balances' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
 			'wallets_rates'          => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_api_key'        => Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API,
 		);
 
 		public static $tx_columns = array(
@@ -50,8 +51,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 		public function action_wp_enqueue_scripts() {
 			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.1.0.min.js' ) ) {
-					$script = 'bs58check-4.1.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/bs58check-4.2.0.min.js' ) ) {
+					$script = 'bs58check-4.2.0.min.js';
 				} else {
 					$script = 'bs58check.js';
 				}
