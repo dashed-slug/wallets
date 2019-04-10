@@ -258,7 +258,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			$vars[] = '__wallets_action';
 			$vars[] = '__wallets_apiversion';
 
-			$vars[] = '__wallets_user_id';
 			$vars[] = '__wallets_api_key';
 
 			$vars[] = '__wallets_symbol';
@@ -1516,35 +1515,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				return bin2hex( $bytes );
 			}
 		}
+
 		/**
 		 * In case of programmatic access, checks that the specified user_id matches with the API key passed.
 		 * Checks the the wallets_api_key GET parameter, the Bearer HTTP_AUTHORIZATION header, and the Authorization header.
 		 *
-		 * @return int The user id specified in the GET parameter, if the API key passed matches.
 		 * @throws Exception If passed API key does not match.
 		 */
 		private function get_effective_user_id() {
 			global $wp;
 
-			$user_id = false;
-			if ( array_key_exists( '__wallets_user_id', $wp->query_vars ) ) {
-				$user_id =  absint( $wp->query_vars['__wallets_user_id'] );
-			}
-
-			if ( ! $user_id ) {
-				if ( is_user_logged_in() ) {
-					return get_current_user_id();
-				} else {
-					throw new Exception(
-						__(
-							'Must be logged in',
-							'wallets-front'
-						),
-						Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN
-					);
-				}
-			}
-
+			// determine if an api key was passed
+			$key = false;
 			if ( isset( $wp->query_vars['__wallets_api_key'] ) ) {
 				// key from GET parameter
 				$key = sanitize_text_field( $wp->query_vars['__wallets_api_key'] );
@@ -1560,19 +1542,41 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 				if ( preg_match( '/^Bearer\s(\S+)$/', $val, $m ) ) {
 					$key = $m[1];
 				}
-			} else {
-				// no key
-				throw new Exception(
-					__( 'Not logged in and no API key was passed!', 'wallets' ),
-					Dashed_Slug_Wallets::ERR_NOT_ALLOWED
+			}
+
+			$user_response = array();
+			if ( $key ) {
+				// look for user_ids that match to this key
+				$user_response = get_users(
+					array(
+						'meta_key'   => 'wallets_apikey',
+						'meta_value' => $key,
+						'fields'     => array( 'ID' ),
+					)
 				);
 			}
+
+			if ( ! $user_response ) {
+				if ( is_user_logged_in() ) {
+					return get_current_user_id();
+				} else {
+					throw new Exception(
+						__(
+							'Must be logged in or specify a valid API key',
+							'wallets-front'
+						),
+						Dashed_Slug_Wallets_PHP_API::ERR_NOT_LOGGED_IN
+					);
+				}
+			}
+
+			$user_id = $user_response[ 0 ]->ID;
 
 			if ( ! user_can( $user_id, Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API ) ) {
 				throw new Exception(
 					sprintf(
 						__(
-							'User with user_id = %d does not have the %s capability!',
+							'The user with this API key does not have the %s capability!',
 							'wallets'
 						),
 						$user_id,
@@ -1581,19 +1585,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 					Dashed_Slug_Wallets::ERR_NOT_ALLOWED
 				);
 			}
-			// existing user key
-			$api_key = get_user_meta( $user_id, 'wallets_apikey', true );
 
-			// check the key
-			if ( $key != $api_key ) {
-				throw new Exception(
-					sprintf(
-						__( 'Invalid trading API key passed for user_id = %d', 'wallets' ),
-						$user_id
-					),
-					Dashed_Slug_Wallets::ERR_NOT_ALLOWED
-				);
-			}
 			return $user_id;
 		}
 

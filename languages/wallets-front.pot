@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.2.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-03-25 10:26:53+00:00\n"
+"POT-Creation-Date: 2019-04-10 14:57:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -148,20 +148,16 @@ msgid "Reload data from server"
 msgstr ""
 
 #: includes/views/api_key/default.php:14
-msgid "User ID"
-msgstr ""
-
-#: includes/views/api_key/default.php:18
 msgid "Wallets API key"
 msgstr ""
 
-#: includes/views/api_key/default.php:19 includes/views/deposit/default.php:18
+#: includes/views/api_key/default.php:15 includes/views/deposit/default.php:18
 #: includes/views/deposit/default.php:22 includes/views/deposit/static.php:48
 #: includes/views/deposit/static.php:64
 msgid "Copy to clipboard"
 msgstr ""
 
-#: includes/views/api_key/default.php:26
+#: includes/views/api_key/default.php:22
 msgid "Renew"
 msgstr ""
 

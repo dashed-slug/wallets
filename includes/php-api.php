@@ -315,7 +315,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 * `$adapters = apply_filters( 'wallets_api_adapters', array() ) );`
 		 *
-		 * Example: Get all the *online* coin adapters, but only if the current use has the `has_wallets` capability.
+		 * Example: Get all the *online* coin adapters, but only if the current user has the `has_wallets` capability.
 		 *
 		 *      try {
 		 *          $adapters = apply_filters( 'wallets_api_adapters', array(), array(

@@ -140,7 +140,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 						<td>
 							<?php if ( user_can( $profileuser->ID, Dashed_Slug_Wallets_Capabilities::ACCESS_WALLETS_API ) ): ?>
-							<code>&__wallets_user_id=<?php echo $profileuser->ID; ?>&__wallets_api_key=<?php echo $api_key; ?></code>
+							<code>&__wallets_api_key=<?php echo $api_key; ?></code>
 							<?php else: ?>
 							<span><?php _e( 'User does not have the <code>access_wallets_api</code> capability', 'wallets' ); ?></span>
 							<?php endif; ?>
@@ -149,7 +149,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 							<?php
 								printf(
 									__(
-									'When using the <a href="%s">JSON API</a> programmatically (e.g. via curl), append these GET parameters to your request, to authenticate you as this user.',
+									'When using the <a href="%s">JSON API</a> programmatically (e.g. via curl), append this GET parameter to your request, to authenticate you as this user (or pass the key using an Authentication: Bearer HTTP header).',
 									'wallets'
 									),
 									'https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/json-api/?utm_source=wallets&utm_medium=plugin&utm_campaign=userprofile'

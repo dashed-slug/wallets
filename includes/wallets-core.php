@@ -128,8 +128,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 		/** @internal */
 		public function action_wp_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-4.2.0.min.css' ) ) {
-				$front_styles = 'wallets-4.2.0.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-4.2.1.min.css' ) ) {
+				$front_styles = 'wallets-4.2.1.min.css';
 			} else {
 				$front_styles = 'wallets.css';
 			}
@@ -138,7 +138,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				'wallets_styles',
 				plugins_url( $front_styles, "wallets/assets/styles/$front_styles" ),
 				array(),
-				'4.2.0'
+				'4.2.1'
 			);
 
 
@@ -177,8 +177,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					true
 				);
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-4.2.0.min.js' ) ) {
-					$script = 'wallets-ko-4.2.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-ko-4.2.1.min.js' ) ) {
+					$script = 'wallets-ko-4.2.1.min.js';
 				} else {
 					$script = 'wallets-ko.js';
 				}
@@ -191,7 +191,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_ko',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					$deps,
-					'4.2.0',
+					'4.2.1',
 					true
 				);
 
@@ -218,8 +218,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 				wp_enqueue_script( 'wallets_ko' );
 
-				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-4.2.0.min.js' ) ) {
-					$script = 'wallets-bitcoin-validator-4.2.0.min.js';
+				if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-bitcoin-validator-4.2.1.min.js' ) ) {
+					$script = 'wallets-bitcoin-validator-4.2.1.min.js';
 				} else {
 					$script = 'wallets-bitcoin-validator.js';
 				}
@@ -228,7 +228,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 					'wallets_bitcoin',
 					plugins_url( $script, "wallets/assets/scripts/$script" ),
 					array( 'wallets_ko', 'bs58check' ),
-					'4.2.0',
+					'4.2.1',
 					true
 				);
 
@@ -656,8 +656,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '4.2.0';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = 'ddd5e457';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '4.2.1';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '408d84e6';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -900,7 +900,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 		 * @since 2.11.1 Added
 		 * @link https://codex.wordpress.org/Function_Reference/get_site_transient
 		 * @link https://codex.wordpress.org/Function_Reference/get_transient
-		 * @param string $option The transient name.
+		 * @param string $transient The transient name.
 		 * @param mixed $default The default value to return if transient was not found.
 		 * @return mixed The result of the wrapped function.
 		 */

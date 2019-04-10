@@ -11,10 +11,6 @@
 		data-bind="click: function() { noncesDirty( false ); ko.tasks.runEarly(); noncesDirty( true ); }">
 	</span>
 
-	<label class="user_id"><?php echo apply_filters( 'wallets_ui_text_user_id', esc_html__( 'User ID', 'wallets-front' ) ); ?>:
-		<input type="text" readonly="readonly" onClick="this.select();" value="<?php echo get_current_user_id(); ?>" />
-	</label>
-
 	<label class="apikey"><?php echo apply_filters( 'wallets_ui_text_apikey', esc_html__( 'Wallets API key', 'wallets-front' ) ); ?>:
 		<span class="wallets-clipboard-copy" onClick="jQuery(this).next()[0].select();document.execCommand('copy');" title="<?php echo apply_filters( 'wallets_ui_text_copy_to_clipboard', esc_html__( 'Copy to clipboard', 'wallets-front' ) ); ?>">&#x1F4CB;</span>
 		<input type="text" readonly="readonly" onClick="this.select();" data-bind="value: nonces().api_key" />

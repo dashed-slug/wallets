@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.2.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-03-25 10:26:53+00:00\n"
+"POT-Creation-Date: 2019-04-10 14:57:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -132,10 +132,10 @@ msgstr ""
 
 #: includes/adapters-list.php:227 includes/adapters-list.php:246
 #: includes/adapters-list.php:273 includes/caps.php:99
-#: includes/cold-storage.php:133 includes/json-api.php:546
-#: includes/json-api.php:589 includes/json-api.php:836
-#: includes/json-api.php:879 includes/json-api.php:1235
-#: includes/json-api.php:1302 includes/json-api.php:1369
+#: includes/cold-storage.php:133 includes/json-api.php:545
+#: includes/json-api.php:588 includes/json-api.php:835
+#: includes/json-api.php:878 includes/json-api.php:1234
+#: includes/json-api.php:1301 includes/json-api.php:1368
 #: includes/transactions.php:1190 includes/transactions.php:1393
 #: includes/transactions.php:1411 includes/transactions.php:1429
 #: includes/transactions.php:1446 includes/transactions.php:1463
@@ -371,8 +371,8 @@ msgstr ""
 #: includes/admin-user.php:151
 msgid ""
 "When using the <a href=\"%s\">JSON API</a> programmatically (e.g. via "
-"curl), append these GET parameters to your request, to authenticate you as "
-"this user."
+"curl), append this GET parameter to your request, to authenticate you as "
+"this user (or pass the key using an Authentication: Bearer HTTP header)."
 msgstr ""
 
 #: includes/balances-list-table.php:38 includes/menu-item.php:109
@@ -1584,24 +1584,23 @@ msgstr ""
 msgid "Could not delete cryptocurrency transactions for %1$s: %2$s"
 msgstr ""
 
-#: includes/json-api.php:354 includes/json-api.php:680
+#: includes/json-api.php:353 includes/json-api.php:679
 msgid "Could not process notification."
 msgstr ""
 
-#: includes/json-api.php:357 includes/json-api.php:683
-#: includes/json-api.php:1539
+#: includes/json-api.php:356 includes/json-api.php:682
 msgid "Must be logged in"
 msgstr ""
 
-#: includes/json-api.php:370 includes/json-api.php:406
-#: includes/json-api.php:478 includes/json-api.php:522
-#: includes/json-api.php:540 includes/json-api.php:583
-#: includes/json-api.php:693 includes/json-api.php:767
-#: includes/json-api.php:812 includes/json-api.php:830
-#: includes/json-api.php:873 includes/json-api.php:1040
-#: includes/json-api.php:1066 includes/json-api.php:1153
-#: includes/json-api.php:1209 includes/json-api.php:1228
-#: includes/json-api.php:1295 includes/json-api.php:1362
+#: includes/json-api.php:369 includes/json-api.php:405
+#: includes/json-api.php:477 includes/json-api.php:521
+#: includes/json-api.php:539 includes/json-api.php:582
+#: includes/json-api.php:692 includes/json-api.php:766
+#: includes/json-api.php:811 includes/json-api.php:829
+#: includes/json-api.php:872 includes/json-api.php:1039
+#: includes/json-api.php:1065 includes/json-api.php:1152
+#: includes/json-api.php:1208 includes/json-api.php:1227
+#: includes/json-api.php:1294 includes/json-api.php:1361
 #: includes/php-api.php:209 includes/php-api.php:302 includes/php-api.php:362
 #: includes/php-api.php:463 includes/php-api.php:589 includes/php-api.php:809
 #: includes/php-api.php:996 includes/php-api.php:1123 includes/php-api.php:1220
@@ -1609,68 +1608,64 @@ msgstr ""
 msgid "Not allowed"
 msgstr ""
 
-#: includes/json-api.php:388
+#: includes/json-api.php:387
 msgid "Could not get info about users: "
 msgstr ""
 
-#: includes/json-api.php:496 includes/json-api.php:785
-#: includes/json-api.php:1172
+#: includes/json-api.php:495 includes/json-api.php:784
+#: includes/json-api.php:1171
 msgid "Adapter for symbol \"%s\" is not found."
 msgstr ""
 
-#: includes/json-api.php:508 includes/json-api.php:797
-#: includes/json-api.php:1184
+#: includes/json-api.php:507 includes/json-api.php:796
+#: includes/json-api.php:1183
 msgid "Could not get \"%s\" transactions"
 msgstr ""
 
-#: includes/json-api.php:567 includes/json-api.php:857
-#: includes/json-api.php:1344
+#: includes/json-api.php:566 includes/json-api.php:856
+#: includes/json-api.php:1343
 msgid "Could not withdraw %s"
 msgstr ""
 
-#: includes/json-api.php:611 includes/json-api.php:920
-#: includes/json-api.php:1436
+#: includes/json-api.php:610 includes/json-api.php:919
+#: includes/json-api.php:1435
 msgid "Could not move %s"
 msgstr ""
 
-#: includes/json-api.php:901 includes/json-api.php:1416
+#: includes/json-api.php:900 includes/json-api.php:1415
 msgid "Could not find user %s. Please enter a valid slug, email, or login name."
 msgstr ""
 
-#: includes/json-api.php:991
+#: includes/json-api.php:990
 msgid "Could not process notification: %s"
 msgstr ""
 
-#: includes/json-api.php:1009
+#: includes/json-api.php:1008
 msgid "You must supply the cron nonce."
 msgstr ""
 
-#: includes/json-api.php:1017
+#: includes/json-api.php:1016
 msgid "Error while trigerring cron tasks: %s"
 msgstr ""
 
-#: includes/json-api.php:1198
+#: includes/json-api.php:1197
 msgid "Nonces are not needed when accessing the API using a key."
 msgstr ""
 
-#: includes/json-api.php:1256 includes/json-api.php:1272
+#: includes/json-api.php:1255 includes/json-api.php:1271
 msgid "Could not get new %s address"
 msgstr ""
 
-#: includes/json-api.php:1311 includes/json-api.php:1378
+#: includes/json-api.php:1310 includes/json-api.php:1377
 msgid "Required parameter missing: %s"
 msgstr ""
 
-#: includes/json-api.php:1566
-msgid "Not logged in and no API key was passed!"
+#: includes/json-api.php:1564
+msgid "Must be logged in or specify a valid API key"
 msgstr ""
 
-#: includes/json-api.php:1574
-msgid "User with user_id = %d does not have the %s capability!"
-msgstr ""
-
-#: includes/json-api.php:1591
-msgid "Invalid trading API key passed for user_id = %d"
+#: includes/json-api.php:1578
+msgid "The user with this API key does not have the %s capability!"
 msgstr ""
 
 #: includes/menu-item.php:39

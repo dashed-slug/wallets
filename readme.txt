@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.1.1
 Requires PHP: 5.6
-Stable tag: 4.2.0
+Stable tag: 4.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.2.1 =
+- Improve: When calling version 3 of the JSON API using an API key, the `__wallets_user_id` GET argument no longer needs to be specified. It is inferred from the value of the secret key.
 
 = 4.2.0 =
 - Add: New capability `access_wallets_api` controls whether a user can access the JSON API using key-based authentication.
@@ -1201,7 +1204,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.2.0 introduces key-based authentication to the JSON API.
+Version 4.2.1 drops the requirement to pass a user id when accessing version 3 of the JSON API using an authentication key.
 
 == Donating ==
 
