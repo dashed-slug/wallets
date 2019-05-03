@@ -21,11 +21,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		private static $start_time;
 		private static $start_memory;
 
+		private $network_active;
+
 		public function __construct() {
+			$this->network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'register_settings' ) );
+			add_action( 'admin_init', array( &$this, 'maybe_clear_data' ) );
 
 			// rates are pulled on shutdown after other tasks finish
 			add_action( 'shutdown', array( __CLASS__, 'action_shutdown' ), 40 );
@@ -43,7 +47,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				}
 			}
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( $this->network_active ) {
 				add_action( 'network_admin_edit_wallets-menu-rates', array( &$this, 'update_network_options' ) );
 			}
 
@@ -78,6 +82,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				if ( ! is_array( self::$fiats ) ) {
 					self::$fiats = array();
 				}
+			}
+		}
+
+		public function maybe_clear_data() {
+			$page   = filter_input( INPUT_GET, 'page',   FILTER_SANITIZE_STRING );
+			$action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+
+			if ( 'wallets_clear_rates' == $action && 'wallets-menu-rates' == $page ) {
+				Dashed_Slug_Wallets::delete_option( 'wallets_rates' );
+				Dashed_Slug_Wallets::delete_option( 'wallets_rates_cryptos' );
+				Dashed_Slug_Wallets::delete_option( 'wallets_rates_fiats' );
+				Dashed_Slug_Wallets::delete_transient( 'wallets_rates_last_run' );
+
+				wp_redirect(
+					add_query_arg(
+						array(
+							'page'    => 'wallets-menu-rates',
+						),
+						call_user_func( $this->network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
+					)
+				);
+				exit;
+
 			}
 		}
 
@@ -364,10 +391,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				<p><?php esc_html_e( '', 'wallets' ); ?></p>
 
+				<a
+					href="<?php echo esc_attr( call_user_func( $this->network_active ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-rates&action=wallets_clear_rates' ) ); ?>"
+					class="button"><?php esc_html_e( 'Clear/refresh data now!', 'wallets' ); ?></a>
+
 				<form method="post" action="
 				<?php
 
-				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				if ( $this->network_active ) {
 					echo esc_url(
 						add_query_arg(
 							'action',

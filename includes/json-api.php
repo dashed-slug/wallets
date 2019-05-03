@@ -1000,6 +1000,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 						$request_cron_nonce = sanitize_text_field( $query->query_vars['__wallets_cron_nonce'] );
 
 						if ( $cron_nonce == $request_cron_nonce ) {
+							do_action( 'delete_expired_transients' );
 							do_action( 'wallets_periodic_checks' );
 							$response['result'] = 'success';
 

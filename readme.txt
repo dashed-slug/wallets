@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.1.1
 Requires PHP: 5.6
-Stable tag: 4.2.1
+Stable tag: 4.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.2.2 =
+- Add: New button in *Exchange Rates* admin page clear any stale exchange rates and forces the plugin to download new data.
+- Add: The result of `wp_using_ext_object_cache()` is now reported in the debug information shown in the admin dashboard.
+- Add: Calling `do_cron` via the JSON API now also forces expired transients to be deleted from the DB (the `delete_expired_transients` WordPress action is fired).
+- Change: The plugin now loads the frontend libraries `sprintf.js` and `moment.js` always. This helps the Exchange extension display public market data even if a user is not logged in.
 
 = 4.2.1 =
 - Improve: When calling version 3 of the JSON API using an API key, the `__wallets_user_id` GET argument no longer needs to be specified. It is inferred from the value of the secret key.
@@ -1204,7 +1210,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.2.1 drops the requirement to pass a user id when accessing version 3 of the JSON API using an authentication key.
+Version 4.2.2 introduces a few minor improvements.
 
 == Donating ==
 
