@@ -10,13 +10,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
-			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
+			add_action( 'admin_init',         array( &$this, 'action_admin_init' ) );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
 				add_action( 'network_admin_edit_wallets-menu-frontend-settings', array( &$this, 'update_network_options' ) );
 			}
 
 			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
+
+			add_action( 'add_meta_boxes',     array( &$this, 'action_add_meta_boxes' ) );
+			add_action( 'save_post',          array( &$this, 'save_default_coin_meta_box_data' ) );
 		}
 
 		public static function action_activate( $network_active ) {
@@ -37,6 +40,49 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				__( 'UI/display settings', 'wallets' ),
 				array( &$this, 'wallets_ui_section_cb' ),
 				'wallets-menu-frontend-settings'
+			);
+
+			$coin_options = array();
+			try {
+				$coin_adapters = apply_filters(
+					'wallets_api_adapters',
+					array(),
+					array(
+						'check_capabilities' => true,
+						'online_only' => true,
+					)
+				);
+
+				foreach ( $coin_adapters as $symbol => $adapter ) {
+					$coin_options[ $symbol ] = sprintf(
+						'%s (%s)',
+						$adapter->get_name(),
+						$adapter->get_symbol()
+					);
+				}
+
+			} catch ( Exception $e ) { }
+
+			add_settings_field(
+				'wallets_default_coin',
+				__( 'Default coin', 'wallets' ),
+				array( &$this, 'dropdown_cb' ),
+				'wallets-menu-frontend-settings',
+				'wallets_ui_section',
+				array(
+					'label_for'   => 'wallets_default_coin',
+					'options'     => $coin_options,
+					'selected'    => Dashed_Slug_Wallets::get_option( 'wallets_default_coin' ),
+					'description' => __(
+						'<p>The default selected coin in non-static views. You can override the default selected coin at the page/post level.</p>',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-frontend-settings',
+				'wallets_default_coin'
 			);
 
 			add_settings_field(
@@ -242,6 +288,96 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			}
 		}
 
+		public function action_add_meta_boxes() {
+			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
+				add_meta_box(
+					'default-coin',
+					__( 'Bitcoin and Altcoin Wallets Default Coin', 'wallets' ),
+					array( &$this, 'default_coin_meta_box_cb' )
+				);
+			}
+		}
+
+		public function default_coin_meta_box_cb( $post ) {
+			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
+				return;
+			}
+
+			wp_nonce_field( 'wallets_default_coin_nonce', 'wallets_default_coin_nonce' );
+
+			$value = get_post_meta( $post->ID, '_wallets_default_coin', true );
+
+			$coin_options = array();
+
+			try {
+				$coin_adapters = apply_filters(
+					'wallets_api_adapters',
+					array(),
+					array(
+						'check_capabilities' => true,
+						'online_only' => true,
+					)
+				);
+
+			} catch ( Exception $e ) {
+				return;
+			}
+
+			foreach ( $coin_adapters as $symbol => $adapter ) {
+				$coin_options[ $symbol ] = sprintf(
+					'%s (%s)',
+					$adapter->get_name(),
+					$adapter->get_symbol()
+				);
+			}
+
+			$this->dropdown_cb(
+				array(
+					'label_for'   => '_wallets_default_coin',
+					'selected'    => $value,
+					'options'     => $coin_options,
+					'description' => sprintf(
+						__( 'Select the default coin for this page. If set, this overrides the site-wide default coin in <a href="%s">Frontend Settings</a>.', 'wallets' ),
+						add_query_arg( 'page', 'wallets-menu-frontend-settings', network_admin_url( 'admin.php' ) )
+					)
+				)
+			);
+		}
+
+		public function save_default_coin_meta_box_data( $post_id ) {
+			if ( ! isset( $_POST['wallets_default_coin_nonce'] ) ) {
+				return;
+			}
+
+			if ( ! wp_verify_nonce( $_POST['wallets_default_coin_nonce'], 'wallets_default_coin_nonce' ) ) {
+				return;
+			}
+
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+				return;
+			}
+
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				return;
+			}
+
+			if ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] ) {
+				if ( ! current_user_can( 'edit_page', $post_id ) ) {
+					return;
+				}
+			}
+			else {
+				if ( ! current_user_can( 'edit_post', $post_id ) ) {
+					return;
+				}
+			}
+			if ( ! isset( $_POST['_wallets_default_coin'] ) ) {
+				return;
+			}
+			$value = sanitize_text_field( $_POST['_wallets_default_coin'] );
+
+			update_post_meta( $post_id, '_wallets_default_coin', $value );
+		}
 
 		public function wallets_frontend_settings_page_cb() {
 			if ( ! current_user_can( Dashed_Slug_Wallets_Capabilities::MANAGE_WALLETS ) ) {
@@ -282,6 +418,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 		public function update_network_options() {
 			check_admin_referer( 'wallets-menu-frontend-settings-options' );
 
+			Dashed_Slug_Wallets::update_option( 'wallets_default_coin',               filter_input( INPUT_POST, 'wallets_default_coin',               FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_qrcode_enabled',             filter_input( INPUT_POST, 'wallets_qrcode_enabled',             FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( 'wallets_zlib_disabled',              filter_input( INPUT_POST, 'wallets_zlib_disabled',              FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( 'wallets_legacy_json_apis',           filter_input( INPUT_POST, 'wallets_legacy_json_apis',           FILTER_SANITIZE_STRING ) ? 'on' : '' );
@@ -317,6 +454,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				max="<?php echo floatval( $arg['max'] ); ?>"
 				step="<?php echo floatval( $arg['step'] ); ?>" />
 
+			<p class="description"><?php echo $arg['description']; ?></p>
+			<?php
+		}
+
+		public function dropdown_cb( $arg ) {
+			?>
+			<select
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"
+				name="<?php echo esc_attr( $arg['label_for'] ); ?>">
+
+				<option value=""><?php esc_html_e( '&mdash;' )?></option>
+
+				<?php
+
+				foreach ( $arg['options'] as $key => $val ):
+				?>
+				<option
+					<?php selected( $arg['selected'] == $key ); ?>
+					value="<?php echo esc_attr( $key ); ?>"><?php
+
+					echo esc_html( $val );
+					?>
+				</option>
+
+				<?php
+				endforeach;
+			?>
+			</select>
 			<p class="description"><?php echo $arg['description']; ?></p>
 			<?php
 		}

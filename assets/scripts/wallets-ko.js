@@ -283,7 +283,7 @@
 			self.updateQrCode = function() {
 				setTimeout( function() {
 					if ( 'undefined' !== typeof( self.coins ) ) {
-						var $deposits = $( '.dashed-slug-wallets.deposit' );
+						var $deposits = $( '.dashed-slug-wallets.deposit:not(.static)' );
 						$('.qrcode', $deposits ).empty();
 
 						var coins = self.cryptoCoins();
@@ -962,7 +962,34 @@
 			}
 		} );
 
+		$( 'html' ).on( 'wallets_coins_ready', function( event, coins ) {
+			if ( 'string' === typeof( walletsUserData.defaultCoin ) ) {
+				var symbol = walletsUserData.defaultCoin;
+				if ( coins && symbol && 'object' === typeof( coins[ symbol ] ) ) {
+					walletsViewModel.selectedCoin( symbol );
+				}
+			}
+		} );
+
 		$( 'html' ).on( 'wallets_ready', function( event, coins, nonces ) {
+			var $staticDeposits = $( '.dashed-slug-wallets.deposit.static' );
+
+			// render qr code into all deposit UIs
+			$staticDeposits.each( function( n, el ) {
+				var $deposit = $( el );
+				var $qrcode = $( '.qrcode', $deposit );
+				if ( $qrcode.length ) {
+					var width = $qrcode.width();
+					var qrcode_uri = $qrcode.attr('data-qrcode-uri');
+					if ( qrcode_uri ) {
+						$qrcode.qrcode( {
+							width: width,
+							height: width,
+							text: qrcode_uri
+						} );
+					}
+				}
+			} );
 
 		} );
 

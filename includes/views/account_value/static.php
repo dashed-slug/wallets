@@ -22,7 +22,7 @@ foreach ( $adapters as $symbol => $adapter ) {
 unset( $balance, $adapters, $adapter );
 ?>
 
-<div class="dashed-slug-wallets account-value account-value-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready" >
+<div class="dashed-slug-wallets account-value static account-value-static wallets-ready" >
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_account_value' );

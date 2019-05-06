@@ -4,22 +4,34 @@ if ( ! $atts['symbol'] ) {
 	throw new Exception( "Static view of this shortcode requires a symbol attribute!" );
 }
 
+$adapters = apply_filters( 'wallets_api_adapters', array() );
+if ( isset( $adapters[ $atts['symbol'] ] ) ) {
+	$adapter = $adapters[ $atts['symbol'] ];
+}
+
 $deposit_address = apply_filters( 'wallets_api_deposit_address', '', array(
 	'symbol' => $atts['symbol'],
 	'user_id' => $atts['user_id'],
-));
+) );
 
-$adapters = apply_filters( 'wallets_api_adapters', array() );
-if ( isset( $adapters[ $atts['symbol'] ] ) ) {
+if ( $adapter ) {
+	$deposit_address_qrcode_uri = $adapter->address_to_qrcode_uri( $deposit_address );
 	$extra_desc = $adapters[ $atts['symbol'] ]->get_extra_field_description();
 } else {
+	$deposit_address_qrcode_uri = '';
 	$extra_desc = '&mdash;';
 }
+
+if ( ! $deposit_address_qrcode_uri ) {
+	$deposit_address_qrcode_uri = is_array( $deposit_address ) ? $deposit_address[ 0 ] : $deposit_address;
+}
+
 unset( $adapters );
+unset( $adapter );
 
 ?>
 
-<form class="dashed-slug-wallets deposit deposit-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready" >
+<form class="dashed-slug-wallets deposit static deposit-static wallets-ready" >
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_deposit' );
@@ -37,7 +49,8 @@ unset( $adapters );
 	<div
 		class="qrcode"
 		<?php if ( is_numeric( $atts['qrsize'] ) ): ?>
-		style="width: <?php echo absint( $atts['qrsize'] ); ?>px; height: <?php echo absint( $atts['qrsize'] ); ?>px;"<?php endif; ?>>
+		style="width: <?php echo absint( $atts['qrsize'] ); ?>px; height: <?php echo absint( $atts['qrsize'] ); ?>px;"<?php endif; ?>
+		data-qrcode-uri="<?php echo esc_attr( $deposit_address_qrcode_uri ); ?>">
 	</div>
 
 	<label class="address">
@@ -80,5 +93,6 @@ unset( $adapters );
 </form>
 <?php
 
+unset( $deposit_address_qrcode_uri );
 unset( $deposit_address );
 unset( $extra_desc );

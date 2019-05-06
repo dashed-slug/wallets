@@ -48,8 +48,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.2.2.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-4.2.2.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.3.0.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-4.3.0.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -58,7 +58,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'4.2.2'
+				'4.3.0'
 			);
 		}
 

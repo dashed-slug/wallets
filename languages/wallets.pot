@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.2.2\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-05-03 11:14:50+00:00\n"
+"POT-Creation-Date: 2019-05-06 14:49:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Pending withdrawals"
 msgstr ""
 
-#: includes/adapters-list-table.php:99 includes/wallets-core.php:695
+#: includes/adapters-list-table.php:99 includes/wallets-core.php:697
 msgid "n/a"
 msgstr ""
 
@@ -124,7 +124,7 @@ msgstr ""
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:154
 #: includes/confirmations.php:687 includes/cron.php:457
-#: includes/frontend-settings.php:248 includes/notifications.php:724
+#: includes/frontend-settings.php:384 includes/notifications.php:724
 #: includes/rates.php:385 includes/transactions.php:330
 #: includes/transactions.php:1184 includes/transactions.php:1329
 msgid "You do not have sufficient permissions to access this page."
@@ -187,8 +187,8 @@ msgstr ""
 msgid "Bitcoin and Altcoin Wallets Addresses"
 msgstr ""
 
-#: includes/admin-menu.php:41 includes/wallets-core.php:252
-#: includes/wallets-core.php:262
+#: includes/admin-menu.php:41 includes/wallets-core.php:254
+#: includes/wallets-core.php:264
 msgid "Wallets"
 msgstr ""
 
@@ -1456,75 +1456,99 @@ msgstr ""
 msgid "Gaussian blur radius of the shadow behind coin icons, measured in pixels."
 msgstr ""
 
-#: includes/frontend-settings.php:37
+#: includes/frontend-settings.php:40
 msgid "UI/display settings"
 msgstr ""
 
-#: includes/frontend-settings.php:44
+#: includes/frontend-settings.php:68
+msgid "Default coin"
+msgstr ""
+
+#: includes/frontend-settings.php:76
+msgid ""
+"<p>The default selected coin in non-static views. You can override the "
+"default selected coin at the page/post level.</p>"
+msgstr ""
+
+#: includes/frontend-settings.php:90
 msgid "Enable QR Codes"
 msgstr ""
 
-#: includes/frontend-settings.php:65
+#: includes/frontend-settings.php:111
 msgid "Enable sweetalert"
 msgstr ""
 
-#: includes/frontend-settings.php:71
+#: includes/frontend-settings.php:117
 msgid ""
 "Controls whether <a href=\"https://sweetalert.js.org/\">sweetalert.js</a> "
 "is used to display nicer modal boxes."
 msgstr ""
 
-#: includes/frontend-settings.php:85
+#: includes/frontend-settings.php:131
 msgid "Live polling settings"
 msgstr ""
 
-#: includes/frontend-settings.php:92
+#: includes/frontend-settings.php:138
 msgid "Coin info poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:98
+#: includes/frontend-settings.php:144
 msgid ""
 "How often information about coins, including user balances, is refreshed. "
 "(0 = no refresh)"
 msgstr ""
 
-#: includes/frontend-settings.php:114
+#: includes/frontend-settings.php:160
 msgid "Also load coin info when the page becomes visible"
 msgstr ""
 
-#: includes/frontend-settings.php:134
+#: includes/frontend-settings.php:180
 msgid "Transaction list poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:140
+#: includes/frontend-settings.php:186
 msgid "How often user transaction data is refreshed. (0 = no refresh)."
 msgstr ""
 
-#: includes/frontend-settings.php:156
+#: includes/frontend-settings.php:202
 msgid "JSON API Settings"
 msgstr ""
 
-#: includes/frontend-settings.php:163
+#: includes/frontend-settings.php:209
 msgid "Disable zlib compression for JSON API"
 msgstr ""
 
-#: includes/frontend-settings.php:183
+#: includes/frontend-settings.php:229
 msgid "Enable legacy JSON APIs"
 msgstr ""
 
-#: includes/frontend-settings.php:203
+#: includes/frontend-settings.php:249
 msgid "Disable transients (debug)"
 msgstr ""
 
-#: includes/frontend-settings.php:251
+#: includes/frontend-settings.php:295
+msgid "Bitcoin and Altcoin Wallets Default Coin"
+msgstr ""
+
+#: includes/frontend-settings.php:340
+msgid ""
+"Select the default coin for this page. If set, this overrides the site-wide "
+"default coin in <a href=\"%s\">Frontend Settings</a>."
+msgstr ""
+
+#: includes/frontend-settings.php:387
 msgid "Bitcoin and Altcoin Wallets frontend settings"
 msgstr ""
 
-#: includes/frontend-settings.php:253
+#: includes/frontend-settings.php:389
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:328
+#: includes/frontend-settings.php:467
+msgid "&mdash;"
+msgstr ""
+
+#: includes/frontend-settings.php:493
 msgid "These settings affect the display of frontend UIs."
 msgstr ""
 
@@ -2297,136 +2321,136 @@ msgstr ""
 msgid "Failed to import file : %s"
 msgstr ""
 
-#: includes/wallets-core.php:253 includes/wallets-core.php:263
+#: includes/wallets-core.php:255 includes/wallets-core.php:265
 msgid "Visit plugin site"
 msgstr ""
 
-#: includes/wallets-core.php:254 includes/wallets-core.php:264
+#: includes/wallets-core.php:256 includes/wallets-core.php:266
 msgid "Support"
 msgstr ""
 
-#: includes/wallets-core.php:381
+#: includes/wallets-core.php:383
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a transactions table \"%s\" in "
 "the database. The plugin may not function properly."
 msgstr ""
 
-#: includes/wallets-core.php:389
+#: includes/wallets-core.php:391
 msgid ""
 "Bitcoin and Altcoin Wallets could NOT create a deposit addresses table "
 "\"%s\" in the database. The plugin may not function properly. If this error "
 "message persists, please contact support."
 msgstr ""
 
-#: includes/wallets-core.php:560
+#: includes/wallets-core.php:562
 msgid ""
 "You are using WordPress %1$s. This plugin has been tested with %2$s. Please "
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:652
+#: includes/wallets-core.php:654
 msgid "Plugin version"
 msgstr ""
 
-#: includes/wallets-core.php:653
+#: includes/wallets-core.php:655
 msgid "Git SHA"
 msgstr ""
 
-#: includes/wallets-core.php:654
+#: includes/wallets-core.php:656
 msgid "Web Server"
 msgstr ""
 
-#: includes/wallets-core.php:655
+#: includes/wallets-core.php:657
 msgid "PHP version"
 msgstr ""
 
-#: includes/wallets-core.php:656
+#: includes/wallets-core.php:658
 msgid "WordPress version"
 msgstr ""
 
-#: includes/wallets-core.php:657
+#: includes/wallets-core.php:659
 msgid "MySQL version"
 msgstr ""
 
-#: includes/wallets-core.php:658
+#: includes/wallets-core.php:660
 msgid "DB prefix"
 msgstr ""
 
-#: includes/wallets-core.php:659
+#: includes/wallets-core.php:661
 msgid "Is multisite"
 msgstr ""
 
-#: includes/wallets-core.php:660
+#: includes/wallets-core.php:662
 msgid "Is network activated"
 msgstr ""
 
-#: includes/wallets-core.php:661
+#: includes/wallets-core.php:663
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/wallets-core.php:662
+#: includes/wallets-core.php:664
 msgid "Using external cache"
 msgstr ""
 
-#: includes/wallets-core.php:662
+#: includes/wallets-core.php:664
 msgid "true"
 msgstr ""
 
-#: includes/wallets-core.php:662
+#: includes/wallets-core.php:664
 msgid "false"
 msgstr ""
 
-#: includes/wallets-core.php:683
+#: includes/wallets-core.php:685
 msgid "DB storage engine for '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:694
+#: includes/wallets-core.php:696
 msgid "Constant '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:701
+#: includes/wallets-core.php:703
 msgid "PHP.ini '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:704
+#: includes/wallets-core.php:706
 msgid "Cron jobs last ran on"
 msgstr ""
 
-#: includes/wallets-core.php:705
+#: includes/wallets-core.php:707
 msgid "Cron jobs last runtime (sec)"
 msgstr ""
 
-#: includes/wallets-core.php:706
+#: includes/wallets-core.php:708
 msgid "Cron jobs peak memory:"
 msgstr ""
 
-#: includes/wallets-core.php:707
+#: includes/wallets-core.php:709
 msgid "Cron jobs memory delta:"
 msgstr ""
 
-#: includes/wallets-core.php:715
+#: includes/wallets-core.php:717
 msgid "PHP Extension '%s'"
 msgstr ""
 
-#: includes/wallets-core.php:715
+#: includes/wallets-core.php:717
 msgid "Loaded"
 msgstr ""
 
-#: includes/wallets-core.php:715
+#: includes/wallets-core.php:717
 msgid "Not loaded"
 msgstr ""
 
-#: includes/wallets-core.php:747
+#: includes/wallets-core.php:749
 msgid ""
 "When requesting support, please send the following info along with your "
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:1298
+#: includes/wallets-core.php:1315
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1302
+#: includes/wallets-core.php:1319
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 

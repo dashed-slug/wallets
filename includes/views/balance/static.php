@@ -23,7 +23,7 @@ if ( isset( $adapters[ $atts['symbol'] ] ) ) {
 }
 unset( $adapters );
 ?>
-<div class="dashed-slug-wallets balance balance-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready">
+<div class="dashed-slug-wallets balance static balance-static wallets-ready">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_balance' );

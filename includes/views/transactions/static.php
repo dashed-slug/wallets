@@ -25,7 +25,7 @@ unset( $search_params, $adapters );
 
 ?>
 
-	<form class="dashed-slug-wallets transactions transactions-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready">
+	<form class="dashed-slug-wallets transactions static transactions-static wallets-ready">
 		<?php
 			do_action( 'wallets_ui_before' );
 			do_action( 'wallets_ui_before_transactions' );

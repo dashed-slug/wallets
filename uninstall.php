@@ -131,6 +131,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( "{$option_slug}-other-minconf" );
 
 	// remove frontend settings
+	wallets_delete_option( 'wallets_default_coin' );
 	wallets_delete_option( 'wallets_qrcode_enabled' );
 	wallets_delete_option( 'wallets_sweetalert_enabled' );
 	wallets_delete_option( 'wallets_zlib_disabled' );
@@ -139,6 +140,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_visibility_check_enabled' );
 	wallets_delete_option( 'wallets_poll_interval_transactions' );
 	wallets_delete_option( 'wallets_poll_interval_coin_info' );
+	delete_post_meta_by_key( '_wallets_defaut_coin' );
 
 	// remove db schema revision
 	wallets_delete_option( 'wallets_db_revision' );
