@@ -1253,8 +1253,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_coingecko( $rates ) {
-			$ids = array();
 			$adapters = apply_filters( 'wallets_api_adapters', array() );
+
+			if ( ! $adapters ) {
+				return;
+			}
+
+			$ids = array();
 			foreach ( array_keys( $adapters ) as $symbol ) {
 				if ( isset ( self::$symbol_to_gecko_id[ $symbol ] ) ) {
 					$ids[] = self::$symbol_to_gecko_id[ $symbol ];
@@ -1280,7 +1285,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				$obj = json_decode( $json );
 				if ( is_object( $obj ) ) {
 					foreach ( $obj as $id => $data ) {
-						if ( isset( self::$gecko_id_to_symbol[ $id ] ) ) {
+						if ( isset( self::$gecko_id_to_symbol[ $id ] ) && is_object( $data ) ) {
 							$symbol_quote = self::$gecko_id_to_symbol[ $id ];
 							foreach ( $data as $symbol_base => $rate ) {
 								if ( $symbol_base != $symbol_quote ) {

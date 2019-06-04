@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-05-06 14:49:05+00:00\n"
+"POT-Creation-Date: 2019-06-04 10:44:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -123,8 +123,8 @@ msgstr ""
 #: includes/coin-adapter-rpc.php:304 includes/coin-adapter-rpc.php:313
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:154
-#: includes/confirmations.php:687 includes/cron.php:457
-#: includes/frontend-settings.php:384 includes/notifications.php:724
+#: includes/confirmations.php:692 includes/cron.php:457
+#: includes/frontend-settings.php:382 includes/notifications.php:724
 #: includes/rates.php:385 includes/transactions.php:330
 #: includes/transactions.php:1184 includes/transactions.php:1329
 msgid "You do not have sufficient permissions to access this page."
@@ -346,7 +346,7 @@ msgstr ""
 msgid "Fiat currency"
 msgstr ""
 
-#: includes/admin-user.php:59 includes/confirmations.php:849
+#: includes/admin-user.php:59 includes/confirmations.php:854
 msgid "(none)"
 msgstr ""
 
@@ -909,133 +909,133 @@ msgstr ""
 msgid "Failed to update transaction due to an internal error."
 msgstr ""
 
-#: includes/confirmations.php:690
+#: includes/confirmations.php:695
 msgid "Bitcoin and Altcoin Wallets Transaction confirmation settings"
 msgstr ""
 
-#: includes/confirmations.php:703
+#: includes/confirmations.php:708
 msgid ""
 "User confirmations are done by sending emails that contain a link with a "
 "nonce. "
 msgstr ""
 
-#: includes/confirmations.php:754
+#: includes/confirmations.php:759
 msgid "The following variables are substituted in e-mail templates:"
 msgstr ""
 
-#: includes/confirmations.php:757
+#: includes/confirmations.php:762
 msgid ""
 "Confirmation link. Clicking this will mark the transaction as confirmed by "
 "user."
 msgstr ""
 
-#: includes/confirmations.php:759 includes/notifications.php:766
+#: includes/confirmations.php:764 includes/notifications.php:766
 msgid "Account username"
 msgstr ""
 
-#: includes/confirmations.php:761 includes/notifications.php:770
+#: includes/confirmations.php:766 includes/notifications.php:770
 msgid "Username of other account (for internal transactions between users)"
 msgstr ""
 
-#: includes/confirmations.php:763 includes/notifications.php:774
+#: includes/confirmations.php:768 includes/notifications.php:774
 msgid ""
 "Transaction ID. ( This is normally the same as the txid on the blockchain. "
 "Internal transactions are also assigned a unique ID. )"
 msgstr ""
 
-#: includes/confirmations.php:765
+#: includes/confirmations.php:770
 msgid "The amount transacted."
 msgstr ""
 
-#: includes/confirmations.php:767
+#: includes/confirmations.php:772
 msgid "For withdrawals and transfers, the fees paid to the site."
 msgstr ""
 
-#: includes/confirmations.php:769 includes/notifications.php:782
+#: includes/confirmations.php:774 includes/notifications.php:782
 msgid "The coin symbol for this transaction (e.g. \"BTC\" for Bitcoin)"
 msgstr ""
 
-#: includes/confirmations.php:771 includes/notifications.php:784
+#: includes/confirmations.php:776 includes/notifications.php:784
 msgid ""
 "The date and time of the transaction in the local timezone. Format: "
 "YYYY-MM-DD hh:mm:ss"
 msgstr ""
 
-#: includes/confirmations.php:773 includes/notifications.php:786
+#: includes/confirmations.php:778 includes/notifications.php:786
 msgid "The UTC date and time of the transaction. Format: YYYY-MM-DD hh:mm:ss"
 msgstr ""
 
-#: includes/confirmations.php:775 includes/notifications.php:788
+#: includes/confirmations.php:780 includes/notifications.php:788
 msgid "The comment attached to the transaction."
 msgstr ""
 
-#: includes/confirmations.php:777 includes/notifications.php:790
+#: includes/confirmations.php:782 includes/notifications.php:790
 msgid "For deposits and withdrawals, the external address."
 msgstr ""
 
-#: includes/confirmations.php:779 includes/notifications.php:792
+#: includes/confirmations.php:784 includes/notifications.php:792
 msgid ""
 "Optional. For some coins, there is extra information required for "
 "deposits/withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc.."
 msgstr ""
 
-#: includes/confirmations.php:781 includes/notifications.php:794
+#: includes/confirmations.php:786 includes/notifications.php:794
 msgid ""
 "A space separated list of tags, slugs, etc that further describe the type "
 "of transaction."
 msgstr ""
 
-#: includes/confirmations.php:862
+#: includes/confirmations.php:867
 msgid ""
 "Choose which page, if any, a user should be redirected to after clicking on "
 "a confirmation link in their e-mail."
 msgstr ""
 
-#: includes/confirmations.php:868
+#: includes/confirmations.php:873
 msgid ""
 "Choose which confirmations are required before performing an internal "
 "transaction between users."
 msgstr ""
 
-#: includes/confirmations.php:874
+#: includes/confirmations.php:879
 msgid ""
 "Choose which confirmations are required before performing a withdraw "
 "transaction."
 msgstr ""
 
-#: includes/confirmations.php:880
+#: includes/confirmations.php:885
 msgid ""
 "Decide whether admins are notified whenever a transaction requires admin "
 "confirmation."
 msgstr ""
 
-#: includes/confirmations.php:886
+#: includes/confirmations.php:891
 msgid ""
 "You can have transactions that are older than the specified amount of days "
 "to be automatically marked as \"verified by admin\"."
 msgstr ""
 
-#: includes/confirmations.php:895
+#: includes/confirmations.php:900
 msgid "Internal transaction confirmations"
 msgstr ""
 
-#: includes/confirmations.php:902 includes/confirmations.php:1043
+#: includes/confirmations.php:907 includes/confirmations.php:1048
 msgid "Admin confirmation required"
 msgstr ""
 
-#: includes/confirmations.php:924
+#: includes/confirmations.php:929
 msgid "User confirmation required (e-mail)"
 msgstr ""
 
-#: includes/confirmations.php:944 includes/confirmations.php:1000
-#: includes/confirmations.php:1085 includes/confirmations.php:1193
+#: includes/confirmations.php:949 includes/confirmations.php:1005
+#: includes/confirmations.php:1090 includes/confirmations.php:1198
 msgid "Template for e-mail subject line:"
 msgstr ""
 
-#: includes/confirmations.php:950 includes/confirmations.php:967
-#: includes/confirmations.php:1006 includes/confirmations.php:1023
-#: includes/confirmations.php:1091 includes/confirmations.php:1108
-#: includes/confirmations.php:1199 includes/confirmations.php:1216
+#: includes/confirmations.php:955 includes/confirmations.php:972
+#: includes/confirmations.php:1011 includes/confirmations.php:1028
+#: includes/confirmations.php:1096 includes/confirmations.php:1113
+#: includes/confirmations.php:1204 includes/confirmations.php:1221
 #: includes/notifications.php:386 includes/notifications.php:403
 #: includes/notifications.php:445 includes/notifications.php:462
 #: includes/notifications.php:504 includes/notifications.php:521
@@ -1045,76 +1045,76 @@ msgstr ""
 msgid "See the bottom of this page for variable substitutions."
 msgstr ""
 
-#: includes/confirmations.php:961 includes/confirmations.php:1017
-#: includes/confirmations.php:1102 includes/confirmations.php:1210
+#: includes/confirmations.php:966 includes/confirmations.php:1022
+#: includes/confirmations.php:1107 includes/confirmations.php:1215
 msgid "Template for e-mail message body:"
 msgstr ""
 
-#: includes/confirmations.php:980
+#: includes/confirmations.php:985
 msgid "Recipient user is notified by email"
 msgstr ""
 
-#: includes/confirmations.php:986
+#: includes/confirmations.php:991
 msgid ""
 "If a user is about to receive an internal transaction that requires "
 "confirmation, notify that user."
 msgstr ""
 
-#: includes/confirmations.php:1036
+#: includes/confirmations.php:1041
 msgid "Withdraw transaction confirmations"
 msgstr ""
 
-#: includes/confirmations.php:1063
+#: includes/confirmations.php:1068
 msgid "User confirmation required"
 msgstr ""
 
-#: includes/confirmations.php:1121
+#: includes/confirmations.php:1126
 msgid "Redirect after confirmation"
 msgstr ""
 
-#: includes/confirmations.php:1128
+#: includes/confirmations.php:1133
 msgid "Redirect to page"
 msgstr ""
 
-#: includes/confirmations.php:1134
+#: includes/confirmations.php:1139
 msgid ""
 "After a user clicks on a confirmation link from their email, they will be "
 "redirected to this page."
 msgstr ""
 
-#: includes/confirmations.php:1145
+#: includes/confirmations.php:1150
 msgid "Redirect timeout (seconds)"
 msgstr ""
 
-#: includes/confirmations.php:1151
+#: includes/confirmations.php:1156
 msgid ""
 "User browser will redirect after displaying confirmation message for this "
 "many seconds."
 msgstr ""
 
-#: includes/confirmations.php:1167
+#: includes/confirmations.php:1172
 msgid "Notify admins whenever their confirmation is required"
 msgstr ""
 
-#: includes/confirmations.php:1174
+#: includes/confirmations.php:1179
 msgid "Notify admins when confirmation needed"
 msgstr ""
 
-#: includes/confirmations.php:1180
+#: includes/confirmations.php:1185
 msgid ""
 "When this is checked, admins with the manage_wallets capability will be "
 "notified about any transactions that require admin confirmation."
 msgstr ""
 
-#: includes/confirmations.php:1229
+#: includes/confirmations.php:1234
 msgid "Auto-confirm transactions"
 msgstr ""
 
-#: includes/confirmations.php:1236
+#: includes/confirmations.php:1241
 msgid "Auto-confirm internal transfers (days)"
 msgstr ""
 
-#: includes/confirmations.php:1262
+#: includes/confirmations.php:1267
 msgid "Auto-confirm withdrawals (days)"
 msgstr ""
 
@@ -1456,99 +1456,99 @@ msgstr ""
 msgid "Gaussian blur radius of the shadow behind coin icons, measured in pixels."
 msgstr ""
 
-#: includes/frontend-settings.php:40
+#: includes/frontend-settings.php:38
 msgid "UI/display settings"
 msgstr ""
 
-#: includes/frontend-settings.php:68
+#: includes/frontend-settings.php:66
 msgid "Default coin"
 msgstr ""
 
-#: includes/frontend-settings.php:76
+#: includes/frontend-settings.php:74
 msgid ""
 "<p>The default selected coin in non-static views. You can override the "
 "default selected coin at the page/post level.</p>"
 msgstr ""
 
-#: includes/frontend-settings.php:90
+#: includes/frontend-settings.php:88
 msgid "Enable QR Codes"
 msgstr ""
 
-#: includes/frontend-settings.php:111
+#: includes/frontend-settings.php:109
 msgid "Enable sweetalert"
 msgstr ""
 
-#: includes/frontend-settings.php:117
+#: includes/frontend-settings.php:115
 msgid ""
 "Controls whether <a href=\"https://sweetalert.js.org/\">sweetalert.js</a> "
 "is used to display nicer modal boxes."
 msgstr ""
 
-#: includes/frontend-settings.php:131
+#: includes/frontend-settings.php:129
 msgid "Live polling settings"
 msgstr ""
 
-#: includes/frontend-settings.php:138
+#: includes/frontend-settings.php:136
 msgid "Coin info poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:144
+#: includes/frontend-settings.php:142
 msgid ""
 "How often information about coins, including user balances, is refreshed. "
 "(0 = no refresh)"
 msgstr ""
 
-#: includes/frontend-settings.php:160
+#: includes/frontend-settings.php:158
 msgid "Also load coin info when the page becomes visible"
 msgstr ""
 
-#: includes/frontend-settings.php:180
+#: includes/frontend-settings.php:178
 msgid "Transaction list poll interval (minutes)"
 msgstr ""
 
-#: includes/frontend-settings.php:186
+#: includes/frontend-settings.php:184
 msgid "How often user transaction data is refreshed. (0 = no refresh)."
 msgstr ""
 
-#: includes/frontend-settings.php:202
+#: includes/frontend-settings.php:200
 msgid "JSON API Settings"
 msgstr ""
 
-#: includes/frontend-settings.php:209
+#: includes/frontend-settings.php:207
 msgid "Disable zlib compression for JSON API"
 msgstr ""
 
-#: includes/frontend-settings.php:229
+#: includes/frontend-settings.php:227
 msgid "Enable legacy JSON APIs"
 msgstr ""
 
-#: includes/frontend-settings.php:249
+#: includes/frontend-settings.php:247
 msgid "Disable transients (debug)"
 msgstr ""
 
-#: includes/frontend-settings.php:295
+#: includes/frontend-settings.php:293
 msgid "Bitcoin and Altcoin Wallets Default Coin"
 msgstr ""
 
-#: includes/frontend-settings.php:340
+#: includes/frontend-settings.php:338
 msgid ""
 "Select the default coin for this page. If set, this overrides the site-wide "
 "default coin in <a href=\"%s\">Frontend Settings</a>."
 msgstr ""
 
-#: includes/frontend-settings.php:387
+#: includes/frontend-settings.php:385
 msgid "Bitcoin and Altcoin Wallets frontend settings"
 msgstr ""
 
-#: includes/frontend-settings.php:389
+#: includes/frontend-settings.php:387
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:467
+#: includes/frontend-settings.php:465
 msgid "&mdash;"
 msgstr ""
 
-#: includes/frontend-settings.php:493
+#: includes/frontend-settings.php:491
 msgid "These settings affect the display of frontend UIs."
 msgstr ""
 

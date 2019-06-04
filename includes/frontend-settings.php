@@ -16,8 +16,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				add_action( 'network_admin_edit_wallets-menu-frontend-settings', array( &$this, 'update_network_options' ) );
 			}
 
-			add_action( 'wp_enqueue_scripts', array( &$this, 'action_wp_enqueue_scripts' ) );
-
 			add_action( 'add_meta_boxes',     array( &$this, 'action_add_meta_boxes' ) );
 			add_action( 'save_post',          array( &$this, 'save_default_coin_meta_box_data' ) );
 		}
@@ -529,16 +527,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			<?php
 		}
 
-		public function action_wp_enqueue_scripts() {
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_qrcode_enabled' ) && current_user_can( 'has_wallets' ) ) {
-				wp_enqueue_script(
-					'jquery-qrcode',
-					plugins_url( 'jquery.qrcode.min.js', 'wallets/assets/scripts/jquery.qrcode.min.js' ),
-					array( 'jquery' ),
-					'1.0.0'
-				);
-			}
-		}
 	}
 
 	new Dashed_Slug_Wallets_Frontend_Settings();

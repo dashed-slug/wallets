@@ -513,6 +513,11 @@ EMAIL
 				unset( $row['blog_id'] );
 				unset( $row['updated_time'] );
 
+				// create some vars
+				if ( ! isset( $row['tags'] ) ) {
+					$row['tags'] = 'n/a';
+				}
+
 				// localize time based on wp timezone
 				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
 

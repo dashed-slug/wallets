@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.1.1
+Tested up to: 5.2.1
 Requires PHP: 5.6
-Stable tag: 4.3.0
+Stable tag: 4.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.3.1 =
+- Fix: The jquery-qrcode.js library is only loaded in screens where the `[wallets_deposit]` shortcode is shown, and only if QR Codes are enabled.
+- Fix: If a different jquery-qrcode.js library is already loaded, the plugin will use that and not load its own copy. Helps with compatibility with `two-factor-authentication` plugin.
+- Fix: Add some guard clauses so that warnings are not printed out to the logs.
+- Fix: When an admin received notification about a pending withdrawal with no tags, the tags are no longer shown as `###TAGS###` but the string `n/a/` is shown in the email.
 
 = 4.3.0 =
 - Add: Admin can now set the site-wide default coin for frontend UI screens.
@@ -1215,7 +1221,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.3.0 introduces the ability to set default coins per-site or per-page/per-post and fixes one bug.
+Version 4.3.1 includes a few bug fixes.
 
 == Donating ==
 

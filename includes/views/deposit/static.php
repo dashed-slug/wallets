@@ -14,7 +14,7 @@ $deposit_address = apply_filters( 'wallets_api_deposit_address', '', array(
 	'user_id' => $atts['user_id'],
 ) );
 
-if ( $adapter ) {
+if ( isset( $adapter ) && $adapter ) {
 	$deposit_address_qrcode_uri = $adapter->address_to_qrcode_uri( $deposit_address );
 	$extra_desc = $adapters[ $atts['symbol'] ]->get_extra_field_description();
 } else {
