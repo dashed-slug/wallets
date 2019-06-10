@@ -12,6 +12,11 @@
 	<!-- ko if: ( Object.keys( coins() ).length > 0 ) -->
 	<span class="wallets-reload-button" title="<?php echo apply_filters( 'wallets_ui_text_reload', esc_attr__( 'Reload data from server', 'wallets-front' ) ); ?>" data-bind="click: function() { coinsDirty( false ); if ( 'object' == typeof ko.tasks ) ko.tasks.runEarly(); coinsDirty( true ); }"></span>
 
+	<p>
+		<?php echo apply_filters( 'wallets_ui_text_show_zero_balances', esc_html__( 'Show zero balances: ', 'wallets-front' ) ); ?>
+		<input type="checkbox" data-bind="checked: showZeroBalances" />
+	</p>
+
 	<table>
 		<thead>
 			<tr>
@@ -21,6 +26,7 @@
 		</thead>
 
 		<tbody data-bind="foreach: jQuery.map( coins(), function( v, i ) { var copy = jQuery.extend({},v); copy.sprintf_pattern = copy.sprintf; delete copy.sprintf; return copy; } )">
+			<!--  ko if: ( $root.showZeroBalances() || balance ) -->
 			<tr>
 				<td class="icon">
 					<img data-bind="attr: { src: icon_url, alt: name }" />
@@ -31,6 +37,7 @@
 					<span class="fiat-amount" data-bind="text: rate ? sprintf( '%s %01.2f', walletsUserData.fiatSymbol, balance * rate ) : '';" ></span>
 				</td>
 			</tr>
+			<!-- /ko -->
 		</tbody>
 	</table>
 	<!-- /ko -->

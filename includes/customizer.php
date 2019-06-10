@@ -525,17 +525,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 	.dashed-slug-wallets table th {
 
 		color:
-			<?php echo get_theme_mod( 'wallets_font_label_color',             self::WALLETS_FONT_LABEL_COLOR             ); ?>;
+			<?php echo get_theme_mod( 'wallets_font_label_color',           self::WALLETS_FONT_LABEL_COLOR             ); ?>;
 
 		font-size:
-			<?php echo get_theme_mod( 'wallets_font_label_size_pt',           self::WALLETS_FONT_LABEL_SIZE_PT           ); ?>pt;
+			<?php echo get_theme_mod( 'wallets_font_label_size_pt',         self::WALLETS_FONT_LABEL_SIZE_PT           ); ?>pt;
 	}
 
-	.dashed-slug-wallets tbody td.icon {
+	.dashed-slug-wallets tbody td.icon,
+	.dashed-slug-wallets tbody td.icon img {
 		width:
-			<?php echo get_theme_mod( 'wallets_icon_width_px',                self::WALLETS_ICON_WIDTH_PX                ); ?>px;
+			<?php echo get_theme_mod( 'wallets_icon_width_px',              self::WALLETS_ICON_WIDTH_PX                ); ?>px;
 		height:
-			<?php echo get_theme_mod( 'wallets_icon_width_px',                self::WALLETS_ICON_WIDTH_PX                ); ?>px;
+			<?php echo get_theme_mod( 'wallets_icon_width_px',              self::WALLETS_ICON_WIDTH_PX                ); ?>px;
 	}
 
 	.dashed-slug-wallets tbody td.icon img {

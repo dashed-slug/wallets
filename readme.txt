@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.2.1
 Requires PHP: 5.6
-Stable tag: 4.3.1
+Stable tag: 4.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.3.2 =
+- Add: The shortcode `[wallets_balance template="list"]` now includes a "Show zero balances" checkbox.
+- Fix: The frontend now checks to see if the selected coin exists before rendering its icon. This avoids a JavaScript error.
+- Fix: Undefined variable PHP error in multi-site cron prevented logging.
+- Fix: All options in network-active installations under *Wallets* &rarr; *Confirms* are now being saved correctly.
 
 = 4.3.1 =
 - Fix: The jquery-qrcode.js library is only loaded in screens where the `[wallets_deposit]` shortcode is shown, and only if QR Codes are enabled.
@@ -1221,7 +1227,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.3.1 includes a few bug fixes.
+Version 4.3.2 includes a new "Show zero balances" checkbox and few bug fixes.
 
 == Donating ==
 

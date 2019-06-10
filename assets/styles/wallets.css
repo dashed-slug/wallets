@@ -224,6 +224,7 @@
 
 .dashed-slug-wallets .icon img {
 	width: 100%;
+	max-width: none;
 }
 
 .dashed-slug-wallets tbody td.icon {

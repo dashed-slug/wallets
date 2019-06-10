@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-06-04 10:44:27+00:00\n"
+"POT-Creation-Date: 2019-06-10 08:20:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -123,7 +123,7 @@ msgstr ""
 #: includes/coin-adapter-rpc.php:304 includes/coin-adapter-rpc.php:313
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:154
-#: includes/confirmations.php:692 includes/cron.php:457
+#: includes/confirmations.php:692 includes/cron.php:459
 #: includes/frontend-settings.php:382 includes/notifications.php:724
 #: includes/rates.php:385 includes/transactions.php:330
 #: includes/transactions.php:1184 includes/transactions.php:1329
@@ -1142,54 +1142,54 @@ msgstr ""
 msgid "half an hour"
 msgstr ""
 
-#: includes/cron.php:250
+#: includes/cron.php:252
 msgid "Perioric tasks"
 msgstr ""
 
-#: includes/cron.php:257
+#: includes/cron.php:259
 msgid "Run every"
 msgstr ""
 
-#: includes/cron.php:263
+#: includes/cron.php:265
 msgid ""
 "How often to run the cron job. If you plan to trigger the external URL via "
 "a system cron, choose \"never\"."
 msgstr ""
 
-#: includes/cron.php:275
+#: includes/cron.php:277
 msgid "Max batch size"
 msgstr ""
 
-#: includes/cron.php:281
+#: includes/cron.php:283
 msgid ""
 "Up to this many transactions (withdrawals and internal transfers) will be "
 "attempted per run of the cron job. Make sure that your hardware can handle "
 "the batch size you set here, or the plugin may misbehave."
 msgstr ""
 
-#: includes/cron.php:296
+#: includes/cron.php:298
 msgid "Max retries for failed withdrawals"
 msgstr ""
 
-#: includes/cron.php:302
+#: includes/cron.php:304
 msgid ""
 "Failed withdrawals will be attempted up to this many times, while the "
 "adapter is unlocked."
 msgstr ""
 
-#: includes/cron.php:317
+#: includes/cron.php:319
 msgid "Max retries for failed transfers to other users"
 msgstr ""
 
-#: includes/cron.php:323
+#: includes/cron.php:325
 msgid "Failed transfers to other users will be attempted up to this many times."
 msgstr ""
 
-#: includes/cron.php:338
+#: includes/cron.php:340
 msgid "Verbose log output (debug)"
 msgstr ""
 
-#: includes/cron.php:344
+#: includes/cron.php:346
 msgid ""
 "Writes verbose memory info about cron jobs and exchange rates providers "
 "into the WordPress debug log. Useful for debugging out-of-memory issues. "
@@ -1198,81 +1198,81 @@ msgid ""
 "logs</a>."
 msgstr ""
 
-#: includes/cron.php:356
+#: includes/cron.php:358
 msgid "Withdrawal locks"
 msgstr ""
 
-#: includes/cron.php:363
+#: includes/cron.php:365
 msgid "Time to retain withdrawal secrets"
 msgstr ""
 
-#: includes/cron.php:391
+#: includes/cron.php:393
 msgid "Old transactions"
 msgstr ""
 
-#: includes/cron.php:398
+#: includes/cron.php:400
 msgid "Batch old transactions and clean"
 msgstr ""
 
-#: includes/cron.php:404
+#: includes/cron.php:406
 msgid ""
 "Choose how to aggregate similar past internal transactions that are in a "
 "\"done\" state. Old \"failed\" or \"cancelled\" internal transactions will "
 "be deleted."
 msgstr ""
 
-#: includes/cron.php:406
+#: includes/cron.php:408
 msgid "Never"
 msgstr ""
 
-#: includes/cron.php:407
+#: includes/cron.php:409
 msgid "Weekly"
 msgstr ""
 
-#: includes/cron.php:419
+#: includes/cron.php:421
 msgid "Cancel old unconfirmed/pending transactions "
 msgstr ""
 
-#: includes/cron.php:425
+#: includes/cron.php:427
 msgid ""
 "Time to wait before cancelling an unconfirmed or pending transaction, in "
 "minutes (0 = do not cancel)."
 msgstr ""
 
-#: includes/cron.php:460
+#: includes/cron.php:462
 msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: includes/cron.php:512
+#: includes/cron.php:514
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron "
 "job."
 msgstr ""
 
-#: includes/cron.php:535
+#: includes/cron.php:537
 msgid "PRO TIP:"
 msgstr ""
 
-#: includes/cron.php:554
+#: includes/cron.php:556
 msgid ""
 "Looking for an easy to setup cron job service? Try <a href=\"%s\" "
 "title=\"%s\">EasyCron</a>!"
 msgstr ""
 
-#: includes/cron.php:571
+#: includes/cron.php:573
 msgid ""
 "You can control how wallet secrets are stored. Wallet secrets are needed "
 "for performing withdrawals."
 msgstr ""
 
-#: includes/cron.php:581
+#: includes/cron.php:583
 msgid ""
 "You can control whether similar old internal transactions are aggregated. "
 "Aggregating past transactions saves space on the DB. Aggregation is "
 "performed in batches so as not to overwhelm the DB."
 msgstr ""
 
-#: includes/cron.php:613
+#: includes/cron.php:615
 msgid "(never)"
 msgstr ""
 

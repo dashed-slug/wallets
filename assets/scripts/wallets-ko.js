@@ -89,6 +89,9 @@
 			self.selectedCryptoCoin = ko.observable();
 			self.selectedFiatCoin = ko.observable();
 
+			// determines if zero balances are shown in balances list view
+			self.showZeroBalances = ko.observable();
+
 			// the structure that describes online coins and the user balance for those coins
 			self.coinsResponse = {};
 			self.coinsDirty = ko.observable( true );
@@ -528,6 +531,16 @@
 					},
 					error: xhrErrorHandler
 				});
+			};
+
+			self.getCoinIconUrl = function( coin ) {
+				if ( 'string' === typeof( coin ) ) {
+					var coins = self.coins();
+					if ( 'string' === typeof( coins[ coin ].icon_url ) ) {
+						return coins[ coin ].icon_url;
+					}
+				}
+				return '';
 			};
 
 			self.resetMove = function() {

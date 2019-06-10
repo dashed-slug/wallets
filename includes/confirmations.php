@@ -1303,7 +1303,8 @@ EMAIL
 				'wallets_confirm_inform_admins_enabled',
 				'wallets_confirm_receive_move_user_enabled',
 			) as $checkbox_option_slug ) {
-					Dashed_Slug_Wallets::update_option( $checkbox_option_slug, filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '' );
+				$val = filter_input( INPUT_POST, $checkbox_option_slug, FILTER_SANITIZE_STRING ) ? 'on' : '';
+				Dashed_Slug_Wallets::update_option( $checkbox_option_slug, $val );
 			}
 
 			// strings
@@ -1317,16 +1318,19 @@ EMAIL
 				'wallets_confirm_receive_move_email_subject',
 				'wallets_confirm_receive_move_email_message',
 			) as $text_option_slug ) {
-				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING ) );
+				$val = filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_STRING );
+				Dashed_Slug_Wallets::update_option( $text_option_slug, $val );
 			}
 
 			// integers
 			foreach ( array(
+				'wallets_confirm_redirect_page',
 				'wallets_confirm_redirect_seconds',
 				'wallets_confirm_move_auto_days',
 				'wallets_confirm_withdraw_auto_days',
 			) as $integer_option_slug ) {
-				Dashed_Slug_Wallets::update_option( $text_option_slug, filter_input( INPUT_POST, $text_option_slug, FILTER_SANITIZE_NUMBER_INT ) );
+				$val = filter_input( INPUT_POST, $integer_option_slug, FILTER_SANITIZE_NUMBER_INT );
+				Dashed_Slug_Wallets::update_option( $integer_option_slug, $val );
 			}
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-confirmations', network_admin_url( 'admin.php' ) ) );

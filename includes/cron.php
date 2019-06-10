@@ -185,6 +185,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			$this->start_time = time();
 			$this->start_memory = memory_get_usage();
 
+			$verbose = Dashed_Slug_Wallets::get_option( 'wallets_cron_verbose' );
+
 			$this->log( 'cron jobs STARTED' );
 
 			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
@@ -197,7 +199,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 					restore_current_blog();
 					$site_count++;
 					if ( isset( $_SERVER['REQUEST_TIME'] ) && time() - $_SERVER['REQUEST_TIME'] > ini_get( 'max_execution_time' ) - 5 ) {
-						if ( $this->verbose ) {
+						if ( $verbose ) {
 							$this->log( "Stopping cron jobs after running on $site_count sites" );
 						}
 						break;

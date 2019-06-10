@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-06-04 10:44:27+00:00\n"
+"POT-Creation-Date: 2019-06-10 08:20:22+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +28,7 @@ msgid "User"
 msgstr ""
 
 #: includes/sidebar-widgets.php:159 includes/views/balance/default.php:10
-#: includes/views/balance/list.php:18 includes/views/deposit/default.php:15
+#: includes/views/balance/list.php:23 includes/views/deposit/default.php:15
 #: includes/views/deposit/list.php:18 includes/views/deposit/static.php:41
 #: includes/views/move/default.php:21 includes/views/rates/default.php:23
 #: includes/views/rates/static.php:22
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Renew"
 msgstr ""
 
-#: includes/views/balance/default.php:11 includes/views/balance/list.php:19
+#: includes/views/balance/default.php:11 includes/views/balance/list.php:24
 #: includes/views/balance/static.php:32
 msgid "Balance"
 msgstr ""
@@ -177,6 +177,10 @@ msgstr ""
 #: includes/views/transactions/default.php:11
 #: includes/views/transactions/rows.php:9 includes/views/withdraw/default.php:9
 msgid "No currencies are currently enabled."
+msgstr ""
+
+#: includes/views/balance/list.php:16
+msgid "Show zero balances: "
 msgstr ""
 
 #: includes/views/deposit/default.php:17 includes/views/deposit/list.php:19
