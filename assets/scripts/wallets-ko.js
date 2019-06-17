@@ -379,6 +379,28 @@
 										fee = 0;
 									}
 
+									return parseFloat( val ) - fee > 0;
+								}
+							}
+							return true;
+						},
+						message: wallets_ko_i18n.amount_less_than_fee
+					},
+					{
+						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
+							var coins = self.coins();
+							var coin = self.selectedCoin();
+							if ( coin ) {
+								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
+									var fee = parseFloat( coins[ coin ].move_fee );
+									fee += parseFloat( coins[ coin ].move_fee_proportional ) * parseFloat( self.moveAmount() );
+									if ( isNaN( fee ) ) {
+										fee = 0;
+									}
+
 									return coins[ coin ].available_balance >= parseFloat( val ) && parseFloat( val ) >= fee;
 								}
 							}
@@ -605,12 +627,12 @@
 										fee = 0;
 									}
 
-									return coins[ coin ].available_balance >= parseFloat( val ) && parseFloat( val ) >= fee;
+									return parseFloat( val ) - fee > 0;
 								}
 							}
 							return true;
 						},
-						message: wallets_ko_i18n.insufficient_balance
+						message: wallets_ko_i18n.amount_less_than_fee
 					},
 					{
 						validator: function( val ) {
@@ -627,6 +649,28 @@
 							return true;
 						},
 						message: wallets_ko_i18n.minimum_withdraw
+					},
+					{
+						validator: function( val ) {
+							if ( '' === val ) {
+								return true;
+							}
+							var coins = self.coins();
+							var coin = self.selectedCryptoCoin();
+							if ( coin ) {
+								if ( 'undefined' !== typeof( coins[ coin ] ) ) {
+									var fee = parseFloat( coins[ coin ].withdraw_fee );
+									fee += parseFloat( coins[ coin ].withdraw_fee_proportional ) * parseFloat( self.withdrawAmount() );
+									if ( isNaN( fee ) ) {
+										fee = 0;
+									}
+
+									return coins[ coin ].available_balance >= parseFloat( val ) && parseFloat( val ) >= fee;
+								}
+							}
+							return true;
+						},
+						message: wallets_ko_i18n.insufficient_balance
 					}
 				]
 			});

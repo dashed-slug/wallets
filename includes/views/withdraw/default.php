@@ -17,7 +17,7 @@
 		<tbody>
 			<tr>
 				<td colspan="6">
-					<label class="coin"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( cryptoCoins() ).map(function(o){return cryptoCoins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCryptoCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + cryptoCoins()[ selectedCryptoCoin() ].icon_url + ')' }"></select></label>
+					<label class="coin"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( cryptoCoins() ).map(function(o){return cryptoCoins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCryptoCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + $root.getCoinIconUrl( selectedCryptoCoin() )+ ')' }"></select></label>
 				</td>
 			</tr>
 			<tr>

@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.2\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-06-10 08:20:22+00:00\n"
+"POT-Creation-Date: 2019-06-17 09:07:37+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -369,70 +369,74 @@ msgid "Amount is less than minimum withdrawal amount for this coin"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:14
-msgid "Get a new deposit address for this coin?"
+msgid "Total amount to deduct is less than the applicable fees"
 msgstr ""
 
 #: includes/wallets-ko-i18n.php:15
+msgid "Get a new deposit address for this coin?"
+msgstr ""
+
+#: includes/wallets-ko-i18n.php:16
 msgid "Renew the API key? The old key will become invalid!"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:17
+#: includes/wallets-ko-i18n.php:18
 msgid "deposit"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:18
+#: includes/wallets-ko-i18n.php:19
 msgid "withdraw"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:19
+#: includes/wallets-ko-i18n.php:20
 msgid "transfer"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:20
+#: includes/wallets-ko-i18n.php:21
 msgid "trade"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:22
+#: includes/wallets-ko-i18n.php:23
 msgid "unconfirmed"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:23
+#: includes/wallets-ko-i18n.php:24
 msgid "pending"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:24
+#: includes/wallets-ko-i18n.php:25
 msgid "done"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:25
+#: includes/wallets-ko-i18n.php:26
 msgid "failed"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:26
+#: includes/wallets-ko-i18n.php:27
 msgid "cancelled"
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:32
+#: includes/wallets-ko-i18n.php:33
 msgid ""
 "Successfully submitted a transaction request of %1$s %2$s. Please check "
 "your e-mail for confirmation instructions."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:37
+#: includes/wallets-ko-i18n.php:38
 msgid "Successfully submitted a transaction request of %1$s %2$s."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:44
+#: includes/wallets-ko-i18n.php:45
 msgid ""
 "Successfully submitted a withdrawal request of %1$s %2$s to %3$s. Please "
 "check your e-mail for confirmation instructions."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:49
+#: includes/wallets-ko-i18n.php:50
 msgid "Successfully submitted a withdrawal request of %1$s %2$s."
 msgstr ""
 
-#: includes/wallets-ko-i18n.php:54
+#: includes/wallets-ko-i18n.php:55
 msgid "Destination address label (optional)"
 msgstr ""
 
