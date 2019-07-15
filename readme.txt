@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.2.1
+Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 4.3.3
+Stable tag: 4.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.3.4 =
+- Fix: On cron job runs, transactions on Bitcoin-like RPC API wallets are now scanned more efficiently.
+- Add: The cron job tasks that scan for transactions on Bitcoin-like RPC API wallets now report a lot more detail when verbose debugging is turned on.
 
 = 4.3.3 =
 - Fix: The frontend now checks to see if the selected coin exists before rendering its icon in more view templates. Avoids some JavaScript errors.
@@ -1232,7 +1236,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.3.3 brings a couple of minor bug fixes.
+Version 4.3.4 improves the efficiency of the cron job tasks on installations with multiple Bitcoin-like RPC API wallets.
 
 == Donating ==
 

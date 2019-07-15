@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.3\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.3.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-06-17 09:07:37+00:00\n"
+"POT-Creation-Date: 2019-07-15 14:53:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -486,7 +486,7 @@ msgstr ""
 
 #: includes/coin-adapter-bitcoin.php:124 includes/coin-adapter-rpc.php:364
 #: includes/coin-adapter-rpc.php:395 includes/coin-adapter-rpc.php:422
-#: includes/coin-adapter-rpc.php:795
+#: includes/coin-adapter-rpc.php:796
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 

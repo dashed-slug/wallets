@@ -778,61 +778,87 @@ CFG;
 		}
 
 		protected function cron_scrape_listtransactions() {
-			$symbol = $this->get_symbol();
-			$last_txid = Dashed_Slug_Wallets::get_transient( "wallets_listtxs_last_txid_$symbol" );
-			$last_time = Dashed_Slug_Wallets::get_transient( "wallets_listtxs_last_time_$symbol", 0 );
+			$symbol      = $this->get_symbol();
+			$confirms    = $this->get_minconf();
 
-			$batch_size = absint( Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 8 ) );
+			$verbose     = Dashed_Slug_Wallets::get_option( 'wallets_cron_verbose' );
+			$batch_size  = absint( Dashed_Slug_Wallets::get_option( 'wallets_cron_batch_size', 8 ) ); // number of transactions to process per batch
+			$skip        = absint( Dashed_Slug_Wallets::get_transient( "wallets_scrape_{$symbol}_skip", 0 ) ); // current offset from last transaction
+			$rescan      = Dashed_Slug_Wallets::get_transient( "wallets_scrape_{$symbol}_rescan", 0 ); // set to 1 after the first full scan of the known txs list
 
-			$skip = 0;
-			$done = false;
-
-			while ( ! $done ) {
-
-				$result = $this->rpc->listtransactions( '*', $batch_size, $skip );
-
-				if ( false === $result ) {
-					throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
-				}
-
-				foreach ( $result as &$transaction ) {
-					if ( isset( $transaction['txid'] ) ) {
-						$txid = $transaction['txid'];
-
-						// if already encountered, end the loop
-						if ( $last_txid == $txid ) {
-							$done = true;
-						}
-
-						// record latest transaction by time
-						if ( isset( $transaction['time'] ) ) {
-							$time = absint( $transaction['time'] );
-							if ( $time > $last_time ) {
-								$last_txid = $txid;
-								$last_time = $time;
-							}
-						}
-
-						do_action( "wallets_notify_wallet_$symbol", $transaction['txid'] );
-					}
-				}
-
-				// save last encountered transaction for next time
-				// every 8 hours the entire chain of txids will be rescanned
-				if ( isset( $txid ) && $txid && isset( $time ) && $time ) {
-					Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_txid_$symbol", $txid, 8 * HOUR_IN_SECONDS );
-					Dashed_Slug_Wallets::set_transient( "wallets_listtxs_last_time_$symbol", $time, 8 * HOUR_IN_SECONDS );
-				}
-
-				// if listtransactions returned empty array end the loop
-				if ( 0 == count( $result ) ) {
-					$done = true;
-				}
-
-				// on next iteration retrieve previous batch
-				$skip = $skip + $batch_size;
+			if ( ! $batch_size ) {
+				$batch_size = 8;
 			}
-		}
+
+			$transactions = $this->rpc->listtransactions( '*', $batch_size, $skip );
+
+			if ( false === $transactions ) {
+				throw new Exception( sprintf( __( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ), __CLASS__, __FUNCTION__, $this->rpc->status, $this->rpc->error ) );
+			}
+
+			// process txs from latest to earliest
+			$transactions = array_reverse( $transactions );
+
+			foreach ( $transactions as &$transaction ) {
+				if ( isset( $transaction['txid'] ) ) {
+					$txid = $transaction['txid'];
+
+					if ( $verbose ) {
+						error_log(
+							sprintf(
+								"%s coin: %s, skip: %d, rescan: %d, txid: %s",
+								__FUNCTION__,
+								$symbol,
+								$skip,
+								$rescan,
+								$txid
+							)
+						);
+					}
+
+					if ( $rescan && isset( $transaction['confirmations'] ) && $transaction['confirmations'] > 2 * $confirms ) {
+
+						$transactions = array(); // reset scan
+						if ( $verbose ) {
+							error_log(
+								sprintf(
+									'%s Reset tx scan for %s because %s has %d confirmations, more than double of %d',
+									__FUNCTION__,
+									$symbol,
+									$txid,
+									$transaction['confirmations'],
+									$confirms
+								)
+							);
+						}
+
+						break;
+					}
+
+					do_action( "wallets_notify_wallet_$symbol", $txid );
+
+				}
+			}
+
+			if ( count( $transactions ) == $batch_size ) {
+				// continue to earlier batch in next run
+				Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_skip", $skip + $batch_size, DAY_IN_SECONDS );
+			} else {
+				// start scanning again from latest transaction in next run
+				if ( $verbose ) {
+					error_log(
+						sprintf(
+							'Reset tx scan for %s',
+							$symbol
+						)
+					);
+				}
+
+				Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_rescan", 1, MONTH_IN_SECONDS );
+				Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_skip",   0, DAY_IN_SECONDS );
+			}
+
+		} // end function cron_scrape_listtransactions
 
 	} // end class coin_adapter_rpc
 } // end if not class exists
