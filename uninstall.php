@@ -47,6 +47,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	wallets_delete_option( 'wallets_email_enabled' );
 	wallets_delete_option( 'wallets_email_from' );
 	wallets_delete_option( 'wallets_email_from_name' );
+	wallets_delete_option( 'wallets_email_forwarding_enabled' );
 	wallets_delete_option( 'wallets_email_error_forwarding_enabled' );
 	wallets_delete_option( 'wallets_buddypress_enabled' );
 	wallets_delete_option( 'wallets_history_enabled' );

@@ -9,6 +9,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 		private $emails_enabled             = false;
 		private $buddypress_enabled         = false;
 		private $simple_history_enabled     = false;
+		private $forwarding_enabled         = false;
 		private $error_forwarding_enabled   = false;
 
 
@@ -18,6 +19,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 			$this->emails_enabled           = Dashed_Slug_Wallets::get_option( 'wallets_email_enabled', 'on' );
 			$this->buddypress_enabled       = Dashed_Slug_Wallets::get_option( 'wallets_buddypress_enabled' );
 			$this->simple_history_enabled   = Dashed_Slug_Wallets::get_option( 'wallets_history_enabled', 'on' );
+			$this->forwarding_enabled       = Dashed_Slug_Wallets::get_option( 'wallets_email_forwarding_enabled' );
 			$this->error_forwarding_enabled = Dashed_Slug_Wallets::get_option( 'wallets_email_error_forwarding_enabled' );
 
 			add_action( 'wallets_admin_menu', array( &$this, 'bind_admin_menu' ) );
@@ -287,6 +289,25 @@ NOTIFICATION
 			register_setting(
 				'wallets-menu-notifications',
 				'wallets_email_from_name'
+			);
+
+			add_settings_field(
+				'wallets_email_forwarding_enabled',
+				__( 'Forward ALL notifications to admins', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-notifications',
+				'wallets_email_main_section',
+				array(
+					'label_for'   => 'wallets_email_forwarding_enabled',
+					'description' => __(
+						'Bcc all notifications to users who have the <code>manage_wallets</code> capability (admins).', 'wallets'
+						),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-notifications',
+				'wallets_email_forwarding_enabled'
 			);
 
 			add_settings_field(
@@ -955,7 +976,8 @@ NOTIFICATION
 			$this->notify_user_by_email(
 				$tx_data->user,
 				$subject,
-				$message
+				$message,
+				$this->forwarding_enabled
 			);
 		}
 
@@ -986,7 +1008,7 @@ NOTIFICATION
 					$tx_data->user,
 					$subject,
 					$message,
-					$this->error_forwarding_enabled
+					$this->error_forwarding_enabled || $this->forwarding_enabled
 				);
 			}
 		}
@@ -1016,7 +1038,8 @@ NOTIFICATION
 			$this->notify_user_by_email(
 				$tx_data->user,
 				$subject,
-				$message
+				$message,
+				$this->forwarding_enabled
 			);
 		}
 
@@ -1046,7 +1069,7 @@ NOTIFICATION
 				$tx_data->user,
 				$subject,
 				$message,
-				$this->error_forwarding_enabled
+				$this->error_forwarding_enabled || $this->forwarding_enabled
 			);
 		}
 
@@ -1075,7 +1098,8 @@ NOTIFICATION
 			$this->notify_user_by_email(
 				$tx_data->user,
 				$subject,
-				$message
+				$message,
+				$this->forwarding_enabled
 			);
 		}
 
@@ -1104,7 +1128,8 @@ NOTIFICATION
 			$this->notify_user_by_email(
 				$tx_data->user,
 				$subject,
-				$message
+				$message,
+				$this->forwarding_enabled
 			);
 		}
 

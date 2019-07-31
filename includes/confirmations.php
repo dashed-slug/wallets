@@ -264,6 +264,7 @@ EMAIL
 							$table_name_txs
 						WHERE
 							( blog_id = %d || %d ) AND
+							status = 'unconfirmed' AND
 							nonce = %s
 					",
 						get_current_blog_id(),
@@ -274,7 +275,7 @@ EMAIL
 
 				if ( ! $tx_data ) {
 					wp_die(
-						__( 'The transaction to be confirmed was not found or it has already been confirmed.', 'wallets' ),
+						__( 'The transaction to be confirmed was not found, has already been confirmed, or has been cancelled by an admin.', 'wallets' ),
 						__( 'Bitcoin and Altcoin Wallets transaction confirmation', 'wallets' ),
 						array( 'response' => $redirect_page_id ? 302 : 410 )
 					);
@@ -309,6 +310,7 @@ EMAIL
 									$table_name_txs
 								WHERE
 									( blog_id = %d || %d ) AND
+									status = 'unconfirmed' AND
 									txid LIKE %s
 							",
 								get_current_blog_id(),

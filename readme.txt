@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 4.3.4
+Stable tag: 4.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,10 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.3.5 =
+- Fix: The user-confirmation link can no longer resurrect transactions that have been cancelled by an admin. Only unconfirmed transactions can now be confirmed via the confirmation link.
+- Add: New option to send a Bcc copy of *all* emails to the admin(s). All users with the `manage_wallets` capability are notified if the option is on.
 
 = 4.3.4 =
 - Fix: On cron job runs, transactions on Bitcoin-like RPC API wallets are now scanned more efficiently.
@@ -1236,7 +1240,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.3.4 improves the efficiency of the cron job tasks on installations with multiple Bitcoin-like RPC API wallets.
+Version 4.3.5 introduces a minor security fix regarding transaction confirmations, and a user request regarding sending notification Bccs to admins.
 
 == Donating ==
 
