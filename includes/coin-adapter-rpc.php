@@ -70,7 +70,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 						__( 'Then edit your <code>.conf</code> file and append the following:', 'wallets' ) . '</p>' .
 
 						'<textarea onclick="this.focus();this.select();" readonly="readonly" style="min-height: 12em; min-width: 64em;">' .
-						esc_html( $config ) .
+						esc_textarea( $config ) .
 						'</textarea></li><li>' .
 
 						__( 'Finally, start the daemon.', 'wallets' ) . '</li></ol><p>' .

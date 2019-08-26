@@ -247,29 +247,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			);
 
 			add_settings_field(
-				'wallets_rates_referer_skip',
-				__( 'Skip refreshing exchange rates when HTTP_REFERER is set', 'wallets' ),
-				array( &$this, 'checkbox_cb' ),
-				'wallets-menu-rates',
-				'wallets_rates_section',
-				array(
-					'label_for'   => 'wallets_rates_referer_skip',
-					'description' => __( 'If this is enabled, exchange rates will only be pulled on HTTP requests ' .
-						'that do not have HTTP_REFERER set. This ensures somewhat better performance for end users, ' .
-						'but you MUST set up a unix cron job that periodically triggers this site.' .
-						'Usually requests originating from browsers will have HTTP_REFERER set, ' .
-						'while curl requests originating from unix cron may not. (Default: disabled)',
-						'wallets'
-					),
-				)
-			);
-
-			register_setting(
-				'wallets-menu-rates',
-				'wallets_rates_referer_skip'
-			);
-
-			add_settings_field(
 				'wallets_rates_tor_ip',
 				__( 'Tor proxy IP', 'wallets' ),
 				array( &$this, 'text_cb' ),
@@ -304,6 +281,29 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			register_setting(
 				'wallets-menu-rates',
 				'wallets_rates_tor_port'
+			);
+
+			add_settings_field(
+				'wallets_rates_referer_skip',
+				__( 'Skip refreshing exchange rates when HTTP_REFERER is set', 'wallets' ),
+				array( &$this, 'checkbox_cb' ),
+				'wallets-menu-rates',
+				'wallets_rates_section',
+				array(
+					'label_for'   => 'wallets_rates_referer_skip',
+					'description' => __( 'If this is enabled, exchange rates will only be pulled on HTTP requests ' .
+						'that do not have HTTP_REFERER set. This ensures somewhat better performance for end users, ' .
+						'but you MUST set up a unix cron job that periodically triggers this site.' .
+						'Usually requests originating from browsers will have HTTP_REFERER set, ' .
+						'while curl requests originating from unix cron may not. (Default: disabled)',
+						'wallets'
+					),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-rates',
+				'wallets_rates_referer_skip'
 			);
 
 			// DEBUG section
@@ -525,7 +525,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				id="ta-<?php echo esc_attr( $arg['label_for'] ); ?>"
 				rows="8"
 				cols="32"
-				readonly="readonly"><?php echo esc_html( print_r( $data, true ) ); ?></textarea>
+				readonly="readonly"><?php echo esc_textarea( print_r( $data, true ) ); ?></textarea>
 
 			<span class="button" onclick="jQuery('#ta-<?php echo esc_attr( $arg['label_for'] ); ?>')[0].select();document.execCommand('copy');"><?php echo __( '&#x1F4CB; Copy' ); ?></span>
 
@@ -1404,7 +1404,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				$user_id = get_current_user_id();
 			}
 
-			$fiat_symbol = get_user_meta( get_current_user_id(), 'wallets_base_symbol', true );
+			$fiat_symbol = get_user_meta( $user_id, 'wallets_base_symbol', true );
 			if ( ! $fiat_symbol ) {
 				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 			}

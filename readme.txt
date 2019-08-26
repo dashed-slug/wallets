@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 4.3.5
+Stable tag: 4.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.0 =
+- Add: It is now possible to display amount equivalencies in fiat currencies in confirmation/notification emails.
+- Improve: Variable substitutions are now more uniform between confirmations and notifications.
+- Add: The recommended `.conf` settings for Bitcoin core take into account the latest changes in 18.0.0 where `rpcbind` and `rpcauth` are mandatory.
+- Add: New cron job setting "Allow running on AJAX requests". Is on by default, can be turned off (e.g. if it slows down WooCommerce too much).
+- Fix: Use `esc_textarea()` where appropriate.
 
 = 4.3.5 =
 - Fix: The user-confirmation link can no longer resurrect transactions that have been cancelled by an admin. Only unconfirmed transactions can now be confirmed via the confirmation link.
@@ -1240,7 +1247,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.3.5 introduces a minor security fix regarding transaction confirmations, and a user request regarding sending notification Bccs to admins.
+Version 4.4.0 introduces more variable substitutions in confirmation/notification emails, plus a few more minor improvements.
 
 == Donating ==
 

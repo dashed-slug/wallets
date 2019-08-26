@@ -51,15 +51,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public static function action_activate( $network_active ) {
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_nonce', md5( rand() . uniqid() ) );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_interval', 'wallets_three_minutes' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw', 3 );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move', 1 );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size', 8 );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_verbose', 0 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_nonce',             md5( rand() . uniqid() ) );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_interval',          'wallets_three_minutes' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw',       3 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move',           1 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size',        8 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_ajax',              'on' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_verbose',           0 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_secrets_retain_minutes', 0 );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_aggregating', 'never' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_autocancel', 1440 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_aggregating',       'never' );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_autocancel',        1440 );
 		}
 
 		public static function action_deactivate() {
@@ -77,6 +78,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_withdraw',       filter_input( INPUT_POST, 'wallets_retries_withdraw',       FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_move',           filter_input( INPUT_POST, 'wallets_retries_move',           FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size',        filter_input( INPUT_POST, 'wallets_cron_batch_size',        FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_ajax',              filter_input( INPUT_POST, 'wallets_cron_ajax',              FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_verbose',           filter_input( INPUT_POST, 'wallets_cron_verbose',           FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_secrets_retain_minutes', filter_input( INPUT_POST, 'wallets_secrets_retain_minutes', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_aggregating',       filter_input( INPUT_POST, 'wallets_cron_aggregating',       FILTER_SANITIZE_STRING ) );
@@ -171,6 +173,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		 *
 		 */
 		public function cron() {
+			if ( wp_doing_ajax() && ! Dashed_Slug_Wallets::get_option( 'wallets_cron_ajax' ) ) {
+				return;
+			}
 
 			add_action( 'shutdown', array( &$this, 'cron_adapter_tasks_on_all_blogs' ), 12 );
 		}
@@ -351,6 +356,23 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			register_setting(
 				'wallets-menu-cron',
 				'wallets_cron_verbose'
+			);
+
+			add_settings_field(
+				'wallets_cron_ajax',
+				__( 'Allow running on AJAX requests', 'wallets' ),
+				array( &$this, 'settings_checkbox_cb' ),
+				'wallets-menu-cron',
+				'wallets_cron_settings_section',
+				array(
+					'label_for'   => 'wallets_cron_ajax',
+					'description' => __( 'When this is on, cron job tasks can also run during AJAX requests. Turn this off if you need to speed up AJAX requests for some reason.', 'wallets' ),
+				)
+			);
+
+			register_setting(
+				'wallets-menu-cron',
+				'wallets_cron_ajax'
 			);
 
 			add_settings_section(

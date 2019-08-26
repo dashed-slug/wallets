@@ -58,6 +58,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		}
 
 		public function cron() {
+			if ( wp_doing_ajax() && ! Dashed_Slug_Wallets::get_option( 'wallets_cron_ajax' ) ) {
+				return;
+			}
+
 			add_action( 'shutdown', array( &$this, 'cron_tasks_on_all_blogs' ), 10 );
 			add_action( 'shutdown', array( &$this, 'cron_mark_retried_deposits_as_done' ), 11 );
 			add_action( 'shutdown', array( &$this, 'cron_old_transactions_aggregating' ), 30 );

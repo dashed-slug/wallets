@@ -106,7 +106,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 You have withdrawn ###AMOUNT### to address ###ADDRESS###.
 
 Coin symbol: ###SYMBOL###
-Fees paid: ###FEE###
+Amount: ###AMOUNT### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT###)
+Fees paid: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE###)
+Amount after fees: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -130,6 +132,9 @@ You have attempted to withdraw ###AMOUNT### to address ###ADDRESS###.
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Coin symbol: ###SYMBOL###
+Amount: ###AMOUNT### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT###)
+Fees: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE###)
+Amount after fees: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
 Last error message: ###LAST_ERROR###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -151,7 +156,9 @@ NOTIFICATION
 You have sent ###AMOUNT### from your account to the ###OTHER_ACCOUNT### account.
 
 Coin symbol: ###SYMBOL###
-Fees paid: ###FEE###
+Amount: ###AMOUNT### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT###)
+Fees paid: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE###)
+Amount after fees: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -175,6 +182,9 @@ You have attempted to send ###AMOUNT### from your account to the ###OTHER_ACCOUN
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
 Coin symbol: ###SYMBOL###
+Amount: ###AMOUNT### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT###)
+Fees: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE###)
+Amount after fees: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -196,6 +206,7 @@ NOTIFICATION
 You have received ###AMOUNT### from ###OTHER_ACCOUNT###.
 
 Coin symbol: ###SYMBOL###
+Amount: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
@@ -219,6 +230,8 @@ You have deposited ###AMOUNT_WITHOUT_FEE### from address ###ADDRESS###.
 Please note that the funds may not be yet available to you before the required amount of network confirmations is reached.
 
 Coin symbol: ###SYMBOL###
+Amount deposited: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
+Fees paid: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE###)
 Transaction ID: ###TXID###
 Transaction seen at: ###CREATED_TIME_LOCAL###
 Extra transaction info (optional): ###EXTRA###
@@ -793,14 +806,22 @@ NOTIFICATION
 						<dd><?php esc_html_e( 'User ID of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><code>###TXID###</code></dt>
 						<dd><?php esc_html_e( 'Transaction ID. ( This is normally the same as the txid on the blockchain. Internal transactions are also assigned a unique ID. )', 'wallets' ); ?></dd>
+						<dt><code>###SYMBOL###</code></dt>
+						<dd><?php esc_html_e( 'The coin symbol for this transaction (e.g. "BTC" for Bitcoin)', 'wallets' ); ?></dd>
 						<dt><code>###AMOUNT###</code></dt>
 						<dd><?php esc_html_e( 'The amount transacted including fees.', 'wallets' ); ?></dd>
 						<dt><code>###AMOUNT_WITHOUT_FEE###</code></dt>
 						<dd><?php esc_html_e( 'The amount transacted with fees subtracted.', 'wallets' ); ?></dd>
 						<dt><code>###FEE###</code></dt>
 						<dd><?php esc_html_e( 'For withdrawals and transfers, the fees paid to the site. For deposits, fees paid externally to the site.', 'wallets' ); ?></dd>
-						<dt><code>###SYMBOL###</code></dt>
-						<dd><?php esc_html_e( 'The coin symbol for this transaction (e.g. "BTC" for Bitcoin)', 'wallets' ); ?></dd>
+						<dt><code>###FIAT_SYMBOL###</code></dt>
+						<dd><?php esc_html_e( 'The fiat currency that the user has selected to see equivalent amounts in (falling back to the site-wide default fiat currency)', 'wallets' ); ?></dd>
+						<dt><code>###FIAT_AMOUNT###</code></dt>
+						<dd><?php esc_html_e( 'Same as ###AMOUNT###, but expressed in the fiat currency that the user has selected to see equivalent amounts in (or in the site-wide default fiat currency)', 'wallets' ); ?></dd>
+						<dt><code>###FIAT_AMOUNT_WITHOUT_FEE###</code></dt>
+						<dd><?php esc_html_e( 'Same as ###AMOUNT_WITHOUT_FEE###, but expressed in the fiat currency that the user has selected to see equivalent amounts in (or in the site-wide default fiat currency)', 'wallets' ); ?></dd>
+						<dt><code>###FIAT_FEE###</code></dt>
+						<dd><?php esc_html_e( 'Same as ###FEE###, but expressed in the fiat currency that the user has selected to see equivalent amounts in (or in the site-wide default fiat currency)', 'wallets' ); ?></dd>
 						<dt><code>###CREATED_TIME_LOCAL###</code></dt>
 						<dd><?php esc_html_e( 'The date and time of the transaction in the local timezone. Format: YYYY-MM-DD hh:mm:ss', 'wallets' ); ?></dd>
 						<dt><code>###CREATED_TIME###</code></dt>
@@ -911,7 +932,7 @@ NOTIFICATION
 				style="width:100%;"
 				rows="8"
 				name="<?php echo esc_attr( $arg['label_for'] ); ?>"
-				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_html( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
+				id="<?php echo esc_attr( $arg['label_for'] ); ?>"><?php echo esc_textarea( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ); ?></textarea>
 
 			<p id="<?php echo esc_attr( $arg['label_for'] ); ?>-description" class="description">
 				<?php echo esc_html( $arg['description'] ); ?>
@@ -1140,6 +1161,15 @@ NOTIFICATION
 				'###ACCOUNT_ID###' => $tx_data->user->ID,
 			);
 
+			$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection( $tx_data->user->ID );
+			if ( $fiat_symbol ) {
+				$exchange_rate = Dashed_Slug_Wallets_Rates::get_exchange_rate( $fiat_symbol, $tx_data->symbol );
+				$replace_pairs['###FIAT_SYMBOL###'] = $fiat_symbol;
+			} else {
+				$exchange_rate = false;
+				$replace_pairs['###FIAT_SYMBOL###'] = 'n/a';
+			}
+
 			if ( isset( $tx_data->other_user ) ) {
 				$replace_pairs['###OTHER_ACCOUNT###']    = $tx_data->other_user->user_login;
 				$replace_pairs['###OTHER_ACCOUNT_ID###'] = $tx_data->other_user->ID;
@@ -1161,6 +1191,11 @@ NOTIFICATION
 
 			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {
 				$replace_pairs['###AMOUNT###']           = sprintf( $sprintf, abs( $tx_data->amount ) );
+				if ( $exchange_rate ) {
+					$replace_pairs['###FIAT_AMOUNT###']  = sprintf( $sprintf, abs( $tx_data->amount * $exchange_rate ) );
+				} else {
+					$replace_pairs['###FIAT_AMOUNT###']  = 'n/a';
+				}
 			}
 
 			if ( ! isset( $tx_data->fee ) ) {
@@ -1169,15 +1204,24 @@ NOTIFICATION
 
 			if ( is_numeric( $tx_data->fee ) ) {
 				$replace_pairs['###FEE###']              = sprintf( $sprintf, abs( $tx_data->fee ) );
+				if ( $exchange_rate ) {
+					$replace_pairs['###FIAT_FEE###']     = sprintf( $sprintf, abs( $tx_data->amount * $exchange_rate ) );
+				} else {
+					$replace_pairs['###FIAT_FEE###']     = 'n/a';
+				}
+
 			} else {
-				$replace_pairs['###FEE###']              = sprintf( $sprintf, 0 );
+				$replace_pairs['###FIAT_FEE###']         = sprintf( $sprintf, 0 );
+				$replace_pairs['###FIAT_FEE###']         = 'n/a';
 			}
 
 			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {
-				if ( $tx_data->amount > 0 ) {
-					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = sprintf( $sprintf,   $tx_data->amount - abs( $tx_data->fee ) );
+				$amount_without_fee = abs( $tx_data->amount ) - abs( $tx_data->fee );
+				$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = sprintf( $sprintf, $amount_without_fee );
+				if ( $exchange_rate ) {
+					$replace_pairs['###FIAT_AMOUNT_WITHOUT_FEE###'] = sprintf( '%01.2F', $amount_without_fee * $exchange_rate );
 				} else {
-					$replace_pairs['###AMOUNT_WITHOUT_FEE###']  = sprintf( $sprintf, - $tx_data->amount - abs( $tx_data->fee ) );
+					$replace_pairs['###FIAT_AMOUNT_WITHOUT_FEE###'] = 'n/a';
 				}
 			}
 
