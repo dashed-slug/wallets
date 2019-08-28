@@ -422,20 +422,19 @@ EMAIL
 				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
 
 				// pull fiat variables
+				$fiat_sprintf = '%01.2F';
+				$exchange_rate = false;
 				$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection( $user->ID );
 				if ( $fiat_symbol ) {
 					$exchange_rate = Dashed_Slug_Wallets_Rates::get_exchange_rate( $fiat_symbol, $row['symbol'] );
 					$row['fiat_symbol'] = $fiat_symbol;
 					try {
 						$adapters = apply_filters( 'wallets_api_adapters', array() );
-						$adapter  = $adapters[ $fiat_symbol ];
-						$fiat_sprintf  = $adapter->get_sprintf();
-					} catch ( Exception $e ) {
-						$fiat_sprintf = '%01.2F';
-					}
-
-				} else {
-					$exchange_rate = false;
+						if ( isset( $adapters[ $fiat_symbol ] ) ) {
+							$adapter  = $adapters[ $fiat_symbol ];
+							$fiat_sprintf  = $adapter->get_sprintf();
+						}
+					} catch ( Exception $e ) { }
 				}
 
 				// use pattern for displaying amounts
@@ -562,20 +561,19 @@ EMAIL
 				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
 
 				// pull fiat variables
+				$fiat_sprintf = '%01.2F';
+				$exchange_rate = false;
 				$fiat_symbol = Dashed_Slug_Wallets::get_option( 'wallets_default_base_symbol', 'USD' );
 				if ( $fiat_symbol ) {
 					$exchange_rate = Dashed_Slug_Wallets_Rates::get_exchange_rate( $fiat_symbol, $row['symbol'] );
 					$row['fiat_symbol'] = $fiat_symbol;
 					try {
 						$adapters = apply_filters( 'wallets_api_adapters', array() );
-						$adapter  = $adapters[ $fiat_symbol ];
-						$fiat_sprintf  = $adapter->get_sprintf();
-					} catch ( Exception $e ) {
-						$fiat_sprintf = '%01.2F';
-					}
-
-				} else {
-					$exchange_rate = false;
+						if ( isset( $adapters[ $fiat_symbol ] ) ) {
+							$adapter  = $adapters[ $fiat_symbol ];
+							$fiat_sprintf  = $adapter->get_sprintf();
+						}
+					} catch ( Exception $e ) { }
 				}
 
 				// use pattern for displaying amounts
@@ -692,20 +690,19 @@ EMAIL
 				$row['created_time_local'] = get_date_from_gmt( $row['created_time'] );
 
 				// pull fiat variables
+				$fiat_sprintf = '%01.2F';
+				$exchange_rate = false;
 				$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection( $other_user->ID );
 				if ( $fiat_symbol ) {
 					$exchange_rate = Dashed_Slug_Wallets_Rates::get_exchange_rate( $fiat_symbol, $row['symbol'] );
 					$row['fiat_symbol'] = $fiat_symbol;
 					try {
 						$adapters = apply_filters( 'wallets_api_adapters', array() );
-						$adapter  = $adapters[ $fiat_symbol ];
-						$fiat_sprintf  = $adapter->get_sprintf();
-					} catch ( Exception $e ) {
-						$fiat_sprintf = '%01.2F';
-					}
-
-				} else {
-					$exchange_rate = false;
+						if ( isset( $adapters[ $fiat_symbol ] ) ) {
+							$adapter  = $adapters[ $fiat_symbol ];
+							$fiat_sprintf  = $adapter->get_sprintf();
+						}
+					} catch ( Exception $e ) { }
 				}
 
 				// use pattern for displaying amounts

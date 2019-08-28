@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 4.4.0
+Stable tag: 4.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,6 +352,9 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.1 =
+- Fix: Issue introduced in `4.4.0` that prevented initiating new transactions in most cases, is now fixed.
 
 = 4.4.0 =
 - Add: It is now possible to display amount equivalencies in fiat currencies in confirmation/notification emails.
@@ -1247,7 +1250,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 4.4.0 introduces more variable substitutions in confirmation/notification emails, plus a few more minor improvements.
+Version `4.4.1` fixes an issue introduced in `4.4.0` which prevented entering transactions, because my automated testing sucks :-(
 
 == Donating ==
 
