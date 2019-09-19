@@ -80,7 +80,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 					add_action( 'wallets_deposit', array( &$this, 'action_email_deposit' ) );
 				}
 				if ( $this->buddypress_enabled ) {
-
+					add_action( 'wallets_deposit', array( &$this, 'action_buddypress_deposit' ) );
 				}
 			}
 

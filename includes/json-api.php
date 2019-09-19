@@ -430,13 +430,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 
-							$coin_info->rate = false;
 							try {
 								$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
 									$fiat_symbol,
 									$coin_info->symbol
 								);
 							} catch ( Exception $e ) {
+								$coin_info->rate = false;
 							}
 
 							$coin_info->move_fee              = $adapter->get_move_fee();
@@ -717,13 +717,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
 
-							$coin_info->rate = false;
 							try {
 								$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
 									$fiat_symbol,
 									$coin_info->symbol
 								);
 							} catch ( Exception $e ) {
+								$coin_info->rate = false;
 							}
 
 							$coin_info->move_fee              = $adapter->get_move_fee();
@@ -1099,13 +1099,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 							$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection( $user_id );
 
-							$coin_info->rate = false;
 							try {
 								$coin_info->rate = Dashed_Slug_Wallets_Rates::get_exchange_rate(
 									$fiat_symbol,
 									$coin_info->symbol
 								);
 							} catch ( Exception $e ) {
+								$coin_info->rate = false;
 							}
 
 							$coin_info->move_fee              = $adapter->get_move_fee();

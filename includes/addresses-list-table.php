@@ -24,9 +24,19 @@ class DSWallets_Admin_Menu_Addresses_List_Table extends WP_List_Table {
 
 		$this->is_plugin_active_for_network( 'wallets/wallets.php' );
 
-		// sorting vars
-		$this->order   = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
+		// get and sanitize sorting vars
+		$this->order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
+		if ( 'desc' != $this->order ) {
+			$this->order = 'asc';
+		}
+
 		$this->orderby = filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
+		if ( false === array_search(
+			$this->orderby,
+			array_keys( $this->get_sortable_columns() )
+		) ) {
+			$this->orderby = 'id';
+		}
 	}
 
 	public function get_columns() {

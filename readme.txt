@@ -3,19 +3,19 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.2.2
+Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag: 4.4.1
+Stable tag: 4.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
+Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
 
 == Description ==
 
-https://www.youtube.com/watch?v=j7kddOZOaqc
+[![RIPS CodeRisk](https://coderisk.com/wp/plugin/wallets/badge "RIPS CodeRisk")](https://coderisk.com/wp/plugin/wallets)
 
-### Turn your blog into a bank: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
+### Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
 
 = At a glance =
 
@@ -352,6 +352,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.2 =
+- Improve: Code quality improved throughout, guided by a CodeRisk audit.
+- Improve: Included knockout.js library is updated to `v3.5.0` because it's needed for the Exchange extension.
+- Fix: Included moment.js library is updated to `2.24.0`.
 
 = 4.4.1 =
 - Fix: Issue introduced in `4.4.0` that prevented initiating new transactions in most cases, is now fixed.
@@ -1250,7 +1255,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `4.4.1` fixes an issue introduced in `4.4.0` which prevented entering transactions, because my automated testing sucks :-(
+Version `4.4.2` introduces minor code improvements guided by a CodeRisk security audit, and some other minor fixes.
 
 == Donating ==
 

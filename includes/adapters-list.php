@@ -288,6 +288,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 						)
 					);
 					exit;
+
+				default:
+					break;
 			}
 		}
 

@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-08-28 09:21:08+00:00\n"
+"POT-Creation-Date: 2019-09-19 14:40:39+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -318,7 +318,7 @@ msgstr ""
 #: includes/views/transactions/rows.php:109
 #: includes/views/transactions/rows.php:129
 #: includes/views/transactions/rows.php:130
-#: includes/views/transactions/static.php:152
+#: includes/views/transactions/static.php:155
 msgid "me"
 msgstr ""
 
@@ -450,8 +450,8 @@ msgstr ""
 
 #. Description of the plugin/theme
 msgid ""
-"Turn your blog into a bank: Let your users deposit, withdraw, and transfer "
-"bitcoins and altcoins on your site."
+"Custodial cryptocurrency wallets: Let your users deposit, withdraw, and "
+"transfer bitcoins and altcoins on your site."
 msgstr ""
 
 #. Author of the plugin/theme

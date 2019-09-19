@@ -159,7 +159,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 				$role = get_role( $role_name );
 
-				if ( ! is_null( $role ) ) {
+				if ( $role ) {
 					$role->remove_cap( 'manage_wallets' );
 					$role->remove_cap( 'has_wallets' );
 					$role->remove_cap( 'list_wallet_transactions' );

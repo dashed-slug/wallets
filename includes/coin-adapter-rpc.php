@@ -818,7 +818,8 @@ CFG;
 
 					if ( $rescan && isset( $transaction['confirmations'] ) && $transaction['confirmations'] > 2 * $confirms ) {
 
-						$transactions = array(); // reset scan
+						// we've reached txs that are too mature, and it's not needed to check them again, so reset the scan on the next run
+
 						if ( $verbose ) {
 							error_log(
 								sprintf(
@@ -832,7 +833,10 @@ CFG;
 							);
 						}
 
-						break;
+						Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_rescan", 1, MONTH_IN_SECONDS );
+						Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_skip",   0, DAY_IN_SECONDS );
+
+						return;
 					}
 
 					do_action( "wallets_notify_wallet_$symbol", $txid );

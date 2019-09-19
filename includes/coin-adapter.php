@@ -378,7 +378,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 			$result = get_transient( 'wallets-server-ip' );
 			if ( false === $result ) {
 				try {
-					$ip = @file_get_contents( 'http://api.ipify.org' );
+					$ip = @file_get_contents( 'https://api.ipify.org' );
 					if ( false !== $ip && filter_var( $ip, FILTER_VALIDATE_IP ) !== false ) {
 						$result = $ip;
 					}

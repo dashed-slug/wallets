@@ -434,7 +434,9 @@ EMAIL
 							$adapter  = $adapters[ $fiat_symbol ];
 							$fiat_sprintf  = $adapter->get_sprintf();
 						}
-					} catch ( Exception $e ) { }
+					} catch ( Exception $e ) {
+						unset( $e ); // NOOP
+					}
 				}
 
 				// use pattern for displaying amounts
@@ -573,7 +575,9 @@ EMAIL
 							$adapter  = $adapters[ $fiat_symbol ];
 							$fiat_sprintf  = $adapter->get_sprintf();
 						}
-					} catch ( Exception $e ) { }
+					} catch ( Exception $e ) {
+						unset( $e ); // NOOP
+					}
 				}
 
 				// use pattern for displaying amounts
@@ -702,7 +706,9 @@ EMAIL
 							$adapter  = $adapters[ $fiat_symbol ];
 							$fiat_sprintf  = $adapter->get_sprintf();
 						}
-					} catch ( Exception $e ) { }
+					} catch ( Exception $e ) {
+						unset( $e ); // NOOP
+					}
 				}
 
 				// use pattern for displaying amounts

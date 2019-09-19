@@ -59,7 +59,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 					);
 				}
 
-			} catch ( Exception $e ) { }
+			} catch ( Exception $e ) {
+				unset( $e ); // NOOP
+			}
 
 			add_settings_field(
 				'wallets_default_coin',

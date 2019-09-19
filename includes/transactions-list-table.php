@@ -22,9 +22,19 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
 
-		// sorting vars
+		// get and sanitize sorting vars
 		$this->order   = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
+		if ( 'desc' != $this->order ) {
+			$this->order = 'asc';
+		}
+
 		$this->orderby = filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
+		if ( false === array_search(
+			$this->orderby,
+			array_keys( $this->get_sortable_columns() )
+		) ) {
+			$this->orderby = 'id';
+		}
 	}
 
 	public function get_columns() {

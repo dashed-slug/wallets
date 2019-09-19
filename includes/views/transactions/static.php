@@ -106,6 +106,9 @@ unset( $search_params, $adapters );
 							case 'user_confirm':
 								echo apply_filters( 'wallets_ui_text_userconfirm', esc_html__( 'User&nbsp;confirm', 'wallets-front' ) );
 								break;
+
+							default:
+								break;
 						};
 
 						?>
