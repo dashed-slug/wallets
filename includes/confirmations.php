@@ -1621,7 +1621,7 @@ EMAIL
 							status = 'unconfirmed'
 							AND category = %s
 							AND ! admin_confirm
-							AND created_time < NOW() - INTERVAL %d DAY
+							AND created_time < UTC_TIMESTAMP() - INTERVAL %d DAY
 						LIMIT
 							%d
 						",

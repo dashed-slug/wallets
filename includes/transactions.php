@@ -202,7 +202,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						status = 'done'
 						AND category = 'move'
 						AND LOCATE( 'aggregate', tags ) = 0
-						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
+						AND YEARWEEK( created_time ) < YEARWEEK( UTC_TIMESTAMP() )
 						AND YEARWEEK( created_time ) = %d
 					GROUP BY
 						blog_id,
@@ -235,7 +235,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						status IN ( 'done', 'failed', 'cancelled' )
 						AND category = 'move'
 						AND LOCATE( 'aggregate', tags ) = 0
-						AND YEARWEEK( created_time ) < YEARWEEK( NOW() )
+						AND YEARWEEK( created_time ) < YEARWEEK( UTC_TIMESTAMP() )
 						AND YEARWEEK( created_time ) = %d
 					",
 					$earliest_week
@@ -278,7 +278,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					status = 'cancelled'
 				WHERE
 					status IN ( 'unconfirmed', 'pending' ) AND
-					updated_time < NOW() - INTERVAL %d MINUTE
+					updated_time < UTC_TIMESTAMP() - INTERVAL %d MINUTE
 				",
 				$autocancel_minutes
 			);

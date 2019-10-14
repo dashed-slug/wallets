@@ -1,6 +1,6 @@
 <?php
 /**
- * If your cloud wallet service offers a JSON-based HTTP API
+ * If your custodial wallet service offers a JSON-based HTTP API
  * then you can subclass this to create a coin adapter.
  *
  * @package wallets

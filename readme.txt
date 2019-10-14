@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag: 4.4.2
+Stable tag: 4.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,8 +57,7 @@ This is the *core plugin* that takes care of *basic accounting functionality*:
 
  You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all [subscribers at dashed-slug](https://www.dashed-slug.net/dashed-slug/subscribe/) (you do not have to pay for membership).
 
-- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - hundreds of coins supported, easy to use cloud wallet
-- [block.io Cloud Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/) - BTC, LTC, DOGE cloud wallet
+- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - hundreds of coins supported, easy to use custodial wallet
 - [Full Node Multi Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/) - supports most Bitcoin-like wallets (LTC, etc), must be set up manually on server
 - [Fiat Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/fiat-coin-adapter-extension/) - for use with the Exchange extension, can accept manual entries from e.g. bank deposits
 - [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) - use this as a reference implementation for new adapters
@@ -100,7 +99,7 @@ The dashed-slug is a social slug:
 
 As a new user, you should first read the glossary section of the documentation to familiarize yourself with some basic concepts. The troubleshooting section for the main plugin is also found in the documentation. The support forum for the main plugin is at [WordPress.org](https://wordpress.org/support/plugin/wallets), but please first read [this notice](https://wordpress.org/support/topic/important-please-read-before-posting-an-issue/) before posting.
 
-First, understand the tradeoff between setting up a full node or using the cloud wallets.
+First, understand the tradeoff between setting up a full node or using the custodial wallets.
 
 = Full node =
 
@@ -108,18 +107,17 @@ A **full node** is harder to setup and maintain, but gives you performance and f
 
 If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ) or [article](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/installation-instructions/).
 
-= Cloud wallets =
+= Custodial wallet =
 
-**Cloud wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
+**Custodial wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
 
 - If you are interested in installing the CoinPayments adapter:
   - TL;DR installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
   - More detailed step-by-step instructions are [on this page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/installation-instructions-web-wallet/) and [in this YouTube video](https://www.youtube.com/watch?v=j7kddOZOaqc).
-- If you prefer to install the block.io coin adapter then the installation instructions are on the [block.io coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/block-io-cloud-wallet-adapter-extension/).
 
-There is a Troubleshooting section on the coin adapter pages. It lists common problems and their solutions.
+There is a Troubleshooting section on the coin adapter's page. It lists common problems and their solutions.
 
-The support forums for the two web wallet coin adapters are [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/) and [here](https://www.dashed-slug.net/forums/forum/block-io-cloud-wallet-adapter-extension-support/).
+The support forums for the CoinPayments-backed coin adapter is [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/).
 
 = Disclaimer =
 
@@ -352,6 +350,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.3 =
+- Fix: Issue where moment.js library was not loaded in 4.4.2 is now fixed.
+- Fix: When cron job selects old transactions to cancel, it now takes the local timezone into account.
+- Fix: When cron job selects old transactions to autoconfirm, it now takes the local timezone into account.
+- Fix: When cron job selects old transactions to aggregate, it now takes the local timezone into account.
 
 = 4.4.2 =
 - Improve: Code quality improved throughout, guided by a CodeRisk audit.
@@ -1255,7 +1259,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `4.4.2` introduces minor code improvements guided by a CodeRisk security audit, and some other minor fixes.
+Version `4.4.3` fixes an issue in `4.4.2` where moment.js was not loaded, plus a few minor bugs.
 
 == Donating ==
 
