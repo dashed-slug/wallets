@@ -81,7 +81,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_JSON' ) ) {
 		public function update_network_options() {
 			check_admin_referer( "{$this->menu_slug}-options" );
 
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-http-timeout", filter_input( INPUT_POST, "{$this->option_slug}-http-timeout", FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-http-timeout",     filter_input( INPUT_POST, "{$this->option_slug}-http-timeout",     FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-http-cacheexpiry", filter_input( INPUT_POST, "{$this->option_slug}-http-cacheexpiry", FILTER_SANITIZE_NUMBER_INT ) );
 
 			parent::update_network_options();

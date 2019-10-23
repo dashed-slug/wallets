@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.3\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-10-14 13:02:47+00:00\n"
+"POT-Creation-Date: 2019-10-23 08:55:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -118,7 +118,7 @@ msgstr ""
 #: includes/adapters-list.php:221 includes/adapters-list.php:240
 #: includes/adapters-list.php:267 includes/adapters-list.php:312
 #: includes/addresses-list.php:52 includes/admin-menu.php:63
-#: includes/balances-list.php:52 includes/caps.php:104 includes/caps.php:169
+#: includes/balances-list.php:52 includes/caps.php:105 includes/caps.php:166
 #: includes/coin-adapter-bitcoin.php:61 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:304 includes/coin-adapter-rpc.php:313
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
@@ -131,7 +131,7 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: includes/adapters-list.php:227 includes/adapters-list.php:246
-#: includes/adapters-list.php:273 includes/caps.php:99
+#: includes/adapters-list.php:273 includes/caps.php:100
 #: includes/cold-storage.php:133 includes/json-api.php:545
 #: includes/json-api.php:588 includes/json-api.php:835
 #: includes/json-api.php:878 includes/json-api.php:1235
@@ -205,7 +205,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:96 includes/cold-storage.php:378
-#: includes/cold-storage.php:393 includes/rates.php:475
+#: includes/cold-storage.php:393 includes/rates.php:480
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -416,23 +416,23 @@ msgstr ""
 msgid "Can use the JSON API programmatically with key authentication."
 msgstr ""
 
-#: includes/caps.php:134
+#: includes/caps.php:131
 msgid "Capabilities matrix"
 msgstr ""
 
-#: includes/caps.php:158 includes/caps.php:159
+#: includes/caps.php:155 includes/caps.php:156
 msgid "Capabilities"
 msgstr ""
 
-#: includes/caps.php:172
+#: includes/caps.php:169
 msgid "Bitcoin and Altcoin Wallets Capabilities"
 msgstr ""
 
-#: includes/caps.php:184
+#: includes/caps.php:181
 msgid "Read about Roles and Capabilities in the Codex."
 msgstr ""
 
-#: includes/caps.php:202
+#: includes/caps.php:199
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
@@ -477,9 +477,9 @@ msgstr ""
 msgid "Refer to the documentation for details."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:126 includes/coin-adapter-rpc.php:364
-#: includes/coin-adapter-rpc.php:395 includes/coin-adapter-rpc.php:422
-#: includes/coin-adapter-rpc.php:796
+#: includes/coin-adapter-bitcoin.php:126 includes/coin-adapter-rpc.php:366
+#: includes/coin-adapter-rpc.php:397 includes/coin-adapter-rpc.php:424
+#: includes/coin-adapter-rpc.php:798
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -623,25 +623,25 @@ msgid ""
 "of the %2$s daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:432
+#: includes/coin-adapter-rpc.php:434
 msgid "%1$s->%2$s() failed to withdraw because the adapter is disabled."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:442
+#: includes/coin-adapter-rpc.php:444
 msgid "%1$s->%2$s() failed to withdraw because the wallet is locked."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:492
+#: includes/coin-adapter-rpc.php:494
 msgid ""
 "%1$s->%2$s() failed to send %5$f %6$s %3$s with status=\"%4$s\" and "
 "error=\"%5$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:575
+#: includes/coin-adapter-rpc.php:577
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:647 includes/coin-adapter-rpc.php:727
+#: includes/coin-adapter-rpc.php:649 includes/coin-adapter-rpc.php:729
 msgid ""
 "%1$s->%2$s( %5$s ) failed with status=\"%3$s\" and error=\"%4$s\" for %6$s "
 "coin."
@@ -729,7 +729,7 @@ msgstr ""
 msgid "These are the settings for this adapter to %s."
 msgstr ""
 
-#: includes/coin-adapter.php:520
+#: includes/coin-adapter.php:519
 msgid "Destination address label (optional)"
 msgstr ""
 
@@ -1584,11 +1584,11 @@ msgstr ""
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:467
+#: includes/frontend-settings.php:466
 msgid "&mdash;"
 msgstr ""
 
-#: includes/frontend-settings.php:493
+#: includes/frontend-settings.php:492
 msgid "These settings affect the display of frontend UIs."
 msgstr ""
 
@@ -2093,11 +2093,11 @@ msgstr ""
 msgid "Clear/refresh data now!"
 msgstr ""
 
-#: includes/rates.php:530
+#: includes/rates.php:535
 msgid "&#x1F4CB; Copy"
 msgstr ""
 
-#: includes/rates.php:635
+#: includes/rates.php:640
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."

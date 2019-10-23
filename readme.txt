@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.2.3
+Tested up to: 5.2.4
 Requires PHP: 5.6
-Stable tag: 4.4.3
+Stable tag: 4.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -350,6 +350,11 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.4 =
+- Fix: Several settings can now be saved on network-active installation, previously could not be saved.
+- Add: If no users in the Administrator role have the `manage_wallets` capability, this capability is assigned to the Administrator role.
+- Add: It is now allowed again to modify the capabilities of the Administrator user role via the *Wallets* &rarr; *Capabilities* screen.
 
 = 4.4.3 =
 - Fix: Issue where moment.js library was not loaded in 4.4.2 is now fixed.
@@ -1259,7 +1264,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `4.4.3` fixes an issue in `4.4.2` where moment.js was not loaded, plus a few minor bugs.
+Version `4.4.4` introduces an auto-repair feature for the manage_wallets capability.
 
 == Donating ==
 

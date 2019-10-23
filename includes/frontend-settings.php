@@ -420,15 +420,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 
 			Dashed_Slug_Wallets::update_option( 'wallets_default_coin',               filter_input( INPUT_POST, 'wallets_default_coin',               FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_qrcode_enabled',             filter_input( INPUT_POST, 'wallets_qrcode_enabled',             FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_sweetalert_enabled',         filter_input( INPUT_POST, 'wallets_sweetalert_enabled',         FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_coin_info',    filter_input( INPUT_POST, 'wallets_poll_interval_coin_info',    FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_visibility_check_enabled',   filter_input( INPUT_POST, 'wallets_visibility_check_enabled',   FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_transactions', filter_input( INPUT_POST, 'wallets_poll_interval_transactions', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_zlib_disabled',              filter_input( INPUT_POST, 'wallets_zlib_disabled',              FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( 'wallets_legacy_json_apis',           filter_input( INPUT_POST, 'wallets_legacy_json_apis',           FILTER_SANITIZE_STRING ) ? 'on' : '' );
-			Dashed_Slug_Wallets::update_option( 'wallets_sweetalert_enabled',         filter_input( INPUT_POST, 'wallets_sweetalert_enabled',         FILTER_SANITIZE_STRING ) ? 'on' : '' );
-
-			Dashed_Slug_Wallets::update_option( 'wallets_visibility_check_enabled',   filter_input( INPUT_POST, 'wallets_visibility_check_enabled',   FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( 'wallets_transients_broken',          filter_input( INPUT_POST, 'wallets_transients_broken',          FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
-			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_transactions', filter_input( INPUT_POST, 'wallets_poll_interval_transactions', FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_poll_interval_coin_info',    filter_input( INPUT_POST, 'wallets_poll_interval_coin_info',    FILTER_SANITIZE_NUMBER_INT ) );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-frontend-settings', network_admin_url( 'admin.php' ) ) );
 			exit;

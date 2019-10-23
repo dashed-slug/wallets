@@ -852,6 +852,7 @@ NOTIFICATION
 				'wallets_email_move_receive_enabled',
 				'wallets_email_deposit_enabled',
 				'wallets_email_enabled',
+				'wallets_email_forwarding_enabled',
 				'wallets_email_error_forwarding_enabled',
 				'wallets_buddypress_enabled',
 				'wallets_history_enabled',
@@ -860,6 +861,8 @@ NOTIFICATION
 			}
 
 			foreach ( array(
+				'wallets_email_from',
+				'wallets_email_from_name',
 				'wallets_email_withdraw_subject',
 				'wallets_email_withdraw_message',
 				'wallets_email_withdraw_failed_subject',

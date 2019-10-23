@@ -75,11 +75,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			check_admin_referer( 'wallets-menu-cron-options' );
 
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_interval',          filter_input( INPUT_POST, 'wallets_cron_interval',          FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size',        filter_input( INPUT_POST, 'wallets_cron_batch_size',        FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_withdraw',       filter_input( INPUT_POST, 'wallets_retries_withdraw',       FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_retries_move',           filter_input( INPUT_POST, 'wallets_retries_move',           FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_cron_batch_size',        filter_input( INPUT_POST, 'wallets_cron_batch_size',        FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_cron_ajax',              filter_input( INPUT_POST, 'wallets_cron_ajax',              FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_verbose',           filter_input( INPUT_POST, 'wallets_cron_verbose',           FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_cron_ajax',              filter_input( INPUT_POST, 'wallets_cron_ajax',              FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( 'wallets_secrets_retain_minutes', filter_input( INPUT_POST, 'wallets_secrets_retain_minutes', FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_aggregating',       filter_input( INPUT_POST, 'wallets_cron_aggregating',       FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( 'wallets_cron_autocancel',        filter_input( INPUT_POST, 'wallets_cron_autocancel',        FILTER_SANITIZE_NUMBER_INT ) );

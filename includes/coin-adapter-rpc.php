@@ -333,13 +333,15 @@ CFG;
 		public function update_network_options() {
 			check_admin_referer( "{$this->menu_slug}-options" );
 
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ip", filter_input( INPUT_POST, "{$this->option_slug}-rpc-ip", FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-port", filter_input( INPUT_POST, "{$this->option_slug}-rpc-port", FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-user", filter_input( INPUT_POST, "{$this->option_slug}-rpc-user", FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-password", filter_input( INPUT_POST, "{$this->option_slug}-rpc-password", FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-passphrase", filter_input( INPUT_POST, "{$this->option_slug}-rpc-passphrase", FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-path", filter_input( INPUT_POST, "{$this->option_slug}-rpc-path", FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ssl-enabled", filter_input( INPUT_POST, "{$this->option_slug}-rpc-ssl-enabled", FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-general-generated", filter_input( INPUT_POST, "{$this->option_slug}-general-generated", FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ip",            filter_input( INPUT_POST, "{$this->option_slug}-rpc-ip",            FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-port",          filter_input( INPUT_POST, "{$this->option_slug}-rpc-port",          FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-user",          filter_input( INPUT_POST, "{$this->option_slug}-rpc-user",          FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-password",      filter_input( INPUT_POST, "{$this->option_slug}-rpc-password",      FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-passphrase",    filter_input( INPUT_POST, "{$this->option_slug}-rpc-passphrase",    FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-path",          filter_input( INPUT_POST, "{$this->option_slug}-rpc-path",          FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ssl-enabled",   filter_input( INPUT_POST, "{$this->option_slug}-rpc-ssl-enabled",   FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-other-minconf",     filter_input( INPUT_POST, "{$this->option_slug}-other-minconf",     FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			parent::update_network_options();
 		}

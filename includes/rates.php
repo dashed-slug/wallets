@@ -425,10 +425,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public function update_network_options() {
 			check_admin_referer( 'wallets-menu-rates-options' );
 
-			Dashed_Slug_Wallets::update_option( 'wallets_rates_fixer_key', filter_input( INPUT_POST, 'wallets_rates_fixer_key', FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_rates_providers', $_POST['wallets_rates_providers'] );
-			Dashed_Slug_Wallets::update_option( 'wallets_rates_cache_expiry', filter_input( INPUT_POST, 'wallets_rates_cache_expiry', FILTER_SANITIZE_NUMBER_INT ) );
-			Dashed_Slug_Wallets::update_option( 'wallets_default_base_symbol', filter_input( INPUT_POST, 'wallets_default_base_symbol', FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_providers',         $_POST['wallets_rates_providers'] );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_fixer_key',         filter_input( INPUT_POST, 'wallets_rates_fixer_key',     FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_coinmarketcap_key', filter_input( INPUT_POST, 'wallets_rates_fixer_key',     FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_cache_expiry',      filter_input( INPUT_POST, 'wallets_rates_cache_expiry',  FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_default_base_symbol',     filter_input( INPUT_POST, 'wallets_default_base_symbol', FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_tor_enabled',       filter_input( INPUT_POST, 'wallets_rates_tor_enabled',  FILTER_SANITIZE_STRING ) ? 'on' : '' );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_tor_ip',            filter_input( INPUT_POST, 'wallets_rates_tor_ip',        FILTER_SANITIZE_STRING ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_tor_port',          filter_input( INPUT_POST, 'wallets_rates_tor_port',      FILTER_SANITIZE_NUMBER_INT ) );
+			Dashed_Slug_Wallets::update_option( 'wallets_rates_referer_skip',      filter_input( INPUT_POST, 'wallets_rates_referer_skip',  FILTER_SANITIZE_STRING ) ? 'on' : '' );
 
 			wp_redirect( add_query_arg( 'page', 'wallets-menu-rates', network_admin_url( 'admin.php' ) ) );
 			exit;

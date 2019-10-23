@@ -42,14 +42,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 			);
 
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
-			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
-			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
-			add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
+			add_action( 'wallets_admin_menu',         array( &$this,    'action_admin_menu' ) );
+			add_action( 'admin_init',                 array( &$this,    'action_admin_init' ) );
+			add_action( 'admin_enqueue_scripts',      array( &$this,    'admin_enqueue_scripts' ) );
+			add_action( 'wallets_periodic_checks',    array( &$this,    'cron' ) );
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.4.3.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-4.4.3.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.4.4.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-4.4.4.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -58,7 +59,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'4.4.3'
+				'4.4.4'
 			);
 		}
 
@@ -109,20 +110,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 					foreach ( get_sites() as $site ) {
 						switch_to_blog( $site->blog_id );
 						foreach ( get_editable_roles() as $role_name => $role_info ) {
-							if ( 'administrator' != $role_name ) {
-								foreach ( $this->caps as $capability => $description ) {
-									$this->update_cap( $role_name, $capability );
-								}
+							foreach ( $this->caps as $capability => $description ) {
+								$this->update_cap( $role_name, $capability );
 							}
 						}
 						restore_current_blog();
 					}
 				} else {
 					foreach ( get_editable_roles() as $role_name => $role_info ) {
-						if ( 'administrator' != $role_name ) {
-							foreach ( $this->caps as $capability => $description ) {
-								$this->update_cap( $role_name, $capability );
-							}
+						foreach ( $this->caps as $capability => $description ) {
+							$this->update_cap( $role_name, $capability );
 						}
 					}
 				}
@@ -187,7 +184,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 
 			</p>
 
-			<form method="post" action="admin.php?page=wallets-menu-caps" class="card">
+			<form method="post" autocomplete="off" action="admin.php?page=wallets-menu-caps" class="card">
 			<?php
 				settings_fields( 'wallets-menu-caps' );
 				do_settings_sections( 'wallets-menu-caps' );
@@ -212,7 +209,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				</thead>
 				<tbody>
 				<?php foreach ( get_editable_roles() as $role_name => $role_info ) : ?>
-					<?php if ( 'administrator' != $role_name || is_plugin_active_for_network( 'wallets/wallets.php' ) ) : ?>
 					<tr>
 						<th><?php echo $role_name; ?></th>
 						<?php
@@ -224,7 +220,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 							</td>
 						<?php endforeach; ?>
 					</tr>
-					<?php endif; ?>
 				<?php endforeach; ?>
 				</tbody>
 			</table>
@@ -238,6 +233,50 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 
 			<?php
 		} // end function wallets_caps_section_cb
+
+		/**
+		 * Trigger the capability-related cron jobs
+		 *
+		 * @internal
+		 * @since 4.4.4
+		 *
+		 */
+		public function cron() {
+			if ( wp_doing_ajax() && ! Dashed_Slug_Wallets::get_option( 'wallets_cron_ajax' ) ) {
+				return;
+			}
+
+			add_action( 'shutdown', array( &$this, 'cron_repair_admin_caps' ), 100 );
+		}
+
+		/**
+		 * Trigger the capability-related cron jobs
+		 *
+		 * @internal
+		 * @since 4.4.4
+		 *
+		 */
+		public function cron_repair_admin_caps() {
+			global $wpdb;
+
+			$q = new WP_User_Query( array ( 'role' => 'administrator' ) );
+
+			$found = false;
+			foreach ( $q->get_results() as $admin ) {
+				if ( user_can( $admin, 'manage_wallets' ) ) {
+					$found = true;
+					break;
+				}
+			}
+
+			if ( ! $found ) {
+				error_log( 'Bitcoin and Altcoin Wallets: No administrators with manage wallets found!' );
+				$admin_role = get_role( 'administrator' );
+				$admin_role->add_cap( 'manage_wallets' );
+				error_log( 'Bitcoin and Altcoin Wallets: Assigned manage_wallets capability to all members of Administrator role.' );
+			}
+		}
+
 	} // end class Dashed_Slug_Wallets_Capabilities
 	new Dashed_Slug_Wallets_Capabilities();
 }
