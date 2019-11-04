@@ -1184,6 +1184,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
 
 			if ( 'import' == $action && isset( $_FILES['txfile'] ) ) {
+				set_time_limit( 0 );
+
 				if ( ! current_user_can( 'manage_wallets' ) ) {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 				}

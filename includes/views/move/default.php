@@ -21,7 +21,12 @@
 					<label class="coin"><?php echo apply_filters( 'wallets_ui_text_coin', esc_html__( 'Coin', 'wallets-front' ) ); ?>: <select data-bind="options: Object.keys( coins() ).map(function(o){return coins()[o]}), optionsText: 'name', optionsValue: 'symbol', value: selectedCoin, valueUpdate: ['afterkeydown', 'input'], style: { 'background-image': 'url(' + $root.getCoinIconUrl( selectedCoin() ) + ')' }"></select></label>
 				</td>
 				<td colspan="3">
-					<label class="user"><?php echo apply_filters( 'wallets_ui_text_recipientuser', esc_html__( 'Recipient user', 'wallets-front' ) ); ?>: <input type="text" required="required" placeholder="<?php echo apply_filters( 'wallets_ui_text_enterusernameoremail', esc_html__( 'Enter a valid username, login name or email', 'wallets-front' ) ); ?>" data-bind="value: moveUser, valueUpdate: ['afterkeydown', 'input']" /></label>
+					<label class="user"><?php echo apply_filters( 'wallets_ui_text_recipientuser', esc_html__( 'Recipient user', 'wallets-front' ) ); ?>: <input list="<?php echo esc_attr( $uid = uniqid( 'wallets-move-' ) ); ?>" type="text" required="required" placeholder="<?php echo apply_filters( 'wallets_ui_text_enterusernameoremail', esc_html__( 'Enter a valid username, login name or email', 'wallets-front' ) ); ?>" data-bind="value: moveUser, valueUpdate: ['afterkeydown', 'input']" /></label>
+					<datalist id="<?php echo esc_attr( $uid ); ?>">
+						<?php foreach ( Dashed_Slug_Wallets::get_move_recipient_suggestions() as $user_name ): ?>
+						<option value="<?php echo esc_attr( $user_name ); ?>">
+						<?php endforeach; ?>
+					</datalist>
 				</td>
 			</tr>
 

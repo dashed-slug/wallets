@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.2.4
 Requires PHP: 5.6
-Stable tag: 4.4.4
+Stable tag: 4.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -350,6 +350,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.5 =
+- Fix: Removed Novaexchange and Cryptopia from exchange rates providers since their APIs are now unavailable.
+- Improve: Attempt to disable PHP max execution time while importing transactions from csv files. Can help with importing very large files.
+- Add: The `[wallets_move]` shortcode will now auto-suggest usernames of people that the current user has had internal transfers with before.
+- Improve: Reduce HTTP timeout when retrieving exchange rates.
 
 = 4.4.4 =
 - Fix: Several settings can now be saved on network-active installation, previously could not be saved.
@@ -1264,7 +1270,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `4.4.4` introduces an auto-repair feature for the manage_wallets capability.
+Version `4.4.5` introduces a few improvements with exchange rate providers, internal transfers, and transaction importing.
 
 == Donating ==
 

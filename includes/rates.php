@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'cryptocompare', 'bittrex', 'poloniex', 'novaexchange', 'yobit', 'cryptopia', 'tradesatoshi', 'stocksexchange' );
+		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'cryptocompare', 'bittrex', 'poloniex', 'yobit', 'tradesatoshi', 'stocksexchange' );
 		private static $rates     = array();
 		private static $cryptos   = array();
 		private static $fiats     = array();
@@ -458,14 +458,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 				<?php
 				switch ( $provider ) {
-					case 'novaexchange':
-						$ref_link = 'https://novaexchange.com/?re=oalb1eheslpu6bjvd6lh';
-						break;
 					case 'yobit':
 						$ref_link = 'https://yobit.io/?bonus=mwPLi';
-						break;
-					case 'cryptopia':
-						$ref_link = 'https://www.cryptopia.co.nz/Register?referrer=dashed_slug';
 						break;
 					default:
 						$ref_link = false;
@@ -748,6 +742,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				curl_setopt( $ch, CURLOPT_HTTPGET, false );
 				curl_setopt( $ch, CURLOPT_ENCODING, '' );
 				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+				curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5 );
+				curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
 				if ( $headers ) {
 					curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 				}
@@ -884,24 +880,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $cryptos;
 		}
 
-		public static function filter_rates_cryptos_novaexchange( $cryptos ) {
-			$url  = 'https://novaexchange.com/remote/v2/markets/';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->status ) && 'success' == $obj->status ) {
-					if ( isset( $obj->markets ) && is_array( $obj->markets ) ) {
-						foreach ( $obj->markets as $market ) {
-							foreach ( explode( '_', $market->marketname ) as $s ) {
-								$cryptos[] = $s;
-							}
-						}
-					}
-				}
-			}
-			return $cryptos;
-		}
-
 		public static function filter_rates_cryptos_yobit( $cryptos ) {
 			$url = 'https://yobit.net/api/3/info';
 			$json = self::file_get_contents( $url );
@@ -913,23 +891,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 							if ( 'RUR' !== $s && 'USD' !== $s ) {
 								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
 							}
-						}
-					}
-				}
-			}
-			return $cryptos;
-		}
-
-		public static function filter_rates_cryptos_cryptopia( $cryptos ) {
-			$url = 'https://www.cryptopia.co.nz/api/GetCurrencies';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) ) {
-					foreach ( $obj->Data as $market ) {
-						$s = $market->Symbol;
-						if ( 'USD' != $s && 'USDT' != $s ) {
-							$cryptos[] = $s;
 						}
 					}
 				}
@@ -1160,21 +1121,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $rates;
 		}
 
-		public static function filter_rates_novaexchange( $rates ) {
-			$json = self::file_get_contents( 'https://novaexchange.com/remote/v2/markets/' );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->status ) && 'success' == $obj->status ) {
-					if ( isset( $obj->markets ) && is_array( $obj->markets ) ) {
-						foreach ( $obj->markets as $market ) {
-							$rates[ $market->marketname ] = $market->last_price;
-						}
-					}
-				}
-			}
-			return $rates;
-		}
-
 		public static function filter_rates_yobit( $rates ) {
 			$market_names = array();
 			$adapters     = apply_filters( 'wallets_api_adapters', array() );
@@ -1199,23 +1145,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 								$m           = str_replace( 'BCC', 'BCH', $m );
 								$rates[ $m ] = $market->last;
 							}
-						}
-					}
-				}
-			}
-			return $rates;
-		}
-
-		public static function filter_rates_cryptopia( $rates ) {
-			$url  = 'https://www.cryptopia.co.nz/api/GetMarkets';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->Success ) && $obj->Success && isset( $obj->Data ) && ! is_null( $obj->Data ) ) {
-					foreach ( $obj->Data as $market ) {
-						if ( preg_match( '/^(.+)\/(.+)$/', $market->Label, $matches ) ) {
-							$m           = strtoupper( $matches[2] . '_' . $matches[1] );
-							$rates[ $m ] = $market->LastPrice;
 						}
 					}
 				}

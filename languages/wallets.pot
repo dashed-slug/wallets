@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.4\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-10-23 08:55:02+00:00\n"
+"POT-Creation-Date: 2019-11-04 11:05:01+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -126,7 +126,7 @@ msgstr ""
 #: includes/confirmations.php:805 includes/cron.php:481
 #: includes/frontend-settings.php:384 includes/notifications.php:758
 #: includes/rates.php:385 includes/transactions.php:334
-#: includes/transactions.php:1188 includes/transactions.php:1333
+#: includes/transactions.php:1190 includes/transactions.php:1335
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -136,10 +136,10 @@ msgstr ""
 #: includes/json-api.php:588 includes/json-api.php:835
 #: includes/json-api.php:878 includes/json-api.php:1235
 #: includes/json-api.php:1302 includes/json-api.php:1369
-#: includes/transactions.php:1194 includes/transactions.php:1397
-#: includes/transactions.php:1415 includes/transactions.php:1433
-#: includes/transactions.php:1450 includes/transactions.php:1467
-#: includes/transactions.php:1499
+#: includes/transactions.php:1196 includes/transactions.php:1399
+#: includes/transactions.php:1417 includes/transactions.php:1435
+#: includes/transactions.php:1452 includes/transactions.php:1469
+#: includes/transactions.php:1501
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -205,7 +205,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:96 includes/cold-storage.php:378
-#: includes/cold-storage.php:393 includes/rates.php:480
+#: includes/cold-storage.php:393 includes/rates.php:474
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -2093,11 +2093,11 @@ msgstr ""
 msgid "Clear/refresh data now!"
 msgstr ""
 
-#: includes/rates.php:535
+#: includes/rates.php:529
 msgid "&#x1F4CB; Copy"
 msgstr ""
 
-#: includes/rates.php:640
+#: includes/rates.php:634
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
@@ -2357,13 +2357,13 @@ msgstr ""
 msgid "Could not get account for %1$s address %2$s"
 msgstr ""
 
-#: includes/transactions.php:1214
+#: includes/transactions.php:1216
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:1227
+#: includes/transactions.php:1229
 msgid "Failed to import file : %s"
 msgstr ""
 
@@ -2492,11 +2492,11 @@ msgid ""
 "request."
 msgstr ""
 
-#: includes/wallets-core.php:1323
+#: includes/wallets-core.php:1364
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1327
+#: includes/wallets-core.php:1368
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 

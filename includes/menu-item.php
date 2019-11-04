@@ -47,8 +47,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-4.4.4.min.js' ) ) {
-				$script = 'wallets-admin-menu-item-4.4.4.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-4.4.5.min.js' ) ) {
+				$script = 'wallets-admin-menu-item-4.4.5.min.js';
 			} else {
 				$script = 'wallets-admin-menu-item.js';
 			}
@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'4.4.4',
+				'4.4.5',
 				true
 			);
 		}
