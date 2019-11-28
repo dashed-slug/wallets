@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-4.4.5.min.js' ) ) {
-				$script = 'wallets-cold-storage-4.4.5.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-4.4.6.min.js' ) ) {
+				$script = 'wallets-cold-storage-4.4.6.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'4.4.5',
+				'4.4.6',
 				true
 			);
 		}
@@ -162,6 +162,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 				<p><?php echo __( '<a href="https://en.bitcoin.it/wiki/Cold_storage" target="_blank" rel="noopener noreferrer">Cold storage</a> lets you remove part of your site\'s funds from the online wallet to mitigate risk in the event of a cyber-attack. ', 'wallets' ); ?></p>
 				<p><?php esc_html_e( 'Any funds you withdraw or deposit here will affect your total wallet balance but not any user balances. ', 'wallets' ); ?></p>
+				<p><?php esc_html_e( 'If a user requests a withdrawal and there is insufficient hot wallet balance, the withdrawal will remain in pending state and the admin or admins will be notified by email. ', 'wallets' ); ?></p>
 
 				<div>
 					<h2><?php esc_html_e( 'Cold storage state for your online wallets:', 'wallets' ); ?></h2>
@@ -253,14 +254,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				</div>
 
 				<?php
-					$cold_storage_tab    = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
-					$cold_storage_symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
+
+				$cold_storage_tab    = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
+				$cold_storage_symbol = filter_input( INPUT_GET, 'symbol', FILTER_SANITIZE_STRING );
 
 				if ( ! isset( $adapters[ $cold_storage_symbol ] ) ) {
+					$this->affiliate_banners();
 					return;
 				}
 
-					$adapter = $adapters[ $cold_storage_symbol ];
+				$adapter = $adapters[ $cold_storage_symbol ];
 
 				if ( 'withdraw' == $cold_storage_tab ) :
 					?>
@@ -362,7 +365,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				<?php
 				endif;
 
-					$this->affiliate_banners();
+				$this->affiliate_banners();
 		}
 
 		public function affiliate_banners() {
@@ -388,7 +391,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					</a>
 
 					<a
-						href="https://shop.trezor.io?a=dashed-slug.net"
+						href="https://shop.trezor.io/product/trezor-model-t?offer_id=15&aff_id=3798&source=wallets"
 						title="<?php
 						esc_attr_e(
 							'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
@@ -398,8 +401,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 						<img
 							width="728" height="90"
-							alt="Trezor - Security made easy."
-							src="https://raw.githubusercontent.com/satoshilabs/presskit/master/banners/728x90.png">
+							alt=" Trezor Model T. The safe place for your coins."
+							src="<?php echo plugins_url( 'assets/sprites/T1-728x90.png', DSWALLETS_FILE ); ?>">
 
 					</a>
 

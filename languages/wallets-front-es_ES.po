@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2018-03-02 12:08-0500\n"
 "Language-Team: \n"
 "X-Generator: Poedit 2.0.6\n"
-"Last-Translator: \n"
+"Last-Translator: Javier Enrique Vargas Parra <jevargas@uniandes.edu.co>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: es_ES\n"
 

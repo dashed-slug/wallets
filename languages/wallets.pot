@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.5\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 4.4.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2019-11-04 11:05:01+00:00\n"
+"POT-Creation-Date: 2019-11-28 08:46:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Unavailable Balance"
 msgstr ""
 
-#: includes/adapters-list-table.php:23 includes/cold-storage.php:172
+#: includes/adapters-list-table.php:23 includes/cold-storage.php:173
 msgid "Sum of User Balances"
 msgstr ""
 
@@ -126,7 +126,7 @@ msgstr ""
 #: includes/confirmations.php:805 includes/cron.php:481
 #: includes/frontend-settings.php:384 includes/notifications.php:758
 #: includes/rates.php:385 includes/transactions.php:334
-#: includes/transactions.php:1190 includes/transactions.php:1335
+#: includes/transactions.php:1236 includes/transactions.php:1381
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -136,10 +136,10 @@ msgstr ""
 #: includes/json-api.php:588 includes/json-api.php:835
 #: includes/json-api.php:878 includes/json-api.php:1235
 #: includes/json-api.php:1302 includes/json-api.php:1369
-#: includes/transactions.php:1196 includes/transactions.php:1399
-#: includes/transactions.php:1417 includes/transactions.php:1435
-#: includes/transactions.php:1452 includes/transactions.php:1469
-#: includes/transactions.php:1501
+#: includes/transactions.php:1242 includes/transactions.php:1445
+#: includes/transactions.php:1463 includes/transactions.php:1481
+#: includes/transactions.php:1498 includes/transactions.php:1515
+#: includes/transactions.php:1547
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -204,8 +204,8 @@ msgstr ""
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: includes/admin-menu.php:96 includes/cold-storage.php:378
-#: includes/cold-storage.php:393 includes/rates.php:474
+#: includes/admin-menu.php:96 includes/cold-storage.php:381
+#: includes/cold-storage.php:396 includes/rates.php:474
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -382,6 +382,12 @@ msgstr ""
 
 #: includes/balances-list.php:66
 msgid "&#x1F6C8; Zero user balances are not shown."
+msgstr ""
+
+#: includes/balances-list.php:68
+msgid ""
+"&#x1F6C8; When sorting by balance, the rows are also sorted by coin name, "
+"to enable meaningful comparisons."
 msgstr ""
 
 #: includes/caps.php:28
@@ -769,79 +775,86 @@ msgid ""
 "balance but not any user balances. "
 msgstr ""
 
-#: includes/cold-storage.php:167
+#: includes/cold-storage.php:165
+msgid ""
+"If a user requests a withdrawal and there is insufficient hot wallet "
+"balance, the withdrawal will remain in pending state and the admin or "
+"admins will be notified by email. "
+msgstr ""
+
+#: includes/cold-storage.php:168
 msgid "Cold storage state for your online wallets:"
 msgstr ""
 
-#: includes/cold-storage.php:170
+#: includes/cold-storage.php:171
 msgid "Adapter"
 msgstr ""
 
-#: includes/cold-storage.php:171
+#: includes/cold-storage.php:172
 msgid "Currency"
 msgstr ""
 
-#: includes/cold-storage.php:173
+#: includes/cold-storage.php:174
 msgid "Online Wallet Balance"
 msgstr ""
 
-#: includes/cold-storage.php:174
+#: includes/cold-storage.php:175
 msgid "Actions"
 msgstr ""
 
-#: includes/cold-storage.php:233
+#: includes/cold-storage.php:234
 msgid "Deposit"
 msgstr ""
 
-#: includes/cold-storage.php:241
+#: includes/cold-storage.php:242
 msgid "Withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:269
+#: includes/cold-storage.php:272
 msgid "Withdraw %s to cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:292 includes/transactions-list-table.php:46
+#: includes/cold-storage.php:295 includes/transactions-list-table.php:46
 msgid "Amount"
 msgstr ""
 
-#: includes/cold-storage.php:300
+#: includes/cold-storage.php:303
 msgid "External address"
 msgstr ""
 
-#: includes/cold-storage.php:312
+#: includes/cold-storage.php:315
 msgid "Withdraw to storage"
 msgstr ""
 
-#: includes/cold-storage.php:324
+#: includes/cold-storage.php:327
 msgid "Deposit %s from cold storage:"
 msgstr ""
 
-#: includes/cold-storage.php:373
+#: includes/cold-storage.php:376
 msgid "Need a hardware wallet?"
 msgstr ""
 
-#: includes/cold-storage.php:406
+#: includes/cold-storage.php:409
 msgid "You are responsible for the money people deposit on your site. "
 msgstr ""
 
-#: includes/cold-storage.php:407
+#: includes/cold-storage.php:410
 msgid "Get a hardware wallet and sleep easier!"
 msgstr ""
 
-#: includes/cold-storage.php:444
+#: includes/cold-storage.php:447
 msgid "To have <code>%1$d%%</code> online (<code>%2$s</code>), %3$s %4$s."
 msgstr ""
 
-#: includes/cold-storage.php:447
+#: includes/cold-storage.php:450
 msgid "deposit"
 msgstr ""
 
-#: includes/cold-storage.php:447
+#: includes/cold-storage.php:450
 msgid "withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:461
+#: includes/cold-storage.php:464
 msgid "You currently have <code>%1$01.2f%%</code> online (<code>%2$s</code>)."
 msgstr ""
 
@@ -1668,7 +1681,7 @@ msgstr ""
 #: includes/php-api.php:209 includes/php-api.php:302 includes/php-api.php:362
 #: includes/php-api.php:463 includes/php-api.php:589 includes/php-api.php:809
 #: includes/php-api.php:996 includes/php-api.php:1123 includes/php-api.php:1220
-#: includes/transactions.php:1146
+#: includes/transactions.php:1192
 msgid "Not allowed"
 msgstr ""
 
@@ -1944,7 +1957,7 @@ msgstr ""
 msgid "Adapter for \"%s\" is not online for withdrawal"
 msgstr ""
 
-#: includes/php-api.php:616 includes/transactions.php:733
+#: includes/php-api.php:616 includes/transactions.php:779
 msgid "Minimum witdrawal amount for \"%1$s\" is %2$f"
 msgstr ""
 
@@ -2353,17 +2366,27 @@ msgid ""
 "system."
 msgstr ""
 
-#: includes/transactions.php:1177
+#: includes/transactions.php:738
+msgid "Not enough hot wallet balance for withdrawal"
+msgstr ""
+
+#: includes/transactions.php:740
+msgid ""
+"Transaction %d cannot proceed to withdraw %01.8f %s for user with id %d "
+"because only %01.8f is available. Deposit more funds: %s"
+msgstr ""
+
+#: includes/transactions.php:1223
 msgid "Could not get account for %1$s address %2$s"
 msgstr ""
 
-#: includes/transactions.php:1216
+#: includes/transactions.php:1262
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:1229
+#: includes/transactions.php:1275
 msgid "Failed to import file : %s"
 msgstr ""
 

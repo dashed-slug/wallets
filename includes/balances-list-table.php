@@ -54,7 +54,7 @@ class DSWallets_Admin_Menu_Balances_List_Table extends WP_List_Table {
 		return array(
 			'account_name'  => array( 'account_name', true ),
 			'symbol'        => array( 'symbol', true ),
-			'status'        => array( 'status', false ),
+			'balance'       => array( 'balance', false ),
 		);
 	}
 
@@ -124,7 +124,9 @@ class DSWallets_Admin_Menu_Balances_List_Table extends WP_List_Table {
 				t.symbol
 
 			ORDER BY
-				$this->orderby $this->order
+				$this->orderby $this->order,
+				t.symbol,
+				u.ID ASC
 
 			LIMIT
 				%d, %d",

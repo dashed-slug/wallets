@@ -36,8 +36,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Balances' ) ) {
 						add_query_arg(
 							array(
 								'page'    => 'wallets-menu-balances',
-								'order'   => 'desc',
-								'orderby' => 'created_time',
+								'order'   => 'asc',
+								'orderby' => 'account_name',
 							),
 							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						)
@@ -64,6 +64,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Balances' ) ) {
 			</div>
 
 			<p class="card"><?php esc_html_e( '&#x1F6C8; Zero user balances are not shown.', 'wallets' ); ?></p>
+
+			<p class="card"><?php esc_html_e( '&#x1F6C8; When sorting by balance, the rows are also sorted by coin name, to enable meaningful comparisons.', 'wallets' ); ?></p>
 
 			<?php
 		}

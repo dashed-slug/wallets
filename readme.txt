@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.2.4
+Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 4.4.5
+Stable tag: 4.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -350,6 +350,13 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.6 =
+- Add: If a withdrawal cannot proceed due to low hot wallet balance, the withdrawal remains in pending state (would previously fail), and the site's admin or admins receive emails about this.
+- Add: Italian translations for frontend, submitted by *Fabio Perri*, webnetsolving@gmail.com, https://www.transifex.com/user/profile/Fabio.Perri/
+- Fix: When reloading the User balances page, the ordering is now predictable and stays the same.
+- Add: User balances can now be sorted by balance and coin.
+- Fix: Affiliate link to trezor was broken in cold storage pages, now fixed.
 
 = 4.4.5 =
 - Fix: Removed Novaexchange and Cryptopia from exchange rates providers since their APIs are now unavailable.
@@ -1270,7 +1277,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `4.4.5` introduces a few improvements with exchange rate providers, internal transfers, and transaction importing.
+Version `4.4.6` addresses the possibility of hot wallet balance being insufficient for a user withdrawal.
 
 == Donating ==
 
@@ -1290,3 +1297,10 @@ These are all the ways you can show your support, if you so choose:
 	- Bitcoin: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
 	- Litecoin: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
 	- Dogecoin: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
+
+== Translations ==
+
+* Arabic &mdash; Ed <support@2gogifts.com>
+* German &mdash; eMark Team <kontakt@deutsche-emark.de>
+* Italian &mdash; Fabio Perri <webnetsolving@gmail.com> https://www.transifex.com/user/profile/Fabio.Perri/
+* Spanish &mdash; Javier Enrique Vargas Parra <jevargas@uniandes.edu.co>

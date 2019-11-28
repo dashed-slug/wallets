@@ -726,6 +726,52 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						continue;
 					}
 
+					$hot_wallet_balance = $adapter->get_balance();
+
+					if ( -$wd_tx->amount -$wd_tx->fee > $hot_wallet_balance ) {
+
+						if ( ! Dashed_Slug_Wallets::get_transient( "wallets_stalled_tx_$wd_tx->id" ) ) {
+							// not enough balance is online. need to notify admins.
+							$admin_emails = Dashed_Slug_Wallets::get_admin_emails();
+
+							$email_to = 'To: ' . implode( ', ', $admin_emails );
+							$subject = __( 'Not enough hot wallet balance for withdrawal', 'wallets' );
+							$message = sprintf(
+								__( 'Transaction %d cannot proceed to withdraw %01.8f %s for user with id %d because only %01.8f is available. Deposit more funds: %s', 'wallets' ),
+								$wd_tx->id,
+								-$wd_tx->amount -$wd_tx->fee,
+								$wd_tx->symbol,
+								$wd_tx->account,
+								$hot_wallet_balance,
+								network_admin_url( "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$wd_tx->symbol" )
+							);
+
+							$result = wp_mail(
+								$email_to,
+								$subject,
+								$message
+							);
+
+							if ( ! $result ) {
+								error_log(
+									sprintf(
+										'%s: A wp_mail() error occurred while warning %s',
+										__FUNCTION__,
+										$email_to
+									)
+								);
+							}
+
+							// Do not notify again about this transaction for a while (or ever, if transient fails to expire)
+							Dashed_Slug_Wallets::set_transient( "wallets_stalled_tx_$wd_tx->id", 1, HOUR_IN_SECONDS );
+						}
+
+						// the withdrawal will remain in pending state.
+						continue;
+					}
+
+					Dashed_Slug_Wallets::delete_transient( "wallets_stalled_tx_$wd_tx->id" );
+
 					$minwithdraw = $adapter->get_minwithdraw();
 					if ( abs( $wd_tx->amount ) < $minwithdraw ) {
 						throw new Exception(
