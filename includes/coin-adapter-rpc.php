@@ -358,18 +358,23 @@ CFG;
 
 			$result = Dashed_Slug_Wallets::get_transient( "wallets_get_balance_$symbol" );
 			if ( false === $result ) {
+				// first attempt to get balance assuming the deprecated accounting system is present in this wallet
 				$result = $this->rpc->getbalance( '*', $this->get_minconf() );
 
 				if ( false === $result ) {
-					throw new Exception(
-						sprintf(
-							__( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ),
-							__CLASS__,
-							__FUNCTION__,
-							$this->rpc->status,
-							$this->rpc->error
-						)
-					);
+					// if first attempt fails, then attempt to get balance again, assuming the accounting system has been removed
+					$result = $this->rpc->getbalance();
+					if ( false === $result ) {
+						throw new Exception(
+							sprintf(
+								__( '%1$s->%2$s() failed with status="%3$s" and error="%4$s"', 'wallets' ),
+								__CLASS__,
+								__FUNCTION__,
+								$this->rpc->status,
+								$this->rpc->error
+							)
+						);
+					}
 				}
 				$result = floatval( $result );
 				Dashed_Slug_Wallets::set_transient( "wallets_get_balance_$symbol", $result, 30 );

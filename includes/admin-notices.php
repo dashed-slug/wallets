@@ -43,8 +43,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-4.4.6.min.js' ) ) {
-				$script = 'wallets-notify-4.4.6.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-4.4.7.min.js' ) ) {
+				$script = 'wallets-notify-4.4.7.min.js';
 			} else {
 				$script = 'wallets-notify.js';
 			}
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( "assets/scripts/$script", DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'4.4.6'
+				'4.4.7'
 			);
 
 		}
