@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Bitcoin and Altcoin Wallets
  * Description: Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
- * Version: 4.4.7
+ * Version: 4.4.8
  * Plugin URI: https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
  * Author: dashed-slug <info@dashed-slug.net>
  * Author URI: http://dashed-slug.net

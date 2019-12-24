@@ -49,8 +49,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.4.7.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-4.4.7.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.4.8.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-4.4.8.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -59,7 +59,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'4.4.7'
+				'4.4.8'
 			);
 		}
 
@@ -73,7 +73,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 
 				if ( ! is_null( $role ) ) {
 
-					if ( $role->has_cap( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'manage_network' : 'manage_options' ) ) {
+					if ( $role->has_cap( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'manage_network' : 'administrator' ) ) {
 						$role->add_cap( self::MANAGE_WALLETS );
 					}
 
@@ -257,8 +257,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		 *
 		 */
 		public function cron_repair_admin_caps() {
-			global $wpdb;
-
 			$q = new WP_User_Query( array ( 'role' => 'administrator' ) );
 
 			$found = false;
@@ -270,10 +268,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 			}
 
 			if ( ! $found ) {
-				error_log( 'Bitcoin and Altcoin Wallets: No administrators with manage wallets found!' );
+				error_log( 'Bitcoin and Altcoin Wallets: No administrators with manage_wallets found!' );
+
 				$admin_role = get_role( 'administrator' );
 				$admin_role->add_cap( 'manage_wallets' );
 				error_log( 'Bitcoin and Altcoin Wallets: Assigned manage_wallets capability to all members of Administrator role.' );
+
+				$q = new WP_User_Query( array ( 'role' => 'administrator' ) );
+				foreach ( $q->get_results() as $admin ) {
+					$admin->add_cap( 'manage_wallets' );
+					error_log( "Bitcoin and Altcoin Wallets: Assigned manage_wallets capability to user $admin->user_login" );
+				}
 			}
 		}
 

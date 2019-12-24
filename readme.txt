@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.3
+Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 4.4.7
+Stable tag: 4.4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -350,6 +350,12 @@ For all other communication, please contact [info@dashed-slug.net](mailto:info@d
 
 
 == Changelog ==
+
+= 4.4.8 =
+- Fix: The capability repair cron job, introduced in `4.4.4` is improved to be more fail-safe. If no admin user has `manage_wallets`, it now assigns `manage_wallets` to all admins and to the Administrator role. Prevents admins from being locked out.
+- Fix: CoinMarketCap signup link (for API access) is now updated.
+- Improve: Admin menu icon follows style guide more closely (is a data-uri encoded SVG).
+- Fix: The JSON-API requests are now excluded from the service worker's cache if the *SuperPWA* plugin is installed.
 
 = 4.4.7 =
 - Fix: Workaround that restores compatibility with the Bitcoin ABC full node wallet (Bitcoin Cash), due to improperly deprecated accounts feature in that wallet (github issue #360).
@@ -1280,7 +1286,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `4.4.7` includes a workaround for a bug in Bitcoin ABC wallet (affects Bitcoin Cash full nodes).
+Version `4.4.8` includes a few minor bugfixes/improvements.
 
 == Donating ==
 

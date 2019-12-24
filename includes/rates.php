@@ -169,7 +169,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					'label_for'   => 'wallets_rates_coinmarketcap_key',
 					'description' =>
 					__(
-						'If you decide to use CoinMarketCap, it is best to <a href="https://coinmarketcap.io/product" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
+						'If you decide to use CoinMarketCap, it is recommended to <a href="https://pro.coinmarketcap.com/signup/" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
 						'If you do not provide a key, the exchange rates of only the top 100 currencies will be retrieved.',
 						'wallets'
 					),

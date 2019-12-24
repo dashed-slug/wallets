@@ -36,6 +36,33 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			add_action( 'init', array( &$this, 'json_api_init' ) );
 			add_filter( 'query_vars', array( &$this, 'json_api_query_vars' ), 0 );
 			add_action( 'parse_request', array( &$this, 'json_api_parse_request' ), 0 );
+			add_action( 'init', array( &$this, 'refresh_superpwa_exclusion_list' ) );
+			add_filter( 'superpwa_sw_never_cache_urls', array( &$this, 'superpwa_exclude_wallets_from_cache' ) );
+		}
+
+		/**
+		 * Exclude JSON API from being cached by SuperPWA
+		 *
+		 * @link https://superpwa.com/codex/superpwa_sw_never_cache_urls/
+		 * @param string $superpwa_sw_never_cache_urls Comma separated list of regex patterns that match against request URL.
+		 * @return string The modified list of regex patterns.
+		 */
+		public function superpwa_exclude_wallets_from_cache( $superpwa_sw_never_cache_urls ) {
+			return $superpwa_sw_never_cache_urls . ',/__wallets_action=/';
+		}
+
+		/**
+		 * Forces SuperPWA to re-generate the service worker code once.
+		 * Newly generated code takes into account the URL exclusion list (`superpwa_sw_never_cache_urls` filter)
+		 * that allows this plugin's JSON API to pass through.
+		 */
+		public function refresh_superpwa_exclusion_list() {
+			if ( ! Dashed_Slug_Wallets::get_transient( 'wallets_refresh_superpwa_exclusion_list' ) ) {
+				if ( function_exists( 'superpwa_generate_sw' ) ) {
+					superpwa_generate_sw();
+					Dashed_Slug_Wallets::set_transient( 'wallets_refresh_superpwa_exclusion_list', 1 );
+				}
+			}
 		}
 
 		/**

@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-4.4.7.min.js', 'wallets/assets/scripts/pay-now-button-4.4.7.min.js' ),
+				plugins_url( 'pay-now-button-4.4.8.min.js', 'wallets/assets/scripts/pay-now-button-4.4.8.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -42,7 +42,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 					'manage_wallets',
 					'wallets-menu-wallets',
 					array( &$this, 'wallets_page_cb' ),
-					plugins_url( 'assets/sprites/wallet-icon.png', DSWALLETS_PATH . '/wallets.php' )
+					'data:image/svg+xml;base64,' . base64_encode( file_get_contents( DSWALLETS_PATH . '/assets/sprites/wallets-64x64.svg' ) )
 				);
 
 				add_submenu_page(
