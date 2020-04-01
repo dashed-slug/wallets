@@ -18,9 +18,12 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 	private $order;
 	private $orderby;
 	private $adapters = false;
+	private $network_active;
 
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
+
+		$this->network_active = Dashed_Slug_Wallets::$network_active;
 
 		// get and sanitize sorting vars
 		$this->order   = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
@@ -38,7 +41,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 	}
 
 	public function get_columns() {
-		return array(
+		$columns = array(
 			// 'cb' => '<input type="checkbox" />', // TODO bulk actions
 			'txid'          => esc_html__( 'TXID', 'wallets' ),
 			'category'      => esc_html__( 'Type', 'wallets' ),
@@ -57,6 +60,12 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 			'admin_confirm' => esc_html__( 'Accepted by admin', 'wallets' ),
 			'user_confirm'  => esc_html__( 'Verified by user', 'wallets' ),
 		);
+
+		if ( $this->network_active ) {
+			$columns = array( 'blog_id' => esc_html__( 'Site', 'wallets' ) ) + $columns;
+		}
+
+		return $columns;
 	}
 
 	public function get_hidden_columns() {
@@ -100,7 +109,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 				( blog_id = %d || %d )
 			",
 				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+				Dashed_Slug_Wallets::$network_active ? 1 : 0
 			)
 		);
 
@@ -118,6 +127,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 				txs.id,
 				txs.txid,
 				txs.category,
+				txs.tags,
 				txs.symbol,
 				txs.amount,
 				txs.fee,
@@ -126,7 +136,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 				txs.extra,
 				txs.comment,
 				txs.confirmations,
-				txs.tags,
+				txs.blog_id,
 				txs.created_time,
 				txs.status,
 				txs.retries,
@@ -146,7 +156,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 				%d, %d
 			",
 			get_current_blog_id(),
-			is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+			Dashed_Slug_Wallets::$network_active ? 1 : 0,
 			self::PER_PAGE * ( $current_page - 1 ),
 			self::PER_PAGE
 		);
@@ -194,6 +204,18 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 			// TODO bulk actions
 		);
 		return $actions;
+	}
+
+	public function column_blog_id( $item ) {
+		if ( isset( $item['blog_id'] ) && $item['blog_id'] ) {
+			$blog_id      = $item['blog_id'];
+			$blog_details = get_blog_details( $blog_id, false );
+
+			if ( $blog_details ) {
+				return $blog_details->domain . $blog_details->path;
+			}
+		}
+		return '&mdash;';
 	}
 
 	public function column_created_time( $item ) {
@@ -310,7 +332,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 							'orderby'  => $this->orderby,
 							'_wpnonce' => wp_create_nonce( 'wallets-cancel-tx-' . $item['id'] ),
 						),
-						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 					),
 					__( 'Transaction will be CANCELLED.', 'wallets' ),
 					__( '&#x1F5D9; Cancel', 'wallets' )
@@ -332,7 +354,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 							'orderby'  => $this->orderby,
 							'_wpnonce' => wp_create_nonce( 'wallets-retry-tx-' . $item['id'] ),
 						),
-						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 					),
 					__( 'Transaction will be RETRIED.', 'wallets' ),
 					__( '&#8635; Retry', 'wallets' )
@@ -367,7 +389,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 								'orderby'  => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-admin-unconfirm-' . $item['id'] ),
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Mark this transaction as NOT CONFIRMED by admin. Will NOT be retried if admin confirmation is required.', 'wallets' ),
 						__( '&#x2717; Admin unaccept', 'wallets' )
@@ -385,7 +407,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 								'orderby'  => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-admin-confirm-' . $item['id'] ),
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Transaction will be marked as CONFIRMED by admin.', 'wallets' ),
 						__( '&#x2713; Admin accept', 'wallets' )
@@ -425,7 +447,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 								'orderby'  => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-user-unconfirm-' . $item['id'] ),
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Mark this transaction as NOT CONFIRMED by user. A new confirmation email will be sent to the user.', 'wallets' ),
 						__( '&#x2717; User unaccept', 'wallets' )
@@ -443,7 +465,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 								'orderby'  => $this->orderby,
 								'_wpnonce' => wp_create_nonce( 'wallets-user-confirm-' . $item['id'] ),
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						),
 						__( 'Transaction will be marked as CONFIRMED by user.', 'wallets' ),
 						__( '&#x2713; User accept', 'wallets' )

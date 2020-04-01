@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			// admin UI bindings
 			add_action( 'wallets_admin_menu', array( &$this, 'action_wallets_admin_menu' ) );
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active ) {
 				add_action( "network_admin_edit_{$this->menu_slug}", array( &$this, 'update_network_options' ) );
 			}
 
@@ -275,14 +275,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 		/** @internal */
 		public function settings_pw_cb( $arg ) {
-			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" value=\"";
-			echo esc_attr( Dashed_Slug_Wallets::get_option( $arg['label_for'] ) ) . '" />';
+			echo "<input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" placeholder=\"" . str_repeat( '&bull;', 8 ) . "\" />";
 			echo '<p id="' . esc_attr( $arg['label_for'] ) . '-description" class="description">' . $arg['description'] . '</p>';
 		}
 
 		/** @internal */
 		public function settings_secret_cb( $arg ) {
-			echo "<p><input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" /> ";
+
+			echo "<p><input name=\"$arg[label_for]\" id=\"$arg[label_for]\" type=\"password\" placeholder=\"" . str_repeat( '&bull;', $this->is_unlocked() ? 8 : 0 ) . "\" />";
 			if ( $this->is_unlocked() ) {
 				echo '<span title="' . esc_attr__( 'Wallet unlocked. Withdrawals will be processed.', 'wallets' ) . '">&#x1f513;</span>';
 			} else {
@@ -316,7 +316,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			<form method="post" action="
 			<?php
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active ) {
 				echo esc_url(
 					add_query_arg(
 						'action',
@@ -485,7 +485,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		 * @return string|null A URL in the admin screens that lets the user control settings for this adapter.
 		 */
 		public function get_settings_url() {
-			return call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
+			return call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 		}
 
 		/**

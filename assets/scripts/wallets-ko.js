@@ -1028,10 +1028,10 @@
 			}
 		} );
 
+		// render qr code into all deposit UIs
 		$( 'html' ).on( 'wallets_ready', function( event, coins, nonces ) {
 			var $staticDeposits = $( '.dashed-slug-wallets.deposit.static' );
 
-			// render qr code into all deposit UIs
 			$staticDeposits.each( function( n, el ) {
 				var $deposit = $( el );
 				var $qrcode = $( '.qrcode', $deposit );
@@ -1049,6 +1049,31 @@
 			} );
 
 		} );
+
+		// bind qr code scanner
+		$('html').on( 'change', '.dashed-slug-wallets.withdraw input[type=file]', function( e ) {
+
+			if ( 'object' === typeof( qrcode ) ) {
+
+				var reader = new FileReader();
+
+				reader.onload = function() {
+					e.target.value = '';
+
+					qrcode.callback = function(res) {
+						if ( res instanceof Error ) {
+							wallets_alert( wallets_ko_i18n.qrcode_scan_failed );
+						} else {
+							wp.wallets.viewModels.wallets.withdrawAddress( res );
+						}
+					};
+					qrcode.decode( reader.result );
+				};
+				reader.readAsDataURL( e.target.files[0] );
+			}
+
+			return false;
+		});
 
 		// one second after doc ready, load coins and nonces, then start polling
 		setTimeout( function() {

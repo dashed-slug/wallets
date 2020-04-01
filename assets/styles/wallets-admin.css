@@ -25,6 +25,14 @@ body.toplevel_page_wallets-menu-wallets #wpbody-content .card {
 body.wallets_page_wallets-menu-transactions table td .button {
 	font-size: smaller;
 }
+@media only screen and (min-width:782px) {
+	body.wallets_page_wallets-menu-transactions td.column-fee,
+	body.wallets_page_wallets-menu-transactions td.column-amountnofee,
+	body.wallets_page_wallets-menu-transactions td.column-amount {
+		text-align: right;
+		white-space: nowrap;
+	}
+}
 
 /* ugly hack to hide the default icon */
 .SimpleHistoryLogitem--logger-Plugin_Wallets_Audit_Log .SimpleHistoryLogitem__senderImage::before {
@@ -50,4 +58,63 @@ body.wallets_page_wallets-menu-transactions table td .button {
 	border-radius: 10px;
 	padding: 5px;
 	color: white !important;
+}
+
+#wallets-cron-health dt {
+	font-weight: bold;
+}
+
+#wallets-dashboard-widget caption {
+	font-size: large;
+	margin-top: 1em;
+}
+
+#wallets-dashboard-widget > div {
+	padding: 1em 0;
+}
+
+#wallets-dashboard-widget table.summary {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#wallets-dashboard-widget table.summary td + td,
+#wallets-dashboard-widget table.summary th + th {
+	border-left: 1px solid;
+}
+
+#wallets-dashboard-widget table.summary tbody tr:first-child,
+#wallets-dashboard-widget table.summary tr + tr {
+	border-top: 1px solid;
+}
+
+#wallets-dashboard-widget table.summary tbody {
+	font-family: "Courier New", Courier, Monospace;
+	text-align: right;
+	font-size: smaller;
+}
+
+#wallets-dashboard-widget table.summary thead th,
+#wallets-dashboard-widget table.summary tbody td:first-child {
+	font-family: auto;
+	font-weight: bold;
+	white-space: nowrap;
+	text-align: left;
+}
+
+#wallets-dashboard-widget table.summary tbody tr:nth-child(even) {
+	background-color: lightgray;
+}
+
+#wallets-dashboard-widget table.summary tbody tr.totals {
+	font-weight: bold;
+	background-color: inherit;
+}
+
+#wallets-dashboard-widget table.summary tbody tr.totals td {
+	line-height: 3em;
+}
+
+#wallets-dashboard-widget .warning {
+	font-size: smaller;
 }

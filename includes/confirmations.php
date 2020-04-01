@@ -15,7 +15,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active ) {
 				add_action( 'network_admin_edit_wallets-menu-confirmations', array( &$this, 'update_network_options' ) );
 			}
 
@@ -269,7 +269,7 @@ EMAIL
 							nonce = %s
 					",
 						get_current_blog_id(),
-						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+						Dashed_Slug_Wallets::$network_active ? 1 : 0,
 						$nonce
 					)
 				);
@@ -315,7 +315,7 @@ EMAIL
 									txid LIKE %s
 							",
 								get_current_blog_id(),
-								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+								Dashed_Slug_Wallets::$network_active ? 1 : 0,
 								"$txid_prefix%"
 							)
 						);
@@ -339,14 +339,16 @@ EMAIL
 					SET
 						user_confirm = 1,
 						status = %s,
-						nonce = NULL
+						nonce = NULL,
+						updated_time = %s
 					WHERE
 						( blog_id = %d || %d ) AND
 						id IN ( $set_of_ids )
 					",
 						$new_status,
+						current_time( 'mysql', true ),
 						get_current_blog_id(),
-						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+						Dashed_Slug_Wallets::$network_active ? 1 : 0
 					)
 				);
 
@@ -647,7 +649,7 @@ EMAIL
 				if ( ! $result ) {
 					error_log(
 						sprintf(
-							'%s: A wp_mail() error occcured while sending confirmation request emails to admins',
+							'%s: A wp_mail() error occured while sending confirmation request emails to admins',
 							__FUNCTION__
 						)
 					);
@@ -827,7 +829,7 @@ EMAIL
 								'Admin confirmations are done by users with the <code>manage_wallets</code> capability, ' .
 								'via the <a href="%s">transactions</a> admin panel.', 'wallets'
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-transactions' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-transactions' )
 						);
 					?>
 					</li>
@@ -840,14 +842,14 @@ EMAIL
 							'Once a transaction is confirmed, the <a href="%s">cron job</a> will attemt to execute it. ' .
 							'On this page you can also set here the amount of times a failed transaction is retried. ', 'wallets'
 						),
-						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-cron' )
+						call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-cron' )
 					);
 				?>
 				</p>
 
 				<form method="post" action="<?php
 
-					if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					if ( Dashed_Slug_Wallets::$network_active ) {
 						echo esc_url(
 							add_query_arg(
 								'action',
@@ -1488,7 +1490,7 @@ EMAIL
 			$this->start_time = time();
 			$this->start_memory = memory_get_usage();
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active && function_exists( 'get_sites' ) ) {
 				$this->log( 'confirm tasks STARTED on net-active mu' );
 
 				$sites = get_sites();
@@ -1541,7 +1543,7 @@ EMAIL
 				'category' => 'withdraw',
 			);
 
-			if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( ! Dashed_Slug_Wallets::$network_active ) {
 				$where['blog_id'] = get_current_blog_id();
 			}
 
@@ -1569,7 +1571,7 @@ EMAIL
 				'category' => 'move',
 			);
 
-			if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( ! Dashed_Slug_Wallets::$network_active ) {
 				$where['blog_id'] = get_current_blog_id();
 			}
 
@@ -1582,7 +1584,10 @@ EMAIL
 
 			$result = $wpdb->update(
 				$table_name_txs,
-				array( 'status' => 'pending' ),
+				array(
+					'status'       => 'pending',
+					'updated_time' => current_time( 'mysql', true ),
+				),
 				$where
 			);
 
@@ -1616,7 +1621,8 @@ EMAIL
 							$table_name_txs
 						SET
 							admin_confirm = 1,
-							status = 'pending'
+							status = 'pending',
+							updated_time = %s
 						WHERE
 							status = 'unconfirmed'
 							AND category = %s
@@ -1625,6 +1631,7 @@ EMAIL
 						LIMIT
 							%d
 						",
+						current_time( 'mysql', true ),
 						$category,
 						$days,
 						$batch_size

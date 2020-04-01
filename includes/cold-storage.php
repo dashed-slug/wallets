@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-4.4.8.min.js' ) ) {
-				$script = 'wallets-cold-storage-4.4.8.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-5.0.0.min.js' ) ) {
+				$script = 'wallets-cold-storage-5.0.0.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'4.4.8',
+				'5.0.0',
 				true
 			);
 		}
@@ -124,9 +124,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								$notices->info( $msg );
 
 							} catch ( Exception $e ) {
-								$msg = sprintf( __( 'Failed to withdraw to cold storage: %s', 'wallets' ), $e->getMessage() );
-								error_log( $msg );
-								$notices->error( $msg );
+								error_log( sprintf( 'Failed to withdraw to cold storage: %s', $e->getMessage() ) );
+								$notices->error( sprintf( __( 'Failed to withdraw to cold storage: %s', 'wallets' ), $e->getMessage() ) );
 							}
 						}
 					} else {
@@ -154,15 +153,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 			}
 
-			$network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
-			$balance_sums   = Dashed_Slug_Wallets::get_balance_totals_per_coin();
-			$adapters       = apply_filters( 'wallets_api_adapters', array() );
+			$balance_sums    = Dashed_Slug_Wallets::get_balance_totals_per_coin();
+			$withdrawal_sums = Dashed_Slug_Wallets::get_pending_withdrawal_totals_per_coin();
+			$adapters        = apply_filters( 'wallets_api_adapters', array() );
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets: Transfer to and from cold storage', 'wallets' ); ?></h1>
 
-				<p><?php echo __( '<a href="https://en.bitcoin.it/wiki/Cold_storage" target="_blank" rel="noopener noreferrer">Cold storage</a> lets you remove part of your site\'s funds from the online wallet to mitigate risk in the event of a cyber-attack. ', 'wallets' ); ?></p>
-				<p><?php esc_html_e( 'Any funds you withdraw or deposit here will affect your total wallet balance but not any user balances. ', 'wallets' ); ?></p>
-				<p><?php esc_html_e( 'If a user requests a withdrawal and there is insufficient hot wallet balance, the withdrawal will remain in pending state and the admin or admins will be notified by email. ', 'wallets' ); ?></p>
+				<p><?php echo __( 'Use <a href="https://en.bitcoin.it/wiki/Cold_storage" target="_blank" rel="noopener noreferrer">Cold storage</a> to transfer part of the site\'s funds from the hot wallet to an external wallet. If your site is hacked, only a small portion of the funds will be at risk.', 'wallets' ); ?></p>
+				<p><?php esc_html_e( 'Any funds you withdraw or deposit here will affect your hot wallet balance. User balances are NOT affected. ', 'wallets' ); ?></p>
+				<p><?php esc_html_e( 'If a user requests a withdrawal and there is insufficient hot wallet balance, the withdrawal will remain in pending state and the admin or admins will be notified by email. Always keep enough funds online to allow for user withdrawals.', 'wallets' ); ?></p>
 
 				<div>
 					<h2><?php esc_html_e( 'Cold storage state for your online wallets:', 'wallets' ); ?></h2>
@@ -171,7 +170,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 							<th><?php esc_html_e( 'Adapter', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Currency', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Sum of User Balances', 'wallets' ); ?></th>
-							<th><?php esc_html_e( 'Online Wallet Balance', 'wallets' ); ?></th>
+							<th><?php esc_html_e( 'Sum of Pending Withdrawals', 'wallets' ); ?></th>
+							<th><?php esc_html_e( 'Hot Wallet Balance', 'wallets' ); ?></th>
 							<th><?php esc_html_e( 'Actions', 'wallets' ); ?></th>
 						</tr></thead>
 						<tbody style="vertical-align: top;">
@@ -186,17 +186,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								continue;
 							}
 
+							// skip fiat currencies
+							if ( Dashed_Slug_Wallets_Rates::is_fiat( $symbol ) ) {
+								continue;
+							}
+
 							if ( isset( $balance_sums[ $symbol ] ) ) {
 								$user_balances = $balance_sums[ $symbol ];
 							} else {
 								$user_balances = 0;
 							}
+
+							if ( isset( $withdrawal_sums[ $symbol ] ) ) {
+								$withdrawal_sum = $withdrawal_sums[ $symbol ];
+							} else {
+								$withdrawal_sum = 0;
+							}
+
 							?>
 							<tr>
 
 								<td><?php echo esc_html( $adapter->get_adapter_name() ); ?></td>
 								<td><?php echo esc_html( sprintf( '%s (%s)', $adapter->get_name(), $symbol ) ); ?></td>
 								<td><?php echo esc_html( sprintf( $adapter->get_sprintf(), $user_balances ) ); ?></td>
+								<td><?php echo esc_html( sprintf( $adapter->get_sprintf(), $withdrawal_sum ) ); ?></td>
 
 								<td>
 									<?php
@@ -229,7 +242,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 								<td>
 									<a
 										class="button"
-										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$symbol" ) ); ?>">
+										href="<?php echo esc_attr( call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=deposit&symbol=$symbol" ) ); ?>">
 										<?php
 										esc_html_e( 'Deposit' );
 										?>
@@ -237,7 +250,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 									<a
 										class="button"
-										href="<?php echo esc_attr( call_user_func( $network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=withdraw&symbol=$symbol" ) ); ?>">
+										href="<?php echo esc_attr( call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', "admin.php?page=wallets-menu-cold-storage&tab=withdraw&symbol=$symbol" ) ); ?>">
 										<?php
 										esc_html_e( 'Withdraw' );
 										?>
@@ -391,7 +404,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					</a>
 
 					<a
-						href="https://shop.trezor.io/product/trezor-model-t?offer_id=15&aff_id=3798&source=wallets"
+						href="https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=3798&source=wallets"
 						title="<?php
 						esc_attr_e(
 							'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',

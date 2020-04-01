@@ -10,13 +10,14 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'cryptocompare', 'bittrex', 'poloniex', 'yobit', 'tradesatoshi', 'stocksexchange' );
+		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'coincap', 'cryptocompare', 'bittrex', 'poloniex', 'yobit', 'stocksexchange' );
 		private static $rates     = array();
 		private static $cryptos   = array();
 		private static $fiats     = array();
 
 		private static $symbol_to_gecko_id = array();
 		private static $gecko_id_to_symbol = array();
+		private static $coincap_ids        = array();
 
 		private static $start_time;
 		private static $start_memory;
@@ -24,7 +25,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		private $network_active;
 
 		public function __construct() {
-			$this->network_active = is_plugin_active_for_network( 'wallets/wallets.php' );
+			$this->network_active = Dashed_Slug_Wallets::$network_active;
 			register_activation_hook( DSWALLETS_FILE, array( __CLASS__, 'action_activate' ) );
 
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
@@ -898,23 +899,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 			return $cryptos;
 		}
 
-		public static function filter_rates_cryptos_tradesatoshi( $cryptos ) {
-			$url = 'https://tradesatoshi.com/api/public/getcurrencies';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result ) ) {
-					foreach ( $obj->result as $market ) {
-						$s = $market->currency;
-						if ( 'USD' != $s && 'USDT' != $s ) {
-							$cryptos[] = $s;
-						}
-					}
-				}
-			}
-			return $cryptos;
-		}
-
 		public static function filter_rates_cryptos_stocksexchange( $cryptos ) {
 			$url  = 'https://stocks.exchange/api2/markets';
 			$json = self::file_get_contents( $url );
@@ -940,6 +924,30 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						$cryptos[] = $symbol;
 						self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
 						self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+					}
+				}
+			}
+			return $cryptos;
+		}
+
+		public static function filter_rates_cryptos_coincap( $cryptos ) {
+			$adapters = apply_filters( 'wallets_api_adapters', array() );
+			$used_symbols = array_keys( $adapters );
+			if ( ! $used_symbols ) {
+				return $cryptos;
+			}
+
+			$url  = 'https://api.coincap.io/v2/assets';
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_array( $obj->data ) ) {
+					foreach ( $obj->data as $currency ) {
+						$symbol = strtoupper( $currency->symbol );
+						if ( false !== array_search( $symbol, $used_symbols ) ) {
+							$cryptos[] = $symbol;
+							self::$coincap_ids[] = $currency->id;
+						}
 					}
 				}
 			}
@@ -1082,7 +1090,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					foreach ( $obj->result as $market ) {
 						$m           = str_replace( '-', '_', $market->MarketName );
 						$m           = str_replace( 'BCC', 'BCH', $m );
-						$rates[ $m ] = $market->Last;
+						if ( $market->Last ) {
+							$rates[ $m ] = $market->Last;
+						} elseif ( $market->Bid && $market->Ask ) {
+							$rates[ $m ] = ( $market->Bid + $market->Ask ) / 2;
+						} elseif ( $market->Bid ) {
+							$rates[ $m ] = $market->Bid;
+						} elseif ( $market->Ask ) {
+							$rates[ $m ] = $market->Ask;
+						}
 					}
 				}
 			}
@@ -1143,25 +1159,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 							if ( preg_match( '/^([^_]+)_([^_]+)$/', $market_name, $matches ) ) {
 								$m           = strtoupper( $matches[2] . '_' . $matches[1] );
 								$m           = str_replace( 'BCC', 'BCH', $m );
-								$rates[ $m ] = $market->last;
-							}
-						}
-					}
-				}
-			}
-			return $rates;
-		}
-
-		public static function filter_rates_tradesatoshi( $rates ) {
-			$url  = 'https://tradesatoshi.com/api/public/getmarketsummaries';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) && isset( $obj->success ) && $obj->success && isset( $obj->result ) && ! is_null( $obj->result ) ) {
-					foreach ( $obj->result as $market ) {
-						if ( preg_match( '/^(.+)_(.+)$/', $market->market, $matches ) ) {
-							if ( self::is_crypto( $matches[2] ) ) {
-								$m           = strtoupper( $matches[2] . '_' . $matches[1] );
 								$rates[ $m ] = $market->last;
 							}
 						}
@@ -1234,6 +1231,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 			return $rates;
 		}
+
+		public static function filter_rates_coincap( $rates ) {
+			if ( ! self::$coincap_ids ) {
+				return $rates;
+			}
+
+			$url  = 'https://api.coincap.io/v2/assets?ids=' . implode( ',', self::$coincap_ids );
+			$json = self::file_get_contents( $url );
+			if ( is_string( $json ) ) {
+				$obj = json_decode( $json );
+				if ( is_array( $obj->data ) ) {
+					foreach ( $obj->data as $currency ) {
+						$symbol = strtoupper( $currency->symbol );
+						$rates["USD_$symbol"] = $currency->priceUsd;
+					}
+				}
+			}
+			return $rates;
+		}
+
 
 		// API
 

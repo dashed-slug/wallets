@@ -315,7 +315,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Users' ) ) {
 
 			if ( $reassign ) {
 				error_log( "Assigning transactions associated with user $user_id to user $reassign" );
-				$query = $wpdb->prepare( "UPDATE {$table_name_txs} SET account = %d WHERE account = %d", $reassign, $user_id );
+				$query = $wpdb->prepare( "UPDATE {$table_name_txs} SET updated_time = %s, account = %d WHERE account = %d", current_time( 'mysql', true ), $reassign, $user_id );
 			} else {
 				error_log( "Deleting transactions associated with user $user_id" );
 				$query = $wpdb->prepare( "DELETE FROM {$table_name_txs} WHERE account = %d", $user_id );

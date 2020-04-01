@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 							( blog_id = %d || %d )
 					",
 					get_current_blog_id(),
-					is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+					Dashed_Slug_Wallets::$network_active ? 1 : 0
 				),
 				ARRAY_N
 			);
@@ -75,6 +75,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 
 				fputcsv( $fh, $row, ',' );
 			}
+			fclose( $fh );
 		}
 
 		/**
@@ -93,7 +94,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			} catch ( Exception $e ) {
 				error_log(
 					sprintf(
-						__( 'Could not reset cold storage deposit address for %1$s: %2$s', 'wallets' ),
+						'Could not reset cold storage deposit address for %1$s: %2$s',
 						$symbol,
 						$e->getMessage()
 					)
@@ -120,7 +121,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 						status = 'current'
 				",
 				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
+				Dashed_Slug_Wallets::$network_active ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
 				$adapter->get_symbol()
 			);
 
@@ -129,7 +130,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			if ( false === $result ) {
 				error_log(
 					sprintf(
-						__( 'Could not reset user deposit addresses for %1$s: %2$s', 'wallets' ),
+						'Could not reset user deposit addresses for %1$s: %2$s',
 						$symbol,
 						$wpdb->last_error
 					)
@@ -257,7 +258,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 							array(
 								'page' => 'wallets-menu-addresses',
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						)
 					);
 					exit;
@@ -284,7 +285,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 							array(
 								'page' => 'wallets-menu-addresses',
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						)
 					);
 					exit;

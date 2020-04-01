@@ -25,7 +25,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'bind_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'bind_settings' ) );
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active ) {
 				add_action( 'network_admin_edit_wallets-menu-notifications', array( &$this, 'update_network_options' ) );
 			}
 
@@ -772,7 +772,7 @@ NOTIFICATION
 				<form method="post" action="
 				<?php
 
-				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				if ( Dashed_Slug_Wallets::$network_active ) {
 					echo esc_url(
 						add_query_arg(
 							'action',
@@ -1195,7 +1195,7 @@ NOTIFICATION
 			if ( isset( $tx_data->amount ) && is_numeric( $tx_data->amount ) ) {
 				$replace_pairs['###AMOUNT###']           = sprintf( $sprintf, abs( $tx_data->amount ) );
 				if ( $exchange_rate ) {
-					$replace_pairs['###FIAT_AMOUNT###']  = sprintf( $sprintf, abs( $tx_data->amount * $exchange_rate ) );
+					$replace_pairs['###FIAT_AMOUNT###']  = sprintf( '%01.2F', abs( $tx_data->amount * $exchange_rate ) );
 				} else {
 					$replace_pairs['###FIAT_AMOUNT###']  = 'n/a';
 				}
@@ -1208,13 +1208,13 @@ NOTIFICATION
 			if ( is_numeric( $tx_data->fee ) ) {
 				$replace_pairs['###FEE###']              = sprintf( $sprintf, abs( $tx_data->fee ) );
 				if ( $exchange_rate ) {
-					$replace_pairs['###FIAT_FEE###']     = sprintf( $sprintf, abs( $tx_data->amount * $exchange_rate ) );
+					$replace_pairs['###FIAT_FEE###']     = sprintf( '%01.2F', abs( $tx_data->fee * $exchange_rate ) );
 				} else {
 					$replace_pairs['###FIAT_FEE###']     = 'n/a';
 				}
 
 			} else {
-				$replace_pairs['###FIAT_FEE###']         = sprintf( $sprintf, 0 );
+				$replace_pairs['###FIAT_FEE###']         = sprintf( '%01.2F', 0 );
 				$replace_pairs['###FIAT_FEE###']         = 'n/a';
 			}
 

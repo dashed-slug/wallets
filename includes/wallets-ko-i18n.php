@@ -14,6 +14,7 @@ $translation_array = array(
 	'amount_less_than_fee' => apply_filters( 'wallets_ui_text_amount_less_than_fee', __( 'Total amount to deduct is less than the applicable fees', 'wallets-front' ) ),
 	'get_new_address'      => apply_filters( 'wallets_ui_text_get_new_address', __( 'Get a new deposit address for this coin?', 'wallets-front' ) ),
 	'apikey_renew_confirm' => apply_filters( 'wallets_ui_text_apikey_renew_confirm', __( 'Renew the API key? The old key will become invalid!', 'wallets-front' ) ),
+	'qrcode_scan_failed'   => apply_filters( 'wallets_ui_text_qrcode_scan_failed', __( 'No QR code found. Please make sure the QR code is within the camera\'s frame and try again.', 'wallets-front' ) ),
 
 	'deposit'              => apply_filters( 'wallets_ui_text_deposit', __( 'deposit', 'wallets-front' ) ),
 	'withdraw'             => apply_filters( 'wallets_ui_text_withdraw', __( 'withdraw', 'wallets-front' ) ),

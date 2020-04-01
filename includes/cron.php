@@ -20,7 +20,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active ) {
 				add_filter( 'pre_update_site_option_wallets_cron_interval', array( &$this, 'filter_update_option_wallets_cron_interval' ), 10, 2 );
 				add_action( 'network_admin_edit_wallets-menu-cron', array( &$this, 'update_network_options' ) );
 			} else {
@@ -194,7 +194,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			$this->log( 'cron jobs STARTED' );
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active && function_exists( 'get_sites' ) ) {
 				$site_count = 0;
 				$sites = get_sites();
 				shuffle( $sites );
@@ -250,11 +250,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 		public function action_admin_init() {
 
+			// bind health status subpage
+
+			add_settings_section(
+				'wallets_cron_health_section',
+				__( 'Cron jobs health status', 'wallets' ),
+				array( &$this, 'wallets_cron_health_section_cb' ),
+				'wallets-menu-cron'
+			);
+
 			// bind settings subpage
 
 			add_settings_section(
 				'wallets_cron_settings_section',
-				__( 'Perioric tasks', 'wallets' ),
+				__( 'Periodic tasks', 'wallets' ),
 				array( &$this, 'wallets_cron_section_cb' ),
 				'wallets-menu-cron'
 			);
@@ -498,7 +507,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 			<form method="post" action="
 			<?php
 
-				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+				if ( Dashed_Slug_Wallets::$network_active ) {
 					echo esc_url(
 						add_query_arg(
 							'action',
@@ -605,6 +614,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 				esc_html_e( 'You can control whether similar old internal transactions are aggregated. Aggregating past transactions saves space on the DB. Aggregation is performed in batches so as not to overwhelm the DB.', 'wallets' );
 			?>
 			</p>
+			<?php
+		}
+
+		public function wallets_cron_health_section_cb() {
+			?>
+			<p>
+			<?php
+				esc_html_e( 'The following debug information can help you determine whether the cron jobs are running.', 'wallets' );
+			?>
+			</p>
+
+			<dl id="wallets-cron-health" class="card">
+				<dt><?php esc_html_e( 'Cron jobs last ran on:', 'wallets' ); ?></dt>
+				<dd><?php echo date( DATE_RFC822, Dashed_Slug_Wallets::get_option(' wallets_last_cron_run', 0 ) ); ?></dd>
+
+				<dt><?php esc_html_e( 'Cron jobs last runtime (sec):', 'wallets' ); ?></dt>
+				<dd><?php echo Dashed_Slug_Wallets::get_option(' wallets_last_elapsed_time', 'n/a' ); ?></dd>
+
+				<dt><?php esc_html_e( 'Cron jobs peak memory (bytes):',  'wallets' ); ?></dt>
+				<dd><?php echo number_format( Dashed_Slug_Wallets::get_option(' wallets_last_peak_mem',  'n/a' ) ); ?></dd>
+
+				<dt><?php esc_html_e( 'Cron jobs memory delta (bytes):',  'wallets' ); ?></dt>
+				<dd><?php echo number_format( Dashed_Slug_Wallets::get_option(' wallets_last_mem_delta', 'n/a' ) ); ?></dd>
+			</dl>
+
 			<?php
 		}
 

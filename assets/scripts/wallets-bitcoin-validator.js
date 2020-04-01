@@ -30,7 +30,8 @@
 
 					var version = bytes[0];
 
-					return [0, 0x05, 0x6E, 0xC4 ].indexOf( version ) >= 0;
+					// see https://en.bitcoin.it/wiki/List_of_address_prefixes
+					return [0, 0x05, 0x6F, 0xC4 ].indexOf( version ) >= 0;
 				}
 			);
 	} );

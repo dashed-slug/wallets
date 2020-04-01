@@ -39,7 +39,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			'balance'                  => array( 'balance', false ),
 			'unavailable_balance'      => array( 'unavailable_balance', false ),
 			'balances'                 => array( 'balances', false ),
-			'total_fees'                => array( 'total_fees', false ),
+			'total_fees'               => array( 'total_fees', false ),
 			'pending_wds'              => array( 'pending_wds', false ),
 		);
 	}
@@ -82,7 +82,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 					symbol
 				",
 				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+				Dashed_Slug_Wallets::$network_active ? 1 : 0
 			),
 			OBJECT_K
 		);
@@ -135,6 +135,8 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 			if ( isset( $pending_withdrawal_counts[ $symbol  ] ) ) {
 				$new_row['pending_wds'] = $pending_withdrawal_counts[ $symbol ]->c;
+			} else {
+				$new_row['pending_wds'] = 0;
 			}
 
 			$this->items[] = $new_row;
@@ -196,11 +198,11 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 		$html = '<span>' . sprintf( $item['sprintf'], $item['unavailable_balance'] ) . '</span>';
 
-		if ( ( $item['balance'] / $item['unavailable_balance'] ) > .99 ) {
+		if ( ( $item['unavailable_balance'] / ( $item['balance'] + $item['unavailable_balance'] ) ) > .95 ) {
 			$html .= sprintf(
 				'<p class="wallets-adapters-pos-warning">%s</p>',
 				__(
-					'It looks like less than 1% of the balance of this coin is currently available for withdrawals. ' .
+					'It looks like less than 5% of the balance of this coin is currently available for withdrawals. ' .
 					'If this is a Proof-of-Stake wallet, consider using the <code>reservebalance=</code> argument ' .
 					'in your .conf file. Consult the wallet\'s documentation for details.',
 					'wallets'

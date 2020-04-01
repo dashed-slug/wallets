@@ -43,8 +43,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-4.4.8.min.js' ) ) {
-				$script = 'wallets-notify-4.4.8.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-5.0.0.min.js' ) ) {
+				$script = 'wallets-notify-5.0.0.min.js';
 			} else {
 				$script = 'wallets-notify.js';
 			}
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( "assets/scripts/$script", DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'4.4.8'
+				'5.0.0'
 			);
 
 		}
@@ -75,7 +75,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 					$dismiss_url = add_query_arg(
 						array(
 							'wallets_dismiss' => $admin_notice->dismiss_option,
-						), call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url' )
+						), call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url' )
 					);
 
 					if ( ! Dashed_Slug_Wallets::get_option( "wallets_dismissed_$admin_notice->dismiss_option" ) ) {

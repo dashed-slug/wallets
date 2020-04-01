@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 					$this->rpc->setSSL();
 				}
 			}
-
+			add_filter( "pre_update_option_{$this->option_slug}-rpc-password",   array( &$this, 'filter_pre_update_password' ), 10, 2 );
 			add_filter( "pre_update_option_{$this->option_slug}-rpc-passphrase", array( &$this, 'filter_pre_update_passphrase' ), 10, 2 );
 		}
 
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 
 				} catch ( Exception $e ) {
 
-					$settings_url = call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
+					$settings_url = call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php?page=wallets-menu-' . sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) );
 
 					$config = $this->get_recommended_config();
 
@@ -337,11 +337,19 @@ CFG;
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ip",            filter_input( INPUT_POST, "{$this->option_slug}-rpc-ip",            FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-port",          filter_input( INPUT_POST, "{$this->option_slug}-rpc-port",          FILTER_SANITIZE_NUMBER_INT ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-user",          filter_input( INPUT_POST, "{$this->option_slug}-rpc-user",          FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-password",      filter_input( INPUT_POST, "{$this->option_slug}-rpc-password",      FILTER_SANITIZE_STRING ) );
-			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-passphrase",    filter_input( INPUT_POST, "{$this->option_slug}-rpc-passphrase",    FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-path",          filter_input( INPUT_POST, "{$this->option_slug}-rpc-path",          FILTER_SANITIZE_STRING ) );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-ssl-enabled",   filter_input( INPUT_POST, "{$this->option_slug}-rpc-ssl-enabled",   FILTER_SANITIZE_STRING ) ? 'on' : '' );
 			Dashed_Slug_Wallets::update_option( "{$this->option_slug}-other-minconf",     filter_input( INPUT_POST, "{$this->option_slug}-other-minconf",     FILTER_SANITIZE_STRING ) ? 'on' : '' );
+
+			$pw = filter_input( INPUT_POST, "{$this->option_slug}-rpc-password",      FILTER_SANITIZE_STRING );
+			if ( $pw ) {
+				Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-password",   $pw );
+			}
+
+			$pp = filter_input( INPUT_POST, "{$this->option_slug}-rpc-passphrase",    FILTER_SANITIZE_STRING );
+			if ( $pp ) {
+				Dashed_Slug_Wallets::update_option( "{$this->option_slug}-rpc-passphrase", $pp );
+			}
 
 			parent::update_network_options();
 		}
@@ -405,7 +413,7 @@ CFG;
 
 				$unavailable_balance = 0;
 
-				foreach ( array( 'newmint', 'stake', 'unconfirmed_balance', 'immature_balance' ) as $field ) {
+				foreach ( array( 'newmint', 'stake', 'unconfirmed_balance', 'unconfirmedbalance', 'immature_balance' ) as $field ) {
 					if ( isset( $result[ $field ] ) ) {
 						$unavailable_balance += floatval( $result[ $field ] );
 					}
@@ -606,6 +614,30 @@ CFG;
 			}
 		}
 
+		/**
+		 * Only saves new password if not empty.
+		 *
+		 * @param string $new_value New password or empty
+		 * @param string $old_value Old Password
+		 * @return string Password to keep in DB
+		 */
+		public function filter_pre_update_password( $new_value, $old_value ) {
+			if ( $new_value ) {
+				return $new_value;
+			}
+			return $old_value;
+		}
+
+		/**
+		 * Only saves new passphrase if not empty, or uses it to unlock wallet.
+		 *
+		 * Based on admin preferences this either unlocks the wallet or unlocks the wallet and saves the passphrase.
+		 * But only if the new passphrase entered is not empty.
+		 *
+		 * @param string $new_value New passphrase or empty
+		 * @param string $old_value Old Passphrase
+		 * @return string Passphrase to keep in DB or use to unlock wallet.
+		 */
 		public function filter_pre_update_passphrase( $new_value, $old_value ) {
 			if ( $new_value ) {
 				try {
@@ -840,7 +872,7 @@ CFG;
 							);
 						}
 
-						Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_rescan", 1, MONTH_IN_SECONDS );
+						Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_rescan", 1, WEEK_IN_SECONDS );
 						Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_skip",   0, DAY_IN_SECONDS );
 
 						return;
@@ -865,7 +897,7 @@ CFG;
 					);
 				}
 
-				Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_rescan", 1, MONTH_IN_SECONDS );
+				Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_rescan", 1, WEEK_IN_SECONDS );
 				Dashed_Slug_Wallets::set_transient( "wallets_scrape_{$symbol}_skip",   0, DAY_IN_SECONDS );
 			}
 

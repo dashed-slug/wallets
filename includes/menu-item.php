@@ -47,8 +47,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-4.4.8.min.js' ) ) {
-				$script = 'wallets-admin-menu-item-4.4.8.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-menu-item-5.0.0.min.js' ) ) {
+				$script = 'wallets-admin-menu-item-5.0.0.min.js';
 			} else {
 				$script = 'wallets-admin-menu-item.js';
 			}
@@ -57,7 +57,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 				'wallets-admin-menu-item',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'4.4.8',
+				'5.0.0',
 				true
 			);
 		}
@@ -110,7 +110,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Menu' ) ) {
 							<input type="hidden" class="menu-item-url" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-url]" value="#">
 							<input type="hidden" class="menu-item-classes" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-classes]" value="wallets-nav-balance menu-item-has-children">
 
-							<input type="checkbox" class="menu-item-object-id" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-object-id]" value="<?php echo $_nav_menu_placeholder; ?>" checked="true">
+							<input type="checkbox" class="menu-item-object-id" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-object-id]" value="<?php echo $_nav_menu_placeholder; ?>" checked="checked">
 						</li>
 					</ul>
 				</div>

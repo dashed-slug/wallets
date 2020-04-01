@@ -49,8 +49,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 		}
 
 		public function admin_enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-4.4.8.min.css' ) ) {
-				$wallets_admin_styles = 'wallets-admin-4.4.8.min.css';
+			if ( file_exists( DSWALLETS_PATH . '/assets/styles/wallets-admin-5.0.0.min.css' ) ) {
+				$wallets_admin_styles = 'wallets-admin-5.0.0.min.css';
 			} else {
 				$wallets_admin_styles = 'wallets-admin.css';
 			}
@@ -59,7 +59,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 				'wallets_admin_styles',
 				plugins_url( $wallets_admin_styles, "wallets/assets/styles/$wallets_admin_styles" ),
 				array(),
-				'4.4.8'
+				'5.0.0'
 			);
 		}
 
@@ -73,7 +73,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 
 				if ( ! is_null( $role ) ) {
 
-					if ( $role->has_cap( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'manage_network' : 'administrator' ) ) {
+					if ( $role->has_cap( Dashed_Slug_Wallets::$network_active ? 'manage_network' : 'administrator' ) ) {
 						$role->add_cap( self::MANAGE_WALLETS );
 					}
 
@@ -105,7 +105,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Capabilities' ) ) {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', 'wallets' ) );
 				}
 
-				if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+				if ( Dashed_Slug_Wallets::$network_active && function_exists( 'get_sites' ) ) {
 
 					foreach ( get_sites() as $site ) {
 						switch_to_blog( $site->blog_id );

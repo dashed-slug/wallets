@@ -11,10 +11,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		private $widget;
 		private $description;
 		private $capabilities;
-		private $views_dir;
 		private $templates = array();
 
 		public static function widgets_init() {
+			register_widget( 'Dashed_Slug_Wallets_Widget_API_Key' );
 			register_widget( 'Dashed_Slug_Wallets_Widget_Deposit' );
 			register_widget( 'Dashed_Slug_Wallets_Widget_Withdraw' );
 			register_widget( 'Dashed_Slug_Wallets_Widget_Move' );
@@ -33,15 +33,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			$this->description  = $desc;
 			$this->capabilities = $caps;
 
-			$this->views_dir = apply_filters( 'wallets_views_dir', __DIR__ . '/views' );
-			$view            = preg_replace( '/^wallets_/', '', $widget );
-			$templates_dir   = trailingslashit( $this->views_dir ) . $view;
+			$name            = preg_replace( '/^wallets_/', '', $widget );
 
 			$this->user_id   = get_current_user_id();
 			$this->rowcount  = 10;
 
 			// option arrays for dropdowns
-			$this->templates  = $this->get_templates( $templates_dir );
+			$this->templates  = $this->get_templates( $name, Dashed_Slug_Wallets_Template_Loader::get_plugin_templates_directory() );
 			$this->adapters   = apply_filters( 'wallets_api_adapters', array() );
 			$this->all_cats   = array( 'deposit', 'move', 'withdraw', 'trade' );
 
@@ -57,16 +55,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			);
 		}
 
-		private function get_templates( $templates_dir ) {
+		private function get_templates( $name, $templates_dir ) {
 			$templates = array();
 			$files = array_diff( scandir( $templates_dir ), array( '.', '..', 'index.php' ) );
 			foreach ( $files as &$file ) {
 				if ( ! is_dir( "$templates_dir/$file" ) ) {
-					$templates[] = basename( $file, '.php' );
+					if ( 0 === strpos( $file, $name ) ) {
+						$templates[] = basename( $file, '.php' );
+					}
 				}
 			}
 			return $templates;
 		}
+
 		/**
 		 * Outputs the content of the widget
 		 *
@@ -80,7 +81,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					$allowed = $allowed && user_can( $this->user_id, $capability );
 				}
 				if ( ! isset( $instance['template'] ) || false === array_search( $instance['template'], $this->templates ) ) {
-					$instance['template'] = 'default';
+					$instance['template'] = '';
 				}
 
 				if ( $allowed ) : ?>
@@ -89,7 +90,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					<?php
 					$shortcode = "[{$this->widget}";
 					$shortcode .= " template=\"{$instance['template']}\"";
-					$shortcode .= " views_dir=\"{$this->views_dir}\"";
 
 					foreach ( array( 'symbol', 'columns', 'qrsize', 'user_id', 'rowcount', 'categories', 'tags' ) as $field ) {
 						if ( isset( $instance[ $field ] ) && $instance[ $field ] ) {
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 		 */
 		public function form( $instance ) {
 			if ( ! isset( $instance['template'] ) ) {
-				$instance['template'] = 'default';
+				$instance['template'] = $this->widget;
 			}
 			if ( ! isset( $instance['columns'] ) ) {
 				$instance['columns'] = implode( ',', Dashed_Slug_Wallets_Shortcodes::$tx_columns );
@@ -148,11 +148,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				) ); ?>
 
-				<p class="description"><?php esc_html_e(
+				<span class="description"><?php esc_html_e(
 					'Only for some static shortcode views, the user whose data to show. ' .
 					'For all other shortcodes, this is ignored.',
 					'wallets'
-				); ?></p>
+				); ?></span>
 			</label>
 
 			<label>
@@ -175,7 +175,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				</select>
 
-				<p class="description"><?php esc_html_e(
+				<span class="description"><?php esc_html_e(
 					'Only for some static shortcode views, the coin to display data for. ' .
 					'For all other shortcodes, this is ignored.',
 					'wallets'
@@ -203,6 +203,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			}
 
 			return $instance;
+		}
+	}
+
+	class Dashed_Slug_Wallets_Widget_API_Key extends Dashed_Slug_Wallets_Widget {
+		public function __construct() {
+			parent::__construct(
+				'wallets_api_key',
+				__( 'View/refresh JSON-API key', 'wallets-front' ),
+				__( 'A box that displays the user\'s API key token, and lets the user renew the token.', 'wallets' ),
+				array( 'has_wallets' ),
+				__CLASS__
+			);
 		}
 	}
 
@@ -238,10 +250,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					name="<?php echo $this->get_field_name( 'qrsize' ); ?>"
 					value="<?php echo esc_attr( absint( $instance['qrsize'] ) ); ?>" />
 
-				<p class="description"><?php esc_html_e(
+				<span class="description"><?php esc_html_e(
 					'Size of the deposit QR code, in pixels. If this is left empty, no size is set.',
 					'wallets'
-				); ?></p>
+				); ?></span>
 			</label>
 			<?php
 		}
@@ -332,14 +344,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 							implode( ',', Dashed_Slug_Wallets_Shortcodes::$tx_columns ) );
 						?>" />
 
-					<p class="description"><?php esc_html_e(
+					<span class="description"><?php esc_html_e(
 						'Some transaction templates such as the default template accept a columns argument. '.
 						'This is a comma separated list of the transaction columns that you want displayed. '.
 						'Valid values are: type, tags, time, amount, fee, from_user, to_user, txid, comment,' .
 						'confirmations, status, retries, admin_confirm, user_confirm.',
 
 						'wallets'
-					); ?></p>
+					); ?></span>
 			</label>
 
 			<label>
@@ -367,11 +379,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				</select>
 
-				<p class="description"><?php esc_html_e(
+				<span class="description"><?php esc_html_e(
 					'Only for static shortcode views, the transaction categories to display. ' .
 					'For all other shortcode views, this is ignored.',
 					'wallets'
-				); ?></p>
+				); ?></span>
 
 			</label>
 
@@ -384,12 +396,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 						name="<?php echo $this->get_field_name( 'tags' ); ?>"
 						value="<?php echo esc_attr( isset( $instance['tags'] ) ? $instance['tags'] : '' ); ?>" />
 
-				<p class="description"><?php esc_html_e(
+				<span class="description"><?php esc_html_e(
 					'Only for static shortcode views, comma-separated list of the transaction tags to search for. ' .
 					'Transactions with any one of these tags are returned. ' .
 					'For all other shortcode views, this is ignored.',
 					'wallets'
-				); ?></p>
+				); ?></span>
 
 			</label>
 
@@ -405,11 +417,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					name="<?php echo $this->get_field_name( 'rowcount' ); ?>"
 					value="<?php echo isset( $instance['rowcount'] ) ? esc_attr( $instance['rowcount'] ) : 10; ?>" />
 
-				<p class="description"><?php esc_html_e(
+				<span class="description"><?php esc_html_e(
 					'Only for static shortcode views, the maximum number of transactions to display. ' .
 					'For all other shortcode views, this is ignored.',
 					'wallets'
-				); ?></p>
+				); ?></span>
 
 			</label>
 			<?php

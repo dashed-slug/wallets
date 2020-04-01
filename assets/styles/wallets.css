@@ -1,5 +1,4 @@
 .dashed-slug-wallets {
-	opacity: 0.5;
 	position: relative;
 
 	-webkit-transition: opacity 0.5s ease-in-out;
@@ -80,6 +79,11 @@
 	vertical-align: top;
 }
 
+.dashed-slug-wallets.api-key input[type=button] {
+	display: block;
+	margin: 1em auto;
+}
+
 .dashed-slug-wallets.withdraw table td,
 .dashed-slug-wallets.move table td,
 .dashed-slug-wallets.transactions table td {
@@ -105,6 +109,11 @@
 	content: "\00A0";
 }
 
+.dashed-slug-wallets .zero-balances input[type=checkbox] {
+	width: auto;
+	margin: 0 1em;
+}
+
 .dashed-slug-wallets.transactions table {
 	font-size: smaller;
 	overflow-x: scroll;
@@ -116,25 +125,6 @@
 .dashed-slug-wallets.transactions-rows li {
 	background-color: white;
 	padding: 1em;
-}
-
-.dashed-slug-wallets.transactions table tr.unconfirmed,
-.dashed-slug-wallets.transactions-rows li.unconfirmed  {
-	color: gray;
-}
-
-.dashed-slug-wallets.transactions table tr.pending,
-.dashed-slug-wallets.transactions-rows li.pending {
-}
-
-.dashed-slug-wallets.transactions table tr.done,
-.dashed-slug-wallets.transactions-rows li.done {
-	background-color: #58b858;
-}
-
-.dashed-slug-wallets.transactions table tr.failed,
-.dashed-slug-wallets.transactions-rows li.failed {
-	background-color: #d85848;
 }
 
 .dashed-slug-wallets.transactions-rows ul {
@@ -279,4 +269,36 @@
 
 .dashed-slug-wallets .wallets-clipboard-copy + input {
 	clear: right;
+}
+
+.dashed-slug-wallets .qrcode-text-btn {
+	position: absolute;
+	top: 3em;
+	right: 2em;
+	float: right;
+	height: 1em;
+	width: 1em;
+	cursor: pointer;
+}
+
+.dashed-slug-wallets .qrcode-text-btn > input[type=file] {
+	position: absolute;
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.dashed-slug-wallets .qrcode-text {
+	vertical-align: middle;
+}
+
+@media only screen and (min-device-width:751px) {
+	.dashed-slug-wallets .qrcode-text-btn {
+		pointer-events:none;
+		overflow: hidden;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
+	}
 }

@@ -1,17 +1,23 @@
 <?php
 /*
- * Plugin Name: Bitcoin and Altcoin Wallets
- * Description: Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
- * Version: 4.4.8
- * Plugin URI: https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
- * Author: dashed-slug <info@dashed-slug.net>
- * Author URI: http://dashed-slug.net
- * Text Domain: wallets
- * Domain Path: /languages/
- * License: GPLv2 or later
+ * Plugin Name:       Bitcoin and Altcoin Wallets
+ * Description:       Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
+ * Version:           5.0.0
+ * Plugin URI:        https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
+ * Requires at least: 4.0
+ * Requires PHP:      5.6
+ * Author:            dashed-slug <info@dashed-slug.net>
+ * Author URI:        http://dashed-slug.net
+ * Text Domain:       wallets
+ * Domain Path:       /languages
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  *
- * @package wallets
- * @since 1.0.0
+ * @package   wallets
+ * @author    Alexandros Georgiou
+ * @copyright 2020 Alexandros Georgiou
+ * @license   GPL-2.0-or-later
+ * @since     1.0.0
  */
 
 /*
@@ -29,7 +35,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-	Copyright dashed-slug <info@dashed-slug.net>
+	Copyright 2020 Alexandros Georgiou
  */
 
 
@@ -47,18 +53,16 @@ if ( ! defined( 'CURLPROXY_SOCKS5_HOSTNAME' ) ) {
 	define( 'CURLPROXY_SOCKS5_HOSTNAME', 7 );
 }
 
-require_once 'includes/wallets-core.php';
-
 require_once 'includes/admin-notices.php';
+require_once 'includes/wallets-core.php';
 require_once 'includes/php-api.php';
 require_once 'includes/json-api.php';
-require_once 'includes/sidebar-widgets.php';
-require_once 'includes/customizer.php';
 
 require_once 'includes/coin-adapter.php';
 require_once 'includes/coin-adapter-rpc.php';
 require_once 'includes/coin-adapter-json.php';
 
+require_once 'includes/admin-dashboard.php';
 require_once 'includes/admin-menu.php';
 require_once 'includes/admin-user.php';
 require_once 'includes/adapters-list.php';
@@ -74,10 +78,8 @@ require_once 'includes/notifications.php';
 require_once 'includes/frontend-settings.php';
 require_once 'includes/gdpr.php';
 
-
+require_once 'includes/templates.php';
+require_once 'includes/sidebar-widgets.php';
+require_once 'includes/customizer.php';
 require_once 'includes/menu-item.php';
 require_once 'includes/shortcodes.php';
-
-// Instantiate the plugin class
-Dashed_Slug_Wallets::get_instance();
-

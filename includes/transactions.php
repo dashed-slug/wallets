@@ -72,7 +72,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$this->start_time = time();
 			$this->start_memory = memory_get_usage();
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) && function_exists( 'get_sites' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active && function_exists( 'get_sites' ) ) {
 				$this->log( 'transaction tasks STARTED on net-active mu' );
 
 				$sites = get_sites();
@@ -275,11 +275,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				UPDATE
 					{$table_name_txs}
 				SET
-					status = 'cancelled'
+					status = 'cancelled',
+					updated_time = %s
 				WHERE
 					status IN ( 'unconfirmed', 'pending' ) AND
 					updated_time < UTC_TIMESTAMP() - INTERVAL %d MINUTE
 				",
+				current_time( 'mysql', true ),
 				$autocancel_minutes
 			);
 
@@ -308,7 +310,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								'order'   => 'desc',
 								'orderby' => 'created_time',
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						)
 					);
 					exit;
@@ -394,7 +396,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				",
 				current_time( 'mysql', true ),
 				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0
+				Dashed_Slug_Wallets::$network_active ? 1 : 0
 			);
 
 			$wpdb->query( $fail_txs_update_query );
@@ -435,7 +437,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			global $wpdb;
 			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
 			$table_name_adds    = Dashed_Slug_Wallets::$table_name_adds;
-			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
+			$table_name_options = Dashed_Slug_Wallets::$network_active ? $wpdb->sitemeta : $wpdb->options;
 
 			// guard against race condition due to concurrent runs of cron tasks with a semaphore lock
 			$semaphore = Dashed_Slug_Wallets::get_transient( 'wallets_cron_semaphore', 0 );
@@ -462,7 +464,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					%d
 				",
 				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+				Dashed_Slug_Wallets::$network_active ? 1 : 0,
 				$batch_size
 			);
 
@@ -493,7 +495,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						LIMIT 1
 						",
 						get_current_blog_id(),
-						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+						Dashed_Slug_Wallets::$network_active ? 1 : 0,
 						$move_tx_send->symbol,
 						"$id_prefix-receive"
 					);
@@ -530,7 +532,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								",
 								$current_time_gmt,
 								get_current_blog_id(),
-								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+								Dashed_Slug_Wallets::$network_active ? 1 : 0,
 								$move_tx_send->txid,
 								$move_tx_receive->txid
 							);
@@ -568,7 +570,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 								",
 								$current_time_gmt,
 								get_current_blog_id(),
-								is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+								Dashed_Slug_Wallets::$network_active ? 1 : 0,
 								$move_tx_send->txid,
 								$move_tx_receive->txid
 							);
@@ -613,7 +615,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 			$table_name_txs     = Dashed_Slug_Wallets::$table_name_txs;
 			$table_name_adds    = Dashed_Slug_Wallets::$table_name_adds;
-			$table_name_options = is_plugin_active_for_network( 'wallets/wallets.php' ) ? $wpdb->sitemeta : $wpdb->options;
+			$table_name_options = Dashed_Slug_Wallets::$network_active ? $wpdb->sitemeta : $wpdb->options;
 
 			$withdrawal_symbols = array();
 			$adapters           = apply_filters( 'wallets_api_adapters', array() );
@@ -655,7 +657,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					%d
 				",
 				get_current_blog_id(),
-				is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+				Dashed_Slug_Wallets::$network_active ? 1 : 0,
 				$batch_size
 			);
 
@@ -684,7 +686,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						LIMIT 1
 						",
 							get_current_blog_id(),
-							is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
+							Dashed_Slug_Wallets::$network_active ? 1 : 0,
 							$wd_tx->symbol,
 							$wd_tx->address
 						)
@@ -831,10 +833,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							{$table_name_txs}
 						SET
 							retries = IF( retries >= 1, retries - 1, 0 ),
-							status = IF( retries, 'pending', 'failed' )
+							status = IF( retries, 'pending', 'failed' ),
+							updated_time = %s
 						WHERE
 							id = %d
 						",
+						current_time( 'mysql', true ),
 						$wd_tx->id
 					);
 
@@ -870,14 +874,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 		 * This function adds new pending deposits to the database, or updates confirmation counts
 		 * for existing deposits and withdrawals.
 		 *
-		 * $tx->category One of 'deposit', 'withdraw'
-		 * $tx->address The blockchain address
-		 * $tx->txid The blockchain transaction ID
-		 * $tx->symbol The coin symbol
-		 * $tx->amount The amount
-		 * $tx->fee The blockchain fee
-		 * $tx->comment A comment
-		 * $tx->confirmations Blockchain confirmation count
+		 * $tx->category Can be one of 'deposit' or 'withdraw'.
+		 * $tx->address The blockchain address.
+		 * $tx->extra Optional. Depending on the coin, this can be extra information attached to the address. Examples include Monero "Payment ID", XRP "Destination Tag", SteemIt "Memo", etc.
+		 * $tx->txid The blockchain transaction ID.
+		 * $tx->symbol The coin symbol.
+		 * $tx->amount The amount transacted.
+		 * $tx->fee The fee paid. This is NOT the blockchain fee, but instead the fee as shown in the plugin's ledger. This should be equal to, or larger than, the blockchain fee.
+		 * $tx->status The status. Must be one of unconfirmed,pending,done,failed,cancelled
+		 * $tx->comment A text comment.
+		 * $tx->confirmations Blockchain confirmation count. As this increases, eventually the transaction will move from 'pending' state to 'done'.
 		 *
 		 * @internal
 		 * @param stdClass $tx The transaction details.
@@ -930,7 +936,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						);
 						$where_format = array( '%s', '%s', '%s' );
 
-						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+						if ( ! Dashed_Slug_Wallets::$network_active ) {
 							$where['blog_id'] = get_current_blog_id();
 							$where_format[]   = '%d';
 						}
@@ -963,7 +969,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									AND symbol = %s
 								",
 									get_current_blog_id(),
-									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
+									Dashed_Slug_Wallets::$network_active ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
 									$tx->txid,
 									$tx->address,
 									$tx->symbol
@@ -1022,6 +1028,34 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							}
 						}
 					} elseif ( 'withdraw' == $tx->category ) {
+						if ( ! isset( $tx->account ) || ! $tx->account ) {
+							// we don't allow withdrawals where the account is not passed
+							// some adapters report these withdrawals but if the account cannot be inferred
+							// the transaction is not stored on the ledger
+							return;
+						}
+						$tx->account       = absint( $tx->account );
+						$tx->confirmations = isset( $tx->confirmations ) ? absint( $tx->confirmations ) : 0;
+						if ( isset( $tx->status ) ) {
+							switch ( $tx->status ) {
+								case 'unconfirmed':
+								case 'pending':
+								case 'done':
+								case 'failed':
+								case 'cancelled':
+									break;
+								default:
+									$tx->status = 'unconfirmed';
+							}
+						} else {
+							$tx->status = 'unconfirmed';
+						}
+
+						if ( isset( $tx->extra ) && $tx->extra ) {
+							$where['extra'] = $tx->extra;
+							$where_format[] = '%s';
+						}
+
 						$where = array(
 							'address' => $tx->address,
 							'txid'    => $tx->txid,
@@ -1030,12 +1064,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 						$where_format = array( '%s', '%s', '%s' );
 
-						if ( isset( $tx->extra ) && $tx->extra ) {
-							$where['extra'] = $tx->extra;
-							$where_format[] = '%s';
-						}
 
-						if ( ! is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+						if ( ! Dashed_Slug_Wallets::$network_active ) {
 							$where['blog_id'] = get_current_blog_id();
 							$where_format[]   = '%d';
 						}
@@ -1043,11 +1073,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$new_tx_data = array(
 							'updated_time'  => $current_time_gmt,
 							'confirmations' => $tx->confirmations,
+							'status'        => $tx->status,
 						);
-
-						if ( isset( $tx->status ) ) {
-							$new_tx_data['status'] = $tx->status;
-						}
 
 						$affected = $wpdb->update(
 							Dashed_Slug_Wallets::$table_name_txs,
@@ -1057,9 +1084,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							$where_format
 						);
 
-						if ( ! $affected && isset( $tx->account ) ) {
-							// Old transactions that are rediscovered via cron do not normally have an account id and cannot be inserted.
-							// Will now try to record as new withdrawal since this is not an existing transaction.
+						if ( ! $affected ) {
 
 							$wpdb->flush();
 							$row_exists = $wpdb->get_var(
@@ -1076,7 +1101,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 										AND symbol = %s
 									",
 									get_current_blog_id(),
-									is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
+									Dashed_Slug_Wallets::$network_active ? 1 : 0, // if net active, bypass blog_id check, otherwise look for blog_id
 									$tx->txid,
 									$tx->address,
 									$tx->symbol
@@ -1096,8 +1121,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'fee'           => number_format( $tx->fee, 10, '.', '' ),
 									'comment'       => $tx->comment,
 									'created_time'  => $tx->created_time,
-									'confirmations' => isset( $tx->confirmations ) ? $tx->confirmations : 0,
-									'status'        => 'unconfirmed',
+									'confirmations' => $tx->confirmations,
+									'status'        => $tx->status,
 									'retries'       => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
 								);
 
@@ -1192,32 +1217,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 					throw new Exception( __( 'Not allowed', 'wallets' ), Dashed_Slug_Wallets_PHP_API::ERR_NOT_ALLOWED );
 			}
 
-				$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
+			$table_name_adds = Dashed_Slug_Wallets::$table_name_adds;
 
-				$account = $wpdb->get_var(
-					$wpdb->prepare(
-						"
-						SELECT
-							account
-						FROM
-							$table_name_adds
-						WHERE
-							( blog_id = %d || %d ) AND
-							symbol = %s AND
-							address = %s AND
-							( extra = %s || %d )
-						ORDER BY
-							created_time DESC
-						LIMIT 1
-						",
-						get_current_blog_id(),
-						is_plugin_active_for_network( 'wallets/wallets.php' ) ? 1 : 0,
-						$symbol,
-						$address,
-						$extra,
-						$extra ? 0 : 1
-					)
-				);
+			$account = $wpdb->get_var(
+				$wpdb->prepare(
+					"
+					SELECT
+						account
+					FROM
+						$table_name_adds
+					WHERE
+						( blog_id = %d || %d ) AND
+						symbol = %s AND
+						address = %s AND
+						( extra = %s || %d )
+					ORDER BY
+						created_time DESC
+					LIMIT 1
+					",
+					get_current_blog_id(),
+					Dashed_Slug_Wallets::$network_active ? 1 : 0,
+					$symbol,
+					$address,
+					$extra,
+					$extra ? 0 : 1
+				)
+			);
 
 			if ( is_null( $account ) ) {
 				throw new Exception( sprintf( __( 'Could not get account for %1$s address %2$s', 'wallets' ), $symbol, $address ), Dashed_Slug_Wallets_PHP_API::ERR_GET_COINS_INFO );
@@ -1371,6 +1396,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			$id           = filter_input( INPUT_GET, 'tx_id', FILTER_SANITIZE_NUMBER_INT ); // primary key to the clicked transaction row
 			$nonce        = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING ); // the _wpnonce coming from the action link
 			$custom_nonce = md5( uniqid( NONCE_KEY, true ) ); // new nonce, in case of unconfirming
+			$current_time = current_time( 'mysql', true );
 
 			global $wpdb;
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
@@ -1446,15 +1472,20 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 
 						$affected_rows = $wpdb->query(
-							"
+							$wpdb->prepare(
+								"
 								UPDATE
 									$table_name_txs
 								SET
 									user_confirm = 0,
-									nonce = '$custom_nonce'
+									nonce = %s,
+									updated_time = %s
 								WHERE
 									id IN ( $set_of_ids )
-							"
+								",
+								$custom_nonce,
+								$current_time
+							)
 						);
 						break;
 
@@ -1464,15 +1495,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 
 						$affected_rows = $wpdb->query(
-							"
-							UPDATE
-								$table_name_txs
-							SET
-								user_confirm = 1,
-								nonce = NULL
-							WHERE
-								id IN ( $set_of_ids )
-							"
+							$wpdb->prepare(
+								"
+								UPDATE
+									$table_name_txs
+								SET
+									user_confirm = 1,
+									nonce = NULL,
+									updated_time = %s
+								WHERE
+									id IN ( $set_of_ids )
+								",
+								$current_time
+							)
 						);
 						break;
 
@@ -1482,14 +1517,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 
 						$affected_rows = $wpdb->query(
-							"
-							UPDATE
-								$table_name_txs
-							SET
-								admin_confirm = 0
-							WHERE
-								id IN ( $set_of_ids )
-							"
+							$wpdb->prepare(
+								"
+								UPDATE
+									$table_name_txs
+								SET
+									admin_confirm = 0,
+									updated_time = %s
+								WHERE
+									id IN ( $set_of_ids )
+								",
+								$current_time
+							)
 						);
 						break;
 
@@ -1499,14 +1538,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						}
 
 						$affected_rows = $wpdb->query(
-							"
-							UPDATE
-								$table_name_txs
-							SET
-								admin_confirm = 1
-							WHERE
-								id IN ( $set_of_ids )
-							"
+							$wpdb->prepare(
+								"
+								UPDATE
+									$table_name_txs
+								SET
+									admin_confirm = 1,
+									updated_time = %s
+								WHERE
+									id IN ( $set_of_ids )
+								",
+								$current_time
+							)
 						);
 						break;
 
@@ -1528,14 +1571,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						} else {
 							// for withdrawals that have not yet executed we do not yet have a TXID - cancel manually
 							$affected_rows = $wpdb->query(
-								"
-								UPDATE
-									$table_name_txs
-								SET
-									status = 'cancelled'
-								WHERE
-									id IN ( $set_of_ids )
-								"
+								$wpdb->prepare(
+									"
+									UPDATE
+										$table_name_txs
+									SET
+										status = 'cancelled',
+										updated_time = %s
+									WHERE
+										id IN ( $set_of_ids )
+									",
+									$current_time
+								)
 							);
 						}
 
@@ -1565,14 +1612,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 										$table_name_txs
 									SET
 										retries = CASE category WHEN 'withdraw' THEN %d WHEN 'move' THEN %d ELSE 1 END,
-										status = 'unconfirmed'
+										status = 'unconfirmed',
+										updated_time = %s
 									WHERE
 										id IN ( $set_of_ids )
 										AND status IN ( 'cancelled', 'failed' )
 										AND category IN ( 'withdraw', 'move', 'deposit' )
 									",
 									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ) ),
-									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ) )
+									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ) ),
+									$current_time
 								)
 							);
 						}
@@ -1599,7 +1648,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 					add_query_arg(
 						$redirect_args,
-						call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+						call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 					)
 				);
 			}

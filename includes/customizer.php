@@ -12,9 +12,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 
 		/* defaults */
 
+		const WALLETS_GENERAL_OPACITY_LOADING         = 0.5;
 		const WALLETS_BORDER_COLOR                    = '#000000';
 		const WALLETS_BORDER_STYLE                    = 'solid';
 		const WALLETS_BORDER_WIDTH_PX                 = 1;
+		const WALLETS_BORDER_RADIUS_PX                = 0;
 		const WALLETS_BORDER_PADDING_PX               = 20;
 		const WALLETS_BORDER_SHADOW_OFFSET_X_PX       = 0;
 		const WALLETS_BORDER_SHADOW_OFFSET_Y_PX       = 0;
@@ -25,6 +27,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 		const WALLETS_FONT_SIZE_PT                    = '12';
 		const WALLETS_FONT_LABEL_COLOR                = '#000000';
 		const WALLETS_FONT_LABEL_SIZE_PT              = '14';
+
+		const WALLETS_TXCOLORS_UNCONFIRMED            = '#ffffff';
+		const WALLETS_TXCOLORS_PENDING                = '#808080';
+		const WALLETS_TXCOLORS_DONE                   = '#58b858';
+		const WALLETS_TXCOLORS_FAILED                 = '#d85848';
+		const WALLETS_TXCOLORS_CANCELLED              = '#f8f828';
 
 		const WALLETS_ICON_WIDTH_PX                   = 64;
 		const WALLETS_ICON_SHADOW_OFFSET_X_PX         = 0;
@@ -45,6 +53,40 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 					'title'      => __( 'Bitcoin and Altcoin Wallets' ),
 					'capability' => 'manage_wallets',
 					'priority'   => 150,
+				)
+			);
+
+			$wp_customize->add_section(
+				'wallets_general_section',
+				array(
+					'title'        => __( 'General', 'wallets' ),
+					'description'  => __( 'Styling that affects all the wallet UIs.', 'wallets' ),
+					'panel'        => 'wallets_panel',
+					'priority'     => 10,
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_general_opacity_loading',
+				array(
+					'default' => self::WALLETS_GENERAL_OPACITY_LOADING,
+				)
+			);
+
+			$wp_customize->add_control(
+				'wallets_general_opacity_loading_control',
+				array(
+					'label'       => __( 'Opacity while loading', 'wallets' ),
+					'description' => __( 'Color the opacity of UIs while data is communicated with the server.', 'wallets' ),
+					'section'     => 'wallets_general_section',
+					'settings'    => 'wallets_general_opacity_loading',
+					'priority'    => 1,
+					'type'        => 'range',
+					'input_attrs' => array(
+						'min'  => 0,
+						'max'  => 1,
+						'step' => 0.05,
+					),
 				)
 			);
 
@@ -130,6 +172,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 					'input_attrs' => array(
 						'min'  => 0,
 						'max'  => 50,
+						'step' => 1,
+					)
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_border_radius_px',
+				array(
+					'default'           => self::WALLETS_BORDER_RADIUS_PX,
+					'sanitize_callback' => 'absint',
+				)
+			);
+
+			$wp_customize->add_control(
+				'wallets_border_radius_px_control',
+				array(
+					'label'       => __( 'Radius (px)', 'wallets' ),
+					'description' => __( 'Radius on corners of the surrounding border around wallet UIs, measured in pixels.', 'wallets' ),
+					'section'     => 'wallets_border_section',
+					'settings'    => 'wallets_border_radius_px',
+					'type'        => 'number',
+					'priority'    => 3,
+					'input_attrs' => array(
+						'min'  => 0,
+						'max'  => 500,
 						'step' => 1,
 					)
 				)
@@ -359,6 +426,121 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 			);
 
 			$wp_customize->add_section(
+				'wallets_txcolors_section',
+				array(
+					'title'        => __( 'Transaction colors', 'wallets' ),
+					'description'  => __( 'In transactions lists, the transactions are color-coded by status. These colors can be set here.', 'wallets' ),
+					'panel'        => 'wallets_panel',
+					'priority'     => 30,
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_txcolors_unconfirmed',
+				array(
+					'default' => self::WALLETS_TXCOLORS_UNCONFIRMED,
+				)
+			);
+
+			$wp_customize->add_control(
+				new WP_Customize_Color_Control(
+					$wp_customize,
+					'wallets_txcolors_unconfirmed_control',
+					array(
+						'label'       => __( 'Status "unconfirmed"', 'wallets' ),
+						'description' => __( 'Color for transactions in the "unconfirmed" state.', 'wallets' ),
+						'section'     => 'wallets_txcolors_section',
+						'settings'    => 'wallets_txcolors_unconfirmed',
+						'priority'    => 1,
+					)
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_txcolors_pending',
+				array(
+					'default' => self::WALLETS_TXCOLORS_PENDING,
+				)
+			);
+
+			$wp_customize->add_control(
+				new WP_Customize_Color_Control(
+					$wp_customize,
+					'wallets_txcolors_pending_control',
+					array(
+						'label'       => __( 'Status "pending"', 'wallets' ),
+						'description' => __( 'Color for transactions in the "pending" state.', 'wallets' ),
+						'section'     => 'wallets_txcolors_section',
+						'settings'    => 'wallets_txcolors_pending',
+						'priority'    => 2,
+					)
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_txcolors_done',
+				array(
+					'default' => self::WALLETS_TXCOLORS_DONE,
+				)
+			);
+
+			$wp_customize->add_control(
+				new WP_Customize_Color_Control(
+					$wp_customize,
+					'wallets_txcolors_done_control',
+					array(
+						'label'       => __( 'Status "done"', 'wallets' ),
+						'description' => __( 'Color for transactions in the "done" state.', 'wallets' ),
+						'section'     => 'wallets_txcolors_section',
+						'settings'    => 'wallets_txcolors_done',
+						'priority'    => 3,
+					)
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_txcolors_failed',
+				array(
+					'default' => self::WALLETS_TXCOLORS_FAILED,
+				)
+			);
+
+			$wp_customize->add_control(
+				new WP_Customize_Color_Control(
+					$wp_customize,
+					'wallets_txcolors_failed_control',
+					array(
+						'label'       => __( 'Status "failed"', 'wallets' ),
+						'description' => __( 'Color for transactions in the "failed" state.', 'wallets' ),
+						'section'     => 'wallets_txcolors_section',
+						'settings'    => 'wallets_txcolors_failed',
+						'priority'    => 4,
+					)
+				)
+			);
+
+			$wp_customize->add_setting(
+				'wallets_txcolors_cancelled',
+				array(
+					'default' => self::WALLETS_TXCOLORS_CANCELLED,
+				)
+			);
+
+			$wp_customize->add_control(
+				new WP_Customize_Color_Control(
+					$wp_customize,
+					'wallets_txcolors_cancelled_control',
+					array(
+						'label'       => __( 'Status "cancelled"', 'wallets' ),
+						'description' => __( 'Color for transactions in the "cancelled" state.', 'wallets' ),
+						'section'     => 'wallets_txcolors_section',
+						'settings'    => 'wallets_txcolors_cancelled',
+						'priority'    => 5,
+					)
+				)
+			);
+
+			$wp_customize->add_section(
 				'wallets_icon_section',
 				array(
 					'title'        => __( 'Coin icons', 'wallets' ),
@@ -368,7 +550,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 						'wallets'
 					),
 					'panel'        => 'wallets_panel',
-					'priority'     => 30,
+					'priority'     => 40,
 				)
 			);
 
@@ -500,10 +682,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 			?>
 <style type="text/css">
 	.dashed-slug-wallets {
+		opacity:
+			<?php echo get_theme_mod( 'wallets_general_opacity_loading',      self::WALLETS_GENERAL_OPACITY_LOADING      ); ?>;
+
 		border:
 			<?php echo get_theme_mod( 'wallets_border_width_px',              self::WALLETS_BORDER_WIDTH_PX              ); ?>px
 			<?php echo get_theme_mod( 'wallets_border_style',                 self::WALLETS_BORDER_STYLE                 ); ?>
 			<?php echo get_theme_mod( 'wallets_border_color',                 self::WALLETS_BORDER_COLOR                 ); ?>;
+
+		border-radius:
+			<?php echo get_theme_mod( 'wallets_border_radius_px',             self::WALLETS_BORDER_RADIUS_PX             ); ?>px;
 
 		padding:
 			<?php echo get_theme_mod( 'wallets_border_padding_px',            self::WALLETS_BORDER_PADDING_PX            ); ?>px;
@@ -529,6 +717,46 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Customizer' ) ) {
 
 		font-size:
 			<?php echo get_theme_mod( 'wallets_font_label_size_pt',         self::WALLETS_FONT_LABEL_SIZE_PT           ); ?>pt;
+	}
+
+	.dashed-slug-wallets.transactions table tr.unconfirmed,
+	.dashed-slug-wallets.transactions table tr.unconfirmed *,
+	.dashed-slug-wallets.transactions-rows li.unconfirmed,
+	.dashed-slug-wallets.transactions-rows li.unconfirmed * {
+		background-color:
+			<?php echo get_theme_mod( 'wallets_txcolors_unconfirmed',       self::WALLETS_TXCOLORS_UNCONFIRMED         ); ?>;
+	}
+
+	.dashed-slug-wallets.transactions table tr.pending,
+	.dashed-slug-wallets.transactions table tr.pending *,
+	.dashed-slug-wallets.transactions-rows li.pending,
+	.dashed-slug-wallets.transactions-rows li.pending * {
+		background-color:
+			<?php echo get_theme_mod( 'wallets_txcolors_pending',           self::WALLETS_TXCOLORS_PENDING             ); ?>;
+	}
+
+	.dashed-slug-wallets.transactions table tr.done,
+	.dashed-slug-wallets.transactions table tr.done *,
+	.dashed-slug-wallets.transactions-rows li.done,
+	.dashed-slug-wallets.transactions-rows li.done * {
+		background-color:
+			<?php echo get_theme_mod( 'wallets_txcolors_done',              self::WALLETS_TXCOLORS_DONE                ); ?>;
+	}
+
+	.dashed-slug-wallets.transactions table tr.failed,
+	.dashed-slug-wallets.transactions table tr.failed *,
+	.dashed-slug-wallets.transactions-rows li.failed,
+	.dashed-slug-wallets.transactions-rows li.failed * {
+		background-color:
+			<?php echo get_theme_mod( 'wallets_txcolors_failed',            self::WALLETS_TXCOLORS_FAILED              ); ?>;
+	}
+
+	.dashed-slug-wallets.transactions table tr.cancelled,
+	.dashed-slug-wallets.transactions table tr.cancelled *,
+	.dashed-slug-wallets.transactions-rows li.cancelled,
+	.dashed-slug-wallets.transactions-rows li.cancelled * {
+		background-color:
+			<?php echo get_theme_mod( 'wallets_txcolors_cancelled',         self::WALLETS_TXCOLORS_CANCELLED           ); ?>;
 	}
 
 	.dashed-slug-wallets tbody td.icon,

@@ -12,7 +12,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 			add_action( 'wallets_admin_menu', array( &$this, 'action_admin_menu' ) );
 			add_action( 'admin_init',         array( &$this, 'action_admin_init' ) );
 
-			if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+			if ( Dashed_Slug_Wallets::$network_active ) {
 				add_action( 'network_admin_edit_wallets-menu-frontend-settings', array( &$this, 'update_network_options' ) );
 			}
 
@@ -94,7 +94,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				array(
 					'label_for'   => 'wallets_qrcode_enabled',
 					'description' => __(
-						'<p>Controls whether a QR Code is displayed in the <code>[wallets_deposit]</code> shortcode, below the deposit address.</p>' .
+						'<p>When enabled, the <code>[wallets_deposit]</code> UI displays addresses as QR codes, and the <code>[wallets_withdraw]</code> UI scans addresses from QR codes on devices with cameras (smartphones).</p>' .
 						'<p style="font-size: smaller;">"QR Code" is a registered trademark of DENSO WAVE INCORPORATED</p>',
 						'wallets'
 					),
@@ -391,7 +391,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				<form method="post" action="
 					<?php
 
-					if ( is_plugin_active_for_network( 'wallets/wallets.php' ) ) {
+					if ( Dashed_Slug_Wallets::$network_active ) {
 						echo esc_url(
 							add_query_arg(
 								'action',

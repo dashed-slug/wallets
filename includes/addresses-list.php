@@ -39,7 +39,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Addresses' ) ) {
 								'order'   => 'desc',
 								'orderby' => 'created_time',
 							),
-							call_user_func( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_url' : 'admin_url', 'admin.php' )
+							call_user_func( Dashed_Slug_Wallets::$network_active ? 'network_admin_url' : 'admin_url', 'admin.php' )
 						)
 					);
 					exit;

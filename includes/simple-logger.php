@@ -20,12 +20,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Simple_Logger' ) && class_exists( 'Sim
 				'description' => 'Logs events related to cryptocurrency wallets and their transactions',
 				'capability' => 'read', // a user's transaction can be executed via cron triggered by another user
 				'messages' => array(
-					'withdraw'         => __( "User '{user}' withdrew '{amount} {symbol}' to address {address}.",             'wallets' ),
-					'withdraw_failed'  => __( "User '{user}' failed to withdraw '{amount} {symbol}' to address '{address}'.", 'wallets' ),
-					'move_send'        => __( "User '{from}' sent '{amount} {symbol}' to user '{to}'.",                       'wallets' ),
-					'move_send_failed' => __( "User '{from}' failed to send '{amount} {symbol}' to user '{to}'.",             'wallets' ),
-					'move_receive'     => __( "User '{from}' received '{amount} {symbol}' from user '{to}'.",                 'wallets' ),
-					'deposit'          => __( "User '{user}' deposited '{amount} {symbol}' with transaction '{txid}'.",       'wallets' ),
+					'withdraw'         => __( "Withdrew {amount} {symbol}.",           'wallets' ),
+					'withdraw_failed'  => __( "Failed to withdraw {amount} {symbol}.", 'wallets' ),
+					'move_send'        => __( "Sent {amount} {symbol}.",               'wallets' ),
+					'move_send_failed' => __( "Failed to send {amount} {symbol}.",     'wallets' ),
+					'move_receive'     => __( "Received {amount} {symbol}.",           'wallets' ),
+					'deposit'          => __( "Deposited {amount} {symbol}.",          'wallets' ),
 				),
 			);
 			return $arr_info;
@@ -201,7 +201,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Simple_Logger' ) && class_exists( 'Sim
 				get_date_from_gmt( $date_datetime->format( 'Y-m-d H:i:s' ), $date_format ), // 1 local time
 				$date_datetime->format( $date_format ), // GMT time
 				PHP_EOL // 3, new line
-				);
+			);
 
 			$date_html = "<span class='{$this->slug}Logitem__permalink {$this->slug}Logitem__when {$this->slug}Logitem__inlineDivided'>";
 			$date_html .= "<a class='' href='{$item_permalink}'>";
@@ -210,13 +210,67 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Simple_Logger' ) && class_exists( 'Sim
 				esc_attr( $str_datetime_title ), // 1 datetime attribute
 				esc_html( $str_when ), // 2 date text, visible in log
 				$date_datetime->format( DateTime::RFC3339 ) // 3
-				);
+			);
 			$date_html .= '</a>';
 			$date_html .= '</span>';
 
 			return "$html $date_html";
 		}
 
+		public function getLogRowDetailsOutput( $row ) {
+			$context = isset( $row->context ) ? $row->context : array();
+
+			ob_start();
+			?>
+				<table class="SimpleHistoryLogitem__keyValueTable">
+					<tbody>
+
+						<?php if ( isset( $context['user'] ) ): ?>
+						<tr>
+							<td><?php esc_html_e( 'User:', 'wallets' ); ?></td>
+							<td><?php echo Dashed_Slug_Wallets::user_link( $context['user'] ); ?></td>
+						</tr>
+						<?php endif; ?>
+
+						<?php if ( isset( $context['address'] ) && $context['address'] ):
+							$pattern = apply_filters( "wallets_explorer_uri_add_$context[symbol]", '%s' );
+						?>
+						<tr>
+							<td><?php esc_html_e( 'Address:', 'wallets' ); ?></td>
+							<td><a href="<?php echo esc_attr( sprintf( $pattern, $context['address'] ) ); ?>"><?php esc_html_e( $context['address'] ); ?></a></td>
+						</tr>
+						<?php endif; ?>
+
+						<?php if ( isset( $context['txid'] ) && $context['txid'] ):
+							$pattern = apply_filters( "wallets_explorer_uri_tx_$context[symbol]", '%s' );
+						?>
+						<tr>
+							<td><?php esc_html_e( 'Transaction ID:', 'wallets' ); ?></td>
+							<td><a href="<?php echo esc_attr( sprintf( $pattern, $context['txid'] ) ); ?>"><?php esc_html_e( $context['txid'] ); ?></a></td>
+						</tr>
+						<?php endif; ?>
+
+						<?php if ( isset( $context['from'] ) ): ?>
+						<tr>
+							<td><?php esc_html_e( 'Sender:', 'wallets' ); ?></td>
+							<td><?php echo Dashed_Slug_Wallets::user_link( $context['from'] ); ?></td>
+						</tr>
+						<?php endif; ?>
+
+						<?php if ( isset( $context['to'] ) ): ?>
+						<tr>
+							<td><?php esc_html_e( 'Recipient:', 'wallets' ); ?></td>
+							<td><?php echo Dashed_Slug_Wallets::user_link( $context['to'] ); ?></td>
+						</tr>
+						<?php endif; ?>
+
+					</tbody>
+				</table>
+			<?php
+			$html = ob_get_clean();
+
+			return $html;
+		}
 
 	} // end class
 } // end if not class exists

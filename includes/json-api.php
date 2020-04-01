@@ -362,9 +362,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			$response = array();
 			try {
 
-				$core    = Dashed_Slug_Wallets::get_instance();
-				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
-
 				if ( 'notify' == $action ) {
 					try {
 						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
@@ -688,9 +685,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 
 			try {
 
-				$core    = Dashed_Slug_Wallets::get_instance();
-				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
-
 				if ( 'notify' == $action ) {
 					try {
 						$symbol  = strtoupper( sanitize_text_field( $query->query_vars['__wallets_symbol'] ) );
@@ -996,9 +990,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_JSON_API' ) ) {
 			$response = array();
 
 			try {
-
-				$core    = Dashed_Slug_Wallets::get_instance();
-				$notices = Dashed_Slug_Wallets_Admin_Notices::get_instance();
 
 				if ( 'notify' == $action ) {
 					try {
