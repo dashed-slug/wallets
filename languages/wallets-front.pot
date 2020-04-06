@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-04-01 13:29:19+00:00\n"
+"POT-Creation-Date: 2020-04-06 15:21:41+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n1.0.1\n"
 
-#: includes/shortcodes.php:364
+#: includes/shortcodes.php:360
 msgid ""
 "Error while rendering the <code>%1$s</code> shortcode with its "
 "<code>%2$s</code> template in <code>%3$s</code>: %4$s"
@@ -105,27 +105,27 @@ msgstr ""
 msgid "Rows count"
 msgstr ""
 
-#: includes/sidebar-widgets.php:469
+#: includes/sidebar-widgets.php:468
 msgid "Account value"
 msgstr ""
 
-#: includes/sidebar-widgets.php:470
+#: includes/sidebar-widgets.php:469
 msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
-#: includes/sidebar-widgets.php:481
+#: includes/sidebar-widgets.php:480
 msgid "Total user balances"
 msgstr ""
 
-#: includes/sidebar-widgets.php:482
+#: includes/sidebar-widgets.php:481
 msgid "Shows the total user balances for each coin."
 msgstr ""
 
-#: includes/sidebar-widgets.php:493
+#: includes/sidebar-widgets.php:492
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/sidebar-widgets.php:494
+#: includes/sidebar-widgets.php:493
 msgid ""
 "Shows exchange rates for online cryptocurrencies, expressed in the default "
 "fiat currency."

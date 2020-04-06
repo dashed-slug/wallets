@@ -316,7 +316,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Adapter_List' ) ) {
 			$adapters_list = new Dashed_Slug_Wallets_Adapters_List_Table();
 
 			?><h1><?php esc_html_e( 'Bitcoin and Altcoin Wallets coin adapters list', 'wallets' ); ?></h1>
-				<p><?php esc_html_e( 'This plugin uses Coin Adapters to communicate with actual coin wallets. A Bitcoin core adapter is built-in, and you can download more coin adapters for free from the dashed-slug website.', 'wallets' ); ?></p>
+				<p><?php esc_html_e( 'This plugin uses Coin Adapters to communicate with actual coin wallets.', 'wallets' ); ?></p>
+				<p><?php esc_html_e( 'A Bitcoin core adapter is built-in, and you can download more coin adapters for free from the dashed-slug website.', 'wallets' ); ?></p>
+				<a class="button" href="https://www.dashed-slug.net/howto-choose-between-available-coin-adapters/?utm_source=wallets&utm_medium=plugin&utm_campaign=adapters"><?php esc_html_e( 'Read more&hellip;', 'wallets ' ); ?></a>
 
 			<h2><?php esc_html_e( 'Coin adapters currently enabled:', 'wallets' ); ?></h2>
 			<div class="wrap">

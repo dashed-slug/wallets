@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 5.0.0
+Stable tag: 5.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,7 +78,6 @@ Here are all the currently available premium app extensions to the Bitcoin and A
 - [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/)
 - [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
 - [Events Manager Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/)
-- [Author Payroll extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/author-payroll-extension/)
 
 Premium members also get auto-updates for any installed extensions. [Instructions for how to set up auto-updates are here](https://www.dashed-slug.net/dashed-slug/extension-updates-activation/).
 
@@ -332,6 +331,15 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.1 =
+- Add: The coin adapters admin page now includes a helpful link to a page explaining the concept and showcasing the available coin adapters.
+- Improve: The template loader introduced in `5.0.0` is improved to allow use by other extensions.
+- Change: The JavaScript code that detects HTML comments that have been stripped by minifiers now outputs to the browser console, not alert box.
+- Fix: When adding a deposit UI via the Widgets admin screen, the default size for the QR code is no longer 10 pixels. It is now blank, which sets the size automatically to match the container.
+- Fix: Incompatibility with *Two Factor Authentication* plugin that was originally fixed in `4.3.1` regressed in version `5.0.0` but is now fixed again.
+- Fix: Remove unminified copy of jQuery UI stylesheet.
+- Fix: A CSS issue previously made it impossible to remove wallet widgets from the admin widget area, on desktop screens. This is now fixed.
 
 = 5.0.0 =
 - Improve: The UIs are now more easily overridable by themes. A template loader can load markup for these UIs from a theme or child theme, falling back to the plugin's templates if needed.
@@ -1307,7 +1315,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.0` is a major increment of the plugin. If your site is using modified UI templates, check the release notes on the blog for some breaking changes.
+Version `5.0.1` polishes a few rough edges mostly arising from the latest major release.
 
 == Donating ==
 

@@ -46,8 +46,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 		}
 
 		public function enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-dashboard-5.0.0.min.js' ) ) {
-				$script = 'wallets-admin-dashboard-5.0.0.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-dashboard-5.0.1.min.js' ) ) {
+				$script = 'wallets-admin-dashboard-5.0.1.min.js';
 			} else {
 				$script = 'wallets-admin-dashboard.js';
 			}
@@ -56,13 +56,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 				'wallets-admin-dashboard',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery-ui-tabs' ),
-				'5.0.0',
+				'5.0.1',
 				true
 			);
 
 			wp_enqueue_style(
 				'jquery-ui',
-				plugins_url( 'jquery-ui-1.12.1.css', 'wallets/assets/styles/jquery-ui-1.12.1.css' ),
+				plugins_url( 'jquery-ui-1.12.1.min.css', 'wallets/assets/styles/jquery-ui-1.12.1.min.css' ),
 				array(),
 				'1.12.1'
 			);
@@ -395,8 +395,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '5.0.0';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '5ec520c4';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '5.0.1';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = 'bfc387a4';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );

@@ -39,7 +39,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			$this->rowcount  = 10;
 
 			// option arrays for dropdowns
-			$this->templates  = $this->get_templates( $name, Dashed_Slug_Wallets_Template_Loader::get_plugin_templates_directory() );
+			$this->templates  = $this->get_templates( $name, WP_PLUGIN_DIR . '/wallets/templates' );
 			$this->adapters   = apply_filters( 'wallets_api_adapters', array() );
 			$this->all_cats   = array( 'deposit', 'move', 'withdraw', 'trade' );
 
@@ -148,7 +148,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				) ); ?>
 
-				<span class="description"><?php esc_html_e(
+				<span class="description" style="pointer-events:none;"><?php esc_html_e(
 					'Only for some static shortcode views, the user whose data to show. ' .
 					'For all other shortcodes, this is ignored.',
 					'wallets'
@@ -175,7 +175,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				</select>
 
-				<span class="description"><?php esc_html_e(
+				<span class="description" style="pointer-events:none;"><?php esc_html_e(
 					'Only for some static shortcode views, the coin to display data for. ' .
 					'For all other shortcodes, this is ignored.',
 					'wallets'
@@ -235,7 +235,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			parent::form( $instance );
 
 			if ( ! isset( $instance['qrsize'] ) ) {
-				$instance['qrsize'] = 10;
+				$instance['qrsize'] = '';
 			}
 
 			?>
@@ -250,7 +250,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					name="<?php echo $this->get_field_name( 'qrsize' ); ?>"
 					value="<?php echo esc_attr( absint( $instance['qrsize'] ) ); ?>" />
 
-				<span class="description"><?php esc_html_e(
+				<span class="description" style="pointer-events:none;"><?php esc_html_e(
 					'Size of the deposit QR code, in pixels. If this is left empty, no size is set.',
 					'wallets'
 				); ?></span>
@@ -344,7 +344,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 							implode( ',', Dashed_Slug_Wallets_Shortcodes::$tx_columns ) );
 						?>" />
 
-					<span class="description"><?php esc_html_e(
+					<span class="description" style="pointer-events:none;"><?php esc_html_e(
 						'Some transaction templates such as the default template accept a columns argument. '.
 						'This is a comma separated list of the transaction columns that you want displayed. '.
 						'Valid values are: type, tags, time, amount, fee, from_user, to_user, txid, comment,' .
@@ -379,7 +379,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 
 				</select>
 
-				<span class="description"><?php esc_html_e(
+				<span class="description" style="pointer-events:none;"><?php esc_html_e(
 					'Only for static shortcode views, the transaction categories to display. ' .
 					'For all other shortcode views, this is ignored.',
 					'wallets'
@@ -396,7 +396,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 						name="<?php echo $this->get_field_name( 'tags' ); ?>"
 						value="<?php echo esc_attr( isset( $instance['tags'] ) ? $instance['tags'] : '' ); ?>" />
 
-				<span class="description"><?php esc_html_e(
+				<span class="description" style="pointer-events:none;"><?php esc_html_e(
 					'Only for static shortcode views, comma-separated list of the transaction tags to search for. ' .
 					'Transactions with any one of these tags are returned. ' .
 					'For all other shortcode views, this is ignored.',
@@ -417,7 +417,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 					name="<?php echo $this->get_field_name( 'rowcount' ); ?>"
 					value="<?php echo isset( $instance['rowcount'] ) ? esc_attr( $instance['rowcount'] ) : 10; ?>" />
 
-				<span class="description"><?php esc_html_e(
+				<span class="description" style="pointer-events:none;"><?php esc_html_e(
 					'Only for static shortcode views, the maximum number of transactions to display. ' .
 					'For all other shortcode views, this is ignored.',
 					'wallets'
@@ -456,7 +456,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Widget' ) ) {
 			if ( isset( $new_instance['rowcount'] ) ) {
 				$instance['rowcount'] = $new_instance['rowcount'] ? absint( $new_instance['rowcount'] ) : 10;
 			}
-			// TODO
 
 			return $instance;
 		}

@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.0\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-04-01 13:29:19+00:00\n"
+"POT-Creation-Date: 2020-04-06 15:21:41+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -146,13 +146,20 @@ msgid "Bitcoin and Altcoin Wallets coin adapters list"
 msgstr ""
 
 #: includes/adapters-list.php:319
+msgid "This plugin uses Coin Adapters to communicate with actual coin wallets."
+msgstr ""
+
+#: includes/adapters-list.php:320
 msgid ""
-"This plugin uses Coin Adapters to communicate with actual coin wallets. A "
-"Bitcoin core adapter is built-in, and you can download more coin adapters "
+"A Bitcoin core adapter is built-in, and you can download more coin adapters "
 "for free from the dashed-slug website."
 msgstr ""
 
 #: includes/adapters-list.php:321
+msgid "Read more&hellip;"
+msgstr ""
+
+#: includes/adapters-list.php:323
 msgid "Coin adapters currently enabled:"
 msgstr ""
 
@@ -2357,7 +2364,7 @@ msgid ""
 "providers (for debugging). "
 msgstr ""
 
-#: includes/rates.php:355 includes/sidebar-widgets.php:493
+#: includes/rates.php:355 includes/sidebar-widgets.php:492
 msgid "Exchange rates"
 msgstr ""
 
@@ -2466,24 +2473,24 @@ msgstr ""
 msgid "Rows count"
 msgstr ""
 
-#: includes/sidebar-widgets.php:469 templates/account_value-static.php:33
+#: includes/sidebar-widgets.php:468 templates/account_value-static.php:33
 #: templates/account_value.php:9
 msgid "Account value"
 msgstr ""
 
-#: includes/sidebar-widgets.php:470
+#: includes/sidebar-widgets.php:469
 msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
-#: includes/sidebar-widgets.php:481 templates/total_balances.php:24
+#: includes/sidebar-widgets.php:480 templates/total_balances.php:24
 msgid "Total user balances"
 msgstr ""
 
-#: includes/sidebar-widgets.php:482
+#: includes/sidebar-widgets.php:481
 msgid "Shows the total user balances for each coin."
 msgstr ""
 
-#: includes/sidebar-widgets.php:494
+#: includes/sidebar-widgets.php:493
 msgid ""
 "Shows exchange rates for online cryptocurrencies, expressed in the default "
 "fiat currency."

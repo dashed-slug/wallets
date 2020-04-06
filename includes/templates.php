@@ -27,25 +27,21 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Template_Loader' ) ) {
 			return $dir;
 		}
 
-		private static $plugin_templates_directory;
-
-		public static function get_plugin_templates_directory() {
-			return DSWALLETS_PATH . '/templates';
-		}
 		/**
-		 * Retrieves a template part.
+		 * Retrieves a template part for this plugin or its extensions.
 		 *
 		 * Adapted from bbPress
 		 *
 		 * @param string $slug The generic template part.
 		 * @param string $name The specialized template part.
 		 * @param boolean $load Whether to include the template.
+		 * @oaram string $plugin_slug The slug of the plugin to load a template for (default: wallets)
 		 * @return string|false Full path to the template file, or false if not found.
 		 *
 		 * @link https://pippinsplugins.com/template-file-loaders-plugins/
 		 *
 		 */
-		public static function get_template_part( $slug, $name = null, $load = false ) {
+		public static function get_template_part( $slug, $name = null, $load = false, $plugin_slug = 'wallets' ) {
 			do_action( "get_template_part_$slug", $slug, $name );
 
 			$templates = array();
@@ -60,9 +56,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Template_Loader' ) ) {
 			 *
 			 * @since 5.0.0
 			 */
-			$templates = apply_filters( 'wallets_get_template_part', $templates, $slug, $name );
+			$templates = apply_filters( 'wallets_get_template_part', $templates, $slug, $name, $plugin_slug );
 
-			$template_file = self::locate_template( $templates, $load );
+			$template_file = self::locate_template( $templates, $load, $plugin_slug );
 			if ( file_exists( $template_file ) ) {
 				if ( is_readable( $template_file ) ) {
 					return $template_file;
@@ -70,7 +66,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Template_Loader' ) ) {
 			} throw new Exception( "File $template_file was not found!" );
 		}
 
-		private static function locate_template( $template_names, $load = false ) {
+		private static function locate_template( $template_names, $load = false, $plugin_slug ) {
 			$located = false;
 
 			foreach ( (array) $template_names as $template_name ) {
@@ -82,27 +78,31 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Template_Loader' ) ) {
 				$template_name = untrailingslashit( $template_name, '/' );
 
 				// Check child theme first
-				if ( file_exists( trailingslashit( get_stylesheet_directory() ) . 'templates/wallets/' . $template_name ) ) {
-					$located = trailingslashit( get_stylesheet_directory() ) . 'templates/wallets/' . $template_name;
+				$candidate_child = trailingslashit( get_stylesheet_directory() ) . "templates/$plugin_slug/$template_name";
+				$candidate_parent = trailingslashit( get_template_directory() ) . "templates/$plugin_slug/$template_name";
+				$candidate_plugin = WP_PLUGIN_DIR . "/$plugin_slug/templates/$template_name";
+
+				if ( file_exists( $candidate_child ) ) {
+					$located = $candidate_child;
 					break;
 
 				// Check parent theme next
-				} elseif ( file_exists( trailingslashit( get_template_directory() ) . 'templates/wallets/' . $template_name ) ) {
-					$located = trailingslashit( get_template_directory() ) . 'templates/wallets/' . $template_name;
+				} elseif ( file_exists( $candidate_parent ) ) {
+					$located = $candidate_parent;
 					break;
 
 				// Check theme compatibility last
-				} elseif ( file_exists( trailingslashit( self::get_plugin_templates_directory() ) . $template_name ) ) {
-					$located = trailingslashit( self::get_plugin_templates_directory() ) . $template_name;
+				} elseif ( file_exists( $candidate_plugin ) ) {
+					$located = $candidate_plugin;
 					break;
 				}
 			}
 
-			if ( ( true == $load ) && $located ) {
-				if ( ! is_readable( $located ) ) {
-					throw new Exception( "File $located is not readable!" );
-				}
+			if ( $located && ! is_readable( $located ) ) {
+				throw new Exception( "File $located is not readable!" );
+			}
 
+			if ( $located && $load ) {
 				load_template( $located, false );
 			}
 

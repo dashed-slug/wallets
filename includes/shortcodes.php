@@ -66,10 +66,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				default: $path = '';
 			}
 
-			$minified_file = DSWALLETS_PATH . "/assets/$path/$asset-5.0.0.min.$ext";
+			$minified_file = DSWALLETS_PATH . "/assets/$path/$asset-5.0.1.min.$ext";
 
 			if ( file_exists( $minified_file ) ) {
-				$final_file = "$asset-5.0.0.min.$ext";
+				$final_file = "$asset-5.0.1.min.$ext";
 			} else {
 				$final_file = "$asset.$ext";
 			}
@@ -83,7 +83,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'wallets_styles',
 				$this->asset_url( 'wallets', 'css' ),
 				array(),
-				'5.0.0'
+				'5.0.1'
 			);
 
 			wp_register_script(
@@ -111,22 +111,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			);
 
 			// these are registered and loaded as needed depending on which shortcodes are on the page and other options
-
-			wp_register_script(
-				'jquery-qrcode',
-				plugins_url( 'jquery.qrcode.min.js', 'wallets/assets/scripts/jquery.qrcode.min.js' ),
-				array( 'jquery' ),
-				'1.0.0',
-				true
-			);
-
-			wp_register_script(
-				'jsqrcode',
-				plugins_url( 'jsqrcode.min.js', 'wallets/assets/scripts/jsqrcode.min.js' ),
-				array(),
-				'5.0.0',
-				true
-			);
 
 			wp_register_script(
 				'bs58check',
@@ -164,7 +148,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'wallets_bitcoin',
 				$this->asset_url( 'wallets-bitcoin-validator', 'js' ),
 				array( 'wallets_ko', 'bs58check' ),
-				'5.0.0',
+				'5.0.1',
 				true
 			);
 
@@ -176,7 +160,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'wallets_ko',
 				$this->asset_url( 'wallets-ko', 'js' ),
 				$deps,
-				'5.0.0',
+				'5.0.1',
 				true
 			);
 
@@ -283,10 +267,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 
 				if ( Dashed_Slug_Wallets::get_option( 'wallets_qrcode_enabled' ) ) {
 					if ( 'deposit' == $view ) {
-						wp_enqueue_script( 'jquery-qrcode' );
+						wp_enqueue_script(
+							'jquery-qrcode',
+							plugins_url( 'jquery.qrcode.min.js', 'wallets/assets/scripts/jquery.qrcode.min.js' ),
+							array( 'jquery' ),
+							'1.0.0',
+							true
+						);
 					}
 					elseif ( 'withdraw' == $view ) {
-						wp_enqueue_script( 'jsqrcode' );
+						wp_enqueue_script(
+							'jsqrcode',
+							plugins_url( 'jsqrcode.min.js', 'wallets/assets/scripts/jsqrcode.min.js' ),
+							array(),
+							'5.0.1',
+							true
+						);
 					}
 				}
 			}
@@ -394,8 +390,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			?><!-- WALLETS --><script>
 				jQuery(
 					function() {
-						if ( ! jQuery('head').html().match('<!-- WAL' + 'LETS -->') ) {
-							alert( 'Bitcoin and Altcoin Wallets relies on HTML comments, please disable your HTML optimizers.' );
+						if ( 'undefined' !== typeof( console ) && 'function' === typeof( console.warn ) && ! jQuery('head').html().match('<!-- WAL' + 'LETS -->') ) {
+							console.warn( 'Bitcoin and Altcoin Wallets relies on HTML comments, please disable any HTML optimizers or minifiers.' );
 						}
 					}
 				);
