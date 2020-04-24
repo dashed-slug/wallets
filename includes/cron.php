@@ -531,14 +531,26 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public function wallets_cron_section_cb() {
+
 			$cron_nonce = Dashed_Slug_Wallets::get_option( 'wallets_cron_nonce', '' );
-			$cron_trigger_url = network_site_url(
-				sprintf(
-					'?__wallets_action=do_cron&__wallets_apiversion=%d&__wallets_cron_nonce=%s',
-					Dashed_Slug_Wallets_JSON_API::LATEST_API_VERSION,
-					$cron_nonce
-				)
-			);
+
+			if ( is_multisite() && Dashed_Slug_Wallets::$network_active ) {
+				$cron_trigger_url = network_site_url(
+					sprintf(
+						'?__wallets_action=do_cron&__wallets_apiversion=%d&__wallets_cron_nonce=%s',
+						Dashed_Slug_Wallets_JSON_API::LATEST_API_VERSION,
+						$cron_nonce
+					)
+				);
+			} else {
+				$cron_trigger_url = site_url(
+					sprintf(
+						'?__wallets_action=do_cron&__wallets_apiversion=%d&__wallets_cron_nonce=%s',
+						Dashed_Slug_Wallets_JSON_API::LATEST_API_VERSION,
+						$cron_nonce
+					)
+				);
+			}
 			?>
 			<p>
 			<?php
@@ -618,6 +630,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		}
 
 		public function wallets_cron_health_section_cb() {
+			$last_cron_run  = Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', false );
+			$last_peak_mem  = Dashed_Slug_Wallets::get_option( 'wallets_last_peak_mem',  false );
+			$last_mem_delta = Dashed_Slug_Wallets::get_option( 'wallets_last_mem_delta', false );
 			?>
 			<p>
 			<?php
@@ -627,16 +642,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 			<dl id="wallets-cron-health" class="card">
 				<dt><?php esc_html_e( 'Cron jobs last ran on:', 'wallets' ); ?></dt>
-				<dd><?php echo date( DATE_RFC822, Dashed_Slug_Wallets::get_option(' wallets_last_cron_run', 0 ) ); ?></dd>
+				<dd><?php echo $last_cron_run ? date( DATE_RFC822, $last_cron_run ) : __( 'n/a', 'wallets' ); ?></dd>
 
 				<dt><?php esc_html_e( 'Cron jobs last runtime (sec):', 'wallets' ); ?></dt>
-				<dd><?php echo Dashed_Slug_Wallets::get_option(' wallets_last_elapsed_time', 'n/a' ); ?></dd>
+				<dd><?php echo Dashed_Slug_Wallets::get_option(' wallets_last_elapsed_time', __( 'n/a', 'wallets' ) ); ?></dd>
 
 				<dt><?php esc_html_e( 'Cron jobs peak memory (bytes):',  'wallets' ); ?></dt>
-				<dd><?php echo number_format( Dashed_Slug_Wallets::get_option(' wallets_last_peak_mem',  'n/a' ) ); ?></dd>
+				<dd><?php echo false === $last_peak_mem ? __( 'n/a', 'wallets' ) : number_format( $last_peak_mem ); ?></dd>
 
 				<dt><?php esc_html_e( 'Cron jobs memory delta (bytes):',  'wallets' ); ?></dt>
-				<dd><?php echo number_format( Dashed_Slug_Wallets::get_option(' wallets_last_mem_delta', 'n/a' ) ); ?></dd>
+				<dd><?php echo false === $last_mem_delta ? __( 'n/a', 'wallets' ) : number_format( $last_mem_delta ); ?></dd>
 			</dl>
 
 			<?php

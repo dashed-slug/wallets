@@ -30,7 +30,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 				$this->fiat_symbol = false;
 			}
 
-			add_action( 'wp_dashboard_setup',    array( &$this, 'action_wp_dashboard_setup' ) );
+			if ( Dashed_Slug_Wallets::$network_active ) {
+				add_action( 'wp_network_dashboard_setup',    array( &$this, 'action_wp_dashboard_setup' ) );
+			} else {
+				add_action( 'wp_dashboard_setup',    array( &$this, 'action_wp_dashboard_setup' ) );
+			}
 
 		}
 
@@ -46,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 		}
 
 		public function enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-dashboard-5.0.1.min.js' ) ) {
-				$script = 'wallets-admin-dashboard-5.0.1.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-dashboard-5.0.2.min.js' ) ) {
+				$script = 'wallets-admin-dashboard-5.0.2.min.js';
 			} else {
 				$script = 'wallets-admin-dashboard.js';
 			}
@@ -56,7 +60,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 				'wallets-admin-dashboard',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery-ui-tabs' ),
-				'5.0.1',
+				'5.0.2',
 				true
 			);
 
@@ -146,7 +150,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			global $wpdb;
 
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$blog_id        = get_current_blog_id();
 
 			$data = array();
 
@@ -166,12 +169,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 							AND amount > 0
 							AND $interval(created_time) = $interval( NOW() )
 							AND YEAR(created_time) = YEAR( NOW() )
-							AND blog_id = %d
+							AND ( blog_id = %d OR %d )
 						GROUP BY
 							symbol
 						ORDER BY
 							symbol",
-						$blog_id
+						get_current_blog_id(),
+						Dashed_Slug_Wallets::$network_active ? 1 : 0
 					),
 
 					OBJECT_K
@@ -195,7 +199,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			global $wpdb;
 
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$blog_id        = get_current_blog_id();
 
 			$data = array();
 
@@ -216,12 +219,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 							AND amount < 0
 							AND $interval(created_time) = $interval( NOW() )
 							AND YEAR(created_time) = YEAR( NOW() )
-							AND blog_id = %d
+							AND ( blog_id = %d OR %d )
 						GROUP BY
 							symbol
 						ORDER BY
 							symbol",
-						$blog_id
+						get_current_blog_id(),
+						Dashed_Slug_Wallets::$network_active ? 1 : 0
 					),
 
 					OBJECT_K
@@ -248,7 +252,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			global $wpdb;
 
 			$table_name_txs = Dashed_Slug_Wallets::$table_name_txs;
-			$blog_id        = get_current_blog_id();
 
 			$data = array();
 
@@ -269,12 +272,13 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 							AND amount < 0
 							AND $interval(created_time) = $interval( NOW() )
 							AND YEAR(created_time) = YEAR( NOW() )
-							AND blog_id = %d
+							AND ( blog_id = %d OR %d )
 						GROUP BY
 							symbol
 						ORDER BY
 							symbol",
-						$blog_id
+						get_current_blog_id(),
+						Dashed_Slug_Wallets::$network_active ? 1 : 0
 					),
 
 					OBJECT_K
@@ -354,10 +358,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 						<?php foreach ( $this->intervals as $interval => $interval_text ): ?>
 
 							<?php if ( 'count' == $field ): ?>
-							<td><?php echo esc_html( isset( $table[ $interval ] ) && isset( $table[ $interval ][ $symbol ] ) ? $table[ $interval ]['totals']->{$field} : '&mdash;' ); ?></td>
+							<td><?php echo esc_html( isset( $table[ $interval ] ) && isset( $table[ $interval ][ 'totals' ] ) ? $table[ $interval ]['totals']->{$field} : '&mdash;' ); ?></td>
 
 							<?php elseif ( $this->fiat_symbol ): ?>
-							<td><?php echo esc_html( isset( $table[ $interval ] ) && isset( $table[ $interval ][ $symbol ] ) ? sprintf( '%01.2f', $table[ $interval ]['totals']->{$field} ) : '&mdash;' ); ?></td>
+							<td><?php echo esc_html( isset( $table[ $interval ] ) && isset( $table[ $interval ][ 'totals' ] ) ? sprintf( '%01.2f', $table[ $interval ]['totals']->{$field} ) : '&mdash;' ); ?></td>
 
 							<?php endif; ?>
 
@@ -395,8 +399,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '5.0.1';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = 'bfc387a4';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '5.0.2';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '2ac1bf0e';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -447,10 +451,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 				$data[ sprintf( __( "PHP.ini '%s'", 'wallets' ), $ini_setting ) ] = ini_get( $ini_setting );
 			}
 
-			$data[ __( 'Cron jobs last ran on:',          'wallets') ] = date( DATE_RFC822, Dashed_Slug_Wallets::get_option(' wallets_last_cron_run', 0 ) );
-			$data[ __( 'Cron jobs last runtime (sec):',   'wallets') ] = Dashed_Slug_Wallets::get_option(' wallets_last_elapsed_time', 'n/a' );
-			$data[ __( 'Cron jobs peak memory (bytes):',  'wallets') ] = number_format( Dashed_Slug_Wallets::get_option(' wallets_last_peak_mem',  'n/a' ) );
-			$data[ __( 'Cron jobs memory delta (bytes):', 'wallets') ] = number_format( Dashed_Slug_Wallets::get_option(' wallets_last_mem_delta', 'n/a' ) );
+			$last_cron_run  = Dashed_Slug_Wallets::get_option( 'wallets_last_cron_run', false );
+			$last_peak_mem  = Dashed_Slug_Wallets::get_option( 'wallets_last_peak_mem',  false );
+			$last_mem_delta = Dashed_Slug_Wallets::get_option( 'wallets_last_mem_delta', false );
+
+			$data[ __( 'Cron jobs last ran on:',          'wallets') ] = $last_cron_run ? date( DATE_RFC822, $last_cron_run ) : __( 'n/a', 'wallets' );
+			$data[ __( 'Cron jobs last runtime (sec):',   'wallets') ] = Dashed_Slug_Wallets::get_option( 'wallets_last_elapsed_time', __( 'n/a', 'wallets' ) );
+			$data[ __( 'Cron jobs peak memory (bytes):',  'wallets') ] = false === $last_peak_mem  ? __( 'n/a', 'wallets' ) : number_format( $last_peak_mem );
+			$data[ __( 'Cron jobs memory delta (bytes):', 'wallets') ] = false === $last_mem_delta ? __( 'n/a', 'wallets' ) : number_format( $last_mem_delta );
 
 			foreach ( array(
 				'curl',

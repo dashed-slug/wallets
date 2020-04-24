@@ -130,7 +130,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 				"{$this->option_slug}-rpc",
 				array(
 					'label_for'   => "{$this->option_slug}-rpc-ip",
-					'description' => __( 'The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you are running the daemon on the same machine as WordPress.', 'wallets' ),
+					'description' => __( 'The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you are running the daemon on the same machine as WordPress. If you want to enter an IPv6 address, enclose it in square brackets e.g.: [0:0:0:0:0:0:0:1].', 'wallets' ),
 				)
 			);
 

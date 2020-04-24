@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.1\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-04-06 15:21:41+00:00\n"
+"POT-Creation-Date: 2020-04-24 10:09:10+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,7 +57,11 @@ msgstr ""
 msgid "Pending withdrawals"
 msgstr ""
 
-#: includes/adapters-list-table.php:99 includes/admin-dashboard.php:441
+#: includes/adapters-list-table.php:99 includes/admin-dashboard.php:445
+#: includes/admin-dashboard.php:458 includes/admin-dashboard.php:459
+#: includes/admin-dashboard.php:460 includes/admin-dashboard.php:461
+#: includes/cron.php:645 includes/cron.php:648 includes/cron.php:651
+#: includes/cron.php:654
 msgid "n/a"
 msgstr ""
 
@@ -212,161 +216,161 @@ msgstr ""
 msgid "This year"
 msgstr ""
 
-#: includes/admin-dashboard.php:76
+#: includes/admin-dashboard.php:80
 msgid "Deposits"
 msgstr ""
 
-#: includes/admin-dashboard.php:81
+#: includes/admin-dashboard.php:85
 msgid "Withdrawals"
 msgstr ""
 
-#: includes/admin-dashboard.php:87
+#: includes/admin-dashboard.php:91
 msgid "Moves"
 msgstr ""
 
-#: includes/admin-dashboard.php:92
+#: includes/admin-dashboard.php:96
 msgid "Debug"
 msgstr ""
 
-#: includes/admin-dashboard.php:190
+#: includes/admin-dashboard.php:194
 msgid "Amounts received as deposits"
 msgstr ""
 
-#: includes/admin-dashboard.php:191
+#: includes/admin-dashboard.php:195
 msgid "Deposits count"
 msgstr ""
 
-#: includes/admin-dashboard.php:242
+#: includes/admin-dashboard.php:246
 msgid "Amounts sent as withdrawals "
 msgstr ""
 
-#: includes/admin-dashboard.php:243
+#: includes/admin-dashboard.php:247
 msgid "Fees paid to withdrawals"
 msgstr ""
 
-#: includes/admin-dashboard.php:244
+#: includes/admin-dashboard.php:248
 msgid "Withdrawals count"
 msgstr ""
 
-#: includes/admin-dashboard.php:303
+#: includes/admin-dashboard.php:307
 msgid "Internally transferred amounts"
 msgstr ""
 
-#: includes/admin-dashboard.php:304
+#: includes/admin-dashboard.php:308
 msgid "Fees paid for internal transfers"
 msgstr ""
 
-#: includes/admin-dashboard.php:305
+#: includes/admin-dashboard.php:309
 msgid "Internal transfers count"
 msgstr ""
 
-#: includes/admin-dashboard.php:349
+#: includes/admin-dashboard.php:353
 msgid "Totals"
 msgstr ""
 
-#: includes/admin-dashboard.php:351
+#: includes/admin-dashboard.php:355
 msgid "Totals (%s)"
 msgstr ""
 
-#: includes/admin-dashboard.php:380
+#: includes/admin-dashboard.php:384
 msgid ""
 "Notice: Amounts for the following coins are not summed, because their "
 "exchange rate to %1$s is missing: %2$s"
 msgstr ""
 
-#: includes/admin-dashboard.php:398
+#: includes/admin-dashboard.php:402
 msgid "Plugin version"
 msgstr ""
 
-#: includes/admin-dashboard.php:399
+#: includes/admin-dashboard.php:403
 msgid "Git SHA"
 msgstr ""
 
-#: includes/admin-dashboard.php:400
+#: includes/admin-dashboard.php:404
 msgid "Web Server"
 msgstr ""
 
-#: includes/admin-dashboard.php:401
+#: includes/admin-dashboard.php:405
 msgid "PHP version"
 msgstr ""
 
-#: includes/admin-dashboard.php:402
+#: includes/admin-dashboard.php:406
 msgid "WordPress version"
 msgstr ""
 
-#: includes/admin-dashboard.php:403
+#: includes/admin-dashboard.php:407
 msgid "MySQL version"
 msgstr ""
 
-#: includes/admin-dashboard.php:404
+#: includes/admin-dashboard.php:408
 msgid "DB prefix"
 msgstr ""
 
-#: includes/admin-dashboard.php:405
+#: includes/admin-dashboard.php:409
 msgid "Is multisite"
 msgstr ""
 
-#: includes/admin-dashboard.php:406
+#: includes/admin-dashboard.php:410
 msgid "Is network activated"
 msgstr ""
 
-#: includes/admin-dashboard.php:407
+#: includes/admin-dashboard.php:411
 msgid "PHP max execution time"
 msgstr ""
 
-#: includes/admin-dashboard.php:408
+#: includes/admin-dashboard.php:412
 msgid "Using external cache"
 msgstr ""
 
-#: includes/admin-dashboard.php:408
+#: includes/admin-dashboard.php:412
 msgid "true"
 msgstr ""
 
-#: includes/admin-dashboard.php:408
+#: includes/admin-dashboard.php:412
 msgid "false"
 msgstr ""
 
-#: includes/admin-dashboard.php:429
+#: includes/admin-dashboard.php:433
 msgid "DB storage engine for '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:440
+#: includes/admin-dashboard.php:444
 msgid "Constant '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:447
+#: includes/admin-dashboard.php:451
 msgid "PHP.ini '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:450 includes/cron.php:629
+#: includes/admin-dashboard.php:458 includes/cron.php:644
 msgid "Cron jobs last ran on:"
 msgstr ""
 
-#: includes/admin-dashboard.php:451 includes/cron.php:632
+#: includes/admin-dashboard.php:459 includes/cron.php:647
 msgid "Cron jobs last runtime (sec):"
 msgstr ""
 
-#: includes/admin-dashboard.php:452 includes/cron.php:635
+#: includes/admin-dashboard.php:460 includes/cron.php:650
 msgid "Cron jobs peak memory (bytes):"
 msgstr ""
 
-#: includes/admin-dashboard.php:453 includes/cron.php:638
+#: includes/admin-dashboard.php:461 includes/cron.php:653
 msgid "Cron jobs memory delta (bytes):"
 msgstr ""
 
-#: includes/admin-dashboard.php:461
+#: includes/admin-dashboard.php:469
 msgid "PHP Extension '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:461
+#: includes/admin-dashboard.php:469
 msgid "Loaded"
 msgstr ""
 
-#: includes/admin-dashboard.php:461
+#: includes/admin-dashboard.php:469
 msgid "Not loaded"
 msgstr ""
 
-#: includes/admin-dashboard.php:493
+#: includes/admin-dashboard.php:501
 msgid ""
 "When requesting support, please also send the following info along if "
 "requested."
@@ -734,7 +738,9 @@ msgstr ""
 #: includes/coin-adapter-rpc.php:133
 msgid ""
 "The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you "
-"are running the daemon on the same machine as WordPress."
+"are running the daemon on the same machine as WordPress. If you want to "
+"enter an IPv6 address, enclose it in square brackets e.g.: "
+"[0:0:0:0:0:0:0:1]."
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:144
@@ -1490,42 +1496,42 @@ msgstr ""
 msgid "Bitcoin and Altcoin Wallets cron settings"
 msgstr ""
 
-#: includes/cron.php:545
+#: includes/cron.php:557
 msgid ""
 "You can set the frequency, batch size and number of retries for the cron "
 "job."
 msgstr ""
 
-#: includes/cron.php:568
+#: includes/cron.php:580
 msgid "PRO TIP:"
 msgstr ""
 
-#: includes/cron.php:587
+#: includes/cron.php:599
 msgid ""
 "Looking for an easy to setup cron job service? Try <a href=\"%s\" "
 "title=\"%s\">EasyCron</a>!"
 msgstr ""
 
-#: includes/cron.php:604
+#: includes/cron.php:616
 msgid ""
 "You can control how wallet secrets are stored. Wallet secrets are needed "
 "for performing withdrawals."
 msgstr ""
 
-#: includes/cron.php:614
+#: includes/cron.php:626
 msgid ""
 "You can control whether similar old internal transactions are aggregated. "
 "Aggregating past transactions saves space on the DB. Aggregation is "
 "performed in batches so as not to overwhelm the DB."
 msgstr ""
 
-#: includes/cron.php:624
+#: includes/cron.php:639
 msgid ""
 "The following debug information can help you determine whether the cron "
 "jobs are running."
 msgstr ""
 
-#: includes/cron.php:671
+#: includes/cron.php:686
 msgid "(never)"
 msgstr ""
 

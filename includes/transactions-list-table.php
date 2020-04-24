@@ -212,7 +212,7 @@ class DSWallets_Admin_Menu_TX_List_Table extends WP_List_Table {
 			$blog_details = get_blog_details( $blog_id, false );
 
 			if ( $blog_details ) {
-				return $blog_details->domain . $blog_details->path;
+				return untrailingslashit( $blog_details->domain . $blog_details->path );
 			}
 		}
 		return '&mdash;';

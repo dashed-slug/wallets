@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 5.0.1
+Stable tag: 5.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,16 @@ Reasons why the two amounts would diverge:
 1. As users pay fees for transactions, their total balances decrease but the wallet balance stays the same.
 2. If you have used the cold storage feature, or alternatively if you have deposited/withdrawn directly from the wallet and not via the plugin, then the balances will not match. See the *Cold Storage* section in the documentation for more.
 
+= Does the plugin support multisite network installations? =
+
+The plugin supports network installations in two modes, depending on whether the plugin is network-activated or not:
+
+If you activate the plugin individually per each site, users will maintain separate balances on each site on your network. You will find the Wallets menu under the network admin menu. The `manage_wallets` capability will be assigned to the network super-admin. In case you need to trigger the cron jobs manually, use the distinct URL given in each case.
+
+If you network activate the plugin, users will see the same balances on each site on your network. The `manage_wallets` capability must be assigned to each site's admin. If you need to trigger the cron jobs manually, use the URL given in the network admin pages. It will trigger cron jobs for all sites.
+
+If you network-activate the parent plugin, make sure to also network-activate all the app extensions and coin adapters. If you activate the plugin separately on each subsite of your network, do the same with all the app extensions and coin adapters.
+
 = My site was hacked and some funds were stolen. Can you help? =
 
 I regret that I cannot help you. As you may know, cryptocurrency transactions are non-reversible. This is why the security disclaimer is there - you, as an administrator, are solely responsible for the security of your site. There is no way I could assume responsibility for lost funds. I do not hold private keys to any of your or your users' funds.
@@ -331,6 +341,19 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.2 =
+- Improve: More JavaScript assets are not loaded if not needed in current front-end page. This also prevents unneeded JSON-API hits when not logged in.
+- Add: Map files for minified `knockout-validation.js` and `sprintf.js` assets are now added.
+- Add: Instruct users to use square brackets when entering IPv6 IP addresses.
+- Fix: Undefined warning in dashboard prevented TX count totals from being shown, is now fixed.
+- Fix: Warning shown in logs when stats on previous cron run were not available, is now fixed.
+- Fix: When plugin is NOT network-activated on a multisite installation, the cron job trigger URL now displays the correct sub-site domain.
+- Fix: Transaction summaries dashboard widget, introduced in version `5.0.0`, is now shown in network admin dashboard if plugin is network-activated.
+- Change: Upgraded included library `knockout.js` from `3.5.0-rc2` to `3.5.1`.
+- Change: Upgraded included library `knockout.validation.js` from `2.0.3` to `2.0.4`.
+- Change: Upgraded included library `bs58check.js` from `2.1.2` to latest commit.
+- Change: When plugin is network-activated, the Admin Transactions list screen displays domains without a trailing slash.
 
 = 5.0.1 =
 - Add: The coin adapters admin page now includes a helpful link to a page explaining the concept and showcasing the available coin adapters.
@@ -1315,7 +1338,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.1` polishes a few rough edges mostly arising from the latest major release.
+Version `5.0.2` fixes a few minor bugs, mostly related to multi-site installations.
 
 == Donating ==
 

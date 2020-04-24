@@ -66,10 +66,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				default: $path = '';
 			}
 
-			$minified_file = DSWALLETS_PATH . "/assets/$path/$asset-5.0.1.min.$ext";
+			$minified_file = DSWALLETS_PATH . "/assets/$path/$asset-5.0.2.min.$ext";
 
 			if ( file_exists( $minified_file ) ) {
-				$final_file = "$asset-5.0.1.min.$ext";
+				$final_file = "$asset-5.0.2.min.$ext";
 			} else {
 				$final_file = "$asset.$ext";
 			}
@@ -83,7 +83,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'wallets_styles',
 				$this->asset_url( 'wallets', 'css' ),
 				array(),
-				'5.0.1'
+				'5.0.2'
 			);
 
 			wp_register_script(
@@ -132,7 +132,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'knockout-validation',
 				plugins_url( 'knockout.validation.min.js', 'wallets/assets/scripts/knockout.validation.min.js' ),
 				array( 'knockout' ),
-				'2.0.3',
+				'2.0.4',
 				true
 			);
 
@@ -140,29 +140,32 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'knockout',
 				plugins_url( 'knockout-latest.min.js', "wallets/assets/scripts/knockout-latest.min.js" ),
 				array(),
-				'3.5.0',
+				'3.5.1',
 				true
 			);
 
-			wp_register_script(
-				'wallets_bitcoin',
-				$this->asset_url( 'wallets-bitcoin-validator', 'js' ),
-				array( 'wallets_ko', 'bs58check' ),
-				'5.0.1',
-				true
-			);
+			if ( current_user_can( Dashed_Slug_Wallets_Capabilities::HAS_WALLETS ) ) {
 
-			$deps = array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' );
-			if ( Dashed_Slug_Wallets::get_option( 'wallets_sweetalert_enabled' ) ) {
-				$deps[] = 'sweetalert';
+				wp_register_script(
+					'wallets_bitcoin',
+					$this->asset_url( 'wallets-bitcoin-validator', 'js' ),
+					array( 'wallets_ko', 'bs58check' ),
+					'5.0.2',
+					true
+				);
+
+				$deps = array( 'sprintf.js', 'knockout', 'knockout-validation', 'momentjs', 'jquery' );
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_sweetalert_enabled' ) ) {
+					$deps[] = 'sweetalert';
+				}
+				wp_register_script(
+					'wallets_ko',
+					$this->asset_url( 'wallets-ko', 'js' ),
+					$deps,
+					'5.0.2',
+					true
+				);
 			}
-			wp_register_script(
-				'wallets_ko',
-				$this->asset_url( 'wallets-ko', 'js' ),
-				$deps,
-				'5.0.1',
-				true
-			);
 
 			// attach translations to frontend knockout script
 			include __DIR__ . '/wallets-ko-i18n.php';
@@ -280,7 +283,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 							'jsqrcode',
 							plugins_url( 'jsqrcode.min.js', 'wallets/assets/scripts/jsqrcode.min.js' ),
 							array(),
-							'5.0.1',
+							'5.0.2',
 							true
 						);
 					}
