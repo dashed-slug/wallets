@@ -18,6 +18,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		private static $symbol_to_gecko_id = array();
 		private static $gecko_id_to_symbol = array();
 		private static $coincap_ids        = array();
+		private static $cmc_ids            = array();
 
 		private static $start_time;
 		private static $start_memory;
@@ -145,8 +146,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets_rates_section',
 				array(
 					'label_for'   => 'wallets_rates_fixer_key',
-					'description' =>
-					__(
+					'description' => __(
 						'The fixer.io service needs to be enabled for any kind of conversion between fiat currencies and cryptocurrencies. ' .
 						'You will need to <a href="https://fixer.io/product" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
 						'You can then provide the API key in this field.',
@@ -168,10 +168,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 				'wallets_rates_section',
 				array(
 					'label_for'   => 'wallets_rates_coinmarketcap_key',
-					'description' =>
-					__(
-						'If you decide to use CoinMarketCap, it is recommended to <a href="https://pro.coinmarketcap.com/signup/" target="_blank" rel="noopener noreferrer">sign up here for an API key</a>. ' .
-						'If you do not provide a key, the exchange rates of only the top 100 currencies will be retrieved.',
+					'description' => __(
+						'The CoinMarketCap API requires an API key. <a href="https://pro.coinmarketcap.com/signup/" target="_blank" rel="noopener noreferrer">Sign up here for an API key</a>. ',
 						'wallets'
 					),
 				)
@@ -812,18 +810,44 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		}
 
 		public static function filter_rates_cryptos_coinmarketcap( $cryptos ) {
-			$url  = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_array( $obj ) ) {
-					foreach ( $obj as $market ) {
-						if ( isset( $market->symbol ) ) {
-							$cryptos[] = $market->symbol;
+			$api_key = Dashed_Slug_Wallets::get_option( 'wallets_rates_coinmarketcap_key' );
+
+			if ( $api_key ) {
+
+				$adapters = apply_filters( 'wallets_api_adapters', array() );
+
+				$crypto_symbols = array();
+				foreach ( $adapters as $symbol => $adapter ) {
+					if ( false === array_search( $symbol, self::$fiats ) ) {
+						$crypto_symbols[] = rawurlencode( $symbol );
+					}
+				}
+
+				if ( ! $crypto_symbols ) {
+					return $cryptos;
+				}
+
+				$url = add_query_arg(
+					array(
+						'symbol' => implode( ',', $crypto_symbols ),
+					),
+					'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+				);
+
+				$json = self::file_get_contents( $url, false, array( "X-CMC_PRO_API_KEY: $api_key" ) );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_object( $obj ) && isset( $obj->data ) && is_array( $obj->data ) ) {
+						foreach ( $obj->data as $currency ) {
+							if ( isset( $currency->symbol ) && isset( $currency->id ) ) {
+								$cryptos[] =  $currency->symbol;
+								self::$cmc_ids[ $currency->symbol ] = $currency->id;
+							}
 						}
 					}
 				}
 			}
+
 			return $cryptos;
 		}
 
@@ -993,23 +1017,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function filter_rates_coinmarketcap( $rates ) {
 			$api_key = Dashed_Slug_Wallets::get_option( 'wallets_rates_coinmarketcap_key' );
 
-			if ( ! $api_key ) {
-				$url  = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
-				$json = self::file_get_contents( $url );
-				if ( is_string( $json ) ) {
-					$obj = json_decode( $json );
-					if ( is_array( $obj ) ) {
-						foreach ( $obj as $market ) {
-							if ( isset( $market->price_usd ) ) {
-								$rates[ "USD_{$market->symbol}" ] = $market->price_usd;
-							}
-							if ( isset( $market->price_btc ) ) {
-								$rates[ "BTC_{$market->symbol}" ] = $market->price_btc;
-							}
-						}
-					}
-				}
-			} else {
+			if ( $api_key ) {
 
 				$adapters = apply_filters( 'wallets_api_adapters', array() );
 
@@ -1018,20 +1026,27 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					$fiat_symbol = 'USD';
 				}
 
-				$crypto_symbols = array();
+				$crypto_ids = array();
 				foreach ( $adapters as $symbol => $adapter ) {
 					if ( false === array_search( $symbol, self::$fiats ) ) {
-						$crypto_symbols[] = $symbol;
+						if ( isset( self::$cmc_ids[ $symbol ] ) ) {
+							$crypto_ids[] = self::$cmc_ids[ $symbol ];
+						}
 					}
+				}
+
+				if ( ! $crypto_ids ) {
+					return $rates;
 				}
 
 				$url = add_query_arg(
 					array(
-						'symbol' => rawurlencode( implode( ',', $crypto_symbols ) ),
+						'id' => implode( ',', $crypto_ids ),
 						'convert' => $fiat_symbol,
 					),
 					'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
 				);
+
 				$json = self::file_get_contents( $url, false, array( "X-CMC_PRO_API_KEY: $api_key" ) );
 				if ( is_string( $json ) ) {
 					$obj = json_decode( $json );

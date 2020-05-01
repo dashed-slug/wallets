@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.4
+Tested up to: 5.4.1
 Requires PHP: 5.6
-Stable tag: 5.0.2
+Stable tag: 5.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,10 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.3 =
+- Fix: Exchange rates subsystem no longer attempts to access the old public CoinMarketCap API that has been recently discontinued. An API key is now required, no longer optional.
+- Improve: The efficiency of CoinMarketCap API queries has been improved, both in terms of performance, and API credits used.
 
 = 5.0.2 =
 - Improve: More JavaScript assets are not loaded if not needed in current front-end page. This also prevents unneeded JSON-API hits when not logged in.
@@ -1338,7 +1342,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.2` fixes a few minor bugs, mostly related to multi-site installations.
+Version `5.0.3` improves the Exchange Rates providers, to reflect recent changes to the CoinMarketCap service.
 
 == Donating ==
 

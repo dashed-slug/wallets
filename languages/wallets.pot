@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.2\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-04-24 10:09:10+00:00\n"
+"POT-Creation-Date: 2020-05-01 09:29:42+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -127,7 +127,7 @@ msgstr ""
 #: includes/coin-adapter.php:302 includes/cold-storage.php:153
 #: includes/confirmations.php:807 includes/cron.php:490
 #: includes/frontend-settings.php:384 includes/notifications.php:758
-#: includes/rates.php:386 includes/transactions.php:336
+#: includes/rates.php:384 includes/transactions.php:336
 #: includes/transactions.php:1261 includes/transactions.php:1407
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
@@ -394,7 +394,7 @@ msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
 #: includes/admin-menu.php:96 includes/cold-storage.php:394
-#: includes/cold-storage.php:409 includes/rates.php:475
+#: includes/cold-storage.php:409 includes/rates.php:473
 msgid ""
 "This affiliate link supports the development of dashed-slug.net plugins. "
 "Thanks for clicking."
@@ -2285,21 +2285,21 @@ msgstr ""
 msgid "No transactions found!"
 msgstr ""
 
-#: includes/rates.php:118
+#: includes/rates.php:119
 msgid "Exchange rates settings"
 msgstr ""
 
-#: includes/rates.php:125
+#: includes/rates.php:126
 msgid "Exchange rates providers"
 msgstr ""
 
-#: includes/rates.php:131
+#: includes/rates.php:132
 msgid ""
 "Pick the APIs that you wish to use as sources of exchange rates between "
 "cryptocurrencies. "
 msgstr ""
 
-#: includes/rates.php:142
+#: includes/rates.php:143
 msgid "Fixer API key"
 msgstr ""
 
@@ -2307,92 +2307,99 @@ msgstr ""
 msgid "CoinMarketCap API key"
 msgstr ""
 
-#: includes/rates.php:188
+#: includes/rates.php:171
+msgid ""
+"The CoinMarketCap API requires an API key. <a "
+"href=\"https://pro.coinmarketcap.com/signup/\" target=\"_blank\" "
+"rel=\"noopener noreferrer\">Sign up here for an API key</a>. "
+msgstr ""
+
+#: includes/rates.php:186
 msgid "Rates refresh rate (minutes)"
 msgstr ""
 
-#: includes/rates.php:214
+#: includes/rates.php:212
 msgid "Default fiat currency"
 msgstr ""
 
-#: includes/rates.php:235
+#: includes/rates.php:233
 msgid "Use tor to pull exchange rates"
 msgstr ""
 
-#: includes/rates.php:241
+#: includes/rates.php:239
 msgid ""
 "Enable this to pull exchange rates via tor. Does not work with Poloniex. "
 "You need to set up a tor proxy first. Only useful if setting up a hidden "
 "service. (Default: disabled)"
 msgstr ""
 
-#: includes/rates.php:252
+#: includes/rates.php:250
 msgid "Tor proxy IP"
 msgstr ""
 
-#: includes/rates.php:258
+#: includes/rates.php:256
 msgid "This is the IP of your tor proxy. (Default: 127.0.0.1)"
 msgstr ""
 
-#: includes/rates.php:269
+#: includes/rates.php:267
 msgid "Tor proxy TCP port"
 msgstr ""
 
-#: includes/rates.php:278
+#: includes/rates.php:276
 msgid ""
 "This is the TCP port of your tor proxy. (Default: 9050, some newer tor "
 "bundles use 9150)"
 msgstr ""
 
-#: includes/rates.php:289
+#: includes/rates.php:287
 msgid "Skip refreshing exchange rates when HTTP_REFERER is set"
 msgstr ""
 
-#: includes/rates.php:314
+#: includes/rates.php:312
 msgid "Exchange rates debug views"
 msgstr ""
 
-#: includes/rates.php:321
+#: includes/rates.php:319
 msgid "Known fiat currencies"
 msgstr ""
 
-#: includes/rates.php:327
+#: includes/rates.php:325
 msgid "View a list of known fiat currencies (for debugging). "
 msgstr ""
 
-#: includes/rates.php:338
+#: includes/rates.php:336
 msgid "Known cryptocurrencies"
 msgstr ""
 
-#: includes/rates.php:344
+#: includes/rates.php:342
 msgid ""
 "View a list of all known cryptocurrencies reported by the selected "
 "providers (for debugging). "
 msgstr ""
 
-#: includes/rates.php:355 includes/sidebar-widgets.php:492
+#: includes/rates.php:353 includes/sidebar-widgets.php:492
 msgid "Exchange rates"
 msgstr ""
 
-#: includes/rates.php:361
+#: includes/rates.php:359
 msgid ""
 "View a list of all exhange rates reported by the selected providers (for "
 "debugging)."
 msgstr ""
 
-#: includes/rates.php:391
+#: includes/rates.php:389
 msgid "Bitcoin and Altcoin Wallets Exchange Rates settings"
 msgstr ""
 
-#: includes/rates.php:397
+#: includes/rates.php:395
 msgid "Clear/refresh data now!"
 msgstr ""
 
-#: includes/rates.php:530
+#: includes/rates.php:528
 msgid "&#x1F4CB; Copy"
 msgstr ""
 
-#: includes/rates.php:635
+#: includes/rates.php:633
 msgid ""
 "Use these views to verify that data is being pulled correctly from your "
 "exchange rates provider."
