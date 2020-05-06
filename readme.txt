@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.4.1
 Requires PHP: 5.6
-Stable tag: 5.0.3
+Stable tag: 5.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,11 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.4 =
+- Fix: In `[wallets_balance template="static"]` the symbol next to the equivalent (fiat) amount was incorrect, is now fixed.
+- Add: Variable substitutions in email templates now allow for new variables: `###USER_LOGIN###`, `###OTHER_USER_LOGIN###`, `###USER_NICENAME###`, `###OTHER_USER_NICENAME###`, `###DISPLAY_NAME###`, `###OTHER_DISPLAY_NAME###`
+- Change: The variable substitution `###USER_ACCOUNT###` is now deprecated. New email templates use the user's display name by default (`###DISPLAY_NAME###`).
 
 = 5.0.3 =
 - Fix: Exchange rates subsystem no longer attempts to access the old public CoinMarketCap API that has been recently discontinued. An API key is now required, no longer optional.
@@ -1342,7 +1347,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.3` improves the Exchange Rates providers, to reflect recent changes to the CoinMarketCap service.
+Version `5.0.4` improves the email templating system and fixes a bug in the static template that displays user balances.
 
 == Donating ==
 

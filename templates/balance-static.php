@@ -9,11 +9,14 @@ $balance = apply_filters( 'wallets_api_balance', 0, array(
 	'user_id' => $atts['user_id'],
 ));
 
-$rate = Dashed_Slug_Wallets_Rates::get_exchange_rate( Dashed_Slug_Wallets_Rates::get_fiat_selection(), $atts['symbol'] );
-if ( $rate ) {
-	$fiat_balance = $balance * $rate;
+$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection();
+if ( 'none' != $fiat_symbol ) {
+	$rate = Dashed_Slug_Wallets_Rates::get_exchange_rate( $fiat_symbol, $atts['symbol'] );
+	if ( $rate ) {
+		$fiat_balance = $balance * $rate;
+	}
+	unset( $rate );
 }
-unset( $rate );
 
 $adapters = apply_filters( 'wallets_api_adapters', array() );
 if ( isset( $adapters[ $atts['symbol'] ] ) ) {
@@ -32,7 +35,7 @@ unset( $adapters );
 		<?php echo apply_filters( 'wallets_ui_text_balance', esc_html__( 'Balance', 'wallets-front' ) ); ?>:
 		<span><?php echo $balance_str; ?></span>
 		<?php if ( isset( $fiat_balance ) ): ?>
-		<span class="fiat-amount"><?php printf( '%s %01.2f', $atts['symbol'], $fiat_balance ); ?></span>
+		<span class="fiat-amount"><?php printf( '%s %01.2f', $fiat_symbol, $fiat_balance ); ?></span>
 		<?php endif; ?>
 	</label>
 	<?php

@@ -69,7 +69,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Confirmations' ) ) {
 				'wallets_confirm_withdraw_email_message',
 				__( <<<EMAIL
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
 You have requested to withdraw ###AMOUNT### to address ###ADDRESS###.
 
@@ -107,9 +107,9 @@ EMAIL
 				'wallets_confirm_receive_move_email_message',
 				__( <<<EMAIL
 
-###OTHER_ACCOUNT###,
+###OTHER_DISPLAY_NAME###,
 
-User ###ACCOUNT### has initiated an internal transaction to send you some funds.
+User ###DISPLAY_NAME### has initiated an internal transaction to send you some funds.
 
 You will receive the transaction when the transaction is confirmed.
 If you do not receive the transaction soon, you may wish to contact the user or an admin about it.
@@ -148,9 +148,9 @@ EMAIL
 				__(
 					<<<EMAIL
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
-You have requested to send ###AMOUNT### from your account to user ###OTHER_ACCOUNT###.
+You have requested to send ###AMOUNT### from your account to user ###OTHER_DISPLAY_NAME###.
 
 If you want the transaction to proceed, please click on this link to confirm:
 ###LINK###
@@ -188,7 +188,7 @@ EMAIL
 				'wallets_confirm_inform_admins_message',
 				__( <<<EMAIL
 
-User ###ACCOUNT### has requested to perform a transaction that requires confirmation.
+User ###DISPLAY_NAME### has requested to perform a transaction that requires confirmation.
 
 If you want the transaction to proceed, please log into your site and navigate to "Wallets" -> "Transactions".
 Then, find the transaction in the list and click on the "Admin accept" button.
@@ -406,12 +406,19 @@ EMAIL
 
 			if ( $user ) {
 				// prep user names
-				$row['account'] = $user->user_login;
-				$email          = $user->user_email;
+				$row['account']       = $user->user_login;
+				$row['user_login']    = $user->user_login;
+				$row['user_nicename'] = $user->user_nicename;
+				$row['display_name']  = $user->display_name;
+				$email                = $user->user_email;
+
 				if ( isset( $row['other_account'] ) ) {
 					$other_user = get_userdata( $row['other_account'] );
 					if ( $other_user ) {
-						$row['other_account'] = $other_user->user_login;
+						$row['other_account']       = $other_user->user_login;
+						$row['other_user_login']    = $other_user->user_login;
+						$row['other_user_nicename'] = $other_user->user_nicename;
+						$row['other_display_name']  = $other_user->display_name;
 					}
 				}
 
@@ -543,13 +550,18 @@ EMAIL
 
 			if ( $user ) {
 				// prep user names
-				$row['account'] = $user->user_login;
-				$email          = $user->user_email;
+				$row['account']       = $user->user_login;
+				$row['user_login']    = $user->user_login;
+				$row['user_nicename'] = $user->user_nicename;
+				$row['display_name']  = $user->display_name;
+
 				if ( isset( $row['other_account'] ) ) {
 					$other_user = get_userdata( $row['other_account'] );
 					if ( $other_user ) {
-						$row['other_account'] = $other_user->user_login;
-					}
+						$row['other_account']       = $other_user->user_login;
+						$row['other_user_login']    = $other_user->user_login;
+						$row['other_user_nicename'] = $other_user->user_nicename;
+						$row['other_display_name']  = $other_user->display_name;}
 				}
 
 				// delete some vars
@@ -677,12 +689,19 @@ EMAIL
 
 			if ( $user ) {
 				// prep user names
-				$row['account'] = $user->user_login;
+				$row['account']       = $user->user_login;
+				$row['user_login']    = $user->user_login;
+				$row['user_nicename'] = $user->user_nicename;
+				$row['display_name']  = $user->display_name;
+
 				if ( isset( $row['other_account'] ) ) {
 					$other_user = get_userdata( $row['other_account'] );
 					if ( $other_user ) {
-						$row['other_account'] = $other_user->user_login;
-						$email = $other_user->user_email;
+						$row['other_account']       = $other_user->user_login;
+						$row['other_user_login']    = $other_user->user_login;
+						$row['other_user_nicename'] = $other_user->user_nicename;
+						$row['other_display_name']  = $other_user->display_name;
+						$email                      = $other_user->user_email;
 					}
 				} else {
 					return;
@@ -873,10 +892,25 @@ EMAIL
 					<dl>
 						<dt><code>###LINK###</code></dt>
 						<dd><?php esc_html_e( 'Confirmation link. Clicking this will mark the transaction as confirmed by user.', 'wallets' ); ?></dd>
-						<dt><code>###ACCOUNT###</code></dt>
-						<dd><?php esc_html_e( 'Account username', 'wallets' ); ?></dd>
-						<dt><code>###OTHER_ACCOUNT###</code></dt>
-						<dd><?php esc_html_e( 'Username of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+
+						<dt><code>###USER_LOGIN###</code></dt>
+						<dd><?php esc_html_e( 'Account user_login (aka nickname)', 'wallets' ); ?></dd>
+						<dt><code>###USER_NICENAME###</code></dt>
+						<dd><?php esc_html_e( 'Account user_nicename', 'wallets' ); ?></dd>
+						<dt><code>###DISPLAY_NAME###</code></dt>
+						<dd><?php esc_html_e( 'Account display_name based on First and Last name', 'wallets' ); ?></dd>
+						<dt><del><code>###ACCOUNT###</code></del></dt>
+						<dd><del><?php esc_html_e( '(same as ###USER_LOGIN###)', 'wallets' ); ?></del></dd>
+
+						<dt><code>###OTHER_USER_LOGIN###</code></dt>
+						<dd><?php esc_html_e( 'user_login (aka nickname) of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_USER_NICENAME###</code></dt>
+						<dd><?php esc_html_e( 'user_nicename of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_DISPLAY_NAME###</code></dt>
+						<dd><?php esc_html_e( 'display_name based on First and Last name, of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><del><code>###OTHER_ACCOUNT###</code></del></dt>
+						<dd><del><?php esc_html_e( '(same as ###OTHER_USER_LOGIN###)', 'wallets' ); ?></del></dd>
+
 						<dt><code>###TXID###</code></dt>
 						<dd><?php esc_html_e( 'Transaction ID. ( This is normally the same as the txid on the blockchain. Internal transactions are also assigned a unique ID. )', 'wallets' ); ?></dd>
 						<dt><code>###SYMBOL###</code></dt>

@@ -101,7 +101,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Notifications' ) ) {
 			call_user_func(
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_message', __(
 <<<NOTIFICATION
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
 You have withdrawn ###AMOUNT### to address ###ADDRESS###.
 
@@ -125,7 +125,7 @@ NOTIFICATION
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_withdraw_failed_message', __(
 <<<NOTIFICATION
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
 You have attempted to withdraw ###AMOUNT### to address ###ADDRESS###.
 
@@ -151,9 +151,9 @@ NOTIFICATION
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_message', __(
 <<<NOTIFICATION
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
-You have sent ###AMOUNT### from your account to the ###OTHER_ACCOUNT### account.
+You have sent ###AMOUNT### from your account to the ###OTHER_DISPLAY_NAME### account.
 
 Coin symbol: ###SYMBOL###
 Amount: ###AMOUNT### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT###)
@@ -175,9 +175,9 @@ NOTIFICATION
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_send_failed_message', __(
 <<<NOTIFICATION
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
-You have attempted to send ###AMOUNT### from your account to the ###OTHER_ACCOUNT### account.
+You have attempted to send ###AMOUNT### from your account to the ###OTHER_DISPLAY_NAME### account.
 
 Your transaction failed after being attempted a predetermined number of times and will not be retried any further. If you are unsure why your transaction failed, please contact the administrator.
 
@@ -201,9 +201,9 @@ NOTIFICATION
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_move_receive_message', __(
 <<<NOTIFICATION
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
-You have received ###AMOUNT### from ###OTHER_ACCOUNT###.
+You have received ###AMOUNT### from ###OTHER_DISPLAY_NAME###.
 
 Coin symbol: ###SYMBOL###
 Amount: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT_WITHOUT_FEE###)
@@ -223,7 +223,7 @@ NOTIFICATION
 				$network_active ? 'add_site_option' : 'add_option', 'wallets_email_deposit_message', __(
 <<<NOTIFICATION
 
-###ACCOUNT###,
+###DISPLAY_NAME###,
 
 You have deposited ###AMOUNT_WITHOUT_FEE### from address ###ADDRESS###.
 
@@ -796,14 +796,28 @@ NOTIFICATION
 				<div class="card">
 					<h2><?php esc_html_e( 'The following variables are substituted in notification templates:', 'wallets' ); ?></h2>
 					<dl>
-						<dt><code>###ACCOUNT###</code></dt>
-						<dd><?php esc_html_e( 'Account username', 'wallets' ); ?></dd>
+						<dt><code>###USER_LOGIN###</code></dt>
+						<dd><?php esc_html_e( 'Account user_login (aka nickname)', 'wallets' ); ?></dd>
+						<dt><code>###USER_NICENAME###</code></dt>
+						<dd><?php esc_html_e( 'Account user_nicename', 'wallets' ); ?></dd>
+						<dt><code>###DISPLAY_NAME###</code></dt>
+						<dd><?php esc_html_e( 'Account display_name based on First and Last name', 'wallets' ); ?></dd>
+						<dt><del><code>###ACCOUNT###</code></del></dt>
+						<dd><del><?php esc_html_e( '(same as ###USER_LOGIN###)', 'wallets' ); ?></del></dd>
 						<dt><code>###ACCOUNT_ID###</code></dt>
 						<dd><?php esc_html_e( 'Account user ID', 'wallets' ); ?></dd>
-						<dt><code>###OTHER_ACCOUNT###</code></dt>
-						<dd><?php esc_html_e( 'Username of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+
+						<dt><code>###OTHER_USER_LOGIN###</code></dt>
+						<dd><?php esc_html_e( 'user_login (aka nickname) of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_USER_NICENAME###</code></dt>
+						<dd><?php esc_html_e( 'user_nicename of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_DISPLAY_NAME###</code></dt>
+						<dd><?php esc_html_e( 'display_name based on First and Last name, of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><del><code>###OTHER_ACCOUNT###</code></del></dt>
+						<dd><del><?php esc_html_e( '(same as ###OTHER_USER_LOGIN###)', 'wallets' ); ?></del></dd>
 						<dt><code>###OTHER_ACCOUNT_ID###</code></dt>
 						<dd><?php esc_html_e( 'User ID of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+
 						<dt><code>###TXID###</code></dt>
 						<dd><?php esc_html_e( 'Transaction ID. ( This is normally the same as the txid on the blockchain. Internal transactions are also assigned a unique ID. )', 'wallets' ); ?></dd>
 						<dt><code>###SYMBOL###</code></dt>
@@ -1160,8 +1174,11 @@ NOTIFICATION
 		private function apply_substitutions( $string, $tx_data ) {
 
 			$replace_pairs = array(
-				'###ACCOUNT###'    => $tx_data->user->user_login,
-				'###ACCOUNT_ID###' => $tx_data->user->ID,
+				'###ACCOUNT###'       => $tx_data->user->user_login,
+				'###USER_LOGIN###'    => $tx_data->user->user_login,
+				'###USER_NICENAME###' => $tx_data->user->user_nicename,
+				'###DISPLAY_NAME###'  => $tx_data->user->display_name,
+				'###ACCOUNT_ID###'    => $tx_data->user->ID,
 			);
 
 			$fiat_symbol = Dashed_Slug_Wallets_Rates::get_fiat_selection( $tx_data->user->ID );
@@ -1174,8 +1191,11 @@ NOTIFICATION
 			}
 
 			if ( isset( $tx_data->other_user ) ) {
-				$replace_pairs['###OTHER_ACCOUNT###']    = $tx_data->other_user->user_login;
-				$replace_pairs['###OTHER_ACCOUNT_ID###'] = $tx_data->other_user->ID;
+				$replace_pairs['###OTHER_ACCOUNT###']       = $tx_data->other_user->user_login;
+				$replace_pairs['###OTHER_USER_LOGIN###']    = $tx_data->other_user->user_login;
+				$replace_pairs['###OTHER_USER_NICENAME###'] = $tx_data->other_user->user_nicename;
+				$replace_pairs['###OTHER_DISPLAY_NAME###']  = $tx_data->other_user->display_name;
+				$replace_pairs['###OTHER_ACCOUNT_ID###']    = $tx_data->other_user->ID;
 			}
 
 			if ( isset( $tx_data->txid ) ) {
