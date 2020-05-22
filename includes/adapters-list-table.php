@@ -23,6 +23,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			'balances'                 => esc_html__( 'Sum of User Balances', 'wallets' ),
 			'total_fees'               => esc_html__( 'Sum of fees paid', 'wallets' ),
 			'status'                   => esc_html__( 'Adapter Status', 'wallets' ),
+			'height'                   => esc_html__( 'Block Height', 'wallets' ),
 			'locked'                   => esc_html__( 'Withdrawals lock', 'wallets' ),
 			'pending_wds'              => esc_html__( 'Pending withdrawals', 'wallets' ),
 		);
@@ -40,6 +41,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 			'unavailable_balance'      => array( 'unavailable_balance', false ),
 			'balances'                 => array( 'balances', false ),
 			'total_fees'               => array( 'total_fees', false ),
+			'height'                   => array( 'height', false ),
 			'pending_wds'              => array( 'pending_wds', false ),
 		);
 	}
@@ -117,6 +119,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 				'balance'             => $balance,
 				'unavailable_balance' => $unavailable_balance,
 				'status'              => $status,
+				'height'              => $adapter->get_block_height(),
 				'settings_url'        => $adapter->get_settings_url(),
 				'unlocked'            => $adapter->is_unlocked(),
 			);
@@ -181,6 +184,14 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 				__( 'Not responding', 'wallets' ),
 				$item['status']
 			);
+		}
+	}
+
+	public function column_height( $item ) {
+		if ( false === $item['height'] ) {
+			return __( 'n/a', 'wallets' );
+		} else {
+			return absint( $item['height'] );
 		}
 	}
 

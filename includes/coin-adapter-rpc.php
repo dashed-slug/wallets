@@ -391,6 +391,35 @@ CFG;
 			return $result;
 		}
 
+		public function get_block_height() {
+			if ( ! $this->get_adapter_option( 'general-enabled' ) ) {
+				throw new Exception( 'Adapter is disabled' );
+			}
+
+			$symbol = $this->get_symbol();
+
+			$height = Dashed_Slug_Wallets::get_transient( "wallets_block_height_$symbol" );
+			if ( false === $height ) {
+				$result = $this->rpc->getblockchaininfo();
+
+				if ( false === $result ) {
+					$result = $this->rpc->getinfo();
+				}
+
+				foreach ( array( 'blocks', 'headers' ) as $field ) {
+					if ( isset( $result[ $field ] ) && $result[ $field ] ) {
+						$height = absint( $result[ $field ] );
+						break;
+					}
+				}
+
+				Dashed_Slug_Wallets::set_transient( "wallets_block_height_$symbol", $height, 30 );
+			}
+
+			return $height;
+		}
+
+
 		public function get_unavailable_balance() {
 			if ( ! $this->get_adapter_option( 'general-enabled' ) ) {
 				throw new Exception( 'Adapter is disabled' );

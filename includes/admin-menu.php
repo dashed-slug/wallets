@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-5.0.4.min.js', 'wallets/assets/scripts/pay-now-button-5.0.4.min.js' ),
+				plugins_url( 'pay-now-button-5.0.5.min.js', 'wallets/assets/scripts/pay-now-button-5.0.5.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -126,11 +126,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 			<div class="card">
 				<h2><?php esc_html_e( 'Subscribe to the YouTube channel:', 'wallets' ); ?></h2>
 				<div class="g-ytsubscribe" data-channelid="UCZ1XhSSWnzvB2B_-Cy1tTjA" data-layout="full" data-count="default"></div>
-			</div>
-
-			<div class="card">
-				<h2><?php esc_html_e( 'The dashed-slug can also be found on SteemIt:', 'wallets' ); ?></h2>
-				<a href="https://steemit.com/@dashed-slug.net">https://steemit.com/@dashed-slug.net</a>
 			</div>
 
 			<div class="card">

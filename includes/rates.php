@@ -939,15 +939,76 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 
 		public static function filter_rates_cryptos_coingecko( $cryptos ) {
 			$url  = 'https://api.coingecko.com/api/v3/coins/list';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_array( $obj ) ) {
-					foreach ( $obj as $currency ) {
-						$symbol = strtoupper( $currency->symbol );
-						$cryptos[] = $symbol;
-						self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
-						self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+
+			if ( function_exists( 'curl_init' ) ) {
+				// php curl is available
+				// try to read the large response in chunks
+				// to avoid using too much memory
+
+				$ch = curl_init();
+				curl_setopt( $ch, CURLOPT_URL, $url );
+				curl_setopt( $ch, CURLOPT_HTTPGET, false );
+				curl_setopt( $ch, CURLOPT_ENCODING, '' );
+				curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5 );
+				curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
+
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_enabled', false ) ) {
+					$tor_host = Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_ip', '127.0.0.1' );
+					$tor_port = absint( Dashed_Slug_Wallets::get_option( 'wallets_rates_tor_port', 9050 ) );
+
+					curl_setopt( $ch, CURLOPT_PROXY, $tor_host );
+					curl_setopt( $ch, CURLOPT_PROXYPORT, $tor_port );
+					curl_setopt( $ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME );
+
+				}
+
+				$cb = function( $ch, $str ) use ( &$cryptos ) {
+					static $buffer = '';
+					$buffer .= $str;
+
+					if ( preg_match_all( '/{[^}]+}/', $buffer, $matches ) ) {
+						foreach ( $matches[ 0 ] as $match ) {
+							$currency = json_decode( $match );
+							if ( $currency ) {
+								$symbol = strtoupper( $currency->symbol );
+								$cryptos[] = $symbol;
+								self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
+								self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+							}
+						}
+
+						$pos = strrpos( $buffer, '}' );
+						$buffer = substr( $buffer, $pos + 1 );
+
+					}
+					return strlen( $str );
+				};
+
+				curl_setopt( $ch, CURLOPT_WRITEFUNCTION, $cb );
+
+				$result = curl_exec( $ch );
+				$msg    = curl_error( $ch );
+				curl_close( $ch );
+
+				if ( false === $result ) {
+					error_log( "PHP curl returned error while pulling rates: $msg" );
+				}
+
+
+			} else {
+				// php curl is not available
+				// will try to read the file in one chunk
+				// but this can fail due to out of mem
+				$json = self::file_get_contents( $url );
+				if ( is_string( $json ) ) {
+					$obj = json_decode( $json );
+					if ( is_array( $obj ) ) {
+						foreach ( $obj as $currency ) {
+							$symbol = strtoupper( $currency->symbol );
+							$cryptos[] = $symbol;
+							self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
+							self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+						}
 					}
 				}
 			}

@@ -5,23 +5,23 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.4.1
 Requires PHP: 5.6
-Stable tag: 5.0.4
+Stable tag: 5.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
+Offer your users custodial cryptocurrency wallets, backed by full nodes that you control.
 
 == Description ==
 
 [![RIPS CodeRisk](https://coderisk.com/wp/plugin/wallets/badge "RIPS CodeRisk")](https://coderisk.com/wp/plugin/wallets)
 
-### Custodial cryptocurrency wallets: Let your users deposit, withdraw, and transfer bitcoins and altcoins on your site.
+### Offer your users custodial cryptocurrency wallets, backed by full nodes that you control.
 
 = At a glance =
 
 [Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin) is a FREE WordPress plugin by [dashed-slug](https://dashed-slug.net).
 
-Your users can perform financial transactions on your site via Bitcoins and other cryptocurrencies.
+Your users can deposit, withdraw and transfer Bitcoins and other cryptocurrencies on your site.
 
 
 = Get the free PDF manual! =
@@ -341,6 +341,14 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.5 =
+- Change: In confirmation/notification templates, `###USER_LOGIN###`/`###OTHER_USER_LOGIN###` is no longer described as "account nickname", since it is the `user_login` and not the `nickname`.
+- Add: In confirmation/notification templates,` ###USER_NICKNAME###`/`###OTHER_USER_NICKNAME###` is introduced as a variable that is substituted for the user's nickname.
+- Change: Confirmation/notification templates now use the variable `###EXTRA_DESCRIPTION###` to accurately display the name of the extra description (such as Payment ID, Memo, etc.)
+- Add: New column in coin adapters list indicates max block height up to which the wallet is synced for compatible coin adapters.
+- Fix: Coingecko exchange rates are now loaded with asynchronous buffering, to prevent high memory usage.
+- Add: New TurtleCoin adapter is showcased in the "About" admin screen.
 
 = 5.0.4 =
 - Fix: In `[wallets_balance template="static"]` the symbol next to the equivalent (fiat) amount was incorrect, is now fixed.
@@ -1347,7 +1355,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.4` improves the email templating system and fixes a bug in the static template that displays user balances.
+Version `5.0.5` fixes a high memory usage issue with CoinGecko exchange rates.
 
 == Donating ==
 

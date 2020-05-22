@@ -81,7 +81,7 @@ Amount: ###AMOUNT### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT###)
 Fees to be paid: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE### )
 Transaction requested at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
-Extra transaction info (optional): ###EXTRA###
+###EXTRA_DESCRIPTION###: ###EXTRA###
 
 If you did not request this transaction, please contact the administrator of this site immediately.
 
@@ -409,6 +409,7 @@ EMAIL
 				$row['account']       = $user->user_login;
 				$row['user_login']    = $user->user_login;
 				$row['user_nicename'] = $user->user_nicename;
+				$row['user_nickname'] = $user->nickname;
 				$row['display_name']  = $user->display_name;
 				$email                = $user->user_email;
 
@@ -418,6 +419,7 @@ EMAIL
 						$row['other_account']       = $other_user->user_login;
 						$row['other_user_login']    = $other_user->user_login;
 						$row['other_user_nicename'] = $other_user->user_nicename;
+						$row['other_user_nickname'] = $other_user->nickname;
 						$row['other_display_name']  = $other_user->display_name;
 					}
 				}
@@ -440,8 +442,8 @@ EMAIL
 					try {
 						$adapters = apply_filters( 'wallets_api_adapters', array() );
 						if ( isset( $adapters[ $fiat_symbol ] ) ) {
-							$adapter  = $adapters[ $fiat_symbol ];
-							$fiat_sprintf  = $adapter->get_sprintf();
+							$adapter      = $adapters[ $fiat_symbol ];
+							$fiat_sprintf = $adapter->get_sprintf();
 						}
 					} catch ( Exception $e ) {
 						unset( $e ); // NOOP
@@ -453,11 +455,14 @@ EMAIL
 					$row['fee'] = 0;
 				}
 
+				$row['extra_description'] = 'Extra transaction info (optional)';
+
 				if ( isset( $row['symbol'] ) ) {
 					try {
 						$adapters = apply_filters( 'wallets_api_adapters', array() );
-						$adapter  = $adapters[ $row['symbol'] ];
-						$sprintf  = $adapter->get_sprintf();
+						$adapter                  = $adapters[ $row['symbol'] ];
+						$row['extra_description'] = $adapter->get_extra_field_description();
+						$sprintf                  = $adapter->get_sprintf();
 					} catch ( Exception $e ) {
 						$sprintf = '%01.8F';
 					}
@@ -553,6 +558,7 @@ EMAIL
 				$row['account']       = $user->user_login;
 				$row['user_login']    = $user->user_login;
 				$row['user_nicename'] = $user->user_nicename;
+				$row['user_nickname'] = $user->nickname;
 				$row['display_name']  = $user->display_name;
 
 				if ( isset( $row['other_account'] ) ) {
@@ -561,7 +567,9 @@ EMAIL
 						$row['other_account']       = $other_user->user_login;
 						$row['other_user_login']    = $other_user->user_login;
 						$row['other_user_nicename'] = $other_user->user_nicename;
-						$row['other_display_name']  = $other_user->display_name;}
+						$row['other_user_nickname'] = $other_user->nickname;
+						$row['other_display_name']  = $other_user->display_name;
+					}
 				}
 
 				// delete some vars
@@ -692,6 +700,7 @@ EMAIL
 				$row['account']       = $user->user_login;
 				$row['user_login']    = $user->user_login;
 				$row['user_nicename'] = $user->user_nicename;
+				$row['user_nickname'] = $user->nickname;
 				$row['display_name']  = $user->display_name;
 
 				if ( isset( $row['other_account'] ) ) {
@@ -700,6 +709,7 @@ EMAIL
 						$row['other_account']       = $other_user->user_login;
 						$row['other_user_login']    = $other_user->user_login;
 						$row['other_user_nicename'] = $other_user->user_nicename;
+						$row['other_user_nickname'] = $other_user->nickname;
 						$row['other_display_name']  = $other_user->display_name;
 						$email                      = $other_user->user_email;
 					}
@@ -894,18 +904,22 @@ EMAIL
 						<dd><?php esc_html_e( 'Confirmation link. Clicking this will mark the transaction as confirmed by user.', 'wallets' ); ?></dd>
 
 						<dt><code>###USER_LOGIN###</code></dt>
-						<dd><?php esc_html_e( 'Account user_login (aka nickname)', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'Account user_login', 'wallets' ); ?></dd>
 						<dt><code>###USER_NICENAME###</code></dt>
 						<dd><?php esc_html_e( 'Account user_nicename', 'wallets' ); ?></dd>
+						<dt><code>###USER_NICKNAME###</code></dt>
+						<dd><?php esc_html_e( 'Account user_nickname', 'wallets' ); ?></dd>
 						<dt><code>###DISPLAY_NAME###</code></dt>
 						<dd><?php esc_html_e( 'Account display_name based on First and Last name', 'wallets' ); ?></dd>
 						<dt><del><code>###ACCOUNT###</code></del></dt>
 						<dd><del><?php esc_html_e( '(same as ###USER_LOGIN###)', 'wallets' ); ?></del></dd>
 
 						<dt><code>###OTHER_USER_LOGIN###</code></dt>
-						<dd><?php esc_html_e( 'user_login (aka nickname) of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'user_login of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><code>###OTHER_USER_NICENAME###</code></dt>
 						<dd><?php esc_html_e( 'user_nicename of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_USER_NICKNAME###</code></dt>
+						<dd><?php esc_html_e( 'user_nickname of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><code>###OTHER_DISPLAY_NAME###</code></dt>
 						<dd><?php esc_html_e( 'display_name based on First and Last name, of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><del><code>###OTHER_ACCOUNT###</code></del></dt>
@@ -938,7 +952,9 @@ EMAIL
 						<dt><code>###ADDRESS###</code></dt>
 						<dd><?php esc_html_e( 'For deposits and withdrawals, the external address.', 'wallets' ); ?></dd>
 						<dt><code>###EXTRA###</code></dt>
-						<dd><?php esc_html_e( 'Optional. For some coins, there is extra information required for deposits/withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc..', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'Optional extra information about destination. For some coins, there is extra information required for deposits/withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc...', 'wallets' ); ?></dd>
+						<dt><code>###EXTRA_DESCRIPTION###</code></dt>
+						<dd><?php esc_html_e( 'The name of any extra information about destination, specific to this coin. This can be "Payment ID" for Monero, "Destination Tag" for Ripple, etc...', 'wallets' ); ?></dd>
 						<dt><code>###TAGS###</code></dt>
 						<dd><?php esc_html_e( 'A space separated list of tags, slugs, etc that further describe the type of transaction.', 'wallets' ); ?></dd>
 					</dl>

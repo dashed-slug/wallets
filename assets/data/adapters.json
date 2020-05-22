@@ -37,5 +37,14 @@
 		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension",
 		"support": "https://www.dashed-slug.net/forums/forum/monero-coin-adapter-extension-support/",
 		"slug": "wallets-monero"
+	},
+
+	{
+		"name": "TurtleCoin Adapter",
+		"description": "Connect to a TurtleCoin wallet, or to any other wallet that is a fork of TurtleCoin.",
+		"homepage": "https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/turtlecoin-adapter-extension",
+		"support": "https://www.dashed-slug.net/forums/forum/turtlecoin-adapter-extension-support/",
+		"slug": "wallets-turtlecoin"
 	}
+
 ]

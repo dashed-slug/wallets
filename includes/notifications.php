@@ -112,7 +112,7 @@ Amount after fees: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUN
 Transaction ID: ###TXID###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
-Extra transaction info (optional): ###EXTRA###
+###EXTRA_DESCRIPTION###: ###EXTRA###
 
 NOTIFICATION
 					, 'wallets'
@@ -138,7 +138,7 @@ Amount after fees: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUN
 Last error message: ###LAST_ERROR###
 Transaction created at: ###CREATED_TIME_LOCAL###
 Comment: ###COMMENT###
-Extra transaction info (optional): ###EXTRA###
+###EXTRA_DESCRIPTION###: ###EXTRA###
 
 NOTIFICATION
 					, 'wallets'
@@ -234,7 +234,7 @@ Amount deposited: ###AMOUNT_WITHOUT_FEE### (in ###FIAT_SYMBOL###: ###FIAT_AMOUNT
 Fees paid: ###FEE### (in ###FIAT_SYMBOL###: ###FIAT_FEE###)
 Transaction ID: ###TXID###
 Transaction seen at: ###CREATED_TIME_LOCAL###
-Extra transaction info (optional): ###EXTRA###
+###EXTRA_DESCRIPTION###: ###EXTRA###
 
 NOTIFICATION
 					, 'wallets'
@@ -797,9 +797,11 @@ NOTIFICATION
 					<h2><?php esc_html_e( 'The following variables are substituted in notification templates:', 'wallets' ); ?></h2>
 					<dl>
 						<dt><code>###USER_LOGIN###</code></dt>
-						<dd><?php esc_html_e( 'Account user_login (aka nickname)', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'Account user_login', 'wallets' ); ?></dd>
 						<dt><code>###USER_NICENAME###</code></dt>
 						<dd><?php esc_html_e( 'Account user_nicename', 'wallets' ); ?></dd>
+						<dt><code>###USER_NICKNAME###</code></dt>
+						<dd><?php esc_html_e( 'Account user_nickname', 'wallets' ); ?></dd>
 						<dt><code>###DISPLAY_NAME###</code></dt>
 						<dd><?php esc_html_e( 'Account display_name based on First and Last name', 'wallets' ); ?></dd>
 						<dt><del><code>###ACCOUNT###</code></del></dt>
@@ -808,9 +810,11 @@ NOTIFICATION
 						<dd><?php esc_html_e( 'Account user ID', 'wallets' ); ?></dd>
 
 						<dt><code>###OTHER_USER_LOGIN###</code></dt>
-						<dd><?php esc_html_e( 'user_login (aka nickname) of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dd><?php esc_html_e( 'user_login of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><code>###OTHER_USER_NICENAME###</code></dt>
 						<dd><?php esc_html_e( 'user_nicename of other account (for internal transactions between users)', 'wallets' ); ?></dd>
+						<dt><code>###OTHER_USER_NICKNAME###</code></dt>
+						<dd><?php esc_html_e( 'user_nickname of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><code>###OTHER_DISPLAY_NAME###</code></dt>
 						<dd><?php esc_html_e( 'display_name based on First and Last name, of other account (for internal transactions between users)', 'wallets' ); ?></dd>
 						<dt><del><code>###OTHER_ACCOUNT###</code></del></dt>
@@ -846,6 +850,8 @@ NOTIFICATION
 						<dd><?php esc_html_e( 'For deposits and withdrawals, the external address.', 'wallets' ); ?></dd>
 						<dt><code>###EXTRA###</code></dt>
 						<dd><?php esc_html_e( 'Optional. For some coins, there is extra information required for deposits/withdrawals. E.g. Monero Payment ID, Ripple Destination Tag, etc..', 'wallets' ); ?></dd>
+						<dt><code>###EXTRA_DESCRIPTION###</code></dt>
+						<dd><?php esc_html_e( 'The name of any extra information about destination, specific to this coin. This can be "Payment ID" for Monero, "Destination Tag" for Ripple, etc...', 'wallets' ); ?></dd>
 						<dt><code>###TAGS###</code></dt>
 						<dd><?php esc_html_e( 'A space separated list of tags, slugs, etc that further describe the type of transaction.', 'wallets' ); ?></dd>
 						<dt><code>###LAST_ERROR###</code></dt>
@@ -1177,6 +1183,7 @@ NOTIFICATION
 				'###ACCOUNT###'       => $tx_data->user->user_login,
 				'###USER_LOGIN###'    => $tx_data->user->user_login,
 				'###USER_NICENAME###' => $tx_data->user->user_nicename,
+				'###USER_NICKNAME###' => $tx_data->user->nickname,
 				'###DISPLAY_NAME###'  => $tx_data->user->display_name,
 				'###ACCOUNT_ID###'    => $tx_data->user->ID,
 			);
@@ -1194,6 +1201,7 @@ NOTIFICATION
 				$replace_pairs['###OTHER_ACCOUNT###']       = $tx_data->other_user->user_login;
 				$replace_pairs['###OTHER_USER_LOGIN###']    = $tx_data->other_user->user_login;
 				$replace_pairs['###OTHER_USER_NICENAME###'] = $tx_data->other_user->user_nicename;
+				$replace_pairs['###OTHER_USER_NICKNAME###'] = $tx_data->other_user->nickname;
 				$replace_pairs['###OTHER_DISPLAY_NAME###']  = $tx_data->other_user->display_name;
 				$replace_pairs['###OTHER_ACCOUNT_ID###']    = $tx_data->other_user->ID;
 			}
@@ -1202,6 +1210,8 @@ NOTIFICATION
 				$replace_pairs['###TXID###'] = $tx_data->txid;
 			}
 
+			$replace_pairs['###EXTRA_DESCRIPTION###'] = 'Extra transaction info (optional)';
+
 			// use pattern for displaying amounts
 			$sprintf = '%01.8F';
 			if ( isset( $tx_data->symbol ) ) {
@@ -1209,6 +1219,7 @@ NOTIFICATION
 				if ( isset( $adapters[ $tx_data->symbol ] ) ) {
 					$adapter = $adapters[ $tx_data->symbol ];
 					$sprintf = $adapter->get_sprintf();
+					$replace_pairs['###EXTRA_DESCRIPTION###'] = $adapter->get_extra_field_description();
 				}
 			}
 

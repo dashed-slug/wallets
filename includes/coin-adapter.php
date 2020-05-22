@@ -613,6 +613,19 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 		}
 
 		/**
+		 * Returns the block height up to which the wallet backend is synced.
+		 *
+		 * This will normally be a positive integer. Coin adapters do not have to override this.
+		 * False means that the information is not available.
+		 *
+		 * @since 5.0.5
+		 * @return boolean|integer Block height of wallet or false if height information is not available.
+		 */
+		public function get_block_height() {
+			return false;
+		}
+
+		/**
 		 * Total wallet balance available for spending.
 		 *
 		 * This is the total amount held in the wallet of this coin. Balance reserved due to staking in PoS coins
