@@ -42,6 +42,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 			}
 			add_filter( "pre_update_option_{$this->option_slug}-rpc-password",   array( &$this, 'filter_pre_update_password' ), 10, 2 );
 			add_filter( "pre_update_option_{$this->option_slug}-rpc-passphrase", array( &$this, 'filter_pre_update_passphrase' ), 10, 2 );
+			add_action( 'updated_option', array( &$this, 'expire_get_balance_on_save' ), 10, 3 );
 		}
 
 		public function action_admin_init_notices() {
@@ -390,6 +391,20 @@ CFG;
 
 			return $result;
 		}
+
+		/**
+		 * When user saves new coin adapter RPC settings, clear the get_balance cache.
+		 *
+		 */
+		public function expire_get_balance_on_save( $option, $old_value, $value ) {
+			static $cleared = false;
+
+			if ( ! $cleared && "{$this->option_slug}-rpc" == substr( $option, 0, strlen( "{$this->option_slug}-rpc" ) ) ) {
+				Dashed_Slug_Wallets::delete_transient( 'wallets_get_balance_' . $this->get_symbol() );
+				$cleared = true;
+			}
+		}
+
 
 		public function get_block_height() {
 			if ( ! $this->get_adapter_option( 'general-enabled' ) ) {

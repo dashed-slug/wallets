@@ -26,7 +26,15 @@ if ( isset( $adapters[ $atts['symbol'] ] ) ) {
 }
 unset( $adapters );
 ?>
-<div class="dashed-slug-wallets balance static balance-static wallets-ready">
+<div class="dashed-slug-wallets balance static balance-static wallets-ready<?php
+
+if ( Dashed_Slug_Wallets_Rates::is_fiat( $atts['symbol'] ) ) {
+	echo ' fiat-coin';
+}
+
+if ( Dashed_Slug_Wallets_Rates::is_crypto( $atts['symbol'] ) ) {
+	echo ' crypto-coin';
+} ?>">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_balance' );

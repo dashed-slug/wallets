@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.5\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-05-22 16:08:17+00:00\n"
+"POT-Creation-Date: 2020-07-01 08:36:45+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: includes/balances-list-table.php:37 includes/sidebar-widgets.php:159
 #: includes/transactions-list-table.php:48 templates/balance-list.php:23
 #: templates/balance.php:10 templates/deposit-list.php:18
-#: templates/deposit-static.php:41 templates/deposit.php:15
+#: templates/deposit-static.php:49 templates/deposit.php:15
 #: templates/move.php:21 templates/rates-static.php:22 templates/rates.php:23
 #: templates/total_balances.php:23 templates/transactions-rows.php:14
 #: templates/transactions-static.php:36 templates/transactions.php:330
@@ -126,7 +126,7 @@ msgstr ""
 #: includes/addresses-list.php:52 includes/admin-menu.php:63
 #: includes/balances-list.php:52 includes/caps.php:105 includes/caps.php:166
 #: includes/coin-adapter-bitcoin.php:61 includes/coin-adapter-json.php:75
-#: includes/coin-adapter-rpc.php:304 includes/coin-adapter-rpc.php:313
+#: includes/coin-adapter-rpc.php:305 includes/coin-adapter-rpc.php:314
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:153
 #: includes/confirmations.php:836 includes/cron.php:490
@@ -172,7 +172,7 @@ msgid "Coin adapters currently enabled:"
 msgstr ""
 
 #: includes/addresses-list-table.php:45 includes/balances-list-table.php:36
-#: includes/coin-adapter-rpc.php:161 includes/sidebar-widgets.php:142
+#: includes/coin-adapter-rpc.php:162 includes/sidebar-widgets.php:142
 msgid "User"
 msgstr ""
 
@@ -558,7 +558,7 @@ msgid ""
 msgstr ""
 
 #: includes/balances-list-table.php:38 includes/menu-item.php:109
-#: templates/balance-list.php:24 templates/balance-static.php:35
+#: templates/balance-list.php:24 templates/balance-static.php:43
 #: templates/balance.php:11
 msgid "Balance"
 msgstr ""
@@ -675,9 +675,9 @@ msgstr ""
 msgid "Refer to the documentation for details."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:126 includes/coin-adapter-rpc.php:378
-#: includes/coin-adapter-rpc.php:439 includes/coin-adapter-rpc.php:466
-#: includes/coin-adapter-rpc.php:864
+#: includes/coin-adapter-bitcoin.php:126 includes/coin-adapter-rpc.php:379
+#: includes/coin-adapter-rpc.php:454 includes/coin-adapter-rpc.php:481
+#: includes/coin-adapter-rpc.php:879
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
@@ -705,37 +705,37 @@ msgid ""
 "fetched from the remote API (in seconds)."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:61
+#: includes/coin-adapter-rpc.php:62
 msgid "The %s RPC API cannot be contacted."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:64
+#: includes/coin-adapter-rpc.php:65
 msgid ""
 "You need to make sure that your <a href=\"%1$s\">%2$s RPC settings</a> are "
 "correctly configured. "
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:70
+#: includes/coin-adapter-rpc.php:71
 msgid "Then edit your <code>.conf</code> file and append the following:"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:76
+#: includes/coin-adapter-rpc.php:77
 msgid "Finally, start the daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:97
+#: includes/coin-adapter-rpc.php:98
 msgid "Receive deposits from mining"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:120
+#: includes/coin-adapter-rpc.php:121
 msgid "Daemon RPC API"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:127
+#: includes/coin-adapter-rpc.php:128
 msgid "IP"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:133
+#: includes/coin-adapter-rpc.php:134
 msgid ""
 "The IP of the machine running your wallet daemon. Set to 127.0.0.1 if you "
 "are running the daemon on the same machine as WordPress. If you want to "
@@ -743,38 +743,38 @@ msgid ""
 "[0:0:0:0:0:0:0:1]."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:144
+#: includes/coin-adapter-rpc.php:145
 msgid "Port"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:150
+#: includes/coin-adapter-rpc.php:151
 msgid ""
 "The TCP port where the daemon listens for JSON-RPC connections. It should "
 "match the <code>rpcport</code> setting in your daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:167
+#: includes/coin-adapter-rpc.php:168
 msgid ""
 "The username part of the credentials to connect to the JSON-RPC port. It "
 "should match the <code>rpcuser</code> setting in your daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:178
+#: includes/coin-adapter-rpc.php:179
 msgid "Password"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:184
+#: includes/coin-adapter-rpc.php:185
 msgid ""
 "The password part of the credentials to connect to the JSON-RPC port. It "
 "should match the <code>rpcpassword</code> setting in your daemon. Note that "
 "this password will be stored on your MySQL DB."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:195
+#: includes/coin-adapter-rpc.php:196
 msgid "Wallet passphrase"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:201
+#: includes/coin-adapter-rpc.php:202
 msgid ""
 "The passphrase used to unlock your wallet. Only needed for withdrawals. "
 "Leave empty if withdrawals are not needed or if the wallet is not encrypted "
@@ -782,66 +782,66 @@ msgid ""
 "DB."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:212
+#: includes/coin-adapter-rpc.php:213
 msgid "Path"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:218
+#: includes/coin-adapter-rpc.php:219
 msgid ""
 "The path location of the JSON-RPC API endpoint. Normally you will want to "
 "leave this empty."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:229
+#: includes/coin-adapter-rpc.php:230
 msgid "SSL enabled"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:235
+#: includes/coin-adapter-rpc.php:236
 msgid ""
 "Check to enable RPC communication over SSL. This is deprecated in Bitcoin "
 "core but other coins may use it. Only use it if you have specified "
 "<code>rpcssl=1</code> in your configuration."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:248
+#: includes/coin-adapter-rpc.php:249
 msgid "Other adapter settings"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:255
+#: includes/coin-adapter-rpc.php:256
 msgid "Minimum confirmations"
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:261
+#: includes/coin-adapter-rpc.php:262
 msgid ""
 "Deposits will count towards user balances after this many blockchain "
 "confirmations."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:321
+#: includes/coin-adapter-rpc.php:322
 msgid ""
 "The %1$s adapter needs to know the location and credentials to the RPC API "
 "of the %2$s daemon."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:476
+#: includes/coin-adapter-rpc.php:491
 msgid "%1$s->%2$s() failed to withdraw because the adapter is disabled."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:486
+#: includes/coin-adapter-rpc.php:501
 msgid "%1$s->%2$s() failed to withdraw because the wallet is locked."
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:536
+#: includes/coin-adapter-rpc.php:551
 msgid ""
 "%1$s->%2$s() failed to send %5$f %6$s %3$s with status=\"%4$s\" and "
 "error=\"%5$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:619
+#: includes/coin-adapter-rpc.php:634
 msgid "%1$s->%2$s() failed to send with status=\"%3$s\" and error=\"%4$s\""
 msgstr ""
 
-#: includes/coin-adapter-rpc.php:715 includes/coin-adapter-rpc.php:795
+#: includes/coin-adapter-rpc.php:730 includes/coin-adapter-rpc.php:810
 msgid ""
 "%1$s->%2$s( %5$s ) failed with status=\"%3$s\" and error=\"%4$s\" for %6$s "
 "coin."
@@ -2820,8 +2820,8 @@ msgstr ""
 msgid "Wallets API key"
 msgstr ""
 
-#: templates/api_key.php:15 templates/deposit-static.php:61
-#: templates/deposit-static.php:77 templates/deposit.php:18
+#: templates/api_key.php:15 templates/deposit-static.php:69
+#: templates/deposit-static.php:86 templates/deposit.php:18
 #: templates/deposit.php:22
 msgid "Copy to clipboard"
 msgstr ""
@@ -2842,7 +2842,7 @@ msgstr ""
 msgid "Show zero balances: "
 msgstr ""
 
-#: templates/deposit-list.php:19 templates/deposit-static.php:57
+#: templates/deposit-list.php:19 templates/deposit-static.php:65
 #: templates/deposit.php:17
 msgid "Deposit address"
 msgstr ""
@@ -2907,7 +2907,7 @@ msgstr ""
 #: templates/transactions-rows.php:44 templates/transactions-rows.php:88
 #: templates/transactions-rows.php:108 templates/transactions-rows.php:109
 #: templates/transactions-rows.php:129 templates/transactions-rows.php:130
-#: templates/transactions-static.php:155 templates/transactions.php:83
+#: templates/transactions-static.php:158 templates/transactions.php:83
 #: templates/transactions.php:151 templates/transactions.php:155
 #: templates/transactions.php:217 templates/transactions.php:276
 #: templates/transactions.php:280

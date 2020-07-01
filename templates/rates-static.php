@@ -29,7 +29,15 @@ ksort( $adapters );
 			foreach ( $adapters as $symbol => $adapter ):
 				if ( $fiat_symbol != $symbol ):
 				?>
-				<tr>
+				<tr class="<?php
+
+if ( Dashed_Slug_Wallets_Rates::is_fiat( $symbol ) ) {
+	echo 'fiat-coin ';
+}
+
+if ( Dashed_Slug_Wallets_Rates::is_crypto( $symbol ) ) {
+	echo 'crypto-coin ';
+} ?>">
 					<td class="icon">
 						<img
 							src="<?php echo esc_attr( apply_filters( "wallets_coin_icon_url_$symbol", $adapter->get_icon_url() ) ); ?>"

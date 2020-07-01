@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<div class="dashed-slug-wallets balance balance-<?php echo basename( __FILE__, '.php' ); ?>" data-bind="css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets balance" data-bind="css: { 'wallets-ready': !coinsDirty(), 'fiat-coin': selectedCoin() && coins()[ selectedCoin() ].is_fiat, 'crypto-coin': selectedCoin() && coins()[ selectedCoin() ].is_crypto }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_balance' );

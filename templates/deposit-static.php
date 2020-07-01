@@ -31,7 +31,15 @@ unset( $adapter );
 
 ?>
 
-<form class="dashed-slug-wallets deposit static deposit-static wallets-ready" >
+<form class="dashed-slug-wallets deposit static deposit-static wallets-ready<?php
+
+if ( Dashed_Slug_Wallets_Rates::is_fiat( $atts['symbol'] ) ) {
+	echo ' fiat-coin';
+}
+
+if ( Dashed_Slug_Wallets_Rates::is_crypto( $atts['symbol'] ) ) {
+	echo ' crypto-coin';
+} ?>" >
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_deposit' );
@@ -69,6 +77,7 @@ unset( $adapter );
 			/>
 	</label>
 
+	<?php if ( is_array( $deposit_address ) && isset( $deposit_address[ 1 ] ) ): ?>
 	<label class="extra">
 		<span><?php echo $extra_desc; ?></span>:
 		<span
@@ -81,9 +90,10 @@ unset( $adapter );
 			type="text"
 			readonly="readonly"
 			onClick="this.select();"
-			value="<?php echo esc_attr( is_array( $deposit_address ) ? $deposit_address[ 1 ] : $deposit_address ); ?>"
+			value="<?php echo esc_attr( $deposit_address[ 1 ] ); ?>"
 			/>
 	</label>
+	<?php endif; ?>
 
 	<?php
 

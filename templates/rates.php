@@ -6,7 +6,7 @@ if ( $atts['decimals'] > 16 ) {
 }
 ?>
 
-<div class="dashed-slug-wallets rates rates-<?php echo basename( __FILE__, '.php' ); ?>" data-bind="if: 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets rates" data-bind="if: 'none' != walletsUserData.fiatSymbol, css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_rates' );
@@ -26,7 +26,7 @@ if ( $atts['decimals'] > 16 ) {
 		</thead>
 
 		<tbody data-bind="foreach: jQuery.map( coins(), function( v, i ) { var copy = jQuery.extend({},v); copy.sprintf_pattern = copy.sprintf; delete copy.sprintf; return copy; } )">
-			<tr data-bind="if: rate && ( symbol != walletsUserData.fiatSymbol )">
+			<tr data-bind="if: rate && ( symbol != walletsUserData.fiatSymbol ), css: { 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }">
 				<td class="icon">
 					<img data-bind="attr: { src: icon_url, alt: name }" />
 				</td>

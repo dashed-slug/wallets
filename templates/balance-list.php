@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<form class="dashed-slug-wallets balance balance-<?php echo basename( __FILE__, '.php' ); ?>" onsubmit="return false;" data-bind="css: { 'wallets-ready': !coinsDirty() }">
+<form class="dashed-slug-wallets balance balance-list onsubmit="return false;" data-bind="css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_balance' );
@@ -28,7 +28,7 @@
 
 		<tbody data-bind="foreach: jQuery.map( coins(), function( v, i ) { var copy = jQuery.extend({},v); copy.sprintf_pattern = copy.sprintf; delete copy.sprintf; return copy; } )">
 			<!--  ko if: ( $root.showZeroBalances() || balance ) -->
-			<tr>
+			<tr data-bind="css: { 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }">
 				<td class="icon">
 					<img data-bind="attr: { src: icon_url, alt: name }" />
 				</td>

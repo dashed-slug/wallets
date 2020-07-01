@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 5.0.5
+Stable tag: 5.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,13 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.6 =
+- Add: Many elements in the frontend templates now have the HTML classes `crypto-coin` and `fiat-coin` to allow differential styling of fiat and crypto coin information.
+- Fix: When full node adapter RPC settings are saved, the cached value of the adapter status is evicted, forcing an immediate refresh of the adapter status in the admin screens.
+- Fix: Already minified JQuery UI CSS is no longer re-minified.
+- Add: Several new shortcode templates and shortcodes allow for displaying "textonly" values. e.g. `[wallets_api_key template="textonly"]` displays the user's API key in a `<span>` tag that can be inserted in text paragraphs.
+- Fix: Some HTML classes that were previously doubled are now fixed, e.g. `deposit-deposit`, etc.
 
 = 5.0.5 =
 - Change: In confirmation/notification templates, `###USER_LOGIN###`/`###OTHER_USER_LOGIN###` is no longer described as "account nickname", since it is the `user_login` and not the `nickname`.
@@ -1355,7 +1362,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.5` fixes a high memory usage issue with CoinGecko exchange rates.
+Version `5.0.6` improves the frontend templates, and adds several new shortcode templates to display pure values without UI.
 
 == Donating ==
 
@@ -1369,7 +1376,7 @@ These are all the ways you can show your support, if you so choose:
 
 1. **Become a registered [dashed-slug.net](https://www.dashed-slug.net) member**, and enjoy unlimited access to all the premium plugin extensions available, and priority support with any issues.
 2. **Translate the plugin** and donate your translation. Your contribution will be mentioned in the changelog. See the manual entry on *Localization* for instructions.
-2. **Report bugs and suggest features.**
+2. **Report bugs/issues.**
 3. **Spread the word** to your friends.
 4. **If you wish, you may donate** any amount [via flattr](https://flattr.com/profile/dashed-slug) or via the following dashed-slug addresses:
 	- Bitcoin: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`

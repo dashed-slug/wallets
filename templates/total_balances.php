@@ -7,7 +7,7 @@ $total_balances = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 ksort( $adapters );
 ?>
 
-<div class="dashed-slug-wallets total-balances total-balances-<?php echo basename( __FILE__, '.php' ); ?> wallets-ready" data-bind="css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets total-balances wallets-ready" data-bind="css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_total_balances' );
@@ -30,7 +30,15 @@ ksort( $adapters );
 			foreach ( $adapters as $symbol => $adapter ):
 				if ( isset( $total_balances[ $symbol ] ) ):
 				?>
-				<tr>
+				<tr class="<?php
+
+if ( Dashed_Slug_Wallets_Rates::is_fiat( $symbol ) ) {
+	echo ' fiat-coin';
+}
+
+if ( Dashed_Slug_Wallets_Rates::is_crypto( $symbol ) ) {
+	echo ' crypto-coin';
+} ?>">
 					<td class="icon">
 						<img src="<?php echo esc_attr( apply_filters( "wallets_coin_icon_url_$symbol", $adapter->get_icon_url() ) ); ?>" alt="<?php echo esc_attr( $adapter->get_name() ); ?>" />
 					</td>

@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<div class="dashed-slug-wallets account-value account-value-<?php echo basename( __FILE__, '.php' ); ?>" data-bind="css: { 'wallets-ready': !coinsDirty() }">
+<div class="dashed-slug-wallets account-value" data-bind="css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_account_value' );

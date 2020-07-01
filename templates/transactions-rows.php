@@ -18,7 +18,7 @@
 			&mdash;
 		</p>
 		<ul data-bind="visible: transactions().length, foreach: transactions()">
-			<li data-bind="if: category == 'withdraw', visible: category == 'withdraw', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled' }" class="withdraw">
+			<li data-bind="if: category == 'withdraw', visible: category == 'withdraw', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled', 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }" class="withdraw">
 				<div class="type label"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ category ]"></span></div>
 				<div class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></div>
 
@@ -56,7 +56,7 @@
 
 			</li>
 
-			<li data-bind="if: category == 'deposit', visible: category == 'deposit', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="deposit">
+			<li data-bind="if: category == 'deposit', visible: category == 'deposit', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }" class="deposit">
 				<div class="type label"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ category ]"></span></div>
 				<div class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></div>
 
@@ -92,7 +92,7 @@
 
 			</li>
 
-			<li data-bind="if: category == 'move', visible: category == 'move', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
+			<li data-bind="if: category == 'move', visible: category == 'move', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }" class="move">
 				<div class="type label"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ category ]"></span></div>
 				<div class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></div>
 
@@ -113,7 +113,7 @@
 
 			</li>
 
-			<li data-bind="if: category == 'trade', visible: category == 'trade', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed'  }" class="move">
+			<li data-bind="if: category == 'trade', visible: category == 'trade', css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }" class="trade">
 				<div class="type label"><?php echo apply_filters( 'wallets_ui_text_type', esc_html__( 'Type', 'wallets-front' ) ); ?>: <span data-bind="text: wallets_ko_i18n[ category ]"></span></div>
 				<div class="time"><time data-bind="text: moment( created_time + '.000Z' ).toDate().toLocaleString(), attr: { datetime: created_time + 'Z' }"></time></div>
 

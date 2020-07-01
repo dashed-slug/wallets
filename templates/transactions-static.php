@@ -119,7 +119,10 @@ unset( $search_params, $adapters );
 			<tbody>
 
 				<?php foreach ( $transactions as $tx ): ?>
-				<tr class="<?php echo esc_attr( $tx->category ); ?> <?php echo esc_attr( $tx->status ); ?>">
+				<tr class="<?php echo esc_attr( $tx->category ); ?> <?php echo esc_attr( $tx->status );
+				if ( Dashed_Slug_Wallets_Rates::is_fiat( $atts['symbol'] ) ) { echo ' fiat-coin'; }
+				if ( Dashed_Slug_Wallets_Rates::is_crypto( $atts['symbol'] ) ) { echo ' crypto-coin'; } ?>">
+
 					<?php foreach ( $atts['columns'] as $column ): ?>
 					<td class="<?php echo esc_attr( $column ); ?>">
 					<?php

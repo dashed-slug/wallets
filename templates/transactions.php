@@ -356,7 +356,7 @@
 		<tbody data-bind="foreach: transactions()">
 
 			<!-- ko if: ( category == 'withdraw' ) -->
-			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled' }" class="withdraw">
+			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled', 'fiat-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_fiat, 'crypto-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_crypto }" class="withdraw">
 				<?php foreach ( $atts['columns'] as $column ): ?>
 				<td
 					class="<?php echo esc_attr( $column ); ?>"
@@ -367,7 +367,7 @@
 			<!-- /ko -->
 
 			<!-- ko if: ( category == 'deposit' ) -->
-			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled' }" class="deposit">
+			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled', 'fiat-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_fiat, 'crypto-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_crypto  }" class="deposit">
 				<?php foreach ( $atts['columns'] as $column ): ?>
 				<td
 					class="<?php echo esc_attr( $column ); ?>"
@@ -378,7 +378,7 @@
 			<!-- /ko -->
 
 			<!-- ko if: ( category == 'move' ) -->
-			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled' }" class="move">
+			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled', 'fiat-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_fiat, 'crypto-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_crypto  }" class="move">
 				<?php foreach ( $atts['columns'] as $column ): ?>
 				<td
 					class="<?php echo esc_attr( $column ); ?>"
@@ -389,7 +389,7 @@
 			<!-- /ko -->
 
 			<!-- ko if: ( category == 'trade' ) -->
-			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled' }" class="move">
+			<tr data-bind="css: { unconfirmed: status == 'unconfirmed', pending: status == 'pending', done: status == 'done', failed: status == 'failed', cancelled: status == 'cancelled', 'fiat-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_fiat, 'crypto-coin': $root.coins()[ symbol ] && $root.coins()[ symbol ].is_crypto  }" class="move">
 				<?php foreach ( $atts['columns'] as $column ): ?>
 				<td
 					class="<?php echo esc_attr( $column ); ?>"

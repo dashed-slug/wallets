@@ -302,3 +302,13 @@
 		opacity: 0;
 	}
 }
+
+.dashed-slug-wallets.textonly {
+	opacity: initial;
+	border: initial;
+	border-radius: initial;
+	padding: initial;
+	color: initial;
+	font-size: initial;
+	box-shadow: initial;
+}

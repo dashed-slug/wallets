@@ -16,6 +16,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 			'wallets_balance'        => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
 			'wallets_transactions'   => Dashed_Slug_Wallets_Capabilities::LIST_WALLET_TRANSACTIONS,
 			'wallets_deposit'        => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
+			'wallets_depositextra'   => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
 			'wallets_withdraw'       => Dashed_Slug_Wallets_Capabilities::WITHDRAW_FUNDS_FROM_WALLET,
 			'wallets_move'           => Dashed_Slug_Wallets_Capabilities::SEND_FUNDS_TO_USER,
 			'wallets_total_balances' => Dashed_Slug_Wallets_Capabilities::HAS_WALLETS,
@@ -66,10 +67,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				default: $path = '';
 			}
 
-			$minified_file = DSWALLETS_PATH . "/assets/$path/$asset-5.0.5.min.$ext";
+			$minified_file = DSWALLETS_PATH . "/assets/$path/$asset-5.0.6.min.$ext";
 
 			if ( file_exists( $minified_file ) ) {
-				$final_file = "$asset-5.0.5.min.$ext";
+				$final_file = "$asset-5.0.6.min.$ext";
 			} else {
 				$final_file = "$asset.$ext";
 			}
@@ -83,7 +84,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 				'wallets_styles',
 				$this->asset_url( 'wallets', 'css' ),
 				array(),
-				'5.0.5'
+				'5.0.6'
 			);
 
 			wp_register_script(
@@ -150,7 +151,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 					'wallets_bitcoin',
 					$this->asset_url( 'wallets-bitcoin-validator', 'js' ),
 					array( 'wallets_ko', 'bs58check' ),
-					'5.0.5',
+					'5.0.6',
 					true
 				);
 
@@ -162,7 +163,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 					'wallets_ko',
 					$this->asset_url( 'wallets-ko', 'js' ),
 					$deps,
-					'5.0.5',
+					'5.0.6',
 					true
 				);
 			}
@@ -283,7 +284,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Shortcodes' ) ) {
 							'jsqrcode',
 							plugins_url( 'jsqrcode.min.js', 'wallets/assets/scripts/jsqrcode.min.js' ),
 							array(),
-							'5.0.5',
+							'5.0.6',
 							true
 						);
 					}
