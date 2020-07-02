@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 5.0.6
+Stable tag: 5.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,10 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.7 =
+- Fix: Issue with shortcode `[wallets_deposit template="list"]`, introduced in `5.0.6` is now fixed.
+- Fix: Dynamic shortcodes `[wallets_deposit]` and `[wallets_withdraw]` apply the HTML classes `crypto-coin` and `fiat-coin` according to the selected coin in those UIs, not the page-wide selected coin, which could be a custom coin (Fiat Coin adapter extension).
 
 = 5.0.6 =
 - Add: Many elements in the frontend templates now have the HTML classes `crypto-coin` and `fiat-coin` to allow differential styling of fiat and crypto coin information.
@@ -1362,7 +1366,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.6` improves the frontend templates, and adds several new shortcode templates to display pure values without UI.
+Version `5.0.7` fixes some UI issues introduced in `5.0.6`.
 
 == Donating ==
 

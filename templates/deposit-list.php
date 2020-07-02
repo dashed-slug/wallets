@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
 
-<form class="dashed-slug-wallets deposit-list" onsubmit="return false;" data-bind="css: { 'wallets-ready': !coinsDirty(), 'fiat-coin': selectedCoin() }">
+<form class="dashed-slug-wallets deposit deposit-list" onsubmit="return false;" data-bind="css: { 'wallets-ready': !coinsDirty() }">
 	<?php
 		do_action( 'wallets_ui_before' );
 		do_action( 'wallets_ui_before_deposit' );
@@ -21,7 +21,7 @@
 		</thead>
 
 		<tbody data-bind="foreach: jQuery.map( coins(), function( v, i ) { return v; } )">
-			<tr data-bind="css: { 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }>
+			<tr data-bind="css: { 'fiat-coin': is_fiat, 'crypto-coin': is_crypto }">
 				<td class="icon">
 					<img data-bind="attr: { src: icon_url, alt: name }" />
 				</td>
