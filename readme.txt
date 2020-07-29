@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.4.2
 Requires PHP: 5.6
-Stable tag: 5.0.7
+Stable tag: 5.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,7 +129,7 @@ You, the site administrator, must take all necessary precautions to secure your 
 You are strongly advised to take the following actions (at a minimum):
 
 - [educate yourself about hardening WordPress security](https://codex.wordpress.org/Hardening_WordPress)
-- [install a security plugin such as Wordfence](https://infinitewp.com/addons/wordfence/)
+- [install a security plugin such as Wordfence](https://www.wordfence.com/)
 - **Enable SSL on your site** if you have not already done so.
 
 By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that you have understood and agreed to this disclaimer.
@@ -235,11 +235,11 @@ You can only have one coin adapter enabled per each coin. The plugin will warn y
 
 = Can you add XYZ coin for me? =
 
-Unfortunately no. I can no longer cater to requests to add new coin adapters. I can only provide assistance by answering specific questions to coin adapter developers.
+Unfortunately no. I cannot cater to requests to add new coin adapters. I can only provide assistance to coin adapter developers by answering specific questions.
 
-If your coin's wallet has a standard RPC API that is a direct fork of Bitcoin core, then you should be able to use the [Full Node Multi Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) extension.
+If your coin belongs to one of the types [listed in this article](https://www.dashed-slug.net/howto-choose-between-available-coin-adapters/?utm_source=wallets&utm_medium=docs&utm_campaign=faq), then you will most likely be able to use your coin with the plugin.
 
-If your coin is an ERC-20 token then there is no support for that at the moment.
+If you are interested in creating your own token, perhaps the best way is to [create it as a TurtleCoin fork](https://medium.com/@turtlecoin/altcoin-101-create-a-cryptonote-privacy-coin-clone-in-one-hour-f14bff7eb2fd), then use the available [TurtleCoin adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/turtlecoin-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
 
 = Can I use an exchange to facilitate cryptocurrency trading on top of this plugin? =
 
@@ -341,6 +341,12 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.8 =
+- Fix: Maximum number of symbol characters changed from 8 to 10. Allows for `USDT.ERC20`.
+- Improve: Some DB columns now use the latin1_bin character set to save space and help with DB indexing. Affects new installs.
+- Add: The debug tab in the admin dashboard now reports the type of Object Cache that is currently active.
+- Improve: In the coin adapters list, the withdrawal lock icon is now accompanied by text. This solves issues where the combination of font and screen antialiasing makes the state of the padlock difficult to read.
 
 = 5.0.7 =
 - Fix: Issue with shortcode `[wallets_deposit template="list"]`, introduced in `5.0.6` is now fixed.
@@ -1366,7 +1372,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.7` fixes some UI issues introduced in `5.0.6`.
+Version `5.0.8` fixes an issue that arises with the CoinPayments USDT.ERC20 token, plus other minor improvements.
 
 == Donating ==
 

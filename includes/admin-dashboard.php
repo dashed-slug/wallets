@@ -50,8 +50,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 		}
 
 		public function enqueue_scripts() {
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-dashboard-5.0.7.min.js' ) ) {
-				$script = 'wallets-admin-dashboard-5.0.7.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-admin-dashboard-5.0.8.min.js' ) ) {
+				$script = 'wallets-admin-dashboard-5.0.8.min.js';
 			} else {
 				$script = 'wallets-admin-dashboard.js';
 			}
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 				'wallets-admin-dashboard',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery-ui-tabs' ),
-				'5.0.7',
+				'5.0.8',
 				true
 			);
 
@@ -399,8 +399,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			global $wpdb;
 
 			$data = array();
-			$data[ __( 'Plugin version', 'wallets' ) ]         = '5.0.7';
-			$data[ __( 'Git SHA', 'wallets' ) ]                = '244fa0cc';
+			$data[ __( 'Plugin version', 'wallets' ) ]         = '5.0.8';
+			$data[ __( 'Git SHA', 'wallets' ) ]                = '8e85c63b';
 			$data[ __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 			$data[ __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 			$data[ __( 'WordPress version', 'wallets' ) ]      = get_bloginfo( 'version' );
@@ -410,6 +410,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			$data[ __( 'Is network activated', 'wallets' ) ]   = Dashed_Slug_Wallets::$network_active;
 			$data[ __( 'PHP max execution time', 'wallets' ) ] = ini_get( 'max_execution_time' );
 			$data[ __( 'Using external cache', 'wallets' ) ]   = wp_using_ext_object_cache() ? __( 'true', 'wallets' ) : __( 'false', 'wallets' );
+			$data[ __( 'Type of object cache', 'wallets' ) ]   = $this->wp_get_cache_type();
 
 			foreach ( array(
 				'wallets_txs',
@@ -521,6 +522,76 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Dashboard' ) ) {
 			</table>
 			<?php
 		} // end function tab_debug_cb
+
+		/**
+		 * Attempts to determine which object cache is being used.
+		 *
+		 * Note that the guesses made by this function are based on the WP_Object_Cache classes
+		 * that define the 3rd party object cache extension. Changes to those classes could render
+		 * problems with this function's ability to determine which object cache is being used.
+		 *
+		 * This function is shamelessly stolen from wp-cli.
+		 *
+		 * @link https://github.com/wp-cli/wp-cli/blob/v2.4.1/php/utils-wp.php#L209-L273
+		 *
+		 * @return string
+		 */
+		private function wp_get_cache_type() {
+			global $_wp_using_ext_object_cache, $wp_object_cache;
+
+			if ( ! empty( $_wp_using_ext_object_cache ) ) {
+				// Test for Memcached PECL extension memcached object cache (https://github.com/tollmanz/wordpress-memcached-backend)
+				if ( isset( $wp_object_cache->m ) && $wp_object_cache->m instanceof \Memcached ) {
+					$message = 'Memcached';
+
+					// Test for Memcache PECL extension memcached object cache (http://wordpress.org/extend/plugins/memcached/)
+				} elseif ( isset( $wp_object_cache->mc ) ) {
+					$is_memcache = true;
+					foreach ( $wp_object_cache->mc as $bucket ) {
+						if ( ! $bucket instanceof \Memcache && ! $bucket instanceof \Memcached ) {
+							$is_memcache = false;
+						}
+					}
+
+					if ( $is_memcache ) {
+						$message = 'Memcache';
+					}
+
+					// Test for Xcache object cache (http://plugins.svn.wordpress.org/xcache/trunk/object-cache.php)
+				} elseif ( $wp_object_cache instanceof \XCache_Object_Cache ) {
+					$message = 'Xcache';
+
+					// Test for WinCache object cache (http://wordpress.org/extend/plugins/wincache-object-cache-backend/)
+				} elseif ( class_exists( 'WinCache_Object_Cache' ) ) {
+					$message = 'WinCache';
+
+					// Test for APC object cache (http://wordpress.org/extend/plugins/apc/)
+				} elseif ( class_exists( 'APC_Object_Cache' ) ) {
+					$message = 'APC';
+
+					// Test for Redis Object Cache (https://github.com/alleyinteractive/wp-redis)
+				} elseif ( isset( $wp_object_cache->redis ) && $wp_object_cache->redis instanceof \Redis ) {
+					$message = 'Redis';
+
+					// Test for WP LCache Object cache (https://github.com/lcache/wp-lcache)
+				} elseif ( isset( $wp_object_cache->lcache ) && $wp_object_cache->lcache instanceof \LCache\Integrated ) {
+					$message = 'WP LCache';
+
+				} elseif ( function_exists( 'w3_instance' ) ) {
+					$config  = w3_instance( 'W3_Config' );
+					$message = 'Unknown';
+
+					if ( $config->get_boolean( 'objectcache.enabled' ) ) {
+						$message = 'W3TC ' . $config->get_string( 'objectcache.engine' );
+					}
+				} else {
+					$message = 'Unknown';
+				}
+			} else {
+				$message = 'Default';
+			}
+			return $message;
+		}
 
 	} // end class
 	new Dashed_Slug_Wallets_Admin_Dashboard;

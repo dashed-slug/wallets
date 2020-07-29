@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.7\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-07-02 09:21:45+00:00\n"
+"POT-Creation-Date: 2020-07-29 11:14:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -62,9 +62,9 @@ msgid "Pending withdrawals"
 msgstr ""
 
 #: includes/adapters-list-table.php:101 includes/adapters-list-table.php:192
-#: includes/admin-dashboard.php:445 includes/admin-dashboard.php:458
-#: includes/admin-dashboard.php:459 includes/admin-dashboard.php:460
-#: includes/admin-dashboard.php:461 includes/cron.php:645 includes/cron.php:648
+#: includes/admin-dashboard.php:446 includes/admin-dashboard.php:459
+#: includes/admin-dashboard.php:460 includes/admin-dashboard.php:461
+#: includes/admin-dashboard.php:462 includes/cron.php:645 includes/cron.php:648
 #: includes/cron.php:651 includes/cron.php:654
 msgid "n/a"
 msgstr ""
@@ -81,8 +81,16 @@ msgstr ""
 msgid "Wallet unlocked. Withdrawals will be processed."
 msgstr ""
 
+#: includes/adapters-list-table.php:261
+msgid "Unlocked"
+msgstr ""
+
 #: includes/adapters-list-table.php:263 includes/coin-adapter.php:289
 msgid "Wallet locked. Withdrawals will NOT be processed."
+msgstr ""
+
+#: includes/adapters-list-table.php:263
+msgid "Locked"
 msgstr ""
 
 #: includes/adapters-list-table.php:279
@@ -334,47 +342,51 @@ msgstr ""
 msgid "false"
 msgstr ""
 
-#: includes/admin-dashboard.php:433
+#: includes/admin-dashboard.php:413
+msgid "Type of object cache"
+msgstr ""
+
+#: includes/admin-dashboard.php:434
 msgid "DB storage engine for '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:444
+#: includes/admin-dashboard.php:445
 msgid "Constant '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:451
+#: includes/admin-dashboard.php:452
 msgid "PHP.ini '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:458 includes/cron.php:644
+#: includes/admin-dashboard.php:459 includes/cron.php:644
 msgid "Cron jobs last ran on:"
 msgstr ""
 
-#: includes/admin-dashboard.php:459 includes/cron.php:647
+#: includes/admin-dashboard.php:460 includes/cron.php:647
 msgid "Cron jobs last runtime (sec):"
 msgstr ""
 
-#: includes/admin-dashboard.php:460 includes/cron.php:650
+#: includes/admin-dashboard.php:461 includes/cron.php:650
 msgid "Cron jobs peak memory (bytes):"
 msgstr ""
 
-#: includes/admin-dashboard.php:461 includes/cron.php:653
+#: includes/admin-dashboard.php:462 includes/cron.php:653
 msgid "Cron jobs memory delta (bytes):"
 msgstr ""
 
-#: includes/admin-dashboard.php:469
+#: includes/admin-dashboard.php:470
 msgid "PHP Extension '%s'"
 msgstr ""
 
-#: includes/admin-dashboard.php:469
+#: includes/admin-dashboard.php:470
 msgid "Loaded"
 msgstr ""
 
-#: includes/admin-dashboard.php:469
+#: includes/admin-dashboard.php:470
 msgid "Not loaded"
 msgstr ""
 
-#: includes/admin-dashboard.php:501
+#: includes/admin-dashboard.php:502
 msgid ""
 "When requesting support, please also send the following info along if "
 "requested."
@@ -397,55 +409,48 @@ msgstr ""
 msgid "educate yourself about hardening WordPress security"
 msgstr ""
 
-#: includes/admin-menu.php:96 includes/cold-storage.php:394
-#: includes/cold-storage.php:409 includes/rates.php:473
-msgid ""
-"This affiliate link supports the development of dashed-slug.net plugins. "
-"Thanks for clicking."
-msgstr ""
-
-#: includes/admin-menu.php:100
+#: includes/admin-menu.php:94
 msgid "install a security plugin such as Wordfence"
 msgstr ""
 
-#: includes/admin-menu.php:103
+#: includes/admin-menu.php:97
 msgid "Enable SSL on your site, if you have not already done."
 msgstr ""
 
-#: includes/admin-menu.php:115
+#: includes/admin-menu.php:109
 msgid "See more here"
 msgstr ""
 
-#: includes/admin-menu.php:127
+#: includes/admin-menu.php:121
 msgid "Subscribe to the YouTube channel:"
 msgstr ""
 
-#: includes/admin-menu.php:132
+#: includes/admin-menu.php:126
 msgid "Get the free PDF manual!"
 msgstr ""
 
-#: includes/admin-menu.php:134
+#: includes/admin-menu.php:128
 msgid ""
 "Visit the dashed-slug <a "
 "href=\"https://dashed-slug.net/downloads\">download area</a>."
 msgstr ""
 
-#: includes/admin-menu.php:143
+#: includes/admin-menu.php:137
 msgid "RTFM! :-)"
 msgstr ""
 
-#: includes/admin-menu.php:148
+#: includes/admin-menu.php:142
 msgid "Have your say!"
 msgstr ""
 
-#: includes/admin-menu.php:151
+#: includes/admin-menu.php:145
 msgid ""
 "Did you find this plugin useful? Leave a review on <a "
 "href=\"https://wordpress.org/support/plugin/wallets/reviews/\">wordpress."
 "org</a>."
 msgstr ""
 
-#: includes/admin-menu.php:152
+#: includes/admin-menu.php:146
 msgid ""
 "Do you need help? Did you find a bug? Visit the <a "
 "href=\"https://wordpress.org/support/plugin/wallets\">wordpress.org support "
@@ -454,70 +459,70 @@ msgid ""
 "forums for the extensions."
 msgstr ""
 
-#: includes/admin-menu.php:153
+#: includes/admin-menu.php:147
 msgid ""
 "Something else on your mind? <a "
 "href=\"https://dashed-slug.net/contact\">Contact me</a>."
 msgstr ""
 
-#: includes/admin-menu.php:158
+#: includes/admin-menu.php:152
 msgid "Show your appreciation with a donation!"
 msgstr ""
 
-#: includes/admin-menu.php:160
+#: includes/admin-menu.php:154
 msgid ""
 "Want to help with development? Help me buy the coffee that makes this all "
 "possible!"
 msgstr ""
 
-#: includes/admin-menu.php:163
+#: includes/admin-menu.php:157
 msgid "Donate via <a href=\"https://flattr.com/profile/dashed-slug\">flattr</a>"
 msgstr ""
 
-#: includes/admin-menu.php:219
+#: includes/admin-menu.php:213
 msgid "Your support is greatly appreciated."
 msgstr ""
 
-#: includes/admin-menu.php:223
+#: includes/admin-menu.php:217
 msgid "App extensions"
 msgstr ""
 
-#: includes/admin-menu.php:225
+#: includes/admin-menu.php:219
 msgid ""
 "\"App extensions\" are plugins that work on top of the Bitcoin and Altcoin "
 "Wallets plugin to provide new functionality to users."
 msgstr ""
 
-#: includes/admin-menu.php:232
+#: includes/admin-menu.php:226
 msgid "Coin adapters"
 msgstr ""
 
-#: includes/admin-menu.php:234
+#: includes/admin-menu.php:228
 msgid ""
 "With \"coin adapters\" you can make the Bitcoin and Altcoin Wallets plugin "
 "work with other stand-alone and/or web wallets to add support for "
 "additional cryptocurrencies. "
 msgstr ""
 
-#: includes/admin-menu.php:241
+#: includes/admin-menu.php:235
 msgid "Like the Facebook page to learn the latest news:"
 msgstr ""
 
-#: includes/admin-menu.php:246
+#: includes/admin-menu.php:240
 msgid "Follow the dashed-slug on twitter to learn the latest news:"
 msgstr ""
 
-#: includes/admin-menu.php:278
+#: includes/admin-menu.php:272
 msgid "Installed"
 msgstr ""
 
-#: includes/admin-menu.php:306
+#: includes/admin-menu.php:300
 msgid ""
 "Found <strong>Bitcoin and Altcoin Wallets</strong> useful? Want to help the "
 "project? "
 msgstr ""
 
-#: includes/admin-menu.php:311
+#: includes/admin-menu.php:305
 msgid ""
 "Please leave a <a "
 "href=\"https://wordpress.org/support/view/plugin-reviews/wallets?filter=5#"
@@ -1028,6 +1033,13 @@ msgstr ""
 
 #: includes/cold-storage.php:389
 msgid "Need a hardware wallet?"
+msgstr ""
+
+#: includes/cold-storage.php:394 includes/cold-storage.php:409
+#: includes/rates.php:473
+msgid ""
+"This affiliate link supports the development of dashed-slug.net plugins. "
+"Thanks for clicking."
 msgstr ""
 
 #: includes/cold-storage.php:422

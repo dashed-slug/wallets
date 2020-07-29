@@ -162,7 +162,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			$table_name_adds = self::$table_name_adds;
 
 			$installed_db_revision = absint( Dashed_Slug_Wallets::get_option( 'wallets_db_revision', 0 ) );
-			$current_db_revision   = 18;
+			$current_db_revision   = 19;
 
 			if ( $installed_db_revision < $current_db_revision ) {
 				error_log( sprintf( 'Upgrading wallets schema from %d to %d.', $installed_db_revision, $current_db_revision ) );
@@ -182,10 +182,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				tags varchar(255) NOT NULL DEFAULT '' COMMENT 'space separated list of tags, slugs, etc that further describe the type of transaction',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
 				other_account bigint(20) unsigned DEFAULT NULL COMMENT '{$wpdb->prefix}users.ID when category==move',
-				address varchar(120) NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
-				extra varchar(120) NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
-				txid varchar(120) DEFAULT NULL COMMENT 'blockchain transaction id',
-				symbol varchar(8) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				address varchar(120) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'blockchain address when category==deposit or category==withdraw',
+				extra varchar(120) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
+				txid varchar(120) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL COMMENT 'blockchain transaction id',
+				symbol varchar(10) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
 				amount decimal(20,10) signed NOT NULL COMMENT 'amount plus any fees deducted from account',
 				fee decimal(20,10) signed NOT NULL DEFAULT 0 COMMENT 'fees deducted from account',
 				comment TEXT DEFAULT NULL COMMENT 'transaction comment',
@@ -209,9 +209,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 				id int(10) unsigned NOT NULL AUTO_INCREMENT,
 				blog_id bigint(20) NOT NULL DEFAULT 1 COMMENT 'blog_id for multisite installs',
 				account bigint(20) unsigned NOT NULL COMMENT '{$wpdb->prefix}users.ID',
-				symbol varchar(8) NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
-				address varchar(120) NOT NULL,
-				extra varchar(120) NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
+				symbol varchar(10) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'coin symbol (e.g. BTC for Bitcoin)',
+				address varchar(120) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+				extra varchar(120) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' COMMENT 'extra info required by some coins such as XMR',
 				created_time datetime NOT NULL COMMENT 'when address was requested in GMT',
 				status enum('old','current') NOT NULL COMMENT 'all addresses are used to perform deposits, but only the current one is displayed',
 				PRIMARY KEY  (id),

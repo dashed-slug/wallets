@@ -28,7 +28,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 
 			wp_enqueue_script(
 				'blockchain-info',
-				plugins_url( 'pay-now-button-5.0.7.min.js', 'wallets/assets/scripts/pay-now-button-5.0.7.min.js' ),
+				plugins_url( 'pay-now-button-5.0.8.min.js', 'wallets/assets/scripts/pay-now-button-5.0.8.min.js' ),
 				array( 'jquery' )
 			);
 		}
@@ -91,13 +91,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Menu' ) ) {
 				esc_html_e( 'educate yourself about hardening WordPress security', 'wallets' );
 			?>
 			</a></li>
-			<li><a href="https://infinitewp.com/addons/wordfence/?ref=260" target="_blank" rel="noopener noreferrer" title="
-			<?php
-				esc_attr_e(
-					'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets'
-				);
-			?>
-			"><?php esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li>
+			<li><a href="https://www.wordfence.com/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'install a security plugin such as Wordfence', 'wallets' ); ?></a></li>
 			<li>
 			<?php
 				esc_html_e( 'Enable SSL on your site, if you have not already done.', 'wallets' );

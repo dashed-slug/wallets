@@ -476,7 +476,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 
 				add_submenu_page(
 					'wallets-menu-wallets',
-					'Bitcoin and Altcoin Wallets Cron ettings',
+					'Bitcoin and Altcoin Wallets Cron settings',
 					'Cron job',
 					'manage_wallets',
 					'wallets-menu-cron',
