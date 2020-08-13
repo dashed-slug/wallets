@@ -840,6 +840,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			// start db transaction
 			$wpdb->query( 'SET autocommit=0' );
 
+			$current_time_gmt = current_time( 'mysql', true );
+			$txid             = uniqid( 'move-', true );
+
 			try {
 				$balance = apply_filters(
 					'wallets_api_available_balance', 0, array(
@@ -864,9 +867,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 						self::ERR_DO_WITHDRAW
 					);
 				}
-
-				$current_time_gmt = current_time( 'mysql', true );
-				$txid             = uniqid( 'move-', true );
 
 				$txrow1 = array(
 					'blog_id'       => get_current_blog_id(),
@@ -930,13 +930,53 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 			} catch ( Exception $e ) {
 				$wpdb->query( 'ROLLBACK' );
 				$wpdb->query( 'SET autocommit=1' );
+
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_failed_enabled' ) ) {
+					$row = new stdClass();
+					$row->blog_id       = get_current_blog_id();
+					$row->status        = 'failed';
+					$row->category      = 'move';
+					$row->tags          = "send {$args['tags']}";
+					$row->user          = get_userdata( absint( $args['from_user_id'] ) );
+					$row->other_user    = get_userdata( absint( $args['to_user_id'] ) );
+					$row->txid          = "$txid-send";
+					$row->symbol        = $args['symbol'];
+					$row->amount        = -number_format( $args['amount'], 10, '.', '' );
+					$row->fee           = -number_format( $args['fee'],    10, '.', '' );
+					$row->created_time  = $current_time_gmt;
+					$row->updated_time  = $current_time_gmt;
+					$row->comment       = $args['comment'];
+
+					error_log( print_r( $row, true ) );
+
+					do_action( 'wallets_move_send_failed', $row );
+				}
+
 				throw $e;
 			}
 			$wpdb->query( 'COMMIT' );
 			$wpdb->query( 'SET autocommit=1' );
 
-			if ( ! $args['skip_confirm'] && isset( $txrow1['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
-				do_action( 'wallets_send_user_confirm_email', $txrow1 );
+			if ( ! $args['skip_confirm'] ) {
+
+				if ( isset( $txrow1['id'] ) && Dashed_Slug_Wallets::get_option( 'wallets_confirm_move_user_enabled' ) ) {
+					do_action( 'wallets_send_user_confirm_email', (object) $txrow1 );
+				}
+
+			} elseif ( $args['skip_confirm'] ) {
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_send_enabled' ) ) {
+					$txrow1['user']       = get_userdata( absint( $args['from_user_id'] ) );
+					$txrow1['other_user'] = get_userdata( absint( $args['to_user_id'] ) );
+
+					do_action( 'wallets_move_send', (object) $txrow1 );
+				}
+
+				if ( Dashed_Slug_Wallets::get_option( 'wallets_email_move_receive_enabled' ) ) {
+					$txrow2['user']       = get_userdata( absint( $args['to_user_id'] ) );
+					$txrow2['other_user'] = get_userdata( absint( $args['from_user_id'] ) );
+
+					do_action( 'wallets_move_receive', (object) $txrow2 );
+				}
 			}
 		}
 

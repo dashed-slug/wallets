@@ -907,7 +907,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 				}
 
 				if ( is_numeric( $tx->created_time ) ) {
-					$tx->created_time = date( DATE_ISO8601, $tx->created_time );
+					$tx->created_time = date( 'Y-m-d H:i:s', $tx->created_time );
 				}
 
 				$current_time_gmt = current_time( 'mysql', true );
@@ -1165,7 +1165,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 			}
 
 			if ( is_numeric( $address_map->created_time ) ) {
-				$address_map->created_time = date( DATE_ISO8601, $address_map->created_time );
+				$address_map->created_time = date( 'Y-m-d H:i:s', $address_map->created_time );
 			}
 
 			// Disable errors about duplicate inserts, since $wpdb has no INSERT IGNORE

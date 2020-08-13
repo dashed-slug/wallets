@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.4.2
+Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 5.0.8
+Stable tag: 5.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,11 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.9 =
+- Fix: Issue with deposit timestamps not being inserted into some DBs is now fixed.
+- Fix: Issue with `[wallets_transactions template="rows"]` introduced in version `5.0.6` is now fixed.
+- Fix: Previously issuing an internal transfer (move) via the PHP API with `skip_confirm=true` would not trigger email notifications, is now fixed.
 
 = 5.0.8 =
 - Fix: Maximum number of symbol characters changed from 8 to 10. Allows for `USDT.ERC20`.
@@ -1372,7 +1377,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.8` fixes an issue that arises with the CoinPayments USDT.ERC20 token, plus other minor improvements.
+Version `5.0.9` fixes several minor bugs.
 
 == Donating ==
 
