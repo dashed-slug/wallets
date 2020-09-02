@@ -571,6 +571,15 @@
 				self.moveUser( '' );
 			};
 
+			self.setMaxMoveAmount = function() {
+				var coins = self.coins();
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					self.moveAmount( coins[ coin ].available_balance );
+				}
+				return false;
+			};
+
 			// [wallets_withdraw] shortcode
 			var validators = [];
 			$.fn.walletsBindWithdrawAddressValidator = function( symbol, validatorFunction ) {
@@ -814,6 +823,15 @@
 				self.withdrawAmount( '' );
 				self.withdrawComment( '' );
 				self.withdrawExtra( '' );
+			};
+
+			self.setMaxWithdrawAmount = function() {
+				var coins = self.coins();
+				var coin = self.selectedCoin();
+				if ( 'object' == typeof( coins[ coin ] ) ) {
+					self.withdrawAmount( coins[ coin ].available_balance );
+				}
+				return false;
 			};
 
 			self.doResetApikey = function() {

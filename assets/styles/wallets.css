@@ -312,3 +312,14 @@
 	font-size: initial;
 	box-shadow: initial;
 }
+
+.dashed-slug-wallets label.amount {
+	position: relative;
+}
+
+.dashed-slug-wallets label.amount .max-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: x-small;
+}

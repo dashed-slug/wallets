@@ -32,7 +32,7 @@
 
 			<tr>
 				<td colspan="2">
-					<label class="amount"><?php echo apply_filters( 'wallets_ui_text_amount', esc_html__( 'Amount', 'wallets-front' ) ); ?>: <input type="text" required="required" data-bind="value: moveAmount, valueUpdate: ['afterkeydown', 'input']" /><span class="fiat-amount" data-bind="text: moveFiatAmount" ></span></label>
+					<label class="amount"><?php echo apply_filters( 'wallets_ui_text_amount', esc_html__( 'Amount', 'wallets-front' ) ); ?>: <input type="text" required="required" data-bind="value: moveAmount, valueUpdate: ['afterkeydown', 'input']" /><span class="fiat-amount" data-bind="text: moveFiatAmount" ></span><a class="max-button button" data-bind="click: setMaxMoveAmount"><?php echo apply_filters( 'wallets_ui_text_max', esc_html__( 'Max', 'wallets-front' ) ); ?></a></label>
 				</td>
 				<td colspan="2">
 					<label class="fee"><?php echo apply_filters( 'wallets_ui_text_feedeductedfromamount', esc_html__( 'Fee (deducted from amount)', 'wallets-front' ) ); ?>: <input type="text" data-bind="value: moveFee()[0], enable: false" /><span class="fiat-amount" data-bind="text: moveFee()[1]" ></span></label>

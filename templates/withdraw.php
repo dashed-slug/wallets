@@ -54,7 +54,7 @@
 
 			<tr>
 				<td colspan="2">
-					<label class="amount"><?php echo apply_filters( 'wallets_ui_text_amount', esc_html__( 'Amount', 'wallets-front' ) ); ?>: <input type="text" required="required" data-bind="value: withdrawAmount, valueUpdate: ['afterkeydown', 'input']" /><span class="fiat-amount" data-bind="text: withdrawFiatAmount"></span></label>
+					<label class="amount"><?php echo apply_filters( 'wallets_ui_text_amount', esc_html__( 'Amount', 'wallets-front' ) ); ?>: <input type="text" required="required" data-bind="value: withdrawAmount, valueUpdate: ['afterkeydown', 'input']" /><span class="fiat-amount" data-bind="text: withdrawFiatAmount"></span><a class="max-button button" data-bind="click: setMaxWithdrawAmount"><?php echo apply_filters( 'wallets_ui_text_max', esc_html__( 'Max', 'wallets-front' ) ); ?></a></label>
 				</td>
 				<td colspan="2">
 					<label class="fee"><?php echo apply_filters( 'wallets_ui_text_feedeductedfromamount', esc_html__( 'Fee (deducted from amount)', 'wallets-front' ) ); ?>: <input type="text" data-bind="value: withdrawFee()[0], enable: false" /><span class="fiat-amount" data-bind="text: withdrawFee()[1]"></span></label>

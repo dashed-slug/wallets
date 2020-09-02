@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.5
+Tested up to: 5.5.1
 Requires PHP: 5.6
-Stable tag: 5.0.9
+Stable tag: 5.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,10 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.10 =
+- Add: PHPdoc for the `wallets_get_template_part` as per the WordPress coding style.
+- Add: New button in `[wallets_withdraw]` and `[wallets_move]` now allows users to easily transact their entire available balance without typing the amount.
 
 = 5.0.9 =
 - Fix: Issue with deposit timestamps not being inserted into some DBs is now fixed.
@@ -1377,7 +1381,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.9` fixes several minor bugs.
+Version `5.0.10` introduces a "max" button to allow users to easily transact their entire available balance.
 
 == Donating ==
 

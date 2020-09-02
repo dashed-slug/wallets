@@ -53,7 +53,22 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Template_Loader' ) ) {
 			/**
 			 * Allows template parts to be filtered.
 			 *
+			 * When frontend UIs are rendered, such as when using the wallet shortcodes,
+			 * this loader is invoked. The plugin comes with its own HTML template files.
+			 * However, you can copy these templates under your theme or child theme and modify them.
 			 *
+			 * For example, if you use the shortcode `[wallets_balance template="list"]`,
+			 * the slug is "balance", the name is "
+			 * For more information about this, see the 5.0.0 release notes or the "Frontend" section
+			 * of the accompanying PDF documentation.
+			 *
+			 * @param string $slug        The name of the template, e.g. `balance` for
+			 *                            the `[wallets_balance]` shortcode.
+			 * @param string $name        The specialized name of the template variation,
+			 *                            e.g. `list` for the `[wallets_balance template="list"]` shortcode.
+			 * @param string $plugin_slug The slug of the requesting plugin. For this plugin, this is `wallets`.
+			 *
+			 * @link https://www.dashed-slug.net/wallets-5-0-0/ Release notes for Bitcoin and Altcoin Wallets `5.0.0`.
 			 * @since 5.0.0
 			 */
 			$templates = apply_filters( 'wallets_get_template_part', $templates, $slug, $name, $plugin_slug );
