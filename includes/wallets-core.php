@@ -88,7 +88,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 			add_action( 'wallets_declare_adapters', array( &$this, 'action_wallets_declare_adapters' ) );
 
 			global $wpdb;
-			$prefix = is_multisite() ? $wpdb->base_prefix : $wpdb->prefix;
+			$prefix = self::$network_active ? $wpdb->base_prefix : $wpdb->prefix;
 			self::$table_name_txs  = "{$prefix}wallets_txs";
 			self::$table_name_adds = "{$prefix}wallets_adds";
 		}

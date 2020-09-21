@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.5.1
 Requires PHP: 5.6
-Stable tag: 5.0.10
+Stable tag: 5.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,9 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.11 =
+- Fix: When activating the plugin on a single site, on a network WordPress installation, the plugin now creates the independent DB tables correctly, for each site on the network.
 
 = 5.0.10 =
 - Add: PHPdoc for the `wallets_get_template_part` as per the WordPress coding style.
@@ -1381,7 +1384,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.10` introduces a "max" button to allow users to easily transact their entire available balance.
+Version `5.0.11` fixes a DB issue with single-site plugin activations on network installations.
 
 == Donating ==
 
