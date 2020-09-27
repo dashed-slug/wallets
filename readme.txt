@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.5.1
 Requires PHP: 5.6
-Stable tag: 5.0.11
+Stable tag: 5.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,9 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.12 =
+- Fix: Reverting change from 5.0.11. The original way to store data was to always maintain one set of tables for all the sites in a network. See release notes for details.
 
 = 5.0.11 =
 - Fix: When activating the plugin on a single site, on a network WordPress installation, the plugin now creates the independent DB tables correctly, for each site on the network.
@@ -1384,7 +1387,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `5.0.11` fixes a DB issue with single-site plugin activations on network installations.
+ Bitcoin and Altcoin Wallets version 5.0.12 reverts a mistake applied in the 5.0.11 release. If you have installed the plugin in a live (production) multisite environment, and if you have used version 5.0.11 for some time, please contact me directly by email (https://www.dashed-slug.net/contact/).
 
 == Donating ==
 
