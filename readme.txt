@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.5.1
+Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 5.0.12
+Stable tag: 5.0.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,12 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.13 =
+- Fix: Bug with network_active plugin in the admin screens "Deposit Addresses" and "User Balances", is now fixed. Some data from other blogs was previously not shown.
+- Fix: The Bitcoin RPC coin adapter now recommends that the admin enters into the `.conf` file: `rpcbind=IP` where `IP` is the address of the hot wallet, not the WordPress host.
+- Fix: Typo in documentation.
+- Add: Link to pre-release notes for the upcoming *Bitcoin and Altcoin Wallets 6.0.0*.
 
 = 5.0.12 =
 - Fix: Reverting change from 5.0.11. The original way to store data was to always maintain one set of tables for all the sites in a network. See release notes for details.
@@ -1387,7 +1393,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
- Bitcoin and Altcoin Wallets version 5.0.12 reverts a mistake applied in the 5.0.11 release. If you have installed the plugin in a live (production) multisite environment, and if you have used version 5.0.11 for some time, please contact me directly by email (https://www.dashed-slug.net/contact/).
+Bitcoin and Altcoin Wallets version 5.0.13 fixes some bugs and links to the pre-release notes for the upcoming wallets6.
 
 == Donating ==
 

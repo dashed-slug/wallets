@@ -24,6 +24,14 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 			add_action( 'admin_init', array( &$this, 'action_admin_init' ) );
 			add_action( is_plugin_active_for_network( 'wallets/wallets.php' ) ? 'network_admin_notices' : 'admin_notices', array( &$this, 'action_admin_notices' ) );
 			add_action( 'admin_enqueue_scripts', array( &$this, 'action_admin_enqueue_scripts' ) );
+
+			$this->info(
+				sprintf(
+					'Interested in the upcoming version 6.0.0 of Bitcoin and Altcoin Wallets? See <a href="%s" target="_blank" rel="external">here!</a>',
+					'https://www.dashed-slug.net/upcoming-bitcoin-and-altcoin-wallets-6/'
+				),
+				'wallets6prerelease'
+			);
 		}
 
 		public static function get_instance() {
@@ -43,8 +51,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 
 		public function action_admin_enqueue_scripts() {
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-5.0.12.min.js' ) ) {
-				$script = 'wallets-notify-5.0.12.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-notify-5.0.13.min.js' ) ) {
+				$script = 'wallets-notify-5.0.13.min.js';
 			} else {
 				$script = 'wallets-notify.js';
 			}
@@ -53,7 +61,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Admin_Notices' ) ) {
 				'wallets-notify',
 				plugins_url( "assets/scripts/$script", DSWALLETS_PATH . '/wallets.php' ),
 				array( 'jquery' ),
-				'5.0.12'
+				'5.0.13'
 			);
 
 		}

@@ -1,14 +1,14 @@
-# Copyright (C) 2020 dashed-slug <info@dashed-slug.net>
+# Copyright (C) 2021 dashed-slug <info@dashed-slug.net>
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.12\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2020-09-27 11:53:53+00:00\n"
+"POT-Creation-Date: 2021-01-26 11:13:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2020-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n1.0.1\n"
@@ -19,13 +19,7 @@ msgstr ""
 
 #: includes/adapters-list-table.php:20 includes/addresses-list-table.php:46
 #: includes/balances-list-table.php:37 includes/sidebar-widgets.php:159
-#: includes/transactions-list-table.php:48 templates/balance-list.php:23
-#: templates/balance.php:10 templates/deposit-list.php:18
-#: templates/deposit-static.php:49 templates/deposit.php:15
-#: templates/move.php:21 templates/rates-static.php:22 templates/rates.php:23
-#: templates/total_balances.php:23 templates/transactions-rows.php:14
-#: templates/transactions-static.php:36 templates/transactions.php:330
-#: templates/withdraw.php:20
+#: includes/transactions-list-table.php:48
 msgid "Coin"
 msgstr ""
 
@@ -133,7 +127,7 @@ msgstr ""
 #: includes/adapters-list.php:268 includes/adapters-list.php:313
 #: includes/addresses-list.php:52 includes/admin-menu.php:63
 #: includes/balances-list.php:52 includes/caps.php:105 includes/caps.php:166
-#: includes/coin-adapter-bitcoin.php:61 includes/coin-adapter-json.php:75
+#: includes/coin-adapter-bitcoin.php:62 includes/coin-adapter-json.php:75
 #: includes/coin-adapter-rpc.php:305 includes/coin-adapter-rpc.php:314
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:153
@@ -193,14 +187,10 @@ msgid "Extra info"
 msgstr ""
 
 #: includes/addresses-list-table.php:49 includes/transactions-list-table.php:56
-#: templates/transactions-static.php:63 templates/transactions.php:14
 msgid "Time"
 msgstr ""
 
 #: includes/addresses-list-table.php:50 includes/transactions-list-table.php:58
-#: templates/transactions-rows.php:25 templates/transactions-rows.php:63
-#: templates/transactions-rows.php:99 templates/transactions-rows.php:120
-#: templates/transactions-static.php:95 templates/transactions.php:46
 msgid "Status"
 msgstr ""
 
@@ -563,13 +553,10 @@ msgid ""
 msgstr ""
 
 #: includes/balances-list-table.php:38 includes/menu-item.php:109
-#: templates/balance-list.php:24 templates/balance-static.php:43
-#: templates/balance.php:11
 msgid "Balance"
 msgstr ""
 
-#: includes/balances-list-table.php:39 templates/balance-list.php:25
-#: templates/balance.php:12
+#: includes/balances-list-table.php:39
 msgid "Available balance"
 msgstr ""
 
@@ -639,35 +626,35 @@ msgstr ""
 msgid "Use the matrix below to assign capabilities to roles."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:64 includes/coin-adapter.php:215
+#: includes/coin-adapter-bitcoin.php:65 includes/coin-adapter.php:215
 msgid "You can set two types of fees:"
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:67 includes/coin-adapter.php:218
+#: includes/coin-adapter-bitcoin.php:68 includes/coin-adapter.php:218
 msgid "Transaction fees"
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:68 includes/coin-adapter.php:219
+#: includes/coin-adapter-bitcoin.php:69 includes/coin-adapter.php:219
 msgid "These are the fees a user pays when they send funds to other users."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:71 includes/coin-adapter.php:222
+#: includes/coin-adapter-bitcoin.php:72 includes/coin-adapter.php:222
 msgid "Withdrawal fees"
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:72 includes/coin-adapter.php:223
+#: includes/coin-adapter-bitcoin.php:73 includes/coin-adapter.php:223
 msgid ""
 "This the amount that is subtracted from a user's account in addition to the "
 "amount that they send to another address on the blockchain."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:73 includes/coin-adapter.php:224
+#: includes/coin-adapter-bitcoin.php:74 includes/coin-adapter.php:224
 msgid ""
 "Fees are calculated as: <i>total_fees = fixed_fees + amount * "
 "proportional_fees</i>."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:74
+#: includes/coin-adapter-bitcoin.php:75
 msgid ""
 "This withdrawal fee is NOT the network fee, and you are advised to set the "
 "withdrawal fee to an amount that will cover the network fee of a typical "
@@ -676,11 +663,11 @@ msgid ""
 "maxtxfee, etc."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:75
+#: includes/coin-adapter-bitcoin.php:76
 msgid "Refer to the documentation for details."
 msgstr ""
 
-#: includes/coin-adapter-bitcoin.php:126 includes/coin-adapter-rpc.php:379
+#: includes/coin-adapter-bitcoin.php:127 includes/coin-adapter-rpc.php:379
 #: includes/coin-adapter-rpc.php:454 includes/coin-adapter-rpc.php:481
 #: includes/coin-adapter-rpc.php:879
 msgid "%1$s->%2$s() failed with status=\"%3$s\" and error=\"%4$s\""
@@ -716,8 +703,8 @@ msgstr ""
 
 #: includes/coin-adapter-rpc.php:65
 msgid ""
-"You need to make sure that your <a href=\"%1$s\">%2$s RPC settings</a> are "
-"correctly configured. "
+"First check that your <a href=\"%1$s\">%2$s RPC connection settings</a> are "
+"correct. "
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:71
@@ -725,7 +712,7 @@ msgid "Then edit your <code>.conf</code> file and append the following:"
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:77
-msgid "Finally, start the daemon."
+msgid "Finally, start the wallet."
 msgstr ""
 
 #: includes/coin-adapter-rpc.php:98
@@ -1015,7 +1002,6 @@ msgid "Withdraw %s to cold storage:"
 msgstr ""
 
 #: includes/cold-storage.php:308 includes/transactions-list-table.php:49
-#: templates/move.php:35 templates/withdraw.php:57
 msgid "Amount"
 msgstr ""
 
@@ -2536,9 +2522,6 @@ msgid "Categories"
 msgstr ""
 
 #: includes/sidebar-widgets.php:391 includes/transactions-list-table.php:55
-#: templates/transactions-rows.php:28 templates/transactions-rows.php:66
-#: templates/transactions-rows.php:101 templates/transactions-rows.php:122
-#: templates/transactions-static.php:59 templates/transactions.php:10
 msgid "Tags"
 msgstr ""
 
@@ -2546,8 +2529,7 @@ msgstr ""
 msgid "Rows count"
 msgstr ""
 
-#: includes/sidebar-widgets.php:468 templates/account_value-static.php:33
-#: templates/account_value.php:9
+#: includes/sidebar-widgets.php:468
 msgid "Account value"
 msgstr ""
 
@@ -2555,7 +2537,7 @@ msgstr ""
 msgid "Shows the account's total value expressed in the default fiat currency."
 msgstr ""
 
-#: includes/sidebar-widgets.php:480 templates/total_balances.php:24
+#: includes/sidebar-widgets.php:480
 msgid "Total user balances"
 msgstr ""
 
@@ -2635,35 +2617,27 @@ msgstr ""
 msgid "TXID"
 msgstr ""
 
-#: includes/transactions-list-table.php:47 templates/transactions-rows.php:22
-#: templates/transactions-rows.php:60 templates/transactions-rows.php:96
-#: templates/transactions-rows.php:117 templates/transactions-static.php:55
-#: templates/transactions.php:6
+#: includes/transactions-list-table.php:47
 msgid "Type"
 msgstr ""
 
-#: includes/transactions-list-table.php:50 templates/transactions-static.php:71
-#: templates/transactions.php:22
+#: includes/transactions-list-table.php:50
 msgid "Fee"
 msgstr ""
 
-#: includes/transactions-list-table.php:51 templates/transactions-static.php:67
-#: templates/transactions.php:18
+#: includes/transactions-list-table.php:51
 msgid "Amount (+fee)"
 msgstr ""
 
-#: includes/transactions-list-table.php:52 templates/transactions-static.php:75
-#: templates/transactions.php:26
+#: includes/transactions-list-table.php:52
 msgid "From"
 msgstr ""
 
-#: includes/transactions-list-table.php:53 templates/transactions-static.php:79
-#: templates/transactions.php:30
+#: includes/transactions-list-table.php:53
 msgid "To"
 msgstr ""
 
-#: includes/transactions-list-table.php:54 templates/move.php:53
-#: templates/transactions-static.php:87 templates/transactions.php:38
+#: includes/transactions-list-table.php:54
 msgid "Comment"
 msgstr ""
 
@@ -2818,132 +2792,6 @@ msgstr ""
 
 #: includes/wallets-core.php:1153
 msgid "The coin adapter for the symbol %s is not available."
-msgstr ""
-
-#: templates/account_value.php:8 templates/api_key.php:10
-#: templates/balance-list.php:13 templates/balance.php:9
-#: templates/deposit-list.php:14 templates/deposit.php:14
-#: templates/rates.php:19 templates/transactions-rows.php:13
-#: templates/transactions.php:322
-msgid "Reload data from server"
-msgstr ""
-
-#: templates/api_key.php:14
-msgid "Wallets API key"
-msgstr ""
-
-#: templates/api_key.php:15 templates/deposit-static.php:69
-#: templates/deposit-static.php:86 templates/deposit.php:18
-#: templates/deposit.php:22
-msgid "Copy to clipboard"
-msgstr ""
-
-#: templates/api_key.php:22
-msgid "Renew"
-msgstr ""
-
-#: templates/balance-list.php:9 templates/balance.php:15
-#: templates/deposit-list.php:10 templates/deposit.php:10 templates/move.php:9
-#: templates/rates.php:15 templates/total_balances.php:17
-#: templates/transactions-rows.php:9 templates/transactions.php:318
-#: templates/withdraw.php:9
-msgid "No currencies are currently enabled."
-msgstr ""
-
-#: templates/balance-list.php:16
-msgid "Show zero balances: "
-msgstr ""
-
-#: templates/deposit-list.php:19 templates/deposit-static.php:65
-#: templates/deposit.php:17
-msgid "Deposit address"
-msgstr ""
-
-#: templates/deposit.php:26
-msgid "%s Get new address"
-msgstr ""
-
-#: templates/move.php:24
-msgid "Recipient user"
-msgstr ""
-
-#: templates/move.php:24
-msgid "Enter a valid username, login name or email"
-msgstr ""
-
-#: templates/move.php:35 templates/withdraw.php:57
-msgid "Max"
-msgstr ""
-
-#: templates/move.php:38 templates/withdraw.php:60
-msgid "Fee (deducted from amount)"
-msgstr ""
-
-#: templates/move.php:41 templates/withdraw.php:63
-msgid "Amount after fee"
-msgstr ""
-
-#: templates/move.php:59 templates/withdraw.php:81
-msgid "Send"
-msgstr ""
-
-#: templates/move.php:62 templates/withdraw.php:84
-msgid "Reset form"
-msgstr ""
-
-#: templates/rates-static.php:23 templates/rates.php:24
-msgid "Exchange Rate"
-msgstr ""
-
-#: templates/transactions-rows.php:15 templates/transactions.php:336
-msgid "Rows per page"
-msgstr ""
-
-#: templates/transactions-rows.php:16 templates/transactions.php:333
-msgid "Page"
-msgstr ""
-
-#: templates/transactions-rows.php:26 templates/transactions-rows.php:64
-#: templates/transactions-static.php:91 templates/transactions.php:42
-msgid "Confirmations"
-msgstr ""
-
-#: templates/transactions-rows.php:29 templates/transactions-rows.php:102
-#: templates/transactions-rows.php:123 templates/transactions-static.php:99
-#: templates/transactions.php:50
-msgid "Retries&nbsp;left"
-msgstr ""
-
-#: templates/transactions-rows.php:35 templates/transactions-rows.php:71
-#: templates/transactions-rows.php:106 templates/transactions-static.php:83
-#: templates/transactions.php:34
-msgid "Tx ID"
-msgstr ""
-
-#: templates/transactions-rows.php:44 templates/transactions-rows.php:88
-#: templates/transactions-rows.php:108 templates/transactions-rows.php:109
-#: templates/transactions-rows.php:129 templates/transactions-rows.php:130
-#: templates/transactions-static.php:158 templates/transactions.php:83
-#: templates/transactions.php:151 templates/transactions.php:155
-#: templates/transactions.php:217 templates/transactions.php:276
-#: templates/transactions.php:280
-msgid "me"
-msgstr ""
-
-#: templates/transactions-static.php:103 templates/transactions.php:54
-msgid "Admin&nbsp;confirm"
-msgstr ""
-
-#: templates/transactions-static.php:107 templates/transactions.php:57
-msgid "User&nbsp;confirm"
-msgstr ""
-
-#: templates/withdraw.php:36 templates/withdraw.php:38
-msgid "Withdraw to address"
-msgstr ""
-
-#: templates/withdraw.php:75
-msgid "Comment (optional)"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

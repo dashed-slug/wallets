@@ -129,7 +129,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 * Example: Litecoin balance of user 2:
 		 *
-		 *      $btc_balance = apply_filters( 'wallets_api_balance', 0, array(
+		 *      $ltc_balance = apply_filters( 'wallets_api_balance', 0, array(
 		 *          'symbol' => 'LTC',
 		 *          'user_id' => 2,
 		 *      ) );

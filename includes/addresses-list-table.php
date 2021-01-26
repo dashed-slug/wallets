@@ -22,7 +22,7 @@ class DSWallets_Admin_Menu_Addresses_List_Table extends WP_List_Table {
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
 
-		Dashed_Slug_Wallets::$network_active;
+		$this->network_active = Dashed_Slug_Wallets::$network_active;
 
 		// get and sanitize sorting vars
 		$this->order = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );

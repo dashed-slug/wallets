@@ -62,7 +62,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 						sprintf( __( 'The %s RPC API cannot be contacted.', 'wallets' ), $this->get_name() ) . '<ol><li>' .
 
 						sprintf(
-							__( 'You need to make sure that your <a href="%1$s">%2$s RPC settings</a> are correctly configured. ', 'wallets' ),
+							__( 'First check that your <a href="%1$s">%2$s RPC connection settings</a> are correct. ', 'wallets' ),
 							esc_attr( $settings_url ),
 							$this->get_name()
 						) .
@@ -74,11 +74,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter_RPC' ) ) {
 						esc_textarea( $config ) .
 						'</textarea></li><li>' .
 
-						__( 'Finally, start the daemon.', 'wallets' ) . '</li></ol><p>' .
+						__( 'Finally, start the wallet.', 'wallets' ) . '</li></ol><p>' .
 
 						__(
-							'You are advised to not dismiss this error manually. ' .
-							'It will stop showing once the daemon can be contacted.',
+							'Don\'t dismiss this error manually. ' .
+							'When the hot wallet is online, the error will stop showing.',
 							'wallets'
 						),
 						sanitize_title_with_dashes( $this->get_adapter_name(), null, 'save' ) . '-api-down'
