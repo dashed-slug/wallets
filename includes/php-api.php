@@ -541,7 +541,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 		 *
 		 *     do_action( 'wallets_api_withdraw', array(
 		 *         'symbol' => 'LTC',
-		 *         'amount => 0.1,
+		 *         'amount' => 0.1,
 		 *         'from_user_id' => 2,
 		 *         'address' => 'LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf',
 		 *         'comment' => 'Withdrawing some Litecoin',
@@ -1333,7 +1333,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_PHP_API' ) ) {
 						AND status IN ( 'cancelled', 'failed' )
 						AND category IN ( 'withdraw', 'move', 'deposit' )
 					",
-					absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ) ),
+					absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 1 ) ),
 					absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ) ),
 					$updated_time = current_time( 'mysql', true )
 				)

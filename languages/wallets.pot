@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.13\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.14\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2021-01-26 11:13:52+00:00\n"
+"POT-Creation-Date: 2021-03-03 11:29:29+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,7 +55,7 @@ msgstr ""
 msgid "Pending withdrawals"
 msgstr ""
 
-#: includes/adapters-list-table.php:101 includes/adapters-list-table.php:192
+#: includes/adapters-list-table.php:101 includes/adapters-list-table.php:198
 #: includes/admin-dashboard.php:446 includes/admin-dashboard.php:459
 #: includes/admin-dashboard.php:460 includes/admin-dashboard.php:461
 #: includes/admin-dashboard.php:462 includes/cron.php:645 includes/cron.php:648
@@ -63,63 +63,63 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
-#: includes/adapters-list-table.php:179
+#: includes/adapters-list-table.php:185
 msgid "Responding"
 msgstr ""
 
-#: includes/adapters-list-table.php:184
+#: includes/adapters-list-table.php:190
 msgid "Not responding"
 msgstr ""
 
-#: includes/adapters-list-table.php:261 includes/coin-adapter.php:287
+#: includes/adapters-list-table.php:267 includes/coin-adapter.php:287
 msgid "Wallet unlocked. Withdrawals will be processed."
 msgstr ""
 
-#: includes/adapters-list-table.php:261
+#: includes/adapters-list-table.php:267
 msgid "Unlocked"
 msgstr ""
 
-#: includes/adapters-list-table.php:263 includes/coin-adapter.php:289
+#: includes/adapters-list-table.php:269 includes/coin-adapter.php:289
 msgid "Wallet locked. Withdrawals will NOT be processed."
 msgstr ""
 
-#: includes/adapters-list-table.php:263
+#: includes/adapters-list-table.php:269
 msgid "Locked"
 msgstr ""
 
-#: includes/adapters-list-table.php:279
+#: includes/adapters-list-table.php:285
 msgid "Settings specific to this adapter"
 msgstr ""
 
-#: includes/adapters-list-table.php:280
+#: includes/adapters-list-table.php:286
 msgid "Settings"
 msgstr ""
 
-#: includes/adapters-list-table.php:291
+#: includes/adapters-list-table.php:297
 msgid "Export transactions to .csv"
 msgstr ""
 
-#: includes/adapters-list-table.php:292
+#: includes/adapters-list-table.php:298
 msgid "Export"
 msgstr ""
 
-#: includes/adapters-list-table.php:306
+#: includes/adapters-list-table.php:312
 msgid ""
 "Creates new deposit addresses. Use this after switching to a different "
 "adapter."
 msgstr ""
 
-#: includes/adapters-list-table.php:307
+#: includes/adapters-list-table.php:313
 msgid "Renew deposit addresses"
 msgstr ""
 
-#: includes/adapters-list-table.php:322
+#: includes/adapters-list-table.php:328
 msgid ""
 "Creates deposit addresses for all users with the \"has_wallets\" "
 "capability. Use this only if you need it."
 msgstr ""
 
-#: includes/adapters-list-table.php:323
+#: includes/adapters-list-table.php:329
 msgid "Create deposit addresses now for all users"
 msgstr ""
 
@@ -134,7 +134,7 @@ msgstr ""
 #: includes/confirmations.php:836 includes/cron.php:490
 #: includes/frontend-settings.php:384 includes/notifications.php:758
 #: includes/rates.php:384 includes/transactions.php:336
-#: includes/transactions.php:1261 includes/transactions.php:1407
+#: includes/transactions.php:1282 includes/transactions.php:1428
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -144,10 +144,10 @@ msgstr ""
 #: includes/json-api.php:612 includes/json-api.php:856
 #: includes/json-api.php:899 includes/json-api.php:1253
 #: includes/json-api.php:1320 includes/json-api.php:1387
-#: includes/transactions.php:1267 includes/transactions.php:1471
-#: includes/transactions.php:1494 includes/transactions.php:1516
-#: includes/transactions.php:1537 includes/transactions.php:1558
-#: includes/transactions.php:1594
+#: includes/transactions.php:1288 includes/transactions.php:1492
+#: includes/transactions.php:1515 includes/transactions.php:1537
+#: includes/transactions.php:1558 includes/transactions.php:1579
+#: includes/transactions.php:1615
 msgid "Possible request forgery detected. Please reload and try again."
 msgstr ""
 
@@ -2003,7 +2003,7 @@ msgstr ""
 #: includes/php-api.php:205 includes/php-api.php:298 includes/php-api.php:358
 #: includes/php-api.php:459 includes/php-api.php:585 includes/php-api.php:805
 #: includes/php-api.php:1032 includes/php-api.php:1182
-#: includes/php-api.php:1281 includes/transactions.php:1217
+#: includes/php-api.php:1281 includes/transactions.php:1238
 msgid "Not allowed"
 msgstr ""
 
@@ -2745,17 +2745,17 @@ msgid ""
 "because only %01.8f is available. Deposit more funds: %s"
 msgstr ""
 
-#: includes/transactions.php:1248
+#: includes/transactions.php:1269
 msgid "Could not get account for %1$s address %2$s"
 msgstr ""
 
-#: includes/transactions.php:1287
+#: includes/transactions.php:1308
 msgid ""
 "<code>%1$d</code> transactions out of <code>%2$d</code> found in "
 "<code>%3$s</code> were imported successfully."
 msgstr ""
 
-#: includes/transactions.php:1300
+#: includes/transactions.php:1321
 msgid "Failed to import file : %s"
 msgstr ""
 
@@ -2786,11 +2786,11 @@ msgid ""
 "upgrade to the latest WordPress."
 msgstr ""
 
-#: includes/wallets-core.php:1149
+#: includes/wallets-core.php:1154
 msgid "The symbol for the requested coin adapter was not a string."
 msgstr ""
 
-#: includes/wallets-core.php:1153
+#: includes/wallets-core.php:1158
 msgid "The coin adapter for the symbol %s is not available."
 msgstr ""
 

@@ -110,6 +110,12 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 
 			$format = $adapter->get_sprintf();
 
+			try {
+				$height = $adapter->get_block_height();
+			} catch ( Exception $e ) {
+				$height = false;
+			}
+
 			$new_row = array(
 				'sprintf'             => $format,
 				'icon'                => apply_filters( "wallets_coin_icon_url_$symbol", $adapter->get_icon_url() ),
@@ -119,7 +125,7 @@ class Dashed_Slug_Wallets_Adapters_List_Table extends WP_List_Table {
 				'balance'             => $balance,
 				'unavailable_balance' => $unavailable_balance,
 				'status'              => $status,
-				'height'              => $adapter->get_block_height(),
+				'height'              => $height,
 				'settings_url'        => $adapter->get_settings_url(),
 				'unlocked'            => $adapter->is_unlocked(),
 			);

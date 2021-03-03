@@ -53,7 +53,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cron' ) ) {
 		public static function action_activate( $network_active ) {
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_nonce',             md5( rand() . uniqid() ) );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_interval',          'wallets_three_minutes' );
-			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw',       3 );
+			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_withdraw',       1 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_retries_move',           1 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_batch_size',        8 );
 			call_user_func( $network_active ? 'add_site_option' : 'add_option', 'wallets_cron_ajax',              'on' );

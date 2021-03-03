@@ -786,11 +786,17 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						);
 					}
 
-					// set withdrawal as succeeded. will set to failed after the call if actually failed
-					// this prevents double spends in case communication with wallet API fails exactly after withdrawal
+					// Set the withdrawal as succeeded.
+					// Will set again to failed after the call, if it actually failed.
+					// On success, the TXID is updated.
+					// This prevents double spends, in case communication with wallet API fails exactly after withdrawal.
+					// See the exception handler below for more information.
 					$wpdb->update(
 						$table_name_txs,
-						array( 'status' => 'done' ),
+						array(
+							'status' => 'done',
+							'txid'   => "TIMEDOUT_CONTACT_ADMIN_$wd_tx->id",
+						),
 						array( 'id' => $wd_tx->id ),
 						array( '%s' ),
 						array( '%d' )
@@ -826,31 +832,46 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 
 				} catch ( Exception $e ) {
 
-					$wpdb->flush();
-					$fail_query = $wpdb->prepare(
-						"
-						UPDATE
-							{$table_name_txs}
-						SET
-							retries = IF( retries >= 1, retries - 1, 0 ),
-							status = IF( retries, 'pending', 'failed' ),
-							updated_time = %s
-						WHERE
-							id = %d
-						",
-						current_time( 'mysql', true ),
-						$wd_tx->id
-					);
+					if ( 28 == $e->getCode() ) {
+						// Here we detect a php curl error 28, i.e. the wallet has timed out before responding.
+						// This can occur with Cryptonote coins (Monero, TurtleCoin).
+						// These wallets can take a long time to respond with a TXID depending on network conditions.
+						// In this situation, the TXID cannot be updated in the DB but the transaction is executed on the blockchain.
+						// The withdrawal will be marked as 'done' in the DB to prevent double-spends.
+						// Also, the TXID field will read "TIMEDOUT_CONTACT_ADMIN_id", where "id" is the row id for the withdrawal.
+						// The admin can inspect the wallet's outgoing transactions and update the TXID manually.
+						// The solution is to increase the coin adapter's HTTP timeout setting to accomodate for the slow wallet.
 
-					$wpdb->query( $fail_query );
+						error_log( "WITHDRAWAL TIMEOUT!!! The withdrawal with id $wd_tx->id MAY have been executed, but the wallet timed out, and the TXID was not recorded in the DB!" );
 
-					if ( $wd_tx->retries <= 1 ) {
-						$wd_tx->last_error = $e->getMessage();
-						$wd_tx->user       = get_userdata( $wd_tx->account );
-						$wd_tx->retries   -= 1;
-						$wd_tx->status     = 'failed';
+					} else {
 
-						$pending_actions_withdraw_failed[] = $wd_tx;
+						$wpdb->flush();
+						$fail_query = $wpdb->prepare(
+							"
+							UPDATE
+								{$table_name_txs}
+							SET
+								retries = IF( retries >= 1, retries - 1, 0 ),
+								status = IF( retries, 'pending', 'failed' ),
+								updated_time = %s
+							WHERE
+								id = %d
+							",
+							current_time( 'mysql', true ),
+							$wd_tx->id
+						);
+
+						$wpdb->query( $fail_query );
+
+						if ( $wd_tx->retries <= 1 ) {
+							$wd_tx->last_error = $e->getMessage();
+							$wd_tx->user       = get_userdata( $wd_tx->account );
+							$wd_tx->retries   -= 1;
+							$wd_tx->status     = 'failed';
+
+							$pending_actions_withdraw_failed[] = $wd_tx;
+						}
 					}
 				}
 			} // end foreach withdrawal
@@ -1619,7 +1640,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 										AND status IN ( 'cancelled', 'failed' )
 										AND category IN ( 'withdraw', 'move', 'deposit' )
 									",
-									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ) ),
+									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 1 ) ),
 									absint( Dashed_Slug_Wallets::get_option( 'wallets_retries_move', 1 ) ),
 									$current_time
 								)

@@ -443,12 +443,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '5.6' ) < 0 ) {
+			if ( version_compare( $wp_version, '5.6.2' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %1$s. This plugin has been tested with %2$s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'5.6'
+						'5.6.2'
 					),
 					'old-wp-ver'
 				);
@@ -883,6 +883,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 						}
 					}
 				}
+			}
+
+			$admin_email = get_bloginfo( 'admin_email' );
+			if ( ! in_array( $admin_email, $admin_emails ) ) {
+				$admin_emails[] = $admin_email;
 			}
 
 			return $admin_emails;

@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.6
+Tested up to: 5.6.2
 Requires PHP: 5.6
-Stable tag: 5.0.13
+Stable tag: 5.0.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,12 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.14 =
+- Fix: If, during a withdrawal, a coin adapter fails due to a `phpcurl` timeout, consider the withdrawal done, not failed. Fixes double-spends with Monero or TurtleCoin forks on slow wallets.
+- Fix: In some situations, email notifications to admins about transaction verifications were not being sent. This is now fixed.
+- Change: By default, withdrawals are now executed once, for extra safety. This number of retries can be changed in the cron job settings.
+- Fix: If a coin adapter throws on `get_block_height()`, this no longer crashes the "Coin Adapters" admin screen.
 
 = 5.0.13 =
 - Fix: Bug with network_active plugin in the admin screens "Deposit Addresses" and "User Balances", is now fixed. Some data from other blogs was previously not shown.
@@ -1393,7 +1399,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Bitcoin and Altcoin Wallets version 5.0.13 fixes some bugs and links to the pre-release notes for the upcoming wallets6.
+Bitcoin and Altcoin Wallets version 5.0.14 patches an important double-spend situation that can arise with Cryptonote adapters (Monero and TurtleCoin). Upgrade as soon as possible!
 
 == Donating ==
 
