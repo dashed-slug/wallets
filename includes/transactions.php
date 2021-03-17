@@ -1049,27 +1049,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							}
 						}
 					} elseif ( 'withdraw' == $tx->category ) {
-						if ( ! isset( $tx->account ) || ! $tx->account ) {
-							// we don't allow withdrawals where the account is not passed
-							// some adapters report these withdrawals but if the account cannot be inferred
-							// the transaction is not stored on the ledger
-							return;
-						}
-						$tx->account       = absint( $tx->account );
+
 						$tx->confirmations = isset( $tx->confirmations ) ? absint( $tx->confirmations ) : 0;
-						if ( isset( $tx->status ) ) {
-							switch ( $tx->status ) {
-								case 'unconfirmed':
-								case 'pending':
-								case 'done':
-								case 'failed':
-								case 'cancelled':
-									break;
-								default:
-									$tx->status = 'unconfirmed';
-							}
-						} else {
-							$tx->status = 'unconfirmed';
+
+						if ( ! ( isset( $tx->confirmations ) && $tx->confirmations ) ) {
+							return;
 						}
 
 						if ( isset( $tx->extra ) && $tx->extra ) {
@@ -1094,7 +1078,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 						$new_tx_data = array(
 							'updated_time'  => $current_time_gmt,
 							'confirmations' => $tx->confirmations,
-							'status'        => $tx->status,
+							'status'        => 'done',
 						);
 
 						$affected = $wpdb->update(
@@ -1130,6 +1114,15 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 							);
 
 							if ( ! $row_exists ) {
+								if ( ! isset( $tx->account ) || ! $tx->account ) {
+									// We don't create here new withdrawals, if the account number is not specified.
+									// Some adapters may notify the plugin about new withdrawals,
+									// but if the account is not specified,
+									// then a new transaction is not stored on the ledger.
+									return;
+								}
+								$tx->account       = absint( $tx->account );
+
 								$new_tx_data = array(
 									'blog_id'       => get_current_blog_id(),
 									'category'      => 'withdraw',
@@ -1143,7 +1136,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_TXs' ) ) {
 									'comment'       => $tx->comment,
 									'created_time'  => $tx->created_time,
 									'confirmations' => $tx->confirmations,
-									'status'        => $tx->status,
+									'status'        => 'done',
 									'retries'       => Dashed_Slug_Wallets::get_option( 'wallets_retries_withdraw', 3 ),
 								);
 

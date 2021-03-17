@@ -1339,6 +1339,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		 *
 		 * amount_in_usd / value = amount_in_btc
 		 *
+		 * @since 5.0.15 If symbol contains a dot, the dot and anything after it is ignored. e.g. `USDT.ERC20` == `USDT`. Useful for the CoinPayments adapter.
 		 * @param string $from The ticker symbol for the currency to convert from.
 		 * @param string $to The ticker symbol for the currency to convert to.
 		 * @return boolean|float Exchange rate or false if not available.
@@ -1346,13 +1347,18 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 		public static function get_exchange_rate( $from, $to ) {
 			self::load_data();
 
-			if ( isset( self::$memoize_rates[ "{$from}_{$to}" ] ) ) {
-				return self::$memoize_rates[ "{$from}_{$to}" ];
+			$from = explode( '.', $from )[0];
+			$to   = explode( '.', $to   )[0];
+
+			$market = "{$from}_{$to}";
+
+			if ( isset( self::$memoize_rates[ $market ] ) ) {
+				return self::$memoize_rates[ $market ];
 			}
 
-			self::$memoize_rates[ "{$from}_{$to}" ] = self::get_exchange_rate_recursion( $from, $to );
+			self::$memoize_rates[ $market ] = self::get_exchange_rate_recursion( $from, $to );
 
-			return self::$memoize_rates[ "{$from}_{$to}" ];
+			return self::$memoize_rates[ $market ];
 		}
 
 		/**

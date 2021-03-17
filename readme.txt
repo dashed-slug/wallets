@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.6.2
+Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 5.0.14
+Stable tag: 5.0.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,10 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.15 =
+- Improve: The exchange rates for coins with a dot in their symbol (e.g. `USDT.ECRC20`) are those of the coin with symbol only the characters before the dot (e.g. `USDT`). This mostly helps the CoinPayments adapter.
+- Fix: Bad logic in `wallets_transaction` action prevented confirmation counts from updating on withdrawal transaction notifications. Is now fixed.
 
 = 5.0.14 =
 - Fix: If, during a withdrawal, a coin adapter fails due to a `phpcurl` timeout, consider the withdrawal done, not failed. Fixes double-spends with Monero or TurtleCoin forks on slow wallets.
@@ -1399,7 +1403,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Bitcoin and Altcoin Wallets version 5.0.14 patches an important double-spend situation that can arise with Cryptonote adapters (Monero and TurtleCoin). Upgrade as soon as possible!
+Bitcoin and Altcoin Wallets version 5.0.15 fixes two non-critical bugs.
 
 == Donating ==
 
