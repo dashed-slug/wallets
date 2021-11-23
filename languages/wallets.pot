@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.15\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2021-03-17 09:16:42+00:00\n"
+"POT-Creation-Date: 2021-11-23 06:45:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -132,7 +132,7 @@ msgstr ""
 #: includes/coin-adapter.php:203 includes/coin-adapter.php:212
 #: includes/coin-adapter.php:302 includes/cold-storage.php:153
 #: includes/confirmations.php:836 includes/cron.php:490
-#: includes/frontend-settings.php:384 includes/notifications.php:758
+#: includes/frontend-settings.php:388 includes/notifications.php:758
 #: includes/rates.php:384 includes/transactions.php:336
 #: includes/transactions.php:1275 includes/transactions.php:1421
 msgid "You do not have sufficient permissions to access this page."
@@ -1905,25 +1905,25 @@ msgstr ""
 msgid "Bitcoin and Altcoin Wallets Default Coin"
 msgstr ""
 
-#: includes/frontend-settings.php:340
+#: includes/frontend-settings.php:344
 msgid ""
 "Select the default coin for this page. If set, this overrides the site-wide "
 "default coin in <a href=\"%s\">Frontend Settings</a>."
 msgstr ""
 
-#: includes/frontend-settings.php:387
+#: includes/frontend-settings.php:391
 msgid "Bitcoin and Altcoin Wallets frontend settings"
 msgstr ""
 
-#: includes/frontend-settings.php:389
+#: includes/frontend-settings.php:393
 msgid "These settings affect the way the frontend UIs are displayed."
 msgstr ""
 
-#: includes/frontend-settings.php:466
+#: includes/frontend-settings.php:470
 msgid "&mdash;"
 msgstr ""
 
-#: includes/frontend-settings.php:492
+#: includes/frontend-settings.php:496
 msgid "These settings affect the display of frontend UIs."
 msgstr ""
 

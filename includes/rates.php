@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( -1 );
 if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 	class Dashed_Slug_Wallets_Rates {
 
-		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'coincap', 'cryptocompare', 'bittrex', 'poloniex', 'yobit', 'stocksexchange' );
+		private static $providers = array( 'fixer', 'coinmarketcap', 'coingecko', 'coincap', 'cryptocompare', 'bittrex', 'poloniex', 'yobit' );
 		private static $rates     = array();
 		private static $cryptos   = array();
 		private static $fiats     = array();
@@ -798,9 +798,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					if ( is_object( $obj ) && isset( $obj->rates ) ) {
 						foreach ( $obj->rates as $fixer_symbol => $rate ) {
 							if ( 'BTC' != $fixer_symbol ) {
-								if ( ! self::is_crypto( $fixer_symbol ) ) {
-									$fiats[] = $fixer_symbol;
-								}
+								$fiats[] = $fixer_symbol;
 							}
 						}
 					}
@@ -840,8 +838,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					if ( is_object( $obj ) && isset( $obj->data ) && is_array( $obj->data ) ) {
 						foreach ( $obj->data as $currency ) {
 							if ( isset( $currency->symbol ) && isset( $currency->id ) ) {
-								$cryptos[] =  $currency->symbol;
-								self::$cmc_ids[ $currency->symbol ] = $currency->id;
+								if ( ! self::is_fiat( $currency->symbol ) ) {
+									$cryptos[] =  $currency->symbol;
+									self::$cmc_ids[ $currency->symbol ] = $currency->id;
+								}
 							}
 						}
 					}
@@ -861,7 +861,16 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					$obj = json_decode( $json );
 				}
 				if ( is_object( $obj ) && isset( $obj->Response ) && 'Success' == $obj->Response ) {
-					return array_merge( $cryptos, array_keys( get_object_vars( $obj->Data ) ) );
+					$crypto_symbols = array_keys( get_object_vars( $obj->Data ) );
+
+					$crypto_symbols = array_filter(
+						$crypto_symbols,
+						function( $symbol ) {
+							return ! call_user_func( 'Dashed_Slug_Wallets_Rates::is_fiat', $symbol );
+						}
+					);
+
+					$cryptos = array_merge( $cryptos, $crypto_symbols );
 				}
 			}
 
@@ -878,7 +887,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 						foreach ( $obj->result as $market ) {
 							$s = $market->MarketCurrency;
 							if ( 'USDT' != $s ) {
-								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								if ( ! self::is_fiat( $s ) ) {
+									$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								}
 							}
 						}
 					}
@@ -896,7 +907,9 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					foreach ( $obj as $marketname => $market ) {
 						foreach ( explode( '_', $marketname ) as $s ) {
 							if ( 'USDT' != $s ) {
-								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								if ( ! self::is_fiat( $s ) ) {
+									$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								}
 							}
 						}
 					}
@@ -914,23 +927,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					foreach ( $obj->pairs as $marketname => $market ) {
 						foreach ( explode( '_', strtoupper( $marketname ) ) as $s ) {
 							if ( 'RUR' !== $s && 'USD' !== $s ) {
-								$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								if ( ! self::is_fiat( $s ) ) {
+									$cryptos[] = 'BCC' == $s ? 'BCH' : $s;
+								}
 							}
 						}
-					}
-				}
-			}
-			return $cryptos;
-		}
-
-		public static function filter_rates_cryptos_stocksexchange( $cryptos ) {
-			$url  = 'https://stocks.exchange/api2/markets';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) ) {
-					foreach ( $obj as $market ) {
-						$cryptos[] = $market->currency;
 					}
 				}
 			}
@@ -971,9 +972,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 							$currency = json_decode( $match );
 							if ( $currency ) {
 								$symbol = strtoupper( $currency->symbol );
-								$cryptos[] = $symbol;
-								self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
-								self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+								if ( ! self::is_fiat( $symbol ) ) {
+									$cryptos[] = $symbol;
+									self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
+									self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+								}
 							}
 						}
 
@@ -1005,9 +1008,11 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 					if ( is_array( $obj ) ) {
 						foreach ( $obj as $currency ) {
 							$symbol = strtoupper( $currency->symbol );
-							$cryptos[] = $symbol;
-							self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
-							self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+							if ( ! self::is_fiat( $symbol ) ) {
+								$cryptos[] = $symbol;
+								self::$symbol_to_gecko_id[ $symbol ] = $currency->id;
+								self::$gecko_id_to_symbol[ $currency->id ] = $symbol;
+							}
 						}
 					}
 				}
@@ -1238,21 +1243,6 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Rates' ) ) {
 								$rates[ $m ] = $market->last;
 							}
 						}
-					}
-				}
-			}
-			return $rates;
-		}
-
-		public static function filter_rates_stocksexchange( $rates ) {
-			$url  = 'https://stocks.exchange/api2/ticker';
-			$json = self::file_get_contents( $url );
-			if ( is_string( $json ) ) {
-				$obj = json_decode( $json );
-				if ( is_object( $obj ) ) {
-					foreach ( $obj as $market ) {
-						$m           = str_replace( 'USDT', 'USD', $market->market_name );
-						$rates[ $m ] = $market->last;
 					}
 				}
 			}

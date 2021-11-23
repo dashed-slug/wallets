@@ -704,19 +704,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			switch ( $symbol ) {
 				case 'BTC':
-					return 'https://blockchain.info/tx/%s';
-
+					return 'https://blockchair.com/bitcoin/transaction/%s?from=dashed-slug-wallets';
+				case 'BCH':
+					return 'https://blockchair.com/bitcoin-cash/transaction/%s?from=dashed-slug-wallets';
+				case 'LTC':
+					return 'https://blockchair.com/litecoin/transaction/%s?from=dashed-slug-wallets';
+				case 'BSV':
+					return 'https://blockchair.com/bitcoin-sv/transaction/%s?from=dashed-slug-wallets';
 				case 'DOGE':
-					return 'https://dogechain.info/tx/%s';
-
+					return 'https://blockchair.com/dogecoin/transaction/%s?from=dashed-slug-wallets';
+				case 'DASH':
+					return 'https://blockchair.com/dash/transaction/%s?from=dashed-slug-wallets';
+				case 'ETH':
+					return 'https://blockchair.com/ethereum/transaction/%s?from=dashed-slug-wallets';
+				case 'XRP':
+					return 'https://blockchair.com/ripple/transaction/%s?from=dashed-slug-wallets';
+				case 'GRS':
+					return 'https://blockchair.com/groestlcoin/transaction/%s?from=dashed-slug-wallets';
+				case 'XLM':
+					return 'https://blockchair.com/stellar/transaction/%s?from=dashed-slug-wallets';
+				case 'EOS':
+					return 'https://blockchair.com/eos/transaction/%s?from=dashed-slug-wallets';
+				case 'ADA':
+					return 'https://blockchair.com/cardano/transaction/%s?from=dashed-slug-wallets';
+				case 'XTZ':
+					return 'https://blockchair.com/tezos/transaction/%s?from=dashed-slug-wallets';
+				case 'ZEC':
+					return 'https://blockchair.com/zcash/transaction/%s?from=dashed-slug-wallets';
 				case 'FTC':
 					return 'http://explorer.feathercoin.com/tx/%s';
-
 				case 'LTCT':
 					return 'http://explorer.litecointools.com/tx/%s';
-
-				case 'ETH':
-					return 'https://ethplorer.io/tx/%s';
 
 				default:
 					return 'https://chainz.cryptoid.info/' . strtolower( $symbol ) . '/tx.dws?%s.htm';
@@ -738,19 +756,37 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Coin_Adapter' ) ) {
 
 			switch ( $symbol ) {
 				case 'BTC':
-					return 'https://blockchain.info/address/%s';
-
+					return 'https://blockchair.com/bitcoin/address/%s?from=dashed-slug-wallets';
+				case 'BCH':
+					return 'https://blockchair.com/bitcoin-cash/address/%s?from=dashed-slug-wallets';
+				case 'LTC':
+					return 'https://blockchair.com/litecoin/address/%s?from=dashed-slug-wallets';
+				case 'BSV':
+					return 'https://blockchair.com/bitcoin-sv/address/%s?from=dashed-slug-wallets';
 				case 'DOGE':
-					return 'https://dogechain.info/address/%s';
-
+					return 'https://blockchair.com/dogecoin/address/%s?from=dashed-slug-wallets';
+				case 'DASH':
+					return 'https://blockchair.com/dash/address/%s?from=dashed-slug-wallets';
+				case 'ETH':
+					return 'https://blockchair.com/ethereum/address/%s?from=dashed-slug-wallets';
+				case 'XRP':
+					return 'https://blockchair.com/ripple/address/%s?from=dashed-slug-wallets';
+				case 'GRS':
+					return 'https://blockchair.com/groestlcoin/address/%s?from=dashed-slug-wallets';
+				case 'XLM':
+					return 'https://blockchair.com/stellar/address/%s?from=dashed-slug-wallets';
+				case 'EOS':
+					return 'https://blockchair.com/eos/address/%s?from=dashed-slug-wallets';
+				case 'ADA':
+					return 'https://blockchair.com/cardano/address/%s?from=dashed-slug-wallets';
+				case 'XTZ':
+					return 'https://blockchair.com/tezos/address/%s?from=dashed-slug-wallets';
+				case 'ZEC':
+					return 'https://blockchair.com/zcash/address/%s?from=dashed-slug-wallets';
 				case 'FTC':
 					return 'http://explorer.feathercoin.com/address/%s';
-
 				case 'LTCT':
 					return 'http://explorer.litecointools.com/address/%s';
-
-				case 'ETH':
-					return 'https://ethplorer.io/address/%s';
 
 				default:
 					return 'https://chainz.cryptoid.info/' . strtolower( $symbol ) . '/address.dws?%s.htm';

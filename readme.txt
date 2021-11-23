@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.7
+Tested up to: 5.8.2
 Requires PHP: 5.6
-Stable tag: 5.0.15
+Stable tag: 5.0.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,11 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.16 =
+- Improve: When crypto ticker symbols clash with fiat ticker symbols, fiat symbols take priority for now. This issue will be ultimately fixed in the next major release.
+- Improve: Using blockchair as the default block explorer for multiple well-known cryptocurrencies.
+- Fix: Added guard clause to suppress minor warning in admin editor.
 
 = 5.0.15 =
 - Improve: The exchange rates for coins with a dot in their symbol (e.g. `USDT.ECRC20`) are those of the coin with symbol only the characters before the dot (e.g. `USDT`). This mostly helps the CoinPayments adapter.
@@ -1403,7 +1408,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Bitcoin and Altcoin Wallets version 5.0.15 fixes two non-critical bugs.
+Version 5.0.16 now gives priority to fiat currencies over cryptocurrencies whenever there is a ticker symbol clash.
 
 == Donating ==
 

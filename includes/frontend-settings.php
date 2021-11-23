@@ -303,6 +303,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Frontend_Settings' ) ) {
 				return;
 			}
 
+			if ( ! ( $post && $post->ID ) ) {
+				return;
+			}
+
 			wp_nonce_field( 'wallets_default_coin_nonce', 'wallets_default_coin_nonce' );
 
 			$value = get_post_meta( $post->ID, '_wallets_default_coin', true );
