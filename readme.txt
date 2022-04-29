@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 4.0
-Tested up to: 5.8.2
+Tested up to: 5.9.3
 Requires PHP: 5.6
-Stable tag: 5.0.16
+Stable tag: 5.0.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,11 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.17 =
+- Fix: Issue while sending emails to names that contain a comma symbol (,) is now fixed.
+- Fix: Prevent issue in cold storage screen that caused error in PHP8 and warnings in PHP7 or earlier.
+- Change: Referral links in cold storage screen are now updated.
 
 = 5.0.16 =
 - Improve: When crypto ticker symbols clash with fiat ticker symbols, fiat symbols take priority for now. This issue will be ultimately fixed in the next major release.
@@ -1408,7 +1413,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 5.0.16 now gives priority to fiat currencies over cryptocurrencies whenever there is a ticker symbol clash.
+Version 5.0.17 fixes some minor defects.
 
 == Donating ==
 

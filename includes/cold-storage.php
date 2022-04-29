@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-5.0.16.min.js' ) ) {
-				$script = 'wallets-cold-storage-5.0.16.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-5.0.17.min.js' ) ) {
+				$script = 'wallets-cold-storage-5.0.17.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'5.0.16',
+				'5.0.17',
 				true
 			);
 		}
@@ -213,7 +213,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 
 								<td>
 									<?php
-									if ( ! isset( $balance_sums[ $symbol ] ) ) {
+									if ( ! ( isset( $balance_sums[ $symbol ] ) && $balance_sums[ $symbol ] ) ) {
 
 										echo esc_html(
 											sprintf(
@@ -231,10 +231,10 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 												number_format( $progress, 2, '.', '' )
 											)
 										);
-									?>
-									<br />
-									<progress max="100" value="<?php echo  min( 100, $progress ); ?>" ></progress>
-									<?php
+										?>
+										<br />
+										<progress max="100" value="<?php echo  min( 100, $progress ); ?>" ></progress>
+										<?php
 									}
 									?>
 								</td>
@@ -398,24 +398,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					?>">
 
 						<img
-							width="728" height="90"
-							alt="Ledger Nano S - The secure hardware wallet"
-							src="https://www.ledgerwallet.com/images/promo/nano-s/ledger_nano-s_7-2-8x9-0.jpg">
+							width="320" height="50"
+							alt="Ledger Nano X - Keep your crypto secure, everywhere"
+							src="http://www.ledgerwallet.com/affiliate/image/320/50" />
 					</a>
 
 					<a
-						href="https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=3798&source=wallets"
+						href="https://shop.trezor.io/product/trezor-model-t-reserve?offer_id=113&aff_id=3798"
 						title="<?php
-						esc_attr_e(
-							'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
-							'wallets'
-						);
-					?>">
+							esc_attr_e(
+								'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
+								'wallets'
+							);
+						?>">
 
-						<img
-							width="728" height="90"
-							alt=" Trezor Model T. The safe place for your coins."
-							src="<?php echo plugins_url( 'assets/sprites/T1-728x90.png', DSWALLETS_FILE ); ?>">
+					<img
+						width="100" height="100"
+						alt="TTrezor Model T Reserve"
+						src="https://shop.trezor.io/static/img/product/Trezor-Model-T-front-view-screen-lock.png" />
 
 					</a>
 

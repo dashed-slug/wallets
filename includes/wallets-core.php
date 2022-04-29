@@ -443,12 +443,12 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			// Check for WP version
 			$wp_version = get_bloginfo( 'version' );
-			if ( version_compare( $wp_version, '5.8.2' ) < 0 ) {
+			if ( version_compare( $wp_version, '5.9.3' ) < 0 ) {
 				$this->_notices->info(
 					sprintf(
 						__( 'You are using WordPress %1$s. This plugin has been tested with %2$s. Please upgrade to the latest WordPress.', 'wallets' ),
 						$wp_version,
-						'5.8.2'
+						'5.9.3'
 					),
 					'old-wp-ver'
 				);
@@ -879,7 +879,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 					foreach ( $users as $user ) {
 						if ( user_can( $user->id, 'manage_wallets' ) ) {
-							$admin_emails[] = "{$user->display_name} <{$user->user_email}>";
+							$admin_emails[] = self::esc_email( "{$user->display_name} <{$user->user_email}>" );
 						}
 					}
 				}
@@ -887,10 +887,24 @@ if ( ! class_exists( 'Dashed_Slug_Wallets' ) ) {
 
 			$admin_email = get_bloginfo( 'admin_email' );
 			if ( ! in_array( $admin_email, $admin_emails ) ) {
-				$admin_emails[] = $admin_email;
+				$admin_emails[] = self::esc_email( $admin_email );
 			}
 
 			return $admin_emails;
+		}
+
+		public static function esc_email( $emailorname ) {
+			return strtr(
+				mb_encode_mimeheader(
+					trim( $emailorname ),
+					'UTF-8',
+					'Q'
+				),
+				[
+					'"'  => '\"',
+					',' => '\,'
+				]
+			);
 		}
 
 		//////// PHP API v1 (deprecated)

@@ -507,8 +507,8 @@ EMAIL
 
 				$headers = array();
 
-				$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
-				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+				$email_from      = Dashed_Slug_Wallets::esc_email( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from_name = Dashed_Slug_Wallets::esc_email( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
 
 				if ( $email_from && $email_from_name ) {
 					$headers[] = "From: $email_from_name <$email_from>";
@@ -648,8 +648,8 @@ EMAIL
 
 				$headers = array();
 
-				$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
-				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+				$email_from      = Dashed_Slug_Wallets::esc_email( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from_name = Dashed_Slug_Wallets::esc_email( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
 
 				if ( $email_from && $email_from_name ) {
 					$headers[] = "From: $email_from_name <$email_from>";
@@ -788,8 +788,8 @@ EMAIL
 
 				$headers = array();
 
-				$email_from      = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
-				$email_from_name = trim( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
+				$email_from      = Dashed_Slug_Wallets::esc_email( Dashed_Slug_Wallets::get_option( 'wallets_email_from', false ) );
+				$email_from_name = Dashed_Slug_Wallets::esc_email( Dashed_Slug_Wallets::get_option( 'wallets_email_from_name', false ) );
 
 				if ( $email_from && $email_from_name ) {
 					$headers[] = "From: $email_from_name <$email_from>";
