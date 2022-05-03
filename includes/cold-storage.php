@@ -30,8 +30,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'1.0.0'
 			);
 
-			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-5.0.17.min.js' ) ) {
-				$script = 'wallets-cold-storage-5.0.17.min.js';
+			if ( file_exists( DSWALLETS_PATH . '/assets/scripts/wallets-cold-storage-5.0.18.min.js' ) ) {
+				$script = 'wallets-cold-storage-5.0.18.min.js';
 			} else {
 				$script = 'wallets-cold-storage.js';
 			}
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 				'wallets-cold-storage',
 				plugins_url( $script, "wallets/assets/scripts/$script" ),
 				array( 'jquery' ),
-				'5.0.17',
+				'5.0.18',
 				true
 			);
 		}
@@ -442,7 +442,8 @@ if ( ! class_exists( 'Dashed_Slug_Wallets_Cold_Storage' ) ) {
 					$user_balances    = Dashed_Slug_Wallets::get_balance_totals_per_coin();
 					$cold_storage_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 
-					if ( isset( $user_balances[ $symbol ] ) ) :
+					if ( isset( $user_balances[ $symbol ] ) && $user_balances[ $symbol ] ) :
+
 						for ( $r = 10; $r <= 100; $r += 10 ) :
 
 							$target = $user_balances[ $symbol ] * $r / 100;

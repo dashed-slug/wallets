@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.17\n"
+"Project-Id-Version: Bitcoin and Altcoin Wallets 5.0.18\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wallets\n"
-"POT-Creation-Date: 2022-04-29 06:49:55+00:00\n"
+"POT-Creation-Date: 2022-05-03 09:16:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1036,19 +1036,19 @@ msgstr ""
 msgid "Get a hardware wallet and sleep easier!"
 msgstr ""
 
-#: includes/cold-storage.php:460
+#: includes/cold-storage.php:461
 msgid "To have <code>%1$d%%</code> online (<code>%2$s</code>), %3$s %4$s."
 msgstr ""
 
-#: includes/cold-storage.php:463
+#: includes/cold-storage.php:464
 msgid "deposit"
 msgstr ""
 
-#: includes/cold-storage.php:463
+#: includes/cold-storage.php:464
 msgid "withdraw"
 msgstr ""
 
-#: includes/cold-storage.php:477
+#: includes/cold-storage.php:478
 msgid "You currently have <code>%1$01.2f%%</code> online (<code>%2$s</code>)."
 msgstr ""
 

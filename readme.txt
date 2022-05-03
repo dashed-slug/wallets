@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 4.0
 Tested up to: 5.9.3
 Requires PHP: 5.6
-Stable tag: 5.0.17
+Stable tag: 5.0.18
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,10 @@ Unfortunately I do not undertake custom projects. If you have an idea about a co
 
 
 == Changelog ==
+
+= 5.0.18 =
+- Fix: The shortcode `[wallets_depositextra template="static_textonly" symbol="???"]` now displays address extra info correctly if such info is present.
+- Fix: Another issue related to the display of the cold storage screen.
 
 = 5.0.17 =
 - Fix: Issue while sending emails to names that contain a comma symbol (,) is now fixed.
@@ -1413,7 +1417,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 5.0.17 fixes some minor defects.
+Version 5.0.18 fixes some minor defects.
 
 == Donating ==
 

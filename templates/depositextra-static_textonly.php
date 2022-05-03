@@ -27,7 +27,7 @@ if ( Dashed_Slug_Wallets_Rates::is_fiat( $atts['symbol'] ) ) {
 
 if ( Dashed_Slug_Wallets_Rates::is_crypto( $atts['symbol'] ) ) {
 	echo ' crypto-coin';
-} ?>"><?php echo esc_attr( is_array( $deposit_address[ 1 ] ) && isset( $deposit_address[ 1 ] ) ? $deposit_address[ 1 ] : '' ); ?></div>
+} ?>"><?php echo esc_attr( is_array( $deposit_address ) && isset( $deposit_address[ 1 ] ) ? $deposit_address[ 1 ] : '' ); ?></div>
 <?php
 
 unset( $deposit_address );
