@@ -1,19 +1,18 @@
 <?php
 /*
- * Plugin Name:       Bitcoin and Altcoin Wallets
- * Description:       Offer your users custodial cryptocurrency wallets, backed by full nodes that you control.
- * Version:           5.0.18
- * Plugin URI:        https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
- * Requires at least: 4.0
- * Requires PHP:      5.6
- * Author:            dashed-slug <info@dashed-slug.net>
- * Author URI:        http://dashed-slug.net
- * Text Domain:       wallets
- * Domain Path:       /languages
- * License:           GPLv2 or later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Plugin Name:			Bitcoin and Altcoin Wallets
+ * Description:			Custodial cryptocurrency wallets.
+ * Version:				6.0.0-RC1
+ * Plugin URI:			https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
+ * Requires at least:	5.0
+ * Requires PHP:		7.2
+ * Author:				dashed-slug <info@dashed-slug.net>
+ * Author URI:			http://dashed-slug.net
+ * Text Domain:			wallets
+ * License:				GPLv2 or later
+ * License URI:			https://www.gnu.org/licenses/gpl-2.0.html
+ * Release Notes:		https://dashed-slug.net/wallets6-release-notes
  *
- * @package   wallets
  * @author    Alexandros Georgiou
  * @copyright 2022 Alexandros Georgiou
  * @license   GPL-2.0-or-later
@@ -38,14 +37,14 @@
 	Copyright 2022 Alexandros Georgiou
  */
 
+namespace DSWallets;
 
-// don't load directly
 defined( 'ABSPATH' ) || die( -1 );
 
+define( 'DSWALLETS_PATH', __DIR__ );
 define( 'DSWALLETS_FILE', __FILE__ );
-define( 'DSWALLETS_PATH', dirname( __FILE__ ) );
 
-if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+if ( ! function_exists( '\is_plugin_active_for_network' ) ) {
 	require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 }
 
@@ -53,33 +52,140 @@ if ( ! defined( 'CURLPROXY_SOCKS5_HOSTNAME' ) ) {
 	define( 'CURLPROXY_SOCKS5_HOSTNAME', 7 );
 }
 
-require_once 'includes/admin-notices.php';
-require_once 'includes/wallets-core.php';
-require_once 'includes/php-api.php';
-require_once 'includes/json-api.php';
+// post types
+require_once DSWALLETS_PATH . '/post-types/abstract-post-type.php';
+foreach ( [ 'wallet', 'currency', 'transaction', 'address' ] as $type ) {
+	require_once DSWALLETS_PATH . "/post-types/class-$type.php";
+}
 
-require_once 'includes/coin-adapter.php';
-require_once 'includes/coin-adapter-rpc.php';
-require_once 'includes/coin-adapter-json.php';
+// helpers
+require_once DSWALLETS_PATH . '/helpers/addresses.php';
+require_once DSWALLETS_PATH . '/helpers/assets.php';
+require_once DSWALLETS_PATH . '/helpers/balances.php';
+require_once DSWALLETS_PATH . '/helpers/currencies.php';
+require_once DSWALLETS_PATH . '/helpers/http.php';
+require_once DSWALLETS_PATH . '/helpers/emails.php';
+require_once DSWALLETS_PATH . '/helpers/explorers.php';
+require_once DSWALLETS_PATH . '/helpers/multisite.php';
+require_once DSWALLETS_PATH . '/helpers/shortcodes.php';
+require_once DSWALLETS_PATH . '/helpers/transactions.php';
+require_once DSWALLETS_PATH . '/helpers/users.php';
+require_once DSWALLETS_PATH . '/helpers/wallets.php';
 
-require_once 'includes/admin-dashboard.php';
-require_once 'includes/admin-menu.php';
-require_once 'includes/admin-user.php';
-require_once 'includes/adapters-list.php';
-require_once 'includes/addresses-list.php';
-require_once 'includes/balances-list.php';
-require_once 'includes/transactions.php';
-require_once 'includes/rates.php';
-require_once 'includes/cold-storage.php';
-require_once 'includes/caps.php';
-require_once 'includes/confirmations.php';
-require_once 'includes/cron.php';
-require_once 'includes/notifications.php';
-require_once 'includes/frontend-settings.php';
-require_once 'includes/gdpr.php';
+// capabilities must be loaded before post types
+require_once DSWALLETS_PATH . '/admin/capabilities.php';
 
-require_once 'includes/templates.php';
-require_once 'includes/sidebar-widgets.php';
-require_once 'includes/customizer.php';
-require_once 'includes/menu-item.php';
-require_once 'includes/shortcodes.php';
+// register post types
+Wallet::register();
+Currency::register();
+Address::register();
+Transaction::register();
+
+// wallet adapters
+require_once DSWALLETS_PATH . '/adapters/abstract-wallet-adapter.php';
+require_once DSWALLETS_PATH . '/adapters/abstract-fiat-adapter.php';
+require_once DSWALLETS_PATH . '/adapters/class-bitcoin-core-like-wallet-adapter.php';
+require_once DSWALLETS_PATH . '/adapters/class-bank-fiat-adapter.php';
+
+/**
+ * Declare wallet adapter classes here.
+ *
+ * Any wallet adapters must be included on this action, because we need to be certain that
+ * they are loaded after the base classes. (Remember, plugins are loaded in no predictable order.)
+ *
+ * @since 6.0.0 Replaces the previous action for coin adapters: `wallets_declare_adapters`.
+ */
+do_action( 'wallets_declare_wallet_adapters' );
+
+// APIS
+require_once DSWALLETS_PATH . '/apis/legacy-php.php';
+require_once DSWALLETS_PATH . '/apis/legacy-json.php';
+require_once DSWALLETS_PATH . '/apis/wp-rest.php';
+
+// cron jobs
+require_once DSWALLETS_PATH . '/cron/abstract-task.php';
+add_action(
+	'plugins_loaded',
+	function() {
+		include_once DSWALLETS_PATH . '/cron/class-migration-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-bitcoin-creator-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-coingecko-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-email-queue-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-withdrawals-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-moves-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-adapters-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-autocancel-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-fixerio-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-currency-icons-task.php';
+	}
+);
+
+// admin
+require_once DSWALLETS_PATH . '/admin/assets.php';
+require_once DSWALLETS_PATH . '/admin/profile.php';
+require_once DSWALLETS_PATH . '/admin/settings.php';
+require_once DSWALLETS_PATH . '/admin/dashboard.php';
+require_once DSWALLETS_PATH . '/admin/cold-storage.php';
+require_once DSWALLETS_PATH . '/admin/migration.php';
+require_once DSWALLETS_PATH . '/admin/gdpr.php';
+require_once DSWALLETS_PATH . '/admin/pointers.php';
+require_once DSWALLETS_PATH . '/admin/updates.php';
+require_once DSWALLETS_PATH . '/admin/documentation.php';
+
+// frontend
+require_once DSWALLETS_PATH . '/frontend/assets.php';
+require_once DSWALLETS_PATH . '/frontend/shortcodes.php';
+require_once DSWALLETS_PATH . '/frontend/customizer.php';
+require_once DSWALLETS_PATH . '/frontend/menu-item.php';
+
+add_filter(
+	'plugin_action_links_' . plugin_basename( __FILE__ ),
+
+	function( $links ) {
+
+		maybe_switch_blog();
+
+		$links[] = sprintf(
+			'<a href="%s">&#x1F527; %s</a>',
+			admin_url( 'options-general.php?page=wallets_settings_page' ),
+			__( 'Settings', 'wallets' )
+		);
+
+		$links[] = '<a target="_blank" rel="noopener noreferrer" href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin">' . sprintf( __( '%s Homepage', 'wallets' ), '&#x1F3E0;' ) . '</a>';
+		$links[] = '<a target="_blank" rel="noopener noreferrer" href="https://www.dashed-slug.net/tag/wallets/?utm_source=wallets&utm_medium=plugin&utm_campaign=plugin-action-links">' . sprintf( __( '%s News', 'wallets' ), '&#x1F4F0;' ) . '</a>';
+		$links[] = '<a target="_blank" rel="noopener noreferrer" href="https://wordpress.org/support/plugin/wallets" style="color: #dd9933;">' . sprintf( __( '%s Support', 'wallets' ), '&#x2753;' ) . '</a>';
+		$links[] = '<a target="_wallets_docs" href="/wp-admin/admin.php?page=wallets_docs" style="color: #dd9933;">' . sprintf( __( '%s Docs', 'wallets' ), '&#x1F4D5;' ) . '</a>';
+
+		maybe_restore_blog();
+
+		return $links;
+	}
+);
+
+add_filter(
+	'network_admin_plugin_action_links',
+
+	function( $links, $plugin_file ) {
+		if ( 'wallets/wallets.php' == $plugin_file ) {
+
+			maybe_switch_blog();
+
+			$links[] = sprintf(
+				'<a href="%s">&#x1F527; %s</a>',
+				admin_url( 'options-general.php?page=wallets_settings_page' ),
+				__( 'Settings', 'wallets' )
+			);
+
+			$links[] = '<a target="_blank" rel="noopener noreferrer" href="https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin">' . sprintf( __( '%s Homepage', 'wallets' ), '&#x1F3E0;' ) . '</a>';
+			$links[] = '<a target="_blank" rel="noopener noreferrer" href="https://www.dashed-slug.net/tag/wallets/?utm_source=wallets&utm_medium=plugin&utm_campaign=plugin-action-links">' . sprintf( __( '%s News', 'wallets' ), '&#x1F4F0;' ) . '</a>';
+			$links[] = '<a target="_blank" rel="noopener noreferrer" href="https://wordpress.org/support/plugin/wallets" style="color: #dd9933;">' . sprintf( __( '%s Support', 'wallets' ), '&#x2753;' ) . '</a>';
+			$links[] = '<a target="_wallets_docs" href="/wp-admin/admin.php?page=wallets_docs" style="color: #dd9933;">' . sprintf( __( '%s Docs', 'wallets' ), '&#x1F4D5;' ) . '</a>';
+
+			maybe_restore_blog();
+
+		}
+		return $links;
+	},
+	10,
+	2
+);

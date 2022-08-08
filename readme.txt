@@ -2,20 +2,18 @@
 Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
-Requires at least: 4.0
-Tested up to: 5.9.3
+Requires at least: 5.0
+Tested up to: 6.0.1
 Requires PHP: 5.6
-Stable tag: 5.0.18
+Stable tag: 6.0.0-RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Offer your users custodial cryptocurrency wallets, backed by full nodes that you control.
+Custodial cryptocurrency wallets.
 
 == Description ==
 
-[![RIPS CodeRisk](https://coderisk.com/wp/plugin/wallets/badge "RIPS CodeRisk")](https://coderisk.com/wp/plugin/wallets)
-
-### Offer your users custodial cryptocurrency wallets, backed by full nodes that you control.
+### Custodial cryptocurrency wallets.
 
 = At a glance =
 
@@ -23,324 +21,364 @@ Offer your users custodial cryptocurrency wallets, backed by full nodes that you
 
 Your users can deposit, withdraw and transfer Bitcoins and other cryptocurrencies on your site.
 
+= Free wallet adapter extensions =
 
-= Get the free PDF manual! =
+ You can extend this plugin to work with other coins if you install wallet adapters.
 
-1. Visit the dashed-slug [download area](https://dashed-slug.net/downloads).
-2. Download the Bitcoin and Altcoin Wallets **bundle**. You will find the PDF file inside the ZIP download.
-3. RTFM! :-)
+ There is a built-in wallet adapter that lets you connect with Bitcoin core and similar wallets, such as: Dogecoin core, Bitcoin ABC (Bitcoin Cash wallet), Litecoin core, etc. Any wallet that uses the Bitcoin core RPC API is compatible.
 
-= Bitcoin and Altcoin Wallets FREE plugin overview =
+ The following wallet adapters are available for free to all [dashed-slug subscribers](https://www.dashed-slug.net/dashed-slug/subscribe/).
 
-This is the *core plugin* that takes care of *basic accounting functionality*:
+- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - Third-party wallet for many cryptocurrencies. Saves you from the hassle of hosting wallets on servers. But you don't control the private keys.
+- [Monero Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/) - Full node wallet adapter for Monero and its forks.
+- [TurtleCoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/turtlecoin-adapter-extension/) - Full node wallet adapter for TurtleCoin and its forks.
 
-- **Accounting for your users.** Data is held on tables in your MySQL database.
-- **A financial transaction [PHP API](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/php-api/)**:
-  Calls that let the logged in user handle their cryptocurrencies.
-- **A [JSON API](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/json-api/)**: JSON requests of the above, for logged in users.
-- **[Simple shortcodes](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shortcodes/)**:
-  These let you display frontend UI elements to let logged-in users perform the following common tasks:
-  - deposit from the blockchain,
-  - withdraw to an external blockchain address,
-  - transfer funds to other users (on-site transactions that bypass the blockchain),
-  - view a history of past transactions
-- **Widgets** the same UI elements available via shortcodes can also be used as widgets in your theme.
-- Configure who has a wallet and who does what using WordPress capabilities.
-- Configure e-mail notifications for users.
-- Configure e-mail confirmations for transactions and optionally confirm transactions via the admin interface.
-- **Backup and restore transactions**: An **import/export** functionality to backup transactions to and from [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files.
-- **Extensible architecture**
-  - Easily install coin adapter plugins to use other cryprocurrencies besides Bitcoin.
-  - Easily install extension plugins that talk to the PHP API to provide additional functionality such as payment gateways.
+You do not have to pay for membership to get the wallet adapters.
 
-= Free coin adapter extensions =
 
- You can extend this plugin to work with other coins if you install coin adapters. Coin adapters are available for free to all [subscribers at dashed-slug](https://www.dashed-slug.net/dashed-slug/subscribe/) (you do not have to pay for membership).
+= Premium app extensions =
 
-- [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - hundreds of coins supported, easy to use custodial wallet
-- [Full Node Multi Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/) - supports most Bitcoin-like wallets (LTC, etc), must be set up manually on server
-- [Fiat Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/fiat-coin-adapter-extension/) - for use with the Exchange extension, can accept manual entries from e.g. bank deposits
-- [Litecoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/litecoin-adapter-extension/) - use this as a reference implementation for new adapters
-- [Monero Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/) - supports most [CryptoNote-based coins](https://cryptonote.org/coins) (Monero, Bytecoin, DigitalNote, Aeon, Haven, etc), must be set up manually on server
+Premium [dashed-slug](https://www.dashed-slug.net) members get unlimited access to download all the premium extensions:
 
-...plus more!
+- [Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/exchange-extension/) - Allows your users to enter market orders and exchange cryptocurrencies.
+- [Airdrop extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension/) - Distribute coins or pay interest to your users by performing airdrops and recurring airdrops.
+- [Faucet extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/) - Reward your users for solving CAPTCHAs.
+- [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/) - Allows users with cryptocurrency wallets to tip content authors.
+- [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/) - Let logged in users pay at WooCommerce checkout from their cryptocurrency wallet.
 
-= Premium plugin extensions available today =
+Premium members get auto-updates for any installed extensions. See [how to set up auto-updates](https://www.dashed-slug.net/dashed-slug/extension-updates-activation).
 
-Premium [dashed-slug](https://www.dashed-slug.net) members enjoy unlimited access to all the premium extensions to this plugin.
-
-Here are all the currently available premium app extensions to the Bitcoin and Altcoin Wallets FREE WordPress plugin:
-
-- [Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/exchange-extension/)
-- [Airdrop extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension/)
-- [Faucet extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/)
-- [ShapeShift Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/)
-- [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/)
-- [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/)
-- [Events Manager Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/events-manager-cryptocurrency-payment-gateway-extension/)
-
-Premium members also get auto-updates for any installed extensions. [Instructions for how to set up auto-updates are here](https://www.dashed-slug.net/dashed-slug/extension-updates-activation/).
-
-**The dashed-slug.net development is driven by your feedback. Send in your feature requests today.**
 
 = follow the slime =
 
-The dashed-slug is a social slug:
+Find the dashed-slug on the web:
 
-- Facebook: [https://www.facebook.com/dashedslug](https://www.facebook.com/dashedslug)
 - Twitter: [https://twitter.com/DashedSlug](https://twitter.com/DashedSlug)
 - RSS feed: [https://www.dashed-slug.net/category/news/feed](https://www.dashed-slug.net/category/news/feed)
-- SteemIt: [https://steemit.com/@dashed-slug.net](https://steemit.com/@dashed-slug.net)
 - Youtube channel: [https://www.youtube.com/dashedslugnet](https://www.youtube.com/dashedslugnet)
 - GitHub: [https://github.com/dashed-slug](https://github.com/dashed-slug)
 
 == Installation ==
 
-As a new user, you should first read the glossary section of the documentation to familiarize yourself with some basic concepts. The troubleshooting section for the main plugin is also found in the documentation. The support forum for the main plugin is at [WordPress.org](https://wordpress.org/support/plugin/wallets), but please first read [this notice](https://wordpress.org/support/topic/important-please-read-before-posting-an-issue/) before posting.
+To get started, install the plugin and follow the on-screen installation wizzard.
 
-First, understand the tradeoff between setting up a full node or using the custodial wallets.
-
-= Full node =
-
-A **full node** is harder to setup and maintain, but gives you performance and freedom to control network fee settings. With a full node you do not rely on a third party to do transaction verification. If you are interested in connecting to your own custom coin you might be interested in setting up a full node.
-
-If you are interested in installing a **full node**, then follow the instructions in the [YouTube video](https://www.youtube.com/watch?v=_dbkKHhEzRQ) or [article](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/installation-instructions/).
-
-= Custodial wallet =
-
-**Custodial wallets** on the other hand are easier to use and provide more coins, but are somewhat slower, and you rely on a third party service.
-
-- If you are interested in installing the CoinPayments adapter:
-  - TL;DR installation instructions are on the [coin adapter page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/).
-  - More detailed step-by-step instructions are [on this page](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/installation-instructions-web-wallet/) and [in this YouTube video](https://www.youtube.com/watch?v=j7kddOZOaqc).
-
-There is a Troubleshooting section on the coin adapter's page. It lists common problems and their solutions.
-
-The support forums for the CoinPayments-backed coin adapter is [here](https://www.dashed-slug.net/forums/forum/coinpayments-net-coin-adapter-extension-support/).
+You can also consult the documentation. In the WordPress admin screens, see _Wallets Admin Docs_ &rarr; _wallets_ &rarr; _Installation instructions_.
 
 = Disclaimer =
 
-**By using this free plugin, you accept all responsibility for handling the account balances for all your users.**
+**By using this free plugin, you accept all responsibility for storing and handling user funds.**
+
 Under no circumstances is **dashed-slug.net** or any of its affiliates responsible for any damages incurred by the use of this plugin.
-
-Every effort has been made to harden the security of this plugin, but its safe operation depends on your site being secure overall.
-You, the site administrator, must take all necessary precautions to secure your WordPress installation before you connect it to any live wallets.
-
-You are strongly advised to take the following actions (at a minimum):
-
-- [educate yourself about hardening WordPress security](https://codex.wordpress.org/Hardening_WordPress)
-- [install a security plugin such as Wordfence](https://www.wordfence.com/)
-- **Enable SSL on your site** if you have not already done so.
 
 By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that you have understood and agreed to this disclaimer.
 
-= Further reading =
-
-- [https://codex.wordpress.org/Managing_Plugins#Installing_Plugins](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins)
-- [https://bitcoin.org/en/full-node](https://bitcoin.org/en/full-node)
-- [https://en.bitcoin.it/wiki/Running_Bitcoin](https://en.bitcoin.it/wiki/Running_Bitcoin)
-
-
 == Frequently Asked Questions ==
 
-= How can I integrate the plugin with my site? =
 
-Just insert the [shortcodes](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shortcodes/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) anywhere to create forms to let a logged in user.
 
-These are the most important shortcodes; consult the documentation for a complete list.
+Since version `6.0.0`, the plugin displays its own documentation in the admin screens. Just go to the Wallets Admin Docs menu, where you'll find the documentation for the plugin, and for any plugin extensions you have installed.
 
-- **deposit funds:** `[wallets_deposit]`
-- **withdraw funds:** `[wallets_withdraw]`
-- **transfer funds to other users:** `[wallets_move]`
-- **view their balance:** `[wallets_balance]`
-- **view past transactions:** `[wallets_transactions]`
+Developers can study the PHPdocumentor pages at: https://wallets-phpdoc.dashed-slug.net/
 
-These shortcodes render [knockout.js](http://knockoutjs.com/)-enabled forms. Read the shortcodes documentation for more details.
 
-You can enter the same UI elements into your theme's widget area.
-Simply go to *Appearance* &rarr; *Widgets* and use the provided front-end widgets.
 
-You can also use a special menu item to display the user balances as part of a nav menu. See the *Frontend* section of the documentation for details.
+= How can I become a premium member and get access to the app extensions? =
 
-= Which coins are currently available? =
+Paying members can download the available *App extensions* and can download updates to those extensions.
 
-Using the built-in coin adapter you can connect to a Bitcoin core full node.
+Study the available [Membership plans](https://www.dashed-slug.net/dashed-slug/membership-plans/)
 
-You can connect to any Bitcoin-like full node that you manage yourself using the *[Bitcoin and Altcoin Wallets: Full Node Multi Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/full-node-multi-coin-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq")*. This would include coins such as Litecoin, Dogecoin, etc.
 
-You can connect to any [CryptoNote-based coin](https://cryptonote.org/coins) using the *[Bitcoin and Altcoin Wallets: Monero Coin Adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/)*. This would include coins such as Monero, Bytecoin, DigitalNote, Aeon, Haven, etc.
+= Can I pay without using PayPal? =
 
-Also, if you are OK with using a web wallet service, then you can install the *[CoinPayments adapter](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq)*. You then automatically get [all of the coins that platform supports](https://www.coinpayments.net/supported-coins).
+If you wish to pay with cryptocurrencies, please do the following:
 
-Dashed-Slug does not offer a full node adapter for ERC-20 tokens, but you can check [this third-party solution](https://www.dashed-slug.net/forums/reply/7878/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
+1. Select a [membership plan](https://www.dashed-slug.net/dashed-slug/membership-plans/)
+
+2. Send the equivalent of the USD amount to one of the following addresses.
+
+Bitcoin Address: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
+DOGE Address: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
+LTC Address: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
+
+Dogecoin usually has very low fees, due to it not being used as much as more "serious" blockchains.
+
+3. [Contact me by email](https://www.dashed-slug.net/contact/) with your selection of membership plan, the TXID and the email you used to sign up.
+
+I will then activate your membership manually within 1 business day.
+
+= I cannot download the premium plugins after paying for membership. =
+
+If you have paid for an EU business plan, you must provide a valid VATIN. Please enter the VATIN without the country code prefix, and enter the correct _City_ and _Country_ for your business, in your profile details.
+
+If you have paid for a regular plan, and for some reason you still cannot download the premium plugins, please contact me by email.
+
+= How can I cancel my membership? =
+
+If you have signed up with a PayPal recurring payment, you can go to your [PayPal dashboard](https://www.paypal.com/cgi-bin/webscr?cmd=_manage-paylist) to cancel the recurring payment.
+
+Additionally, if you wish, you may delete your account from the profile screen on the dashed-slug website. Deleting your account does not automatically cancel your PayPal subscription. Simply visit [your profile](https://www.dashed-slug.net/membership-login/membership-profile/)
+
+= I am not happy with the plugin. Can I ask for a refund? =
+
+You can ask for a refund of any payment within 30 days from the day of payment, no questions asked. Please contact me by email.
+
+
 
 = How secure is it? =
 
-The [Bitcoin and Altcoin Wallets](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) plugin is only as secure as your WordPress installation. Regardless of whether you choose to install this plugin, you should have already taken steps to secure your WordPress installation. At a minimum you should do the following:
+When users issue transactions, these can require verification via an email link by the user. Additionally, you can require that an admin also verifies each transaction. (See "Confirmations" in the documentation).
+
+Of course, the plugin is only as secure as your WordPress installation is.
+
+You should take extra time to secure your WordPress installation, because it will have access to your hot wallets. At a minimum you should do the following:
 
 - Install a security plugin such as [Wordfence](https://infinitewp.com/addons/wordfence/).
 - Read the Codex resources on [Hardening WordPress](https://codex.wordpress.org/Hardening_WordPress).
-- If you are connecting to an RPC API on a different machine than that of your WordPress server over an untrusted network,
-  make sure to tunnel your connection via `ssh` or `stunnel`. [See here](https://en.bitcoin.it/wiki/Enabling_SSL_on_original_client_daemon).
+- If you are connecting to an RPC API on a different machine than that of your WordPress server over an untrusted network, tunnel your connection via `ssh` or `stunnel`. [See here](https://en.bitcoin.it/wiki/Enabling_SSL_on_original_client_daemon).
 
-= I want to run a full node but bitcoind is too resource-hungry for my server. =
+Some more ideas:
+- Add a user auditing tool such as [Simple History](https://wordpress.org/plugins/simple-history/).
+- Add a CAPTCHA plugin to your login pages.
+- Only keep up to a small percentage of the funds in your hot wallet (See *Cold Storage* in the documentation).
 
-Running a full node requires you to set up the daemon on a VPS or other machine that you own and administer. Normally the full blockchain needs to be downloaded, so you need to make sure that your server can handle the disk and network requirements. Here's some advice on [how to run a bitcoind wallet in a low memory environment](https://bitcoin.stackexchange.com/questions/50580/how-to-run-bitcoind-in-a-low-memory-environment). If you are concerned about your available disk space, you may run [a pruned node](https://bitcoin.stackexchange.com/questions/37496/how-can-i-run-bitcoind-in-pruning-mode). The same instructions will apply to many wallets that are Bitcoin forks.
+= I am installing a bitcoin full node on my server. How can I run it as a service so that it is always running? =
 
-If running a full node is not important for you, you can choose to install the [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq)
+This will depend on the Linux distribution on your server.
 
-= I am setting up a Bitcoin full node. In my .conf file I have provided the rpcuser and rpcpassword parameters. Instead, the plugin recommends the rpcauth parameter. =
+To setup bitcoin core as a service on [systemd](https://en.wikipedia.org/wiki/Systemd) I used [this guide](https://medium.com/@benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6).
 
-You should *either* use `rpcuser` and `rpcpassword` to specify login credentials to the RPC API, *or* `rpcauth`, but not both. The `rpcauth` parameter is simply a way to specify a hashed/salted version of the username and password, rather than the plaintext values. The plugin recommends a hash that contains the username and password you have provided in the coin adapter settings. It uses the algorithm from [`rpcauth.py`](https://github.com/bitcoin/bitcoin/tree/master/share/rpcauth).
+Here is my `/etc/systemd/system/bitcoin.service` file:
 
-= Can you install/configure the plugin for me? / I am having trouble with the bitcoin.conf file =
+	[Unit]
+	Description=Bitcoin wallet service
+	After=network.target
+	StartLimitBurst=5
+	StartLimitIntervalSec=10
 
-I am available to answer any specific questions, if you attempt to install the plugin and you face some problem. Unfortunately I do not undertake installation and configuration of the plugin.
+	[Service]
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=alexg
+	ExecStart=/usr/local/bin/bitcoind
 
-Once you install this software, it then needs to be maintained. If you find that you are having trouble installing the plugin or connecting it to a wallet, even with help, this is a good indication that you will find it hard to maintain it. In that case perhaps you should not be running a wallet with people's money.
+	[Install]
+	WantedBy=multi-user.target
 
-Remember that you have two options: stand-alone wallets or third-party wallets. Running a web wallet is considerably easier than a stand-alone wallet, as it does not require system administration skills. As a general rule, if you have trouble using Linux from the command line, you will be better off installing a third-party wallet.
+You will need to edit the user name to match yours, and possibly the path to your bitcoind binary.
 
-= I don’t like the built-in forms. Can I change them or provide my own? =
+Follow the article to set the service to run automatically on system restart. You should never have to enter the bitcoin command directly in the shell. Always let the system start it automatically as a service.
 
-1. First of all, the forms can be styled with CSS. They have convenient HTML classes that you can use. Please see the documentation under *Frontend* &rarr; *Style the frontend UIs with CSS*.
+After that, you must check with your hosting provider (the provider who supplies the server for your bitcoin daemon) to see if there are any firewalls, blocking incoming communication with TCP port `8332`. Also check any local firewalls that you may be running, such as `ufw`.
 
-2. If you wish to translate the form texts to a different language, see the documentation under *Localization*.
 
-3. If you wish to change the texts to something else, you may use the `wallets_ui_text_*` WordPress filters. See the documentation uder *Frontend* &rarr; *Template Modifications* &rarr; *Modifying text*.
 
-4. If you wish to create forms with completely different markup, you can modify the provided template files in your theme or child theme. Please see the documentation under *Frontend* &rarr; *Template Modifications* &rarr; *Modifying Markup*. Theme developers can use this to provide customized templates for this plugin.
+= Can I control which users have a wallet? =
 
-= I want to do transactions from JavaScript. I don’t want to use the provided shortcodes and their associated forms. =
+Yes, simply assign the `has_wallets` capability to the appropriate users or user roles. You should also assign more capabilities, such as `list_wallet_transactions`, `send_funds_to_user`, and `withdraw_funds_from_wallet`.
 
-The provided built-in forms talk to a JSON API that is available to logged in users.
-If you choose to build your own front-end UI, you can do your AJAX calls directly to the JSON API.
+You can control the capabilities per user role by navigating to: _Settings_ &rarr; _Bitcoin and Altcoin Wallets_ &rarr; _Capabilities_.
 
-Refer to the [JSON API documentation](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/json-api/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) for details.
+= Can I use the plugin to create an investment / interest paying site? =
 
-= I want to do transactions from the PHP code of my theme or plugin. =
+Yes, you can use the premium *Airdrop extension* to perform _recurring airdrops_. These can effectively be paid out in the form of an interest on the user's wallet.
 
-You can use the PHP API directly.
+= Can I use the plugin to create a WooCommerce store that accepts cryptocurrencies? =
 
-Refer to the [PHP API documentation](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/php-api/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) for details. Additionally, you may consult the following guide: [HOWTO: Create/update transactions from PHP](https://www.dashed-slug.net/howto-create-update-transactions-from-php/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
+Yes, you can use the premium *WooCommerce Cryptocurrency Payment Gateway extension*. With it, users can use their on-site balance to checkout their shopping carts.
 
-= I want to replace an adapter with another one. =
+= Can I use the plugin to create a crypto faucet? =
 
-You can only have one coin adapter enabled per each coin. The plugin will warn you about this. To replace the adapter for a coin with a new adapter:
+Yes, you can use the premium *Faucet extension* to let users earn crypto by solving CAPTCHAs.
 
-1. Deactivate the old adapter.
-2. Install and configure the new adapter.
-3. Enable the new adapter.
-4. Got to *Wallets* &rarr; *Adapters*. Under the new adapter, select *Renew deposit addresses*. This will renew any user deposit addresses, as well as the cold storage deposit address for that coin.
+= Can I use the plugin to create a crypto exchange? =
 
-= Can you add XYZ coin for me? =
+Yes, you can use the premium *Exchange extension* to create market pairs. However the markets are local only, which means that no liquidity is imported from other exchanges. Read the disclaimers.
 
-Unfortunately no. I cannot cater to requests to add new coin adapters. I can only provide assistance to coin adapter developers by answering specific questions.
+= Can I use the plugin to do a token sale? =
 
-If your coin belongs to one of the types [listed in this article](https://www.dashed-slug.net/howto-choose-between-available-coin-adapters/?utm_source=wallets&utm_medium=docs&utm_campaign=faq), then you will most likely be able to use your coin with the plugin.
+No, this plugin is not suitable for token sales.
 
-If you are interested in creating your own token, perhaps the best way is to [create it as a TurtleCoin fork](https://medium.com/@turtlecoin/altcoin-101-create-a-cryptonote-privacy-coin-clone-in-one-hour-f14bff7eb2fd), then use the available [TurtleCoin adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/turtlecoin-adapter-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
+However, you could, of course, setup markets using the *Exchange extension*, and set a large limit sell order with your admin account. This will allow users to buy your shillcoin. You can even disable buying or selling separately.
 
-= Can I use an exchange to facilitate cryptocurrency trading on top of this plugin? =
+= Can I use the plugin to accept tips for articles? =
 
-Yes, an [Exchange extension](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) is now available to premium dashed-slug members. The relevant blog post announcement [is here](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
+Yes, you can use the premium *Tip the author extension*. This lets you attach a tipping UI to posts/articles. You can control where the tipping UI is shown, by post type, category, tags, or even author. Only authors with the `receive_tip` capability can receive tips, and only users with the `tip_the_author` capability can send tips.
 
-Alternatively you can use the [ShapeShift app extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/shapeshift-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) that lets you display a front-end UI to the [ShapeShift.io](https://shapeshift.io/) service.
+= Can I use the plugin to create a paywall? =
 
-= I want to do a token sale. Can I use WooCommerce to do so? =
+Not yet. However, a premium extension to let you do just that is currently in development.
 
-It is not recommended that you use WooCommerce and the [WooCommerce payment gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) to sell tokens or other coins.
 
-Instead, consider using the [Exchange extension](https://www.dashed-slug.net/cryptocurrency-exchange-plugin-wordpress/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) to provide a way for your users to buy or sell your token. This requires that you have a working *coin adapter* for your coin or token.
 
-= In the adapters list template, why is the Hot Wallet Balance not equal to the Sum of User Balances? =
+= How can I change the plugin's code? =
 
-The Hot Wallet Balance and the Users Balances are not the same thing. The difference is explained in the *Glossary* section of the documentation.
+The plugin and its extensions are yours to edit. You are free to hack them as much as you like. However, you are generally discouraged from doing so, for the following reasons:
 
-Reasons why the two amounts would diverge:
+- I cannot provide support to modified versions of the plugin. Editing the code can have unintended consequences.
 
-1. As users pay fees for transactions, their total balances decrease but the wallet balance stays the same.
-2. If you have used the cold storage feature, or alternatively if you have deposited/withdrawn directly from the wallet and not via the plugin, then the balances will not match. See the *Cold Storage* section in the documentation for more.
+- If you do any modifications to the code, any subsequent update will overwrite your changes. Therefore, it is [not recommended](https://iandunn.name/2014/01/10/the-right-way-to-customize-a-wordpress-plugin/) to simply fire away your favorite editor and hack away themes or plugins.
 
-= Does the plugin support multisite network installations? =
+Whenever possible, use an existing hook ([action](https://developer.wordpress.org/reference/functions/add_action/) or [filter](https://developer.wordpress.org/reference/functions/add_filter/)) to modify the behavior of the plugin. Then, add your code to a child theme, or in separate plugin file. Any PHP file with the [right headers](https://codex.wordpress.org/File_Header) is a valid plugin file.
 
-The plugin supports network installations in two modes, depending on whether the plugin is network-activated or not:
+If you can’t find a hook that allows you to do the modifications you need, contact me to discuss about your need. I may be able to add a hook to the next patch of the plugin.
 
-If you activate the plugin individually per each site, users will maintain separate balances on each site on your network. You will find the Wallets menu under the network admin menu. The `manage_wallets` capability will be assigned to the network super-admin. In case you need to trigger the cron jobs manually, use the distinct URL given in each case.
+= Why is my CSS not being applied to the UI elements? =
 
-If you network activate the plugin, users will see the same balances on each site on your network. The `manage_wallets` capability must be assigned to each site's admin. If you need to trigger the cron jobs manually, use the URL given in the network admin pages. It will trigger cron jobs for all sites.
+This is usually due to the plugin's CSS rules hiding your own rules. Don't just spam `!important`, instead take the time to study [CSS rule specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity). If you are unsure how to apply a particular rule on the plugin's UIs, you can contact me.
 
-If you network-activate the parent plugin, make sure to also network-activate all the app extensions and coin adapters. If you activate the plugin separately on each subsite of your network, do the same with all the app extensions and coin adapters.
+= How can I change something in the UI elements? =
 
-= My site was hacked and some funds were stolen. Can you help? =
+There are several ways to do this, depending on what type of change you want to apply. Please check the documentation under _Frontend and Shortcodes_ &rarr; _Modifying the UI appearance_.
 
-I regret that I cannot help you. As you may know, cryptocurrency transactions are non-reversible. This is why the security disclaimer is there - you, as an administrator, are solely responsible for the security of your site. There is no way I could assume responsibility for lost funds. I do not hold private keys to any of your or your users' funds.
+= How can I perform transactions from my PHP code? =
 
-If you have evidence that your funds were stolen you should go to the police. In some situations it may be possible to track down the thieves.
+There are two ways to do this:
 
-= I want to pay for premium membership but cannot or do not want to pay via PayPal. =
+1. You can create `DSWallets\Transaction` objects, populate all the fields, then save the obects to the DB. For details, check the documentation under: _Developer reference_ &rarr; _Working with custom post type objects_, and the PHPDocumentor page for the Transaction class for example code.
 
-You may contact me directly at [info@dashed-slug.net](mailto:info@dashed-slug.net) if you wish to pay by Bitcoin, Litecoin or Dogecoin.
+2. You can use the Legacy PHP-API. This is compatible with previous versions of the plugin.
 
-= I want to do changes to the plugin's code. Where can I find X function/variable/command/etc? =
+= How can I perform transactions from the JavaScript frontend? =
 
-The plugin and its extensions are yours to edit and you are free to hack them as much as you like. However, you are generally discouraged from doing so:
+There are two ways to do this:
 
-Firstly, I cannot provide support to modified versions of the plugin. Editing code can have unintended consequences.
+1. You can use the *WP-REST API*. Consult the documentation under: _Developer reference_ &rarr; _Wallet APIs_ &rarr; _WP-REST-API_.
 
-But more importantly, if you do any modifications to the code, any subsequent update will overwrite your changes. Therefore, it is [not recommended](https://iandunn.name/2014/01/10/the-right-way-to-customize-a-wordpress-plugin/) to simply fire away your favorite editor and hack away themes or plugins.
+= How can I change the wallet backing a particular currency? =
 
-Here's what you should do instead: If possible, use an existing hook ([action](https://developer.wordpress.org/reference/functions/add_action/) or [filter](https://developer.wordpress.org/reference/functions/add_filter/)) to modify the behavior of the plugin. Then, add your code to a [child theme](https://codex.wordpress.org/Child_Themes) or in separate plugin file (any PHP file [with the right headers](https://codex.wordpress.org/File_Header) is a valid plugin file).
+It is possible that, for a particular cryptocurrency you may want to replace the wallet backing it with another wallet. For example, you may be offering Bitcoin via the CoinPayments service, and want to start using a Bitcoin core full node wallet. Or you may be using Bitcoin core, and you want to move to a new `wallet.dat` file.
 
-If you can't find a hook that allows you to do the modifications you need, contact me to discuss about your need and I might be able to add a hook to the next patch of the plugin.
+This has become a lot easier with versions `6.0.0` and later, because *Currencies* and *Wallets* are now decoupled:
 
-Additionally, if the change you intend to do is helpful to other users, I might be able to add it to the plugin code.
+1. Create the new *Wallet* with the built-in Bitcoin adapter for full nodes. Connect to your new full node wallet.
+2. Edit your *Currency*, in this case, _Bitcoin_. Set the _Wallet_ to your new full node wallet entry, and _Update_ the Currency.
+3. Transfer the hot wallet balance from one wallet to the other. Transfer all the funds to an address generated by new *Hot Wallet*. The address must NOT be a deposit address assigned to a user. For example, you can use the deposit address shown in the *Cold Storage* tool for your new wallet.
+4. Delete all the old deposit addresses for that currency. This will force the plugin to generate new deposit addresses from the newly connected wallet.
+5. Inform your users that they must no longer use the old deposit addresses, if they have them saved somewhere.
 
-= I am encountering some problem with the Bitcoin and Altcoin Wallets plugin =
+If unsure about this process, please contact me.
 
-First check the *Troubleshooting* section of the documentation: Go to the [dashed-slug downloads area](https://www.dashed-slug.net/downloads/?utm_source=wallets&utm_medium=docs&utm_campaign=faq) and grab the *bundle* package of the plugin. This includes the documentation in PDF form. Scroll to the troubleshooting section and see if your problem is listed. If not, read the *Contact* section for ways in which you can ask for support. Some additional [info about how to ask for support is found here](https://wordpress.org/support/topic/important-please-read-before-posting-an-issue/).
 
-= I am encountering some problem with an Extension to the Bitcoin and Altcoin Wallets plugin =
+= How does the plugin work in multisite installations? =
 
-You should first have a look at the extension's page on [dashed-slug.net](https://www.dashed-slug.net/?utm_source=wallets&utm_medium=docs&utm_campaign=faq). If your solution is not found there, you can also scan the appropriate subsection of [the support forums](http://dashed-slug.net/support/?utm_source=wallets&utm_medium=docs&utm_campaign=faq). You can also post your own question. Please try to use the appropriate forum, and to post a new thread for each distinct issue.
+How it works depends on whether the plugin (and its extensions) are network-activated or not. In network-activated setups, users have one balance ber currency, across all sites the network. If the plugin is NOT network-activated, users have a different balance on each site on the network, and each site can have different currencies and wallets.
 
-= How can I get support or submit feedback? =
+Note that the plugin and its extensions MUST either all be network activated, OR all must be activated on individual blogs. Do not mix-and-match network-activated and non-network-activated wallets plugins.
 
-Please use the [support forum on WordPress.org](https://wordpress.org/support/plugin/wallets) for all issues and inquiries regarding the plugin.
+Consult the documentation section _Multisite_ for more information.
 
-To get support on the provided extensions, subscribe to dashed-slug and go to the [support forums](https://www.dashed-slug.net/support/?utm_source=wallets&utm_medium=docs&utm_campaign=faq).
 
-For all other communication, please contact [info@dashed-slug.net](mailto:info@dashed-slug.net).
+= How to handle a hack/cyberattack? =
 
-= Are you available for custom development work? =
+While the latest WordPress version is often secure, the same cannot be said about all the WordPress plugins out there. Every day new security vulnerabilities are found involving WordPress plugins. Since WordPress is such a popular software platform, it gets a lot of attention from hackers.
 
-Unfortunately I do not undertake custom projects. If you have an idea about a cool extension then please let me know about it. If it is a good fit for the project, it will be added to the backlog. When implemented, It will be available either to all users for free, or for dashed-slug premium members.
+Take an immediate backup of the site, and the server it runs on, if possible. This will preserve any traces that the hackers may have left behind. Funds theft is a crime and you can report it to the police, just like any other hack.
 
+It's best if you are prepared beforehand: Keep the software on the site updated regularly. Take the time to harden your server and WordPress installation. Try to use only reputable plugins on your site and keep them updated.  Use a security plugin.
 
+Finally, only keep a small percentage of the user balances on the hot wallet, utilizing the _Cold storage_ feature to transfer the remaining funds to offline wallets. That way, in case WordPress is compromised, you don't lose all your users' funds! Please take wallet management seriously. There is no software that will automatically do opsec for you. Have a plan on how to act in case of theft.
 
+If you think you have discovered a security vulnerability in this plugin, please let me know over email (not on a public forum).
+
+
+
+
+
+
+
+Unfortunately I am not available for custom development work.
+
+
+
+I do not undertake installations. I remain available to assist and answer any questions about the installation and configuration process.
+
+> Regarding plugin installations, please consider this: Unless you know how the plugin works, you will not be able to provide support to your users, or fix issues when these arise. If you are not a developer, you should probably hire a developer to perform the installation and maintenance.
+
+
+
+
+You can always suggest a feature to me. If it makes sense and I have the time, I might implement it. I do not make promises on this, therefore I do not accept payment for features.
+
+
+
+
+First check the *Troubleshooting* section of the documentation. The answer to your question may be listed there.
+
+If you cannot find the answer to your question, please consult the documentation under _Contact Support_.
+
+
+
+
+I speak daily with many people, while I also do the development, testing, management, marketing, and everything else.
+
+For this reason, I am NOT reachable over chat apps.
+
+Please state your request on the forums or over email, and I will respond within 24 hours, Monday to Friday. If you are encountering an error, please show me the error message in a screenshot. Try to explain what you did so far and how you arrived at the error.
 
 
 == Screenshots ==
 
-1. **Adapters list** - Go to the Wallets menu to see a list of installed coin adapters and their status.
-2. **Capabilities matrix** - Easily control who can do what by assigning WordPress capabilities to your user roles.
-3. **Confirmation settings** - Decide whether internal and external transfers need to be verified by the user over email, an administrator via the admin panel, or both.
-4.  **Cron** - Control the recurring background tasks to finetune the plugin's performance.
-5. **E-mails** - Use a simple templating format to edit the email notifications that users receive about their transactions.
-6. **QR-Codes** - Turn on or off the display of QR-codes for deposit addresses.
-7. **Bitcoin adapter settings** - Settings for communicating with the Bitcoin RPC API. If you install other coin adapters they will have similar panels with settings.
-8. **Frontend - deposit** - The `[wallets_deposit]` shortcode displays a UI element that lets your users know which address they can send coins to if they wish to deposit to their account.
-9. **Frontend - move** - The `[wallets_move]` shortcode displays a UI element that lets your users transfer coins to other users on the site.
-10. **Frontend - withdraw** - The `[wallets_withdraw]` shortcode displays a UI element that lets your users withdraw coins from their account to an external address.
-11. **Frontend - balance** - The `[wallets_balance]` shortcode displays your users' account balances.
-12. **Frontend - transactions** - The `[wallets_transactions]` shortcode displays an AJAX-powered table of past transactions affecting the accounts of your users.
-13. **Frontend - account value** - The `[wallets_account_value]` shortcode shows the account's total value expressed in the default fiat currency.
-14. **Frontend - deposit as list** - Use `[wallets_deposit template="list"]` to display user deposit addresses as a list.
-15. **Frontend - balances as list** - Use `[wallets_balance template="list"]` to display user balances as a list.
-16. **Frontend - transactions as a list** - Use `[wallets_transactions template="rows"]` to display transactions as a list rather than a table.
-
+1. **[wallets_deposit]** - Users can view their deposit addresses, create new addresses, and associate them with a label.
+2. **[wallets_move]** - Users can transfer funds to other users on the system, off-chain. Whether they pay fees to your site is up to you.
+3. **[wallets_withdraw]** - Users can request to withdraw funds to an external wallet.
+4. **[wallets_balance]** - Users can view their balances, either one-by-one, or as a list. Equivalent amounts can be shown in USD, EUR, BTC or other currencies that you choose.
+5. **[wallets_transactions]** - Users can view paginated details on their past transactions. You can choose which columns are rendered and in what order.
+6. **Wallets post type** - Easily manage your various wallet backends via the Wallet post type.
+7. **Wallet post type** - The wallet post type encapsulates all connection settings with your wallet's API and displays wallet status.
+8. **Currency post type** - Associate the currencies you want to offer with your wallets, using the Currecy post type. Easily edit settings related to each currency. Group currencies together using a special Currency Tags taxonomy.
+9. **Address post type** - Keep track of deposit and withdrawal addresses. Easily edit address details, or list transactions associated with addresses. Group addresses together using a special Address Tags taxonomy.
+10. **Transaction post type** - Easily edit transaction details or create new transactions. Group transactions together using a special Transaction Tags taxonomy.
+11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.0.0 =
+- Change: Sourcecode rewritten from scratch and modernized for PHP7.x compatibility: Namespaces, callbacks, etc.
+- Change: Coin adapters removed and replaced with wallet adapters. Wallet adapters are a more versatile abstraction of external wallets.
+- Change: All amounts stored on the DB are now stored as integers. This avoids FP/rounding errors, but requires the admin to specify the number of decimals on a Currency explicitly.
+- Add: Wallets now have their own CPT and editor screen. Connection information for wallet APIs is now decoupled from currency details.
+- Add: Currencies now have their own CPT and editor screen. Currency details are now decoupled from wallet connection information details.
+- Change: Currencies are no longer identified by their ticker symbol, since these can clash. Currencies are now uniquely identified by their post ID.
+- Change: Transactions now have their own CPT and editor screen. Transactions are no longer stored in custom SQL tables, but are stored as posts.
+- Add: If a transaction is saved without a comment, a basic comment is entered as a title.
+- Change: Addresses now have their own CPT and editor screen. Addresses are no longer stored in custom SQL tables, but are stored as posts.
+- Add: When creating a new address, if admin sets the address string empty, a new address string is created from the wallet.
+- Add: Currencies, Transactions and Addresses can be organized via tags. These are implemented as WordPress custom taxonomies.
+- Add: When listing Wallets, these can be filtered by Wallet Adapter type.
+- Add: When listing Currencies, these can be filtered by associated Wallet or Currency tag.
+- Add: When listing Transactions, these can be filtered by Currency, User, Type (deposit/withdaw/move), Status (pending, done, cancelled, failed), or Transaction tag.
+- Add: When listing Addresses, these can be filtered by Currency, User, Type (deposit/withdaw/move), Status (pending, done, cancelled, failed), or Transaction tag.
+- Add: When editing Wallets, Currencies, Transactions, or Addresses, there are now metaboxes that let an admin easily jump between associated CPTs. For example, can click a link to go from a Currency to the Transactions of that Currency.
+- Add: A new "Migration" tool helps users transfer balances from the old custom SQL tables to the new format. Please study the documentation for details.
+- Add: A new Object-Oriented way to create and manipulate Wallets, Currencies, Addresses and Transactions. Lots of example code snippets included in the docs and PHPdocumentor files.
+- Add: A documented library of helper functions can be used by PHP developers to interface with the plugin. This lives in the `DSWallets` namespace.
+- Change: The old PHP-API is renamed as "Legacy PHP-API", but not removed. Only the `wallets_api_adapters` filter is removed, since there are no more Coin Adapters.
+- Add: A new cron job scheduler that runs jobs based on priorities. Can be triggerred externally to improve site performance.
+- Add: New email queue system based on cron, handles large volumes of outgoing emails by sending them in batches.
+- Add: New cron job that iterates over defined currencies and pulls icons/logos from CoinGecko when possible. Adds images to the WordPress media collection, and sets the logo as Currency featured image. Admin can override the featured image.
+- Change: All the plugin's settings are now placed under the *Settings* menu, and organized in tabs. Extensions, when installed, add tabs to the settings screen.
+- Change: Capability settings are now in a settings tab. The existing capabilities are retained. It is also possible to edit the capabilities related to the new CPTs (Wallets, Currencies, Addresses, Transactions).
+- Add: Fiat currencies are now created automatically by a cron job when you enter a fixer.io API key. Fiat currencies can be associated to the built-in wallet adapter that handles manual Bank transfers. The Fiat Coin Adapter extension is removed.
+- Change: It is now possible to define any number of Bitcoin-like wallets and currencies without any plugin extensions. The Full Node MultiCoin Adapter extension is removed.
+- Change: The UIs are now self-contained. All the HTML markup, knockout.js attributes, JavaScript code, and CSS rules are encapsulated within the template files, and are overridable.
+- Change: The UIs are now rendered independently. This improves frontend performance. If one UI crashes, the remaining UIs continue to work.
+- Remove: There are no more static templates. All templates are dynamic. This reduces confusion about how templates work.
+- Add: Currencies can be used by users even if not associated with a Wallet, or if the wallet API is unreachable. If wallet API is unreachable, only deposits and withdrawals will not be available, but on-site transactions are still possible.
+- Add: New shortcode `[wallets_status]` informes users if a wallet is online.
+- Change: The exchange rates mechanism now relies on CoinGecko. If the admin provides the CoinGecko ID for a Currency, the exchange rates are retrieved automatically via cron.
+- Improve: In the Currency editor, if a currency is not associated with a CoinGecko ID, it is still possible for an admin to setup a fixed exchange rate for a currency.
+- Improve: The admin can choose against which well-known currencies the exchange rates are stored (these are the "VS currencies" and correspond to CoinGecko data).
+- Improve: The frontend UIs, when they display equivalent amounts in other currencies, no longer display amounts in one fixed site currency. User can click to rotate between displaying the equivalent amounts in all available "VS currencies".
+- Add: Daily withdrawal limits per Currency. Can be set for all users, or per user role.
+- Add: More information in the plugin's widget in the dashboard screen.
+- Add: A new WP-REST API which utilizes the RESTful API mechanism built into WordPress replaces the old JSON-API.
+- Change: The old JSON-API is now marked as deprecated and is disabled by default. Can be enabled in settings for backwards compatibility.
+- Add: A new system that displays documentation in the admin screens. Some screens feature direct links to the relevant documentation. As extensions to the plugin are installed, their documentation books are added to the system.
+- Change: The user profile screen has been improved. Lists all balances held by a user and links to the user's lists of Addresses and Transactions.
+- Change: The cold storage UI screens have been improved.
+- Remove: The frontend Widgets have been removed. Please use the shortcodes instead.
 
 = 5.0.18 =
 - Fix: The shortcode `[wallets_depositextra template="static_textonly" symbol="???"]` now displays address extra info correctly if such info is present.
@@ -1417,30 +1455,13 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version 5.0.18 fixes some minor defects.
+Version `6.0.0` is a rewrite of the original plugin. See the [release notes](https://dashed-slug.net/wallets6-release-notes) for details.
 
 == Donating ==
 
-This is a free plugin.
+This is a free plugin built by the [dashed-slug team](https://www.dashed-slug.net/dashed-slug/team)!
 
-The dashed-slug is a [heroic (or maybe foolish?) one-man effort](https://www.dashed-slug.net/dashed-slug/team/) against the odds :-)
+- Bitcoin: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
+- Litecoin: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
+- Dogecoin: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
 
-Showing your support helps the dashed-slug purchase the necessary coffee and energy drinks needed for designing, developing, testing, managing and supporting these and more quality WordPress plugins.
-
-These are all the ways you can show your support, if you so choose:
-
-1. **Become a registered [dashed-slug.net](https://www.dashed-slug.net) member**, and enjoy unlimited access to all the premium plugin extensions available, and priority support with any issues.
-2. **Translate the plugin** and donate your translation. Your contribution will be mentioned in the changelog. See the manual entry on *Localization* for instructions.
-2. **Report bugs/issues.**
-3. **Spread the word** to your friends.
-4. **If you wish, you may donate** any amount [via flattr](https://flattr.com/profile/dashed-slug) or via the following dashed-slug addresses:
-	- Bitcoin: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
-	- Litecoin: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
-	- Dogecoin: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
-
-== Translations ==
-
-* Arabic &mdash; Ed <support@2gogifts.com>
-* German &mdash; eMark Team <kontakt@deutsche-emark.de>
-* Italian &mdash; Fabio Perri <webnetsolving@gmail.com> https://www.transifex.com/user/profile/Fabio.Perri/
-* Spanish &mdash; Javier Enrique Vargas Parra <jevargas@uniandes.edu.co>
