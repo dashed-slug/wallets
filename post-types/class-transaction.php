@@ -2370,7 +2370,7 @@ add_action(
 				class="wallets-docs button"
 				target="_wallets_docs"
 				href="<?php esc_attr_e( admin_url( 'admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=post-types#transactions' ) ); ?>">
-				<?php esc_html_e( 'See the Trannsactions CPT documentation', 'wallets' ); ?></a>
+				<?php esc_html_e( 'See the Transactions CPT documentation', 'wallets' ); ?></a>
 
 			<?php
 		endif;

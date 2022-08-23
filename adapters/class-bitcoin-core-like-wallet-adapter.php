@@ -577,7 +577,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'    => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent' => 'Bitcoin and Altcoin Wallets version 6.0.0-RC1',
+					'user-agent' => 'Bitcoin and Altcoin Wallets version 6.0.0-RC2',
 					'headers'    => 'Content-type: application/json',
 					'rediretion' => absint( get_ds_option( 'wallets_http_redirects', 5 ) ),
 					'body'       => $payload,

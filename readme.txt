@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.0.1
 Requires PHP: 5.6
-Stable tag: 6.0.0-RC1
+Stable tag: 6.0.0-RC2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -851,7 +851,6 @@ Fix: Important bug in balance calculation, introduced in `3.6.5` regarding withd
 - Add: The *Bitcoin and Altcoin Wallets* section in a user's profile screen can be hidden. A new capability, `view_wallets_profile` controls this.
 - Add: Adapters list admin screen now has a new column that shows total amount of fees paid to the site wallet.
 - Fix: Cryptocompare.com exchange rates provider no longer generates an invalid API call when no coins are enabled.
-
 
 = 3.5.6 =
 - Improve: Adapters list now warns user if more than 99% of hot wallet coins are not available, such as when staking entire balance.

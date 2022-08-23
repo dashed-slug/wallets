@@ -125,6 +125,10 @@ body.tools_page_wallets-bank-fiat-deposits textarea {
 	cursor: crosshair;
 }
 
+.wallets.capabilities.matrix tr:hover {
+	background-color: lightgray;
+}
+
 .toplevel_page_wallets_docs #wpfooter,
 .settings_page_wallets_settings_page #wpfooter,
 .post-type-wallets_wallet #wpfooter,

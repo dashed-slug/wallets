@@ -791,9 +791,9 @@ add_action(
 						'The service will provide the plugin with fiat currency information and exchange rates of these currencies.',
 						'wallets'
 					),
-					'pattern'     => '[0-9a-fA-F]{32}',
+					'pattern'     => '[0-9a-zA-Z]{8,}',
 					'size'        => 32,
-					'placeholder' => __( '32 hexadecimal characters', 'wallets' ),
+					'placeholder' => __( 'Paste your API key here', 'wallets' ),
 				]
 			);
 
