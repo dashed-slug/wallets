@@ -32,6 +32,8 @@ function user_profile_legacy_api_key( int $user_id ) {
 	if ( $api_key ):
 	?>
 
+	<h2><?php esc_html_e( 'Bitcoin and Altcoin Wallets Legacy JSON-API', 'wallets' ); ?></h2>
+
 	<table class="form-table">
 		<tbody>
 			<tr>

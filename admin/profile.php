@@ -22,10 +22,6 @@ function wallets_user_profile( $profileuser ) {
 		}
 	}
 
-	?>
-	<h2><?php esc_html_e( 'Bitcoin and Altcoin Wallets', 'wallets' ); ?></h2>
-	<?php
-
 	/**
 	 * Wallets profile section action.
 	 *
@@ -53,6 +49,8 @@ add_action(
 	function( int $user_id ): void {
 		maybe_switch_blog();
 		?>
+
+		<h2><?php esc_html_e( 'Bitcoin and Altcoin Wallets Addresses and Transactions', 'wallets' ); ?></h2>
 
 		<table class="form-table">
 			<tbody>
@@ -89,135 +87,114 @@ add_action(
 			</tbody>
 		</table>
 
-		<?php
-		maybe_restore_blog();
-	}
-);
 
-add_action(
-	'wallets_profile_section',
-	function( int $user_id ): void {
+		<h2><?php esc_html_e( 'Bitcoin and Altcoin Wallets Holdings', 'wallets' ); ?></h2>
 
-		maybe_switch_blog();
-		?>
+		<table>
+			<thead>
+				<th><?php esc_html_e( 'Currency', 'wallets' ); ?></th>
+				<th><?php esc_html_e( 'Ticker symbol', 'wallets' ); ?></th>
+				<th><?php esc_html_e( 'Balance', 'wallets' ); ?></th>
+				<th><?php esc_html_e( 'Available Balance', 'wallets' ); ?></th>
+				<th><?php esc_html_e( 'Addresses', 'wallets' ); ?></th>
+				<th><?php esc_html_e( 'Transactions', 'wallets' ); ?></th>
+			</thead>
 
-		<table class="form-table">
 			<tbody>
-				<tr>
-					<th>
-						<label><?php esc_html_e( 'Holdings', 'wallets' ); ?></label>
-					</th>
+				<?php
 
-					<td>
-						<table>
-							<thead>
-								<th><?php esc_html_e( 'Currency', 'wallets' ); ?></th>
-								<th><?php esc_html_e( 'Ticker symbol', 'wallets' ); ?></th>
-								<th><?php esc_html_e( 'Balance', 'wallets' ); ?></th>
-								<th><?php esc_html_e( 'Available Balance', 'wallets' ); ?></th>
-								<th><?php esc_html_e( 'Addresses', 'wallets' ); ?></th>
-								<th><?php esc_html_e( 'Transactions', 'wallets' ); ?></th>
-							</thead>
+				foreach ( get_all_balances_assoc_for_user( $user_id ) as $currency_id => $balance ):
 
-							<tbody>
+					try {
+						$currency = Currency::load( $currency_id );
+					} catch ( \Exception $e ) {
+						continue;
+					}
+
+					if ( ! $balance ) {
+						continue;
+					}
+
+					?>
+					<tr>
+						<td>
+							<?php
+							edit_post_link(
+								$currency->name,
+								null,
+								null,
+								$currency->post_id
+							);
+							?>
+						</td>
+
+						<td>
+							<?php
+							edit_post_link(
+								$currency->symbol,
+								null,
+								null,
+								$currency->post_id
+							);
+							?>
+						</td>
+
+
+						<td>
+							<?php
+
+
+							printf(
+								$currency->pattern ?? '%f',
+								$balance * 10 ** - $currency->decimals
+							);
+							?>
+						</td>
+
+						<td>
+							<?php
+							$available_balance = get_available_balance_for_user_and_currency_id( $user_id, $currency->post_id );
+
+							printf(
+								$currency->pattern ?? '%f',
+								$available_balance * 10 ** - $currency->decimals
+							);
+							?>
+						</td>
+
+						<td>
+							<a
+								class="button wallets-link"
+								<?php disabled( false, user_can( $user_id, 'edit_wallets_addresses' ) ); ?>
+								href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_address&wallets_currency_id=$currency->post_id&author=$user_id" ) ); ?>">
 								<?php
-
-								foreach ( get_all_balances_assoc_for_user( $user_id ) as $currency_id => $balance ):
-
-									try {
-										$currency = Currency::load( $currency_id );
-									} catch ( \Exception $e ) {
-										continue;
-									}
-
-									if ( ! $balance ) {
-										continue;
-									}
-
-									?>
-									<tr>
-										<td>
-											<?php
-											edit_post_link(
-												$currency->name,
-												null,
-												null,
-												$currency->post_id
-											);
-											?>
-										</td>
-
-										<td>
-											<?php
-											edit_post_link(
-												$currency->symbol,
-												null,
-												null,
-												$currency->post_id
-											);
-											?>
-										</td>
-
-
-										<td>
-											<?php
-
-
-											printf(
-												$currency->pattern ?? '%f',
-												$balance * 10 ** - $currency->decimals
-											);
-											?>
-										</td>
-
-										<td>
-											<?php
-											$available_balance = get_available_balance_for_user_and_currency_id( $user_id, $currency->post_id );
-
-											printf(
-												$currency->pattern ?? '%f',
-												$available_balance * 10 ** - $currency->decimals
-											);
-											?>
-										</td>
-
-										<td>
-											<a
-												class="button wallets-link"
-												<?php disabled( false, user_can( $user_id, 'edit_wallets_addresses' ) ); ?>
-												href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_address&wallets_currency_id=$currency->post_id&author=$user_id" ) ); ?>">
-												<?php
-													printf(
-														__( 'Go to user\'s %s addresses', 'wallets' ),
-														$currency->name
-													);
-												?>
-											</a>
-										</td>
-
-										<td>
-											<a
-												class="button wallets-link"
-												<?php disabled( false, user_can( $user_id, 'edit_wallets_txs' ) ); ?>
-												href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_tx&wallets_currency_id=$currency->post_id&author=$user_id" ) ); ?>">
-												<?php
-													printf(
-														__( 'Go to user\'s %s transactions', 'wallets' ),
-														$currency->name
-													);
-												?>
-											</a>
-										</td>
-
-									</tr>
-
-								<?php
-								endforeach;
+									printf(
+										__( 'Go to user\'s %s addresses', 'wallets' ),
+										$currency->name
+									);
 								?>
-							</tbody>
-						</table>
-					</td>
-				</tr>
+							</a>
+						</td>
+
+						<td>
+							<a
+								class="button wallets-link"
+								<?php disabled( false, user_can( $user_id, 'edit_wallets_txs' ) ); ?>
+								href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_tx&wallets_currency_id=$currency->post_id&author=$user_id" ) ); ?>">
+								<?php
+									printf(
+										__( 'Go to user\'s %s transactions', 'wallets' ),
+										$currency->name
+									);
+								?>
+							</a>
+						</td>
+
+					</tr>
+
+				<?php
+				endforeach;
+				?>
 			</tbody>
 		</table>
 

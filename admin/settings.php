@@ -521,11 +521,11 @@ add_action(
 							'wallets'
 						),
 						'<code>wp-content/wp-debug.log</code>',
-						"<code>define( 'WP_DEBUG', true );</code>",
+						"<code>define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );</code>",
 						'<code>wp-config.php</code>',
 						'<a target="_blank" rel="external help nofollow" href="https://wordpress.org/support/article/debugging-in-wordpress/">More info...</a>'
 					),
-					'disabled'  => ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
+					'disabled'  => ! ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ),
 				]
 			);
 
@@ -1146,8 +1146,8 @@ function tab_fiat_cb( $arg ) {
 	<?php
 		esc_html_e(
 			'The free subscription plan is sufficient. ' .
-			'The plugin will not query the service more than once per hour, ' .
-			'and this amounts to less than 750 API calls per month.',
+			'The plugin will not query the service more than once per 8 hours, ' .
+			'and this amounts to less than 100 API calls per month.',
 			'wallets'
 		);
 	?>

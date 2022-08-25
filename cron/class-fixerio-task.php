@@ -37,16 +37,28 @@ class FixerIO_Task extends Task {
 
 	public function __construct() {
 		$this->priority = 500;
-		$this->api_key = strtolower( get_ds_option( 'wallets_fiat_fixerio_key' ) );
+		$this->api_key = get_ds_option( 'wallets_fiat_fixerio_key' );
 		parent::__construct();
 	}
 
 	private function do_call( string $endpoint ) {
-		$url = "http://data.fixer.io/api/$endpoint?access_key=$this->api_key";
 
-		$this->log( "Retrieving http://data.fixer.io/api/$endpoint?access_key=" . str_repeat( '?', 32 ) );
+		// here we handle old fixer api keys (hex) and new apilayer keys (alphanumeric)
+		// which are usable at different urls
+		if ( preg_match( '/[0-9a-fA-F]{20}/', $this->api_key ) ) {
 
-		$json = ds_http_get( $url );
+			$url = "http://data.fixer.io/api/$endpoint?access_key=$this->api_key";
+			$this->log( "Retrieving http://data.fixer.io/api/$endpoint?access_key=" . str_repeat( '?', 32 ) );
+
+			$json = ds_http_get( $url );
+
+		} else {
+
+			$url = "https://api.apilayer.com/fixer/$endpoint";
+			$this->log( "Retrieving $url" );
+			$json = ds_http_get( $url, [ "apikey: $this->api_key" ] );
+		}
+
 
 		if ( ! is_string( $json ) ) {
 			throw new \RuntimeException( 'The service could not be contacted' );
@@ -228,7 +240,7 @@ class FixerIO_Task extends Task {
 	private function update_rates(): void {
 		$latest_rates = get_ds_transient( 'wallets_fixerio_rates', [] );
 
-		if ( ! $latest_rates || $latest_rates->timestamp < time() - HOUR_IN_SECONDS ) {
+		if ( ! $latest_rates || $latest_rates->timestamp < time() - 8 * HOUR_IN_SECONDS ) {
 			$this->log( 'Retrieving latest fiat currency exchange rates from fixer.io' );
 
 			try {
@@ -240,7 +252,7 @@ class FixerIO_Task extends Task {
 			}
 
 			if ( $latest_rates && $latest_rates->success ) {
-				set_ds_transient( 'wallets_fixerio_rates', $latest_rates, HOUR_IN_SECONDS );
+				set_ds_transient( 'wallets_fixerio_rates', $latest_rates, 8 * HOUR_IN_SECONDS );
 				delete_ds_transient( 'wallets_fixerio_rates_index' ); // start over from the top
 			}
 		} else {

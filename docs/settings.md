@@ -70,7 +70,7 @@ The plugin will soon create *[Currencies][glossary-currency]* for all the fiat c
 
 The plugin will continue to access fixer.io repeatedly and keep the exchange rates between these fiat currencies updated.
 
-The free subscription plan is sufficient. The plugin will not query the service more than once per hour, and this amounts to less than 750 API calls per month. (The free plan gives you 1000 calls per month.)
+The free subscription plan is sufficient. The plugin will not query the service more than once per 8 hours, and this amounts to less than 100 API calls per month. (The free plan gives you 100 calls per month.)
 
 
 ### fixer.io API key
