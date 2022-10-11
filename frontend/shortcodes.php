@@ -599,17 +599,17 @@ function shortcode_wallets_move( $atts, string $content, string $tag ): string {
 		if ( ! ds_current_user_can( 'has_wallets' ) ) {
 			throw new \Exception(
 				(string) __(
-					'User does not have wallets!',
-					'wallets-front'
+					'User does not have the has_wallets capability!',
+					'wallets'
 				)
 			);
 		}
 
 		if ( ! ds_current_user_can( 'send_funds_to_user' ) ) {
 			throw new \Exception(
-				(string) __(
-					'User with ID %d cannot initiate internal transfers!',
-					'wallets-front'
+				__(
+					'User does not have the send_funds_to_user capability!',
+					'wallets'
 				)
 			);
 		}
@@ -694,17 +694,17 @@ function shortcode_wallets_withdraw( $atts, string $content, string $tag ): stri
 		if ( ! ds_current_user_can( 'has_wallets' ) ) {
 			throw new \Exception(
 				(string) __(
-					'User with ID %d does not have wallets!',
-					'wallets-front'
-				)
-			);
+					'User does not have the has_wallets capability!',
+					'wallets'
+					)
+				);
 		}
 
 		if ( ! ds_current_user_can( 'withdraw_funds_from_wallet' ) ) {
 			throw new \Exception(
 				(string) __(
-					'User with ID %d cannot initiate withdrawals!',
-					'wallets-front'
+					'User does not have the withdraw_funds_from_wallet capability!',
+					'wallets'
 				)
 			);
 		}
@@ -794,7 +794,7 @@ function shortcode_wallets_fiat_withdraw( $atts, string $content, string $tag ):
 			throw new \Exception(
 				(string) __(
 					'User with ID %d cannot initiate withdrawals!',
-					'wallets-front'
+					'wallets'
 				)
 			);
 		}
@@ -994,8 +994,8 @@ function shortcode_wallets_transactions( $atts, string $content, string $tag ): 
 		if ( ! ds_current_user_can( 'list_wallet_transactions' ) ) {
 			throw new \Exception(
 				(string) __(
-					'User with ID %d cannot list transactions!',
-					'wallets-front'
+					'User with ID %d does not have the list_wallet_transactions capability!',
+					'wallets'
 				)
 			);
 		}

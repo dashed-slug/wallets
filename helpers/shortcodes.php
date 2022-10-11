@@ -46,6 +46,9 @@ function parse_categories( string $category_slugs ): array {
 				return [ 'all' ];
 				break;
 
+			case '':
+				break;
+
 			default:
 				error_log( "Invalid category '$category_slug' encountered in shortcode. Ignoring." );
 				break;

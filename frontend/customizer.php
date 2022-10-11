@@ -788,17 +788,22 @@ add_action(
 		padding:
 			<?php echo get_theme_mod( 'wallets_border_padding_px',            WALLETS_BORDER_PADDING_PX            ); ?>px;
 
-		color:
-			<?php echo get_theme_mod( 'wallets_font_color',                   WALLETS_FONT_COLOR                   ); ?>;
-
-		font-size:
-			<?php echo get_theme_mod( 'wallets_font_size_pt',                 WALLETS_FONT_SIZE_PT                 ); ?>pt;
-
 		box-shadow:
 			<?php echo get_theme_mod( 'wallets_border_shadow_offset_x_px',    WALLETS_BORDER_SHADOW_OFFSET_X_PX    ); ?>px
 			<?php echo get_theme_mod( 'wallets_border_shadow_offset_y_px',    WALLETS_BORDER_SHADOW_OFFSET_Y_PX    ); ?>px
 			<?php echo get_theme_mod( 'wallets_border_shadow_blur_radius_px', WALLETS_BORDER_SHADOW_BLUR_RADIUS_PX ); ?>px
 			<?php echo get_theme_mod( 'wallets_border_shadow_color',          WALLETS_BORDER_SHADOW_COLOR          ); ?>;
+	}
+
+	.dashed-slug-wallets,
+	.dashed-slug-wallets input,
+	.dashed-slug-wallets select,
+	.dashed-slug-wallets textarea {
+		color:
+			<?php echo get_theme_mod( 'wallets_font_color',                   WALLETS_FONT_COLOR                   ); ?>;
+
+		font-size:
+			<?php echo get_theme_mod( 'wallets_font_size_pt',                 WALLETS_FONT_SIZE_PT                 ); ?>pt;
 	}
 
 	.dashed-slug-wallets label,

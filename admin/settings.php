@@ -28,6 +28,7 @@ const DEFAULT_HTTP_TOR_PORT = 9050;
 const DEFAULT_RATES_VS = [ 'btc', 'usd' ];
 const DEFAULT_CRON_EMAILS_MAX_BATCH_SIZE = 8;
 const DEFAULT_TRANSIENTS_BROKEN = false;
+const DEFAULT_FIAT_FIXERIO_CURRENCIES = [ 'USD' ];
 const DEFAULT_WALLETS_CONFIRM_MOVE_USER_ENABLED = '';
 const DEFAULT_WALLETS_CONFIRM_WITHDRAW_USER_ENABLED = 'on';
 const DEFAULT_CRON_WITHDRAWALS_MAX_BATCH_SIZE = 4;
@@ -35,22 +36,22 @@ const DEFAULT_CRON_MOVES_MAX_BATCH_SIZE = 8;
 const DEFAULT_CRON_TASK_TIMEOUT = 5;
 
 register_activation_hook( DSWALLETS_FILE, function() {
-	add_ds_option( 'wallets_addresses_max_count', DEFAULT_ADDRESS_MAX_COUNT );
-	add_ds_option( 'wallets_polling_interval',    DEFAULT_FRONTEND_POLLING_INTERVAL );
-	add_ds_option( 'wallets_legacy_json_api',     DEFAULT_FRONTEND_LEGACY_JSON_API );
-	add_ds_option( 'wallets_move_spills_users',   DEFAULT_FRONTEND_MOVE_SPILLS_USERS );
-	add_ds_option( 'wallets_cron_interval',       DEFAULT_CRON_INTERVAL );
-	add_ds_option( 'wallets_cron_verbose',        DEFAULT_CRON_VERBOSE );
-	add_ds_option( 'wallets_cron_autocancel',     DEFAULT_CRON_AUTOCANCEL_INTERVAL );
-	add_ds_option( 'wallets_http_timeout',        DEFAULT_HTTP_TIMEOUT );
-	add_ds_option( 'wallets_http_redirects',      DEFAULT_HTTP_REDIRECTS );
-	add_ds_option( 'wallets_http_tor_enabled',    get_option( 'wallets_rates_tor_enabled', DEFAULT_HTTP_TOR_ENABLED ) );
-	add_ds_option( 'wallets_http_tor_ip',         get_option( 'wallets_rates_tor_ip',      DEFAULT_HTTP_TOR_IP ) );
-	add_ds_option( 'wallets_http_tor_port',       get_option( 'wallets_rates_tor_port',    DEFAULT_HTTP_TOR_PORT ) );
-	add_ds_option( 'wallets_rates_vs',            DEFAULT_RATES_VS );
-	add_ds_option( 'wallets_transients_broken',   DEFAULT_TRANSIENTS_BROKEN );
-	add_ds_option( 'wallets_fiat_fixerio_key',    get_ds_option( 'wallets_rates_fixer_key', '' ) );
-
+	add_ds_option( 'wallets_addresses_max_count',           DEFAULT_ADDRESS_MAX_COUNT );
+	add_ds_option( 'wallets_polling_interval',              DEFAULT_FRONTEND_POLLING_INTERVAL );
+	add_ds_option( 'wallets_legacy_json_api',               DEFAULT_FRONTEND_LEGACY_JSON_API );
+	add_ds_option( 'wallets_move_spills_users',             DEFAULT_FRONTEND_MOVE_SPILLS_USERS );
+	add_ds_option( 'wallets_cron_interval',                 DEFAULT_CRON_INTERVAL );
+	add_ds_option( 'wallets_cron_verbose',                  DEFAULT_CRON_VERBOSE );
+	add_ds_option( 'wallets_cron_autocancel',               DEFAULT_CRON_AUTOCANCEL_INTERVAL );
+	add_ds_option( 'wallets_http_timeout',                  DEFAULT_HTTP_TIMEOUT );
+	add_ds_option( 'wallets_http_redirects',                DEFAULT_HTTP_REDIRECTS );
+	add_ds_option( 'wallets_http_tor_enabled',              get_option( 'wallets_rates_tor_enabled', DEFAULT_HTTP_TOR_ENABLED ) );
+	add_ds_option( 'wallets_http_tor_ip',                   get_option( 'wallets_rates_tor_ip',      DEFAULT_HTTP_TOR_IP ) );
+	add_ds_option( 'wallets_http_tor_port',                 get_option( 'wallets_rates_tor_port',    DEFAULT_HTTP_TOR_PORT ) );
+	add_ds_option( 'wallets_rates_vs',                      DEFAULT_RATES_VS );
+	add_ds_option( 'wallets_transients_broken',             DEFAULT_TRANSIENTS_BROKEN );
+	add_ds_option( 'wallets_fiat_fixerio_key',              get_ds_option( 'wallets_rates_fixer_key', '' ) );
+	add_ds_option( 'wallets_fiat_fixerio_currencies',       get_ds_option( 'wallets_fiat_fixerio_currencies', DEFAULT_FIAT_FIXERIO_CURRENCIES ) );
 	add_ds_option( 'wallets_confirm_redirect_page',         0 );
 	add_ds_option( 'wallets_confirm_move_user_enabled',     DEFAULT_WALLETS_CONFIRM_MOVE_USER_ENABLED );
 	add_ds_option( 'wallets_confirm_withdraw_user_enabled', DEFAULT_WALLETS_CONFIRM_WITHDRAW_USER_ENABLED );
@@ -167,7 +168,7 @@ add_action(
 	function() {
 
 		/**
-		 * Hook a settings tab in the plgugin's settings admin screen.
+		 * Hook a settings tab in the plugin's settings admin screen.
 		 *
 		 * The `wallets_settings_tabs` filter takes an associative array,
 		 * mapping tab slugs to tab descriptions.
@@ -542,7 +543,7 @@ add_action(
 				"wallets_{$tab}_section",
 				[
 					'label_for'   => 'wallets_withdrawals_max_batch_size',
-					'description' => __( 'On each run of the cron jobs, up to this many withdrawals will be processed.', 'wallets' ),
+					'description' => __( 'On each run of the cron tasks, up to this many withdrawals will be processed.', 'wallets' ),
 					'min'         => 1,
 					'max'         => 50,
 					'step'        => 1,
@@ -563,7 +564,7 @@ add_action(
 				"wallets_{$tab}_section",
 				[
 					'label_for'   => 'wallets_moves_max_batch_size',
-					'description' => __( 'On each run of the cron jobs, up to this many internal transfers will be processed.', 'wallets' ),
+					'description' => __( 'On each run of the cron tasks, up to this many internal transfers will be processed.', 'wallets' ),
 					'min'         => 1,
 					'max'         => 50,
 					'step'        => 1,
@@ -802,6 +803,94 @@ add_action(
 				'wallets_fiat_fixerio_key'
 			);
 
+			add_settings_field(
+				'wallets_fiat_fixerio_currencies',
+				sprintf( (string) __( '%s fixer.io selected currencies', 'wallets' ), '&#x1F511;' ),
+				function( $arg ) {
+
+					if ( ! $arg['currencies'] ) {
+						esc_html_e( 'No currencies loaded yet! ', 'wallets' );
+						if ( get_ds_option( 'wallets_fiat_fixerio_key' ) ) {
+							printf(
+								__(
+									'If they are not loaded after a few minutes, check that your <a href="%s">cron tasks</a> <a href="%s">are running</a>!',
+									'wallets'
+								),
+								admin_url( 'options-general.php?page=wallets_settings_page&tab=cron' ),
+								admin_url( 'index.php#wallets-dashboard-widget-debug' )
+							);
+						} else {
+							esc_html_e( 'Please enter an API key first!', 'wallets' );
+						}
+						return;
+					}
+
+					$enabled_symbols = get_ds_option( $arg['label_for'], [] );
+					if ( ! is_array( $enabled_symbols ) ) {
+						$enabled_symbols = [];
+					}
+
+					foreach ( $arg['currencies'] as $symbol => $name ):
+						if ( in_array(
+							$symbol,
+							[
+								'BTC', // Bitcoin
+								'XAG', // Silver (troy ounce)
+								'XAU', // Gold (troy ounce)
+								'XDR', // Special Drawing Rights
+
+							]
+						) ) continue;
+
+						$enabled = in_array( $symbol, $enabled_symbols );
+						?>
+						<label
+							class="fixer-currency">
+
+							<strong>
+								<?php esc_html_e( $symbol ); ?>
+							</strong>
+
+							<input
+								type="checkbox"
+								name="<?php esc_attr_e( $arg['label_for'] ); ?>[]"
+								value="<?php esc_attr_e( $symbol ); ?>"
+								<?php
+								checked( $enabled );
+								wp_readonly( $enabled );
+								if ( $enabled ): ?> onclick="return false;"<?php endif; ?>
+
+							/>
+
+							<?php esc_html_e( $name ); ?>
+
+						</label>
+
+						<?php
+					endforeach;
+					?>
+					<p class="description"><?php esc_html_e( $arg['description'] ); ?></p>
+					<?php
+				},
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for'   => 'wallets_fiat_fixerio_currencies',
+					'description' => __(
+						'Select the fixer.io fiat currencies that you would like to be created on this system. ' .
+						'The selected currencies will be created asynchronously on the next few cron runs.',
+						'wallets'
+					),
+					'currencies' => get_ds_transient( 'wallets_fixerio_currencies_list', [] )
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_fiat_fixerio_currencies'
+			);
+
+
 		} // fiat
 	},
 	1000
@@ -1020,22 +1109,38 @@ function tab_cron_cb( $arg ) {
 	<?php
 	else:
 	?>
-	<p class="description"><?php esc_html_e( 'A number of cron tasks need to run for this plugin to function. ', 'wallets' ); ?></p>
+	<p><?php esc_html_e( 'A number of cron tasks need to run for this plugin to function. ', 'wallets' ); ?></p>
 
-	<p class="card">
-	<?php
-		printf(
-			esc_html__(
-				'Cron tasks are slowing down your visitors? ' .
-				'Set %1$s in your %2$s, and trigger the following URL manually, using a UNIX cron job: %3$s',
-				'wallets'
-			),
-			"<code>define( 'DISABLE_WP_CRON', true );</code>",
-			'<code>wp-config.php</code>',
-			(string) sprintf( '<a href="%1$s" target="_blank">%1$s</a>', (string) site_url( '/wp-cron.php' ) )
-		);
-	?>
-	</p>
+	<div class="card">
+		<p>
+		<?php
+			printf(
+				esc_html__(
+					'Cron tasks are slowing down your visitors? ' .
+					'Set %1$s in your %2$s, and trigger the following URL manually, using a UNIX cron job: %3$s',
+					'wallets'
+				),
+				"<code>define( 'DISABLE_WP_CRON', true );</code>",
+				'<code>wp-config.php</code>',
+				(string) sprintf( '<a href="%1$s" target="_blank">%1$s</a>', (string) site_url( '/wp-cron.php' ) )
+			);
+		?>
+		</p>
+
+		<p style="font-style: italic;">
+			<?php
+			printf(
+				__(
+					'Looking for an easy to setup cron job service? Try <a href="%s" title="%s">EasyCron</a>!',
+					'wallets'
+				),
+				'https://www.easycron.com/?ref=124245',
+				'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.'
+			);
+			?>
+		</p>
+
+	</div>
 
 	<?php
 	endif;
@@ -1062,7 +1167,7 @@ function tab_general_cb( $arg ) { }
 
 function tab_frontend_cb( $arg ) {
 	?>
-	<p class="description">
+	<p>
 		<?php esc_html_e( 'Settings that affect the frontend UIs.', 'wallets' ); ?>
 	</p>
 
@@ -1071,7 +1176,7 @@ function tab_frontend_cb( $arg ) {
 
 function tab_http_cb( $arg ) {
 	?>
-	<p class="description">
+	<p>
 	<?php
 		esc_html_e(
 			'These settings affect all communication of the plugin to the outside world. '.
@@ -1086,7 +1191,7 @@ function tab_http_cb( $arg ) {
 
 function tab_rates_cb( $arg ) {
 	?>
-	<p class="description">
+	<p>
 	<?php
 		esc_html_e(
 			'The plugin uses CoinGecko to retrieve exchange rate data. ' .
@@ -1100,7 +1205,7 @@ function tab_rates_cb( $arg ) {
 	?>
 	</p>
 
-	<p class="description">
+	<p>
 	<?php
 		esc_html_e( 'It is recommended that you check at least BTC and USD. ', 'wallets' );
 	?>
@@ -1110,7 +1215,7 @@ function tab_rates_cb( $arg ) {
 
 function tab_notify_cb( $arg ) {
 	?>
-	<p class="description">
+	<p>
 	<?php
 		esc_html_e( 'Users are notified about their transactions via email. These settings control email notifications.', 'wallets' );
 	?>
@@ -1120,10 +1225,9 @@ function tab_notify_cb( $arg ) {
 
 function tab_fiat_cb( $arg ) {
 	?>
-	<p class="description">
+	<p>
 	<?php
 		printf(
-			(string)
 			__(
 				'To define fiat currencies in the plugin, please sign up for an API key at: %s',
 				'wallets'
@@ -1135,7 +1239,36 @@ function tab_fiat_cb( $arg ) {
 	<p>
 	<?php
 		esc_html_e(
-			'The plugin will create Currencies for all fiat currencies in fixer.io. ' .
+			'Soon after you enter the API key, the plugin will retrieve the fiat currencies list from fixer.io.',
+			'wallets'
+		);
+	?>
+	</p>
+
+	<p>
+	<?php
+		esc_html_e(
+			'Refresh this screen, then once the fiat currencies are listed, select the ones you want to use.',
+			'wallets'
+		);
+	?>
+	</p>
+
+	<p>
+	<?php
+		printf(
+			__(
+				'The plugin\'s cron task will create <a href="%s">Currencies</a> for all the fiat currencies that you select here.',
+				'wallets'
+			),
+			admin_url( 'edit.php?post_type=wallets_currency' )
+		);
+	?>
+	</p>
+
+	<p>
+	<?php
+		esc_html_e(
 			'It will then keep the exchange rates of these currencies updated.',
 			'wallets'
 		);

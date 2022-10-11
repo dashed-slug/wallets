@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *		$user     = new \WP_User( $user_id );
  *		$litecoin = \DSWallets\get_first_currency_by_symbol( 'LTC' );
  *
- *		if ( $user && $litecoin ) {
+ *		if ( $user->exists() && $litecoin ) {
  *
  *			$tx = new Transaction;
  *
@@ -67,7 +67,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *		$user = new \WP_User( $user_id );
  *		$usd = \DSWallets\get_first_currency_by_symbol( 'USD' );
  *
- *		if ( $user && $usd ) {
+ *		if ( $user->exists() && $usd ) {
  *
  *			$tx = new Transaction;
  *
@@ -328,6 +328,7 @@ class Transaction extends Post_Type {
 			case 'publish':
 				$tx->status = 'done';
 				break;
+			case 'auto-draft':
 			case 'pending':
 				$tx->status = 'pending';
 				break;
@@ -335,7 +336,7 @@ class Transaction extends Post_Type {
 				$tx->status = $tx->error ? 'failed' : 'cancelled';
 				break;
 			default:
-				$tx->status = 'draft';
+				throw new \Exception( sprintf( "Invalid transaction post status $post->post_status" ) );
 		}
 
 		$user_id = absint( get_post_meta( $post->ID, 'wallets_user', true ) );
@@ -377,6 +378,7 @@ class Transaction extends Post_Type {
 			case 'done':
 				$post_status = 'publish';
 				break;
+			case 'auto-draft':
 			case 'pending':
 				$post_status = 'pending';
 				break;

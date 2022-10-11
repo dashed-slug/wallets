@@ -154,7 +154,7 @@ Next we are going to have the plugin auto-create all the known fiat currencies. 
 
 54. Go to _Settings_ &rarr; _Bitcoin and Altcoin Wallets_ &rarr; _[Fiat currencies][settings-fiat]_.
 
-55. Enter your fixer.io API key and hit _Save Changes_. The plugin will start retrieving currency data and create fiat currency entries on the cron job. This will take several minutes. If your website does not have any traffic, you will need to trigger the cron jobs manually.
+55. Enter your fixer.io API key and hit _Save Changes_. The plugin will soon load the fiat currency data. Select the currencies that you want to be created, and hit _Save Changes_ again. Now, the plugin will create fiat currency entries asynchronously, on the next cron task runs. This can take several minutes. If your website does not have any traffic, you will need to trigger the cron jobs manually.
 
 56. Go to _Wallets_.
 

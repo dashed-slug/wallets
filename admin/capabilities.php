@@ -199,14 +199,14 @@ add_filter(
 		$caps_info[] = [
 			'type'        => null,
 			'slug'        => 'send_funds_to_user',
-			'roles'       => [ 'administrator', 'editor', 'author', 'contributor', 'subscriber' ],
+			'roles'       => [ 'administrator' ],
 			'description' => __( 'Can send cryptocurrencies to other users on this site.', 'wallets' ),
 		];
 
 		$caps_info[] = [
 			'type'        => null,
 			'slug'        => 'withdraw_funds_from_wallet',
-			'roles'       => [ 'administrator', 'editor', 'author', 'contributor', 'subscriber' ],
+			'roles'       => [ 'administrator' ],
 			'description' => __( 'Can withdraw cryptocurrencies from the site to an external address.', 'wallets' ),
 		];
 
@@ -336,6 +336,8 @@ function tab_caps_cb( $arg ) {
 	$types_objects = get_post_types( [], 'objects' );
 	?>
 	<p><?php esc_html_e( 'Assign here General Capabilities to your user roles.', 'wallets' ); ?></p>
+
+	<strong><?php esc_html_e( 'If you want users to be able to send funds, you have to enable the send_funds_to_user and/or withdraw_funds_from_wallet capabilities for them.', 'wallets' ); ?></strong>
 
 	<p><?php esc_html_e( 'There are also capabilities for viewing/editing the custom post types. Normally you will not need to change these. If unsure, leave the defaults.', 'wallets' ); ?></p>
 

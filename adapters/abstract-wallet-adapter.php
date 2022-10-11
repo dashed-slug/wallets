@@ -445,7 +445,7 @@ abstract class Wallet_Adapter {
 		// populate the missing fields
 		$potential_deposit->address = $address;
 		$potential_deposit->user    = $address->user;
-		$potential_deposit->fee     = $potential_deposit->currency->fee_deposit_site;
+		$potential_deposit->fee     = -absint( $potential_deposit->currency->fee_deposit_site );
 
 		try {
 

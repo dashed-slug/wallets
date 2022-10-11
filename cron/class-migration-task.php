@@ -8,7 +8,6 @@
 
 namespace DSWallets;
 
-
 defined( 'ABSPATH' ) || die( -1 );
 
 /**
@@ -94,6 +93,12 @@ class Migration_Task extends Task {
 
 	public function run(): void {
 		if ( is_net_active() && ! is_main_site() ) {
+			$this->log( 'Migration task can run only on main blog!' );
+			return;
+		}
+
+		if ( get_ds_transient( 'wallets_migration_snooze' ) ) {
+			$this->log( 'Migration task is in snooze mode!' );
 			return;
 		}
 
@@ -123,6 +128,8 @@ class Migration_Task extends Task {
 		// re-count total address count if not already known
 		if ( false === self::$state['add_count'] ) {
 
+			$wpdb->flush();
+
 			$result = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM $this->table_name_adds WHERE %d OR blog_id = %d",
@@ -137,10 +144,23 @@ class Migration_Task extends Task {
 				self::$state['add_count']   = false;
 				self::$state['add_last_id'] = false;
 			}
+
+			if ( $wpdb->last_error ) {
+				// probably the tables don't even exist
+				// let's snooze migration so we don't fill up the logs with warnings
+
+				set_ds_transient(
+					'wallets_migration_snooze',
+					true,
+					HOUR_IN_SECONDS
+				);
+			}
 		}
 
 		// re-count total transaction count if not already known
 		if ( false === self::$state['tx_count'] ) {
+
+			$wpdb->flush();
 
 			$result = $wpdb->get_var(
 				$wpdb->prepare(
@@ -155,6 +175,17 @@ class Migration_Task extends Task {
 			} else {
 				self::$state['tx_count']   = false;
 				self::$state['tx_last_id'] = false;
+			}
+
+			if ( $wpdb->last_error ) {
+				// probably the tables don't even exist
+				// let's snooze migration so we don't fill up the logs with warnings
+
+				set_ds_transient(
+					'wallets_migration_snooze',
+					true,
+					HOUR_IN_SECONDS
+				);
 			}
 		}
 

@@ -507,7 +507,7 @@ The parent plugin can now be localized via https://translate.wordpress.org since
 
 Localizing an extension to the plugin involves translating the plugin's `.pot` files into your Language's `.po` files.
 
-You can translate the `wallets` *[text domain](#text-domain)* for strings in the Admin interface, or the `wallets-front` *[text domain](#text-domain)* for strings displayed in the *[Frontend](#frontend)*.
+For extensions, you can translate the `wallets-extension` *[text domain](#text-domain)* for strings in the Admin interface, or the `wallets-extension-front` *[text domain](#text-domain)* for strings displayed in the *[Frontend](#frontend)*, where "`wallets-extension`" is the unique slug for the extension (e.g. `wallets-exchange`, `wallets-faucet`, etc).
 
 For more information, see: *[Localization][localization]*.
 

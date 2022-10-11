@@ -205,12 +205,54 @@ EMAIL
 add_filter(
 	'wallets_email_notify_subject',
 	function( string $subject, Transaction $tx ): string {
+
+		switch ( $tx->category ) {
+			case 'deposit':
+				$category = __( 'deposit', 'wallets' );
+				break;
+
+			case 'withdrawal':
+				$category = __( 'withdrawal', 'wallets' );
+				break;
+
+			case 'move':
+				if ( $tx->amount > 0 ) {
+					$category = __( 'debit', 'wallets' );
+				} else {
+					$category = __( 'credit', 'wallets' );
+				}
+				break;
+
+			default:
+				$category = $tx->category;
+				break;
+		}
+
+		switch ( $tx->status ) {
+			case 'pending':
+				$status = __( 'pending', 'wallets' );
+				break;
+
+			case 'done':
+				$status = __( 'executed', 'wallets' );
+				break;
+
+			case 'cancelled':
+				$status = __( 'cancelled', 'wallets' );
+				break;
+
+			case 'failed':
+				$status = __( 'failed', 'wallets' );
+				break;
+
+		}
+
 		return sprintf(
 			// Translators: %1$s is the site's name, %2$2 is the tx category (one of "deposit", "withdrawal", "move"), %3$s is the tx status (one of "pending", "done", "cancelled", "failed")
-			__( '%1$s: Your %2$s transaction is now %3$s', 'wallets' ),
+			__( '%1$s: Your %2$s transaction is %3$s', 'wallets' ),
 			get_bloginfo( 'name' ),
-			$tx->category,
-			$tx->status
+			$category,
+			$status
 		);
 	},
 	10, // priority

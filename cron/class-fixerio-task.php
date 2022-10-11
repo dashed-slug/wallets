@@ -28,6 +28,13 @@ class FixerIO_Task extends Task {
 	 */
 	private $currencies_list = [];
 
+
+	/**
+	 * List of fixer symbols that have been selected by the admin user to be created.
+	 * @var array
+	 */
+	private $enabled_symbols = [];
+
 	/**
 	 * A mapping of post_ids to ticker symbols for currencies that already exist with the "fixer" tag assigned.
 	 *
@@ -37,7 +44,11 @@ class FixerIO_Task extends Task {
 
 	public function __construct() {
 		$this->priority = 500;
-		$this->api_key = get_ds_option( 'wallets_fiat_fixerio_key' );
+		$this->api_key         = get_ds_option( 'wallets_fiat_fixerio_key' );
+		$this->enabled_symbols = get_ds_option( 'wallets_fiat_fixerio_currencies', [] );
+		if ( ! is_array( $this->enabled_symbols ) ) {
+			$this->enabled_symbols = [];
+		}
 		parent::__construct();
 	}
 
@@ -145,11 +156,29 @@ class FixerIO_Task extends Task {
 
 		$this->log(
 			sprintf(
+				'%d fiat currencies have been enabled to be created: %s',
+				count( $this->enabled_symbols ),
+				implode( ',', $this->enabled_symbols )
+			)
+		);
+
+		$this->log(
+			sprintf(
 				'%d fiat currencies have already been created on the DB from fixer.io: %s',
 				count( $this->existing_symbols_to_ids ),
 				implode( ',', array_keys( $this->existing_symbols_to_ids ) )
 			)
 		);
+
+		$this->currencies_list = array_unique(
+			array_merge(
+				$this->currencies_list,
+				array_keys( $this->existing_symbols_to_ids )
+			)
+		);
+
+		update_ds_option( 'wallets_fiat_fixerio_currencies', $this->currencies_list );
+
 	}
 
 	private function retrieve_currencies_list(): bool {
@@ -198,7 +227,7 @@ class FixerIO_Task extends Task {
 
 		foreach ( $this->currencies_list as $symbol => $name ) {
 
-			if ( 'BTC' == $symbol ) {
+			if ( ! in_array( $symbol, $this->enabled_symbols ) ) {
 				continue;
 			}
 

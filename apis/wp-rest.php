@@ -361,8 +361,8 @@ add_action(
 			$user_id    = $params['user_id'];
 			$page       = absint( $data['page'] ?? 1 );
 			$rows       = absint( $data['rows'] ?? 10 );
-			$categories = parse_categories( $data['categories'] );
-			$tags       = parse_tags( $data['tags'] );
+			$categories = parse_categories( $data['categories'] ?? '' );
+			$tags       = parse_tags( $data['tags'] ?? '' );
 
 			if ( isset( $params['currency_id'] ) ) {
 				try {

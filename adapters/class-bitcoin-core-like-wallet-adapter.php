@@ -576,11 +576,11 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 			$result = wp_remote_post(
 				$this->get_url( true ),
 				[
-					'timeout'    => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent' => 'Bitcoin and Altcoin Wallets version 6.0.0-RC3',
-					'headers'    => 'Content-type: application/json',
-					'rediretion' => absint( get_ds_option( 'wallets_http_redirects', 5 ) ),
-					'body'       => $payload,
+					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.0.0-RC4',
+					'headers'     => 'Content-type: application/json',
+					'redirection' => absint( get_ds_option( 'wallets_http_redirects', 5 ) ),
+					'body'        => $payload,
 				]
 			);
 
@@ -734,7 +734,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$tx->address   = $address;
 				$tx->currency  = $currency;
 				$tx->amount    = (int) ( $detail['amount'] * 10 ** $currency->decimals );
-				$tx->fee       = (int) $currency->fee_deposit_site;
+				$tx->fee       = - absint( $currency->fee_deposit_site );
 				$tx->comment   = $detail['label'] ?? '';
 				$tx->status    = 'pending';
 

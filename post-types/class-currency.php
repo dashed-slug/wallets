@@ -752,7 +752,7 @@ class Currency extends Post_Type {
 	public function get_max_withdraw( \WP_User $user = null ): int {
 		$max_withdraw = $this->max_withdraw;
 
-		if ( $user ) {
+		if ( $user && $user->exists() ) {
 			foreach ( $user->roles as $role_slug ) {
 				$role_limit = $this->max_withdraw_per_role[ $role_slug ] ?? 0;
 				// If no hard limit exists, OR hard and soft limits exist, and per role limit is less than hard limit
@@ -1889,8 +1889,8 @@ class Currency extends Post_Type {
 
 				if ( $currency->is_set_decimals() ) {
 
-					$currency->__set( 'min_withdraw', ( $_POST['wallets_min_withdraw'] ?? 0 ) * 10 ** $currency->decimals );
-					$currency->__set( 'max_withdraw', ( $_POST['wallets_max_withdraw'] ?? 0 ) * 10 ** $currency->decimals );
+					$currency->__set( 'min_withdraw', (int) round( ( $_POST['wallets_min_withdraw'] ?? 0 ) * 10 ** $currency->decimals ) );
+					$currency->__set( 'max_withdraw', (int) round( ( $_POST['wallets_max_withdraw'] ?? 0 ) * 10 ** $currency->decimals ) );
 
 					if ( array_key_exists( 'wd_limits', $_POST ) ) {
 						$wd_limits = [];
@@ -1901,9 +1901,9 @@ class Currency extends Post_Type {
 						$currency->__set( 'max_withdraw_per_role', $wd_limits );
 					}
 
-					$currency->__set( 'fee_deposit_site',  ( $_POST['wallets_fee_deposit_site']  ?? 0 ) * 10 ** $currency->decimals );
-					$currency->__set( 'fee_move_site',     ( $_POST['wallets_fee_move_site']     ?? 0 ) * 10 ** $currency->decimals );
-					$currency->__set( 'fee_withdraw_site', ( $_POST['wallets_fee_withdraw_site'] ?? 0 ) * 10 ** $currency->decimals );
+					$currency->__set( 'fee_deposit_site',  (int) round( ( $_POST['wallets_fee_deposit_site']  ?? 0 ) * 10 ** $currency->decimals ) );
+					$currency->__set( 'fee_move_site',     (int) round( ( $_POST['wallets_fee_move_site']     ?? 0 ) * 10 ** $currency->decimals ) );
+					$currency->__set( 'fee_withdraw_site', (int) round( ( $_POST['wallets_fee_withdraw_site'] ?? 0 ) * 10 ** $currency->decimals ) );
 				}
 
 				$currency->__set( 'explorer_uri_tx',  $_POST['wallets_explorer_uri_tx']  ?? '%s' );
