@@ -234,7 +234,18 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 	}
 
 	private function lock(): void {
-		$this->rpc( 'walletlock');
+		try {
+			$this->rpc( 'walletlock' );
+
+		} catch ( \Exception $e ) {
+			error_log(
+				sprintf(
+					'%s: Could not lock wallet due to: %s',
+					__METHOD__,
+					$e->getMessage()
+				)
+			);
+		}
 	}
 
 	private function unlock(): void {
@@ -430,7 +441,18 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 			if ( is_string( $result ) ) {
 				foreach ( $withdrawals as $wd ) {
 					$wd->status = 'done';
-					$wd->block  = $this->get_block_height();
+					try {
+						$wd->block  = $this->get_block_height();
+					} catch ( \Exception $e ) {
+						error_log(
+							sprintf(
+								'%s: Unknown block height for withdrawal %d: %s',
+								__METHOD__,
+								$wd->post_id,
+								$e->getMessage()
+							)
+						);
+					}
 					$wd->txid   = $result;
 					$wd->error  = '';
 				}
@@ -577,7 +599,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.0.0-RC4',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.0.0-RC5',
 					'headers'     => 'Content-type: application/json',
 					'redirection' => absint( get_ds_option( 'wallets_http_redirects', 5 ) ),
 					'body'        => $payload,

@@ -85,8 +85,8 @@ add_action( 'admin_menu', function() {
 						parent::__construct( $args );
 
 						// sorting vars
-						$this->order   = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-						$this->orderby = filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING );
+						$this->order   = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+						$this->orderby = filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 						if ( ! $this->order && ! $this->orderby ) {
 							$this->orderby = 'created_time';

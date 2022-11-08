@@ -12,9 +12,6 @@ namespace DSWallets;
 // don't load directly
 defined( 'ABSPATH' ) || die( -1 );
 
-require_once DSWALLETS_PATH . '/third-party/Parsedown.php';
-require_once DSWALLETS_PATH . '/third-party/ParsedownExtra.php';
-
 // Hook this plugin's docs
 add_filter(
 	'wallets_documentation',
@@ -126,6 +123,14 @@ add_action(
 			'wallets_docs',
 			function() {
 				wp_enqueue_style( 'wallets-admin-styles' );
+
+				if ( ! class_exists( 'Parsedown' ) ) {
+					require_once DSWALLETS_PATH . '/third-party/Parsedown.php';
+				}
+
+				if ( ! class_exists( 'ParseDownExtra' ) ) {
+					require_once DSWALLETS_PATH . '/third-party/ParsedownExtra.php';
+				}
 
 				/**
 				 * Wallets documentation.

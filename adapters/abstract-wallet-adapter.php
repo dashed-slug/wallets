@@ -374,9 +374,20 @@ abstract class Wallet_Adapter {
 				$dirty = true;
 			}
 
-			if ( ! $existing_deposit->block && $potential_deposit->block ) {
-				$existing_deposit->block = $potential_deposit->block;
-				$dirty = true;
+			// update these only if a new value is passed from the adapter
+			foreach ( [ 'amount', 'fee', 'chain_fee', 'comment', 'error' ] as $field ) {
+				if ( $potential_deposit->{$field} ) {
+					$existing_deposit->{$field} = $potential_deposit->{$field};
+					$dirty = true;
+				}
+			}
+
+			// update these only if not already set and a new value is passed from the adapter
+			foreach ( [ 'block', 'timestamp', ] as $field ) {
+				if ( ! $existing_deposit->{$field} && $potential_deposit->{$field} ) {
+					$existing_deposit->{$field} = $potential_deposit->{$field};
+					$dirty = true;
+				}
 			}
 
 			if ( $dirty ) {

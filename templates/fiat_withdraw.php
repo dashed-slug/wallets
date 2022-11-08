@@ -601,7 +601,7 @@
 							echo esc_js(
 								apply_filters(
 									'wallets_fiat_ui_text_no_swift_bic_entered',
-									__( 'No SWIFT/BIC entered!', 'wallets' ),
+									__( 'No SWIFT/BIC entered!', 'wallets' )
 								)
 							);
 						?>'
@@ -618,7 +618,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_invalid_swift_bic',
-								__( 'Invalid SWIFT/BIC!', 'wallets' ),
+								__( 'Invalid SWIFT/BIC!', 'wallets' )
 							)
 						);
 
@@ -644,7 +644,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_no_routing_number_entered',
-								__( 'No routing number entered!', 'wallets' ),
+								__( 'No routing number entered!', 'wallets' )
 							)
 						);
 
@@ -657,7 +657,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_routing_number_must_be_a_number',
-								__( 'Routing number must be a number!', 'wallets' ),
+								__( 'Routing number must be a number!', 'wallets' )
 							)
 						);
 
@@ -670,7 +670,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_routing_number_must_have_nine_digits',
-								__( 'Routing number must have 9 digits!', 'wallets' ),
+								__( 'Routing number must have 9 digits!', 'wallets' )
 							)
 						);
 
@@ -700,7 +700,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_no_acc_num_entered',
-								__( 'No account number entered!', 'wallets' ),
+								__( 'No account number entered!', 'wallets' )
 							)
 						);
 
@@ -713,7 +713,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_acc_num_must_be_num',
-								__( 'Account number must be a number!', 'wallets' ),
+								__( 'Account number must be a number!', 'wallets' )
 							)
 						);
 
@@ -726,7 +726,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_acc_num_six_to_fourteen_digits',
-								__( 'Account number must have between 6 and 14 digits!', 'wallets' ),
+								__( 'Account number must have between 6 and 14 digits!', 'wallets' )
 							)
 						);
 
@@ -757,7 +757,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_no_ifsc_entered',
-								__( 'No IFSC entered!', 'wallets' ),
+								__( 'No IFSC entered!', 'wallets' )
 							)
 						);
 
@@ -774,7 +774,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_invalid_ifsc_entered',
-								__( 'Invalid IFSC entered!', 'wallets' ),
+								__( 'Invalid IFSC entered!', 'wallets' )
 							)
 						);
 
@@ -800,7 +800,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_no_acc_num_entered',
-								__( 'No account number entered!', 'wallets' ),
+								__( 'No account number entered!', 'wallets' )
 							)
 						);
 
@@ -813,7 +813,7 @@
 						echo esc_js(
 							apply_filters(
 								'wallets_fiat_ui_text_acc_num_nine_to_eighteen_digits',
-								__( 'Account number must have between 9 and 18 digits!', 'wallets' ),
+								__( 'Account number must have between 9 and 18 digits!', 'wallets' )
 							)
 						);
 

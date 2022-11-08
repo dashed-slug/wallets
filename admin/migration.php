@@ -568,7 +568,7 @@ add_action(
 		maybe_switch_blog();
 
 		$tool_url = admin_url( 'tools.php?page=wallets_migration' );
-		$docs_rul = admin_url( 'admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=migration' );
+		$docs_url = admin_url( 'admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=migration' );
 
 		maybe_restore_blog();
 

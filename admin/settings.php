@@ -271,6 +271,27 @@ add_action(
 			$tab = 'frontend';
 
 			add_settings_field(
+				'wallets_shortcodes_in_posts',
+				sprintf( (string) __( '%s Shortcodes in posts', 'wallets' ), '&#x1F4CC;' ),
+				__NAMESPACE__ . '\checkbox_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for' => 'wallets_shortcodes_in_posts',
+					'description' => __(
+						'By default, the plugin shortcodes only work in pages. ' .
+						'Check this to enable usage of the shortcodes in posts.',
+						'wallets'
+					),
+				]
+			);
+
+			register_setting(
+					"wallets_{$tab}_section",
+					'wallets_shortcodes_in_posts'
+			);
+
+			add_settings_field(
 				'wallets_polling_interval',
 				sprintf( (string) __( '%s Polling interval', 'wallets' ), '&#x23F2;'  ),
 				__NAMESPACE__ . '\select_cb',

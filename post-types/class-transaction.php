@@ -872,6 +872,10 @@ class Transaction extends Post_Type {
 				'pre_get_posts',
 				function( $query ) {
 
+					if ( ! is_admin() ) {
+						return;
+					}
+
 					if ( ! $query->is_main_query() ) {
 						return;
 					}
@@ -881,6 +885,13 @@ class Transaction extends Post_Type {
 					}
 
 					$mq = [ 'relation' => 'AND' ];
+
+					if ( isset( $_GET['wallets_user_id'] ) ) {
+						$mq[] = [
+							'key'   => 'wallets_user',
+							'value' => absint( $_GET['wallets_user_id'] ),
+						];
+					}
 
 					if ( isset( $_GET['wallets_currency_id'] ) ) {
 
@@ -943,7 +954,6 @@ class Transaction extends Post_Type {
 						}
 					}
 
-
 					$query->set( 'meta_query', $mq );
 
 					if ( isset( $_GET['wallets_tx_tag'] ) ) {
@@ -992,10 +1002,10 @@ class Transaction extends Post_Type {
 					}
 
 					foreach ( [
-						'deposit'    => '&#8600;',
-						'withdrawal' => '&#8599;',
-						'move'       => '&#8596;',
-					] as $cat => $icon ) {
+						'deposit'    => [ 'icon' => '&#8600;', 'text' => __( 'Deposit', 'wallets' ) ],
+						'withdrawal' => [ 'icon' => '&#8599;', 'text' => __( 'Withdrawal', 'wallets' ) ],
+						'move'       => [ 'icon' => '&#8596;', 'text' => __( 'Internal transfer (move)', 'wallets' ) ],
+					] as $cat => $cat_data ) {
 
 						$url = add_query_arg(
 							'wallets_category',
@@ -1003,7 +1013,11 @@ class Transaction extends Post_Type {
 							$_SERVER['REQUEST_URI']
 						);
 
-						$link_text = sprintf( __( '%s Type: %s', 'wallets' ), $icon, $cat );
+						$link_text = sprintf(
+							__( '%s Type: %s', 'wallets' ),
+							$cat_data['icon'],
+							$cat_data['text']
+						);
 
 						$links[ "wallets_category_$cat" ] = sprintf(
 							'<a href="%s" class="%s wallets_category">%s</a>',
@@ -1093,18 +1107,18 @@ class Transaction extends Post_Type {
 
 					if ( 'wallets_tx' == $post->post_type ) {
 
-						$author = new \WP_User( $post->wallets_user );
+						$user = new \WP_User( $post->wallets_user );
 
 						$url = add_query_arg(
-							'author',
-							$author->ID,
+							'wallets_user_id',
+							$user->ID,
 							$_SERVER['REQUEST_URI']
 						);
 
 
 						$link_text = sprintf(
 							__( 'Show all for user %s', 'wallets' ),
-							$author->display_name
+							$user->display_name
 						);
 
 						$actions['author'] = sprintf(

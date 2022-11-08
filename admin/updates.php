@@ -124,10 +124,9 @@ function get_update_info_for_dashed_slug_extension( string $plugin_slug ): ?obje
 				30 * MINUTE_IN_SECONDS
 			);
 
-			return $update_info;
 		}
 	}
-	return null;
+	return is_object( $update_info ) ? $update_info : null;
 }
 
 // If there is update available to wallets, show link to release notes under the plugin, in the plugins list.
