@@ -666,6 +666,8 @@ class Address extends Post_Type {
 	public static function register_meta_boxes() {
 		global $post;
 
+		if ( ! $post ) return;
+
 		try {
 			$address = self::load( $post->ID );
 		} catch ( \Exception $e ) {

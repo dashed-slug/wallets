@@ -389,6 +389,8 @@ class Wallet extends Post_Type {
 	public static function register_meta_boxes() {
 		global $post;
 
+		if ( ! $post ) return;
+
 		try {
 			$wallet = self::load( $post->ID );
 		} catch ( \Exception $e ) {

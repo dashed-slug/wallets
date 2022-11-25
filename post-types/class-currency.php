@@ -1120,6 +1120,8 @@ class Currency extends Post_Type {
 	public static function register_meta_boxes() {
 		global $post;
 
+		if ( ! $post ) return;
+
 		try {
 			$currency = self::load( $post->ID );
 		} catch ( \Exception $e ) {
@@ -1333,7 +1335,7 @@ class Currency extends Post_Type {
 					__(
 						'When rendered on the screen, amounts will be formatted using this pattern. ' .
 						'The pattern syntax is the same as in %s. ' .
-						'For example, you could choose to display Bitcoin amounts with the pattern "&#8383; %%f01.8f" ' .
+						'For example, you could choose to display Bitcoin amounts with the pattern "&#8383; %%01.8f" ' .
 						'If unsure, use "%%f" or leave empty.',
 						'wallets'
 					),
