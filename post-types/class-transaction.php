@@ -588,14 +588,16 @@ class Transaction extends Post_Type {
 			}
 
 		} elseif ( 'error' == $name ) {
-			if ( $value && ! is_string( $value ) ) {
-				throw new \InvalidArgumentException( 'Error message must be a string!' );
-			}
-			if ( is_null( $value ) ) {
-				$this->error = '';
-			} else {
-				$this->error = $value;
+			if ( $value ) {
+				if ( ! is_string( $value ) ) {
+					throw new \InvalidArgumentException( 'Error message must be a string!' );
+				}
+
+				$this->error  = $value;
 				$this->status = 'failed';
+
+			} else {
+				$this->error = '';
 			}
 
 		} elseif ( 'parent_id' == $name ) {
@@ -821,9 +823,10 @@ class Transaction extends Post_Type {
 		}
 
 		return sprintf(
-			'[[wallets_address ID:%d type:"%s" currency:"%s" amount:"%s"%s]]',
+			'[[wallets_tx ID:%d type:"%s" status:"%s" currency:"%s" amount:"%s"%s]]',
 			$this->post_id ?? 'null',
 			'move' == $this->category ? ( $this->amount > 0 ? 'debit' : 'credit' ) : $this->category,
+			$this->status,
 			$this->currency ? ( $this->currency->name ?? $this->currency->post_id ?? 'null' ) : 'null',
 			$this->get_amount_as_string( 'amount', true, true ),
 			$other ? " counterpart:$other->post_id" : ''

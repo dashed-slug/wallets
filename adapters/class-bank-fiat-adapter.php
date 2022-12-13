@@ -157,7 +157,7 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 	}
 
 	public function get_wallet_version(): string {
-		return '6.0.0-RC6';
+		return '6.0.0-RC7';
 	}
 
 	public function get_block_height( Currency $currency = null ): int {
@@ -682,7 +682,7 @@ EMAIL
 					'wallets-admin-deposit-tool',
 					get_asset_path( 'wallets-admin-deposit-tool' ),
 					[ 'jquery' ],
-					'6.0.0-RC6',
+					'6.0.0-RC7',
 					true
 				);
 			}

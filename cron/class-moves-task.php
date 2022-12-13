@@ -107,16 +107,25 @@ class Moves_Task extends Task {
 				);
 
 				$this->log(
-					"User {$credit->user->ID} starts off with a balance of " .
-					"{$user_balances[ $credit->user->ID ]} {$this->currency->symbol}."
+					sprintf(
+						'User %d starts off with a balance of %s %s',
+						$credit->user->ID,
+						$user_balances[ $credit->user->ID ] * 10 ** -$credit->currency->decimals,
+						$this->currency->symbol
+					)
 				);
 			}
 
 			$user_balances[ $credit->user->ID ] += ( $credit->amount + $credit->fee );
+
 			$this->log(
-				"User {$credit->user->ID} wants to move $credit->amount {$this->currency->symbol}, " .
-				"plus $credit->fee {$this->currency->symbol} as fee. " .
-				"Balance remaining for user will be {$user_balances[ $credit->user->ID ]}"
+				sprintf(
+					'User %d wants to move %s plus %s as fee. Balance remaining for user will be %s',
+					$credit->user->ID,
+					$credit->get_amount_as_string(),
+					$credit->get_amount_as_string( 'fee' ),
+					$user_balances[ $credit->user->ID ]
+				)
 			);
 
 			if ( $user_balances[ $credit->user->ID ] < 0 ) {
