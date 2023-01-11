@@ -115,7 +115,7 @@
 						<datalist
 							id="<?php esc_attr_e( $list_id ); ?>">
 							<?php
-							foreach ( get_move_recipient_suggestions() as $user_name ):
+							foreach ( get_move_recipient_suggestions( $user_id ) as $user_name ):
 							?>
 							<option value="<?php esc_attr_e( $user_name ); ?>">
 							<?php

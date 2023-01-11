@@ -787,10 +787,14 @@ function api_deposit_address_filter( $address = '', $args = [] ) {
 		);
 	}
 
-	if ( $args['check_capabilities'] &&
-		( ! ds_user_can( $args['user_id'], 'has_wallets' ) )
-	) {
-		throw new \Exception( __( 'Not allowed', 'wallets' ), ERR_NOT_ALLOWED );
+	if ( $args['check_capabilities'] ) {
+		if ( ! ds_user_can( $args['user_id'], 'has_wallets' ) ) {
+			throw new \Exception( __( 'Not allowed', 'wallets' ), ERR_NOT_ALLOWED );
+		};
+
+		if ( ! ds_user_can( $args['user_id'], 'generate_wallet_address' ) ) {
+			throw new \Exception( __( 'Not allowed', 'wallets' ), ERR_NOT_ALLOWED );
+		}
 	}
 
 	$address = null;

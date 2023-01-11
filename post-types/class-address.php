@@ -567,7 +567,7 @@ class Address extends Post_Type {
 						$author = new \WP_User( $post->wallets_user );
 
 						$url = add_query_arg(
-							'author',
+							'wallets_user_id',
 							$author->ID,
 							$_SERVER['REQUEST_URI']
 						);

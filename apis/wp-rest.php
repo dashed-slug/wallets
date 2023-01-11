@@ -1082,6 +1082,16 @@ add_action(
 					$body_params = $data->get_body_params();
 					$label       = $body_params['label'] ?? null;
 
+					if ( ! ds_user_can( $user_id, 'generate_wallet_address' )) {
+						return new \WP_Error(
+							'generate_address_not_allowed',
+							__( 'Specified user is not allowed to generate deposit addresses!', 'wallets' ),
+							[
+								'status' => 403,
+							]
+						);
+					}
+
 					try {
 						$currency = Currency::load( $currency_id );
 					} catch ( \Exception $e ) {

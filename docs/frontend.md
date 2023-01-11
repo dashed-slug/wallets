@@ -495,22 +495,29 @@ If you need to modify the HTML markup for the UI elements (i.e. not just the tex
 
 Starting from version `5.0.0`, the templates for the UIs are in the `wp-content/plugins/wallets/templates` directory.
 
+The template files available for the UI elements are:
+
 | shortcode                                          | template file
 | ---                                                | ---
-| [wallets_account_value]                            | account_value.php
-| [wallets_account_value template="textonly"]        | account_value-textonly.php
-| [wallets_balance template="list"]                  | balance-list.php
-| [wallets_balance]                                  | balance.php
-| [wallets_balance template="textonly"]              | balance-textonly.php
-| [wallets_deposit template="list"]                  | deposit-list.php
-| [wallets_deposit]                                  | deposit.php
-| [wallets_deposit template="textonly"]              | deposit-textonly.php
-| [wallets_depositextra template="textonly"]         | depositextra-textonly.php
-| [wallets_move]                                     | move.php
-| [wallets_rates]                                    | rates.php
-| [wallets_total_balances]                           | total_balances.php
-| [wallets_transactions]                             | transactions.php
-| [wallets_withdraw]                                 | withdraw.php
+| `[wallets_account_value]`                          | `account_value.php`
+| `[wallets_account_value template="textonly"]`      | `account_value-textonly.php`
+| `[wallets_balance template="list"]`                | `balance-list.php`
+| `[wallets_balance]`                                | `balance.php`
+| `[wallets_balance template="textonly"]`            | `balance-textonly.php`
+| `[wallets_deposit template="list"]`                | `deposit-list.php`
+| `[wallets_deposit]`                                | `deposit.php`
+| `[wallets_deposit template="textonly"]`            | `deposit-textonly.php`
+| `[wallets_depositextra template="textonly"]`       | `depositextra-textonly.php`
+| `[wallets_move]`                                   | `move.php`
+| `[wallets_rates]`                                  | `rates.php`
+| `[wallets_status]`                                 | `status.php`
+| `[wallets_total_balances]`                         | `total_balances.php`
+| `[wallets_transactions]`                           | `transactions.php`
+| `[wallets_transactions template="rows"]`           | `transactions-rows.php`
+| `[wallets_withdraw]`                               | `withdraw.php`
+| `[wallets_fiat_deposit]`                           | `fiat_deposit.php`
+| `[wallets_fiat_withdraw]`                          | `fiat_withdraw.php`
+
 
 Since version `6.0.0`, each template file encapsulates:
 - HTML markup (including knockout bindings)

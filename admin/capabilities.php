@@ -198,6 +198,13 @@ add_filter(
 
 		$caps_info[] = [
 			'type'        => null,
+			'slug'        => 'generate_wallet_address',
+			'roles'       => [ 'administrator', 'editor', 'author', 'contributor', 'subscriber' ],
+			'description' => __( 'Can create new deposit addresses.', 'wallets' ),
+		];
+
+		$caps_info[] = [
+			'type'        => null,
 			'slug'        => 'send_funds_to_user',
 			'roles'       => [ 'administrator' ],
 			'description' => __( 'Can send cryptocurrencies to other users on this site.', 'wallets' ),

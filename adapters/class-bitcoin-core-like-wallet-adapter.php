@@ -599,8 +599,12 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.0.0-RC7',
-					'headers'     => 'Content-type: application/json',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.0.0-RC8',
+					'headers'     => [
+						'Accept-Encoding: gzip',
+						'Content-type: application/json',
+						'Authorization: ' . base64_encode( "{$this->rpc_user}:{$this->rpc_password}" ),
+					],
 					'redirection' => absint( get_ds_option( 'wallets_http_redirects', 5 ) ),
 					'body'        => $payload,
 				]

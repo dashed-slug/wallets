@@ -128,8 +128,14 @@ add_action(
 					require_once DSWALLETS_PATH . '/third-party/Parsedown.php';
 				}
 
-				if ( ! class_exists( 'ParseDownExtra' ) ) {
-					require_once DSWALLETS_PATH . '/third-party/ParsedownExtra.php';
+				$parsedown_extra = false;
+				if ( ! class_exists( 'ParsedownExtra' ) ) {
+					try {
+						require_once DSWALLETS_PATH . '/third-party/ParsedownExtra.php';
+						$parsedown_extra = true;
+					} catch ( \Exception $e ) {
+						$parsedown_extra = false;
+					}
 				}
 
 				/**
@@ -257,7 +263,9 @@ add_action(
 						):
 
 							// load file and concatenate with glossary footer
-							$markdown = file_get_contents( $this_doc['file'] ) . "\n" . file_get_contents( DSWALLETS_PATH . '/docs/glossary-footers.md' );
+							$markdown =
+								file_get_contents( $this_doc['file'] ) . "\n" .
+								file_get_contents( DSWALLETS_PATH . '/docs/glossary-footers.md' );
 
 							// append google tracking vars to ds links
 							$markdown = preg_replace(
@@ -267,7 +275,20 @@ add_action(
 							);
 
 							// render markdown
-							$pd = new \ParsedownExtra;
+							if ( $parsedown_extra ) {
+								$pd = new \ParsedownExtra;
+							} else {
+								$pd = new \Parsedown;
+
+								?>
+								<div class="notice notice-warning">
+									<p><?php echo __( 'The plugin uses <code>Parsedown</code> and <code>ParsedownExtra</code> to display the documentation. Another plugin that you are using is loading an older version of Parsedown, but not ParsedownExtra. The version of <code>ParsedownExtra</code> that the wallets plugin uses is not compatible with that old version of <code>Parsedown</code> loaded by that other plugin. The documentation may not display correctly.', 'wallets' ); ?></p>
+									<p><?php printf( __( 'You can view the documentation using any markdown viewer. The markdown for this documentation page can be found here: <code>%s</code>', 'wallets' ), $this_doc['file'] ); ?></p>
+									<p><?php echo __( 'You can view the documentation for the parent plugin via <a href="https://github.com/dashed-slug/wallets/tree/master/docs">github</a>.', 'wallets' ); ?></p>
+								</div>
+								<?php
+							}
+
 							$html = $pd->text( $markdown );
 
 							// all external links open in new tab

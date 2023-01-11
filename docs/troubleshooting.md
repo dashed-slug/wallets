@@ -295,6 +295,30 @@ Here's a few things to check if you suspect that the delays are caused by connec
 - If you are connecting to an RPC wallet situated on a different machine than your WordPress server, make sure that your webhost allows outgoing connections to TCP ports other than `80` and `443`.
 - If you are the administrator of the WordPress machine, check your firewalls for any rules that may interfere with outgoing connections. This can include hardware firewalls, software system firewalls and any WordPress security plugins.
 
+## I cannot find how to edit the text for the notification emails. In previous versions before 6.0.0, there were edit boxes in the settings for this.
+
+The emails are now stored as templates. You should copy the email templates into your theme or child theme and edit them:
+
+- Templates were introduced in version 5.0.0 [and are explained here](https://www.dashed-slug.net/wallets-5-0-0/).
+- Templates are also explained in the documentation, [here](/wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=frontend#editing-templates).
+
+
+In short, please copy the following files:
+
+	/PATH_TO_YOUR_WORDPRESS/wp-content/plugins/wallets/templates/email*.php
+
+to a `templates/wallets` directory under your theme or child theme.
+
+For example, to change the withdrawal confirmation email, you would copy the file `email-withdrawal_pending.php` from your plugin directory to:
+
+	/PATH_TO_YOUR_WORDPRESS/wp-content/themes/YOUR_THEME/templates/wallets/email-withdrawal_pending.php
+
+Then, edit the text as appropriate.
+
+You can use basic HTML to format your emails, or even PHP code if you need to.
+
+If you copy the files to your theme, then your changes will be lost if you update your theme. This is why it is recommended that you create a [child theme](https://developer.wordpress.org/themes/advanced-topics/child-themes/) to your theme, if you haven't already.
+
 
 ## Something else is wrong. I would like to check the logs for any errors that might give me clues as to what's going on.
 

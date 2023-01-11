@@ -23,7 +23,7 @@ if ( $payment_details && isset( $payment_details->iban ) && isset( $payment_deta
 	$addressing_method = 'ifsc';
 }
 
-$url = admin_url( 'tools.php?page=wallets-fiat-withdrawals' );
+$url = admin_url( 'tools.php?page=wallets-bank-fiat-withdrawals' );
 
 ?>
 <p>To all admins of <?php bloginfo(); ?>,</p>

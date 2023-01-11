@@ -116,7 +116,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	}
 
 	$caps = [
-		'manage_wallets', 'has_wallets', 'list_wallet_transactions', 'send_funds_to_user', 'withdraw_funds_from_wallet', 'view_wallets_profile',
+		'manage_wallets', 'has_wallets', 'list_wallet_transactions', 'generate_wallet_address', 'send_funds_to_user', 'withdraw_funds_from_wallet', 'view_wallets_profile',
 		'read_wallets_wallet', 'edit_wallets_wallet', 'delete_wallets_wallet', 'edit_wallets_wallets', 'edit_others_wallets_wallets', 'publish_wallets_wallets', 'read_private_wallets_wallets',
 		'read_wallets_currency', 'edit_wallets_currency', 'delete_wallets_currency', 'edit_wallets_currencies', 'edit_others_wallets_currencies', 'publish_wallets_currencies', 'read_private_wallets_currencies',
 		'read_wallets_tx', 'edit_wallets_tx', 'delete_wallets_tx', 'edit_wallets_txs', 'edit_others_wallets_txs', 'publish_wallets_txs', 'read_private_wallets_txs',

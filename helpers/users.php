@@ -34,6 +34,10 @@ function resolve_recipient( string $recipient ): ?\WP_User {
 function get_move_recipient_suggestions( $user_id = null ): array {
 	$suggestions = [];
 
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
 	maybe_switch_blog();
 
 	$query_args = [
@@ -72,7 +76,6 @@ function get_move_recipient_suggestions( $user_id = null ): array {
 		$other_tx = $send_move->get_other_tx();
 		if ( $other_tx && $other_tx->amount > 0 && $other_tx->user->ID != $user_id ) {
 
-			$suggestions[ $other_tx->user->user_email ] = true;
 			$suggestions[ $other_tx->user->user_login ] = true;
 		}
 	}

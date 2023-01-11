@@ -62,8 +62,8 @@ add_action(
 					<td>
 						<a
 							class="button wallets-link"
-							<?php disabled( false, user_can( $user_id, 'edit_wallets_addresses' ) ); ?>
-							href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_address&author=$user_id" ) ); ?>">
+							<?php disabled( false, user_can( get_current_user_id(), 'edit_wallets_addresses' ) ); ?>
+							href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_address&wallets_user_id=$user_id" ) ); ?>">
 							<?php esc_html_e( 'Go to user\'s addresses', 'wallets' ); ?>
 						</a>
 					</td>
@@ -77,8 +77,8 @@ add_action(
 					<td>
 						<a
 							class="button wallets-link"
-							<?php disabled( false, user_can( $user_id, 'edit_wallets_txs' ) ); ?>
-							href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_tx&author=$user_id" ) ); ?>">
+							<?php disabled( false, user_can( get_current_user_id(), 'edit_wallets_txs' ) ); ?>
+							href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_tx&wallets_user_id=$user_id" ) ); ?>">
 							<?php esc_html_e( 'Go to user\'s transactions', 'wallets' ); ?>
 						</a>
 					</td>
@@ -165,8 +165,8 @@ add_action(
 						<td>
 							<a
 								class="button wallets-link"
-								<?php disabled( false, user_can( $user_id, 'edit_wallets_addresses' ) ); ?>
-								href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_address&wallets_currency_id=$currency->post_id&author=$user_id" ) ); ?>">
+								<?php disabled( false, user_can( get_current_user_id(), 'edit_wallets_addresses' ) ); ?>
+								href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_address&wallets_currency_id=$currency->post_id&wallets_user_id=$user_id" ) ); ?>">
 								<?php
 									printf(
 										__( 'Go to user\'s %s addresses', 'wallets' ),
@@ -179,8 +179,8 @@ add_action(
 						<td>
 							<a
 								class="button wallets-link"
-								<?php disabled( false, user_can( $user_id, 'edit_wallets_txs' ) ); ?>
-								href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_tx&wallets_currency_id=$currency->post_id&author=$user_id" ) ); ?>">
+								<?php disabled( false, user_can( get_current_user_id(), 'edit_wallets_txs' ) ); ?>
+								href="<?php esc_attr_e( admin_url( "edit.php?post_type=wallets_tx&wallets_currency_id=$currency->post_id&wallets_user_id=$user_id" ) ); ?>">
 								<?php
 									printf(
 										__( 'Go to user\'s %s transactions', 'wallets' ),

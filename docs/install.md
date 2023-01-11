@@ -208,7 +208,7 @@ We will now configure some important plugin settings. You can review the remaini
 
 75. In the page, add a few *[wallet shortcodes][glossary-wallets-shortcodes]*. If unsure which ones to use, enter the following ones for now:
 	- `[wallets_balance]`
-	- `[wallets_deposits]`
+	- `[wallets_deposit]`
 	- `[wallets_withdraw]`
 	- `[wallets_move]`
 	- `[wallets_transactions]`

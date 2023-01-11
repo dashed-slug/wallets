@@ -207,23 +207,25 @@
 		</div>
 
 		<?php if ( ! $atts['static'] ): ?>
-		<input
-			type="button"
-			class="button"
-			data-bind="click: getNewAddress"
-			value="<?php
-				echo apply_filters(
-					'wallets_ui_text_get_new_address',
-					sprintf(
-						esc_attr__(
-							'%s Get new address',
-							'wallets'
-						),
-					'&#x2747;'
-					)
-				);
-			?>"
-		/>
+			<?php if ( ds_user_can( $atts['user_id'], 'generate_wallet_address' ) ): ?>
+				<input
+					type="button"
+					class="button"
+					data-bind="click: getNewAddress"
+					value="<?php
+						echo apply_filters(
+							'wallets_ui_text_get_new_address',
+							sprintf(
+								esc_attr__(
+									'%s Get new address',
+									'wallets'
+								),
+								'&#x2747;'
+							)
+						);
+					?>"
+				/>
+			<?php endif; ?>
 		<?php endif; ?>
 		<!-- /ko -->
 	<!-- /ko -->

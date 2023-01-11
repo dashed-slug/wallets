@@ -376,6 +376,7 @@ Take the time to assign these correctly to your user roles.
 | `manage_wallets`             | Can configure all settings related to Bitcoin and Altcoin Wallets. This is for administrators only. |
 | `has_wallets`                | Can have balances and use the wallets API. |
 | `list_wallet_transactions`   | Can view a list of past transactions. |
+| `generate_wallet_address`    | Can create new deposit addresses. |
 | `send_funds_to_user`         | Can send cryptocurrencies to other users on this site. |
 | `withdraw_funds_from_wallet` | Can withdraw cryptocurrencies from the site to an external address. |
 | `view_wallets_profile`       | Can view the Bitcoin and Altcoin Wallets section in the WordPress user profile admin screen. |
@@ -412,12 +413,17 @@ Assign this to all users who should have access to the plugin.
 ##### Shortcodes affected:
 - `[wallets_transactions]`
 
+#### `generate_wallet_address` capability
+
+##### Shortcodes affected>
+- `[wallets_deposit]`
+
 ##### WP-REST API endpoints affected:
 - GET `/users/{USER_ID}/transactions`
 - GET `/users/{USER_ID}/transactions/category/[deposit|withdraw|move]`
 - GET `/users/{USER_ID}/currencies/{CURRENCY_ID}/transactions`
 - GET `/users/{USER_ID}/currencies/{CURRENCY_ID}/transactions/category/[deposit|withdraw|move]`
-
+- POST `/users/{USER_ID}/currencies/{CURRENCY_ID}/addresses`
 
 #### send_funds_to_user
 
