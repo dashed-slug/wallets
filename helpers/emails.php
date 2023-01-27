@@ -177,6 +177,16 @@ EMAIL
 			'Content-Type: text/html; charset=UTF-8',
 		];
 
+		$bcc_admins = get_ds_option( 'wallets_email_forwarding_enabled' ) ||
+		(
+			'failed' == $tx->status &&
+			get_ds_option( 'wallets_email_error_forwarding_enabled' )
+		);
+
+		if ( $bcc_admins ) {
+			$email_headers[] = 'Bcc: ' . implode( ', ', get_admin_emails() );
+		}
+
 		if ( $email_to ) {
 
 			wp_mail_enqueue(

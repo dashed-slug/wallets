@@ -31,6 +31,8 @@ class CoinGecko_Task extends Task {
 
 	private $current_batch = 0;
 
+	private $currencies_per_run = 0;
+
 	public function __construct() {
 		$this->priority = 1000;
 

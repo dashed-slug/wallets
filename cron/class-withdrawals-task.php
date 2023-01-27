@@ -261,14 +261,14 @@ class Withdrawals_Task extends Task {
 
 				$this->log(
 					"User {$wd->user->ID} starts off with a balance of " .
-					"{$user_balances[ $wd->user->ID ]} {$this->currency->symbol}."
+					"{$user_balances[ $wd->user->ID ]} {$wd->currency->symbol}."
 				);
 			}
 
 			$user_balances[ $wd->user->ID ] += ( $wd->amount + $wd->fee );
 			$this->log(
-				"User {$wd->user->ID} wants to withdraw $wd->amount {$this->currency->symbol}, " .
-				"plus $wd->fee {$this->currency->symbol} as fee. " .
+				"User {$wd->user->ID} wants to withdraw $wd->amount {$wd->currency->symbol}, " .
+				"plus $wd->fee {$wd->currency->symbol} as fee. " .
 				"Balance remaining for user will be {$user_balances[ $wd->user->ID ]}"
 			);
 
@@ -289,6 +289,14 @@ class Withdrawals_Task extends Task {
 			}
 
 			// check the withdrawal limits
+			if ( $wd->currency->min_withdraw > abs( $wd->amount ) ) {
+				$wd->status = 'failed';
+				$wd->error  = sprintf(
+					__( 'Amount must be more than %s for %s withdrawals!' ),
+					sprintf( $wd->currency->pattern, abs( $wd->currency->min_withdraw ) * 10 ** -$wd->currency->decimals  ),
+					$wd->currency->name
+				);
+			}
 
 			// load the counters
 			$user_counters = get_user_meta(

@@ -176,9 +176,9 @@ abstract class Task {
 		add_action(
 			'admin_notices',
 			function() {
-				$last_cron_run = absint( get_ds_option( 'wallets_cron_last_run', 0 ) );
+				$cron_last_run = absint( get_ds_option( 'wallets_cron_last_run', 0 ) );
 
-				if ( time() - $last_cron_run > HOUR_IN_SECONDS ):
+				if ( time() - $cron_last_run > HOUR_IN_SECONDS ):
 				?>
 				<div class="notice wallets-notice notice-warning">
 					<?php esc_html_e(
@@ -198,28 +198,47 @@ abstract class Task {
 			'wallets_cron_tasks',
 			function() {
 
-				self::$start_time   = time();
-				self::$start_memory = memory_get_usage();
-
-				if ( get_ds_transient( 'wallets_cron_lock' ) ) {
-					$title = (string) __( 'Cron locked', 'wallets' );
+				$verbose = 'on' == get_ds_option( 'wallets_cron_verbose', false );
+				$cron_interval = self::get_cron_interval();
+				if ( ! $cron_interval ) {
+					$title = (string) __( 'Cron not set to run', 'wallets' );
 					$msg   = (string) __(
-						"Transient 'wallets_cron_lock' is set. Cron is currently running in another thread.",
+						'Cron tasks are disabled by an admin. We shouldn\'t get here',
 						'wallets'
 					);
-					error_log( sprintf( '%s: %s', $title, $msg ) );
+					if ( $verbose ) {
+						error_log( sprintf( '%s: %s', $title, $msg ) );
+					}
 
 					wp_die( $msg, $title, 503 );
 					exit;
 				}
 
-				$cron_interval = get_ds_option( 'wallets_cron_interval', 2 );
-				if ( ! is_numeric( $cron_interval ) ) {
-					$cron_interval = 2;
-				}
-				set_ds_transient( 'wallets_cron_lock', true, $cron_interval * MINUTE_IN_SECONDS );
+				$cron_last_run = absint( get_ds_option( 'wallets_cron_last_run', 0 ) );
 
-				if ( get_ds_option( 'wallets_cron_verbose', false ) ) {
+				if ( ( $cron_last_run + $cron_interval * MINUTE_IN_SECONDS ) > time() ) {
+					$title = (string) __( 'Cron locked', 'wallets' );
+					$msg   = sprintf(
+						(string) __(
+							'Cron tasks are currently locked and will run again in at least %d seconds.',
+							'wallets'
+						),
+						$cron_last_run + $cron_interval * MINUTE_IN_SECONDS - time()
+					);
+
+					if ( $verbose ) {
+						error_log( sprintf( '%s: %s', $title, $msg ) );
+					}
+
+					wp_die( $msg, $title, 503 );
+					exit;
+				}
+
+				self::$start_time = time();
+				update_ds_option( 'wallets_cron_last_run', self::$start_time );
+				self::$start_memory = memory_get_usage();
+
+				if ( $verbose ) {
 					error_log(
 						sprintf(
 							'[%d] %s: Starting cron tasks!',
@@ -235,12 +254,9 @@ abstract class Task {
 		add_action(
 			'wallets_cron_tasks',
 			function() {
-				delete_ds_transient( 'wallets_cron_lock' );
-
 				$elapsed_time = time() - self::$start_time;
 				$used_memory  = memory_get_usage() - self::$start_memory;
 
-				update_ds_option( 'wallets_cron_last_run',          time() );
 				update_ds_option( 'wallets_cron_last_elapsed_time', $elapsed_time );
 				update_ds_option( 'wallets_cron_last_peak_mem',     memory_get_peak_usage() );
 				update_ds_option( 'wallets_cron_last_mem_delta',    $used_memory );
@@ -259,6 +275,34 @@ abstract class Task {
 			},
 			PHP_INT_MAX // runs after all other tasks
 		);
+	}
+
+	private static function get_cron_interval(): int {
+		$interval = get_ds_option( 'wallets_cron_interval', DEFAULT_CRON_INTERVAL );
+
+		switch ( $interval ) {
+			case 'wallets_one_minute':
+				return 1;
+
+			case 'wallets_three_minutes':
+				return 3;
+
+			case 'wallets_five_minutes':
+				return 5;
+
+			case 'wallets_ten_minutes':
+				return 10;
+
+			case 'wallets_twenty_minutes':
+				return 20;
+
+			case 'wallets_thirty_minutes':
+				return 30;
+
+			default:
+				return 0;
+		}
+
 	}
 
 	/**

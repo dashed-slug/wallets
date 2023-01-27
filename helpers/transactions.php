@@ -259,7 +259,7 @@ function get_transactions( int $user_id = null, Currency $currency = null, array
 		'post_type'   => 'wallets_tx',
 		'post_status' => [ 'draft', 'pending', 'publish' ],
 		'orderby'     => 'ID',
-		'order'       => 'ASC',
+		'order'       => 'DESC',
 		'meta_query'  => [
 			'relation' => 'AND',
 		]

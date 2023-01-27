@@ -450,6 +450,44 @@ add_action(
 				"wallets_{$tab}_section",
 				'wallets_confirm_redirect_page'
 			);
+
+			add_settings_field(
+				'wallets_email_forwarding_enabled',
+				__( 'Forward ALL notifications to admins', 'wallets' ),
+				__NAMESPACE__ . '\checkbox_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for'   => 'wallets_email_forwarding_enabled',
+					'description' => __(
+						'Bcc all notifications to users who have the <code>manage_wallets</code> capability (admins).', 'wallets'
+					),
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_email_forwarding_enabled'
+			);
+
+			add_settings_field(
+				'wallets_email_error_forwarding_enabled',
+				__( 'Forward errors to admins', 'wallets' ),
+				__NAMESPACE__ . '\checkbox_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for'   => 'wallets_email_error_forwarding_enabled',
+					'description' => __(
+						'Bcc any notifications about transaction errors to users who have the <code>manage_wallets</code> capability (admins).', 'wallets'
+					),
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_email_error_forwarding_enabled'
+			);
 		}
 
 		{ // cron

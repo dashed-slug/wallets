@@ -98,6 +98,8 @@ function get_update_info_for_dashed_slug_extension( string $plugin_slug ): ?obje
 
 	$ds_activation_code = get_ds_option( 'ds-activation-code' );
 
+	$update_info = null;
+
 	if ( $ds_activation_code ) {
 
 		$update_info_url = "https://www.dashed-slug.net/plugin-update/$plugin_slug/$ds_activation_code";

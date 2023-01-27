@@ -97,7 +97,6 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			'wallets_pointers_dismissed_3',
 			'wallets_pointers_dismissed_4',
 			'wallets_rates_vs',
-			'wallets_cron_lock',
 			'wallets_fixerio_symbols',
 			'wallets_fixerio_currencies_list',
 			'wallets_fixerio_rates',

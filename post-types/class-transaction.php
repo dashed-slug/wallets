@@ -524,10 +524,6 @@ class Transaction extends Post_Type {
 					if ( $value > 0 ) {
 						throw new \InvalidArgumentException( "Amount must be non-positive for withdrawals!" );
 					}
-
-					if ( $this->currency && $this->currency->min_withdraw > -$value ) {
-						throw new \InvalidArgumentException( "Amount must be less than -{$this->currency->min_withdraw} for {$this->currency->name} withdrawals!" );
-					}
 				}
 
 				$this->{$name} = intval( $value );

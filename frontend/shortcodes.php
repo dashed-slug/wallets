@@ -65,6 +65,40 @@ function do_not_cache_page() {
 	}
 }
 
+add_filter(
+	'no_texturize_shortcodes',
+	function( array $default_no_texturize_shortcodes ) {
+
+		$default_no_texturize_shortcodes[] = 'wallets_balance';
+		$default_no_texturize_shortcodes[] = 'wallets_rates';
+		$default_no_texturize_shortcodes[] = 'wallets_status';
+		$default_no_texturize_shortcodes[] = 'wallets_deposit';
+		$default_no_texturize_shortcodes[] = 'wallets_total_balances';
+		$default_no_texturize_shortcodes[] = 'wallets_account_value';
+		$default_no_texturize_shortcodes[] = 'wallets_move';
+		$default_no_texturize_shortcodes[] = 'wallets_withdraw';
+		$default_no_texturize_shortcodes[] = 'wallets_fiat_withdraw';
+		$default_no_texturize_shortcodes[] = 'wallets_fiat_deposit';
+		$default_no_texturize_shortcodes[] = 'wallets_transactions';
+
+		return $default_no_texturize_shortcodes;
+	}
+);
+
+// To render JS code in templates, we need it to not be passed through wp_texturize,
+// because it escapes characters such as <, >, and &.
+//
+// Unfortunately, the filter `no_texturize_shortcodes` does not work in Gutenberg due to:
+// https://github.com/WordPress/gutenberg/issues/37754
+//
+// We therefore have to disable wp_texturize globally. Hopefully this will not cause too many issues with
+// other themes/plugins, until this is fixed in WordPress.
+
+if ( wp_is_block_theme() ) {
+	add_filter( 'run_wptexturize', '__return_false' ); // TODO: remove this once #37754 is fixed
+}
+
+
 add_action(
 	'wp',
 	function() {
