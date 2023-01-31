@@ -1,6 +1,8 @@
 # Frequently Asked Questions
 
-## Where is the plugin's documentation?
+## General
+
+### Where is the plugin's documentation?
 
 Since version `6.0.0`, the plugin displays its own documentation in the admin screens. Just go to the Wallets Admin Docs menu, where you'll find the documentation for the plugin, and for any plugin extensions you have installed.
 
@@ -212,30 +214,30 @@ If you think you have discovered a security vulnerability in this plugin, please
 ## Contacting / feedback
 
 
-## Are you available for custom development work? 
+### Are you available for custom development work?
 
 Unfortunately I am not available for custom development work.
 
 
-## Can you install the plugin for me?
+### Can you install the plugin for me?
 I do not undertake installations. I remain available to assist and answer any questions about the installation and configuration process.
 
 > Regarding plugin installations, please consider this: Unless you know how the plugin works, you will not be able to provide support to your users, or fix issues when these arise. If you are not a developer, you should probably hire a developer to perform the installation and maintenance.
 
 
-## Can you add XYZ feature?
+### Can you add XYZ feature?
 
 You can always suggest a feature to me. If it makes sense and I have the time, I might implement it. I do not make promises on this, therefore I do not accept payment for features.
 
 
-## I am encountering some problem or I have another question.
+### I am encountering some problem or I have another question.
 
 First check the *Troubleshooting* section of the documentation. The answer to your question may be listed there.
 
 If you cannot find the answer to your question, please consult the documentation under _Contact Support_.
 
 
-## How can I reach you over IM?
+### How can I reach you over IM?
 
 I speak daily with many people, while I also do the development, testing, management, marketing, and everything else.
 
