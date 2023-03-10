@@ -15,8 +15,11 @@ class Withdrawals_Task extends Task {
 
 	private $currency = null;
 	private $withdrawals_batch;
+	private $current_day = '';
 
 	public function run(): void {
+		$this->current_day = date( 'Y-m-d' );
+
 		$max_batch_size = absint(
 			get_ds_option(
 				'wallets_withdrawals_max_batch_size',
@@ -26,18 +29,17 @@ class Withdrawals_Task extends Task {
 
 		$this->task_start_time = time();
 
-		$this->currency = $this->get_next_currency_with_pending_withdrawals();
+		$this->currency = get_next_currency_with_pending_withdrawals();
 
 		if ( ! $this->currency ) {
-			$this->log( 'No currencies are ready to process withdrawals!' );
+			$this->log( 'No currencies are ready to process withdrawals.' );
 			return;
 		}
 
 		$this->log(
 			sprintf(
-				'Starting withdrawals for currency %d (%s)',
-				$this->currency->post_id,
-				$this->currency->name
+				'Starting withdrawals for currency %s',
+				$this->currency
 			)
 		);
 
@@ -48,374 +50,99 @@ class Withdrawals_Task extends Task {
 
 		$this->log(
 			sprintf(
-				'%d candidate withdrawals for currency %d (%s) are being double-checked',
+				'%d candidate withdrawals for currency %s are being double-checked.',
 				count( $this->withdrawals_batch ),
-				$this->currency->post_id,
-				$this->currency->name
+				$this->currency
 			)
 		);
 
-		$this->withdrawals_batch = $this->weed_out_bad_withdrawals( $this->withdrawals_batch );
+		$this->withdrawals_batch = array_filter(
+			$this->withdrawals_batch,
+			function( Transaction $wd ): bool {
 
-		$count1 = count( $this->withdrawals_batch );
-
-		$this->withdrawals_batch = $this->weed_out_due_to_low_hot_balance( $this->withdrawals_batch );
-
-		$count2 = count( $this->withdrawals_batch );
-
-		// If some withdrawals cannot proceed due to low hot wallet balance, notify the admin(s)
-		if ( $count2 < $count1 ) {
-
-			// do not send emails more than once per 24 hours
-			if ( ! get_ds_transient( "wallets-email-stalled-wds-{$this->currency->post_id}" ) ) {
-
-				$pending_withdrawals_sum = 0;
-				$all_pending_wds = get_pending_transactions_by_currency_and_category( $this->currency, 'withdrawal' );
-				foreach ( $all_pending_wds as $wd ) {
-					$pending_withdrawals_sum -= ( $wd->amount + $wd->fee );
-				}
-
-				// notify the admins that this currency has insufficient balance for all withdrawals
-				wp_mail_enqueue_to_admins(
-
-					sprintf(
-						__( '%s: %s hot balance insufficient for %s withdrawals', 'wallets' ),
-						get_bloginfo( 'name' ),
-						$this->currency->name,
-						$this->currency->symbol
-					),
-
-					sprintf(
-						__(
-							"Some user withdrawals cannot be executed due to low hot wallet balance.\n\n" .
-							"Wallet: %s\n\n" .
-							"Currency: %s (%s)\n" .
-							"Hot wallet balance: %s\n" .
-							"Pending withdrawals: %s\n" .
-							"To deposit funds to cold storage, visit: %s\n\n" .
-							"All the admins with the manage_wallets capability have been notified.\n" .
-							"If this issue is not resolved, you will be notified again in 24 hours.",
-							'wallets'
-						),
-						$this->currency->wallet->name,
-						$this->currency->name,
-						$this->currency->symbol,
-						sprintf(
-							$this->currency->pattern,
-							$this->currency->wallet->adapter->get_hot_balance( $this->currency ) * 10 ** -$this->currency->decimals
-						),
-						sprintf(
-							$this->currency->pattern,
-							$pending_withdrawals_sum * 10 ** -$this->currency->decimals
-						),
-						add_query_arg(
-							[
-								'action'              => 'wallets_cold_storage_deposit',
-								'page'                => 'wallets-cold-storage',
-								'wallets_currency_id' => $this->currency->post_id,
-							],
-							admin_url( 'tools.php' )
-						)
-					)
-				);
-
-				set_ds_transient(
-					"wallets-email-stalled-wds-{$this->currency->post_id}",
-					true,
-					DAY_IN_SECONDS
-				);
-			}
-		}
-
-
-		$this->log(
-			sprintf(
-				'%d candidate withdrawals for currency %d (%s) have been cleared for execution',
-				count( $this->withdrawals_batch ),
-				$this->currency->post_id,
-				$this->currency->name
-			)
-		);
-
-		// We first ensure that withdrawals will not be repeated (duble-spent)
-		// in case the adapter takes too long to respond, and session times out,
-		// after executing a withdrawal but before the db is updated.
-
-		if ( $this->withdrawals_batch ) {
-			$this->mark_withdrawals_as_done_for_now();
-
-			$this->execute_some_withdrawals();
-		}
-
-	}
-
-	/**
-	 * Get next currency with pending withdrawals
-	 *
-	 * All currencies with enabled unlocked wallets are processed, one currency per cron run, with no starvation.
-	 * Currencies with no pending withdrawals are skipped.
-	 * If no eligible currencies have pending withdrawals, the loop ends.
-	 *
-	 * @return ?Currency
-	 */
-	private function get_next_currency_with_pending_withdrawals(): ?Currency {
-
-		$currencies = get_currencies_with_wallets_with_unlocked_adapters( false );
-
-		$count = count( $currencies );
-
-		if ( ! $currencies ) {
-			$this->log( 'No currencies are ready to process withdrawals' );
-			return null;
-		}
-
-		$currency = null;
-
-		$i = get_ds_option( 'wallets_withdrawals_last_currency', 0 );
-
-		do {
-
-			$i = ++$i % count( $currencies );
-
-			$currency = $currencies[ $i ];
-			$count--;
-			if ( get_pending_transactions_by_currency_and_category( $currency, 'withdrawal', 1 ) ) {
-				break;
-			}
-		}
-		while ( $count >= 0 ); // we loop around the currencies only once and no more
-
-		update_ds_option( 'wallets_withdrawals_last_currency', $i );
-
-		return $currency;
-
-	}
-
-	private function weed_out_due_to_low_hot_balance( array $withdrawals_batch ): array {
-		try {
-			$hot_balance = $this->currency->wallet->adapter->get_hot_balance( $this->currency );
-		} catch ( \Exception $e ) {
-			$this->log(
-				sprintf(
-					__( 'We cannot determine current hot wallet balance for %s (%s). Withdrawals will not proceed.', 'wallets' ),
-					$this->currency->name,
-					$this->currency->symbol
-				)
-			);
-
-			return [];
-		}
-
-		$wds_that_we_have_enouch_hot_balance_for = [];
-
-		foreach ( $this->withdrawals_batch as $wd ) {
-
-			if ( $hot_balance + $wd->amount + $wd->fee < 0 ) {
-				$this->log(
-					sprintf(
-						__( 'So, sadly, it turns out, we won\'t be executing withdrawal with ID: %d after all, due to low hot balance...', 'wallets' ),
-						$wd->post_id
-					)
-				);
-				continue;
-			}
-
-			// if we get to here, this $wd can be executed according to how much hot wallet balance we have
-			$hot_balance += $wd->amount + $wd->fee;
-			$wds_that_we_have_enouch_hot_balance_for[] = $wd;
-		}
-
-		return $wds_that_we_have_enouch_hot_balance_for;
-	}
-
-	public function weed_out_bad_withdrawals( array $withdrawals_batch ): array {
-
-		// Filter out any withdrawals that are not suitable for execution.
-		// Most of these are double-checks, as we do a first check already
-		// when retrieving the data from DB.
-		$withdrawals_batch = array_filter(
-			$withdrawals_batch,
-			function( $wd ) {
-				return
-					$wd
-					&& $wd->amount < 0
-					&& $wd->fee <= 0
-					&& $wd->currency instanceof Currency
-					&& $wd->address instanceof Address
-					&& $wd->address->address
-					&& $wd->currency->post_id == $this->currency->post_id
-					&& 'pending' == $wd->status
-					&& ( ! $wd->nonce );
-			}
-		);
-
-		$user_balances = [];
-		foreach ( $withdrawals_batch as $wd ) {
-
-			if ( ! isset( $user_balances[ $wd->user->ID ] ) ) {
-
-				$user_balances[ $wd->user->ID ] = get_balance_for_user_and_currency_id(
-					$wd->user->ID,
-					$this->currency->post_id
-				);
-
-				$this->log(
-					"User {$wd->user->ID} starts off with a balance of " .
-					"{$user_balances[ $wd->user->ID ]} {$wd->currency->symbol}."
-				);
-			}
-
-			$user_balances[ $wd->user->ID ] += ( $wd->amount + $wd->fee );
-			$this->log(
-				"User {$wd->user->ID} wants to withdraw $wd->amount {$wd->currency->symbol}, " .
-				"plus $wd->fee {$wd->currency->symbol} as fee. " .
-				"Balance remaining for user will be {$user_balances[ $wd->user->ID ]}"
-			);
-
-			if ( $user_balances[ $wd->user->ID ] < 0 ) {
-
-				// Add the amount back again to our balance counter. Maybe subsequent withdrawals are smaller and can succeed.
-				$user_balances[ $wd->user->ID ] -= ( $wd->amount + $wd->fee );
-
-				$this->log(
-					"User {$wd->user->ID} does not have enough balance to execute this withdrawal. " .
-					"Marking withdrawal $wd->post_id as 'failed'."
-				);
-
-				// let's mark it as failed
-
-				$wd->status = 'failed';
-				$wd->error  = __( 'Failed due to insufficient user balance.', 'wallets' );
-			}
-
-			// check the withdrawal limits
-			if ( $wd->currency->min_withdraw > abs( $wd->amount ) ) {
-				$wd->status = 'failed';
-				$wd->error  = sprintf(
-					__( 'Amount must be more than %s for %s withdrawals!' ),
-					sprintf( $wd->currency->pattern, abs( $wd->currency->min_withdraw ) * 10 ** -$wd->currency->decimals  ),
-					$wd->currency->name
-				);
-			}
-
-			// load the counters
-			$user_counters = get_user_meta(
-				$wd->user->ID,
-				'wallets_wd_counter',
-				true
-			);
-
-			// reset the counters if they were created before today
-			$current_day = date( 'Y-m-d' );
-			$user_counters_day = get_user_meta(
-				$wd->user->ID,
-				'wallets_wd_counter_day',
-				true
-			);
-			if ( $user_counters_day != $current_day ) {
-				$this->log(
-					sprintf(
-						'Deleting withdrawal counters for user %d from %s',
-						$wd->user->ID,
-						$user_counters_day
-					)
-				);
-
-				delete_user_meta( $wd->user->ID, 'wallets_wd_counter' );
-				delete_user_meta( $wd->user->ID, 'wallets_wd_counter_day' );
-
-				$user_counters = [];
-			}
-
-			if ( ! is_array( $user_counters ) ) {
-				$user_counters = [];
-			}
-
-			if ( ! array_key_exists( $this->currency->post_id, $user_counters ) ) {
-				$user_counters[ $this->currency->post_id ] = 0;
-			}
-
-			$max_withdraw = $this->currency->get_max_withdraw( $wd->user );
-			if ( $max_withdraw ) {
-				$this->log(
-					sprintf(
-						__( 'User %d is not allowed to withdraw more than %s today', 'wallets' ),
-						$wd->user->ID,
-						sprintf( $wd->currency->pattern, $max_withdraw * 10 ** -$wd->currency->decimals )
-					)
-				);
-			}
-
-			if ( isset( $user_counters[ $wd->currency->post_id ] ) && $user_counters[ $wd->currency->post_id ] ) {
-				$this->log(
-					sprintf(
-						__( 'User %d is has already withdrawn %s today', 'wallets' ),
-						$wd->user->ID,
-						sprintf( $wd->currency->pattern, $user_counters[ $wd->currency->post_id ] * 10 ** -$wd->currency->decimals )
-					)
-				);
-			}
-
-			if ( $max_withdraw && $user_counters[ $wd->currency->post_id ] - $wd->amount - $wd->fee > $max_withdraw ) {
-				$msg = sprintf(
-					__(
-						'Your withdrawal of %s (plus fee %s) with ID: %d cannot be executed ' .
-						'because it would exceed the applicable withdrawal limit of %s per day. ' .
-						'Today you have already withdrawn %s.',
-						'wallets'
-					),
-					sprintf( $wd->currency->pattern, -$wd->amount * 10 ** -$wd->currency->decimals ),
-					sprintf( $wd->currency->pattern, -$wd->fee    * 10 ** -$wd->currency->decimals ),
-					$wd->post_id,
-					sprintf( $wd->currency->pattern, $max_withdraw * 10 ** - $wd->currency->decimals ),
-					sprintf( $wd->currency->pattern, $user_counters[ $wd->currency->post_id ] * 10 ** -$wd->currency->decimals )
-				);
-
-				$wd->status = 'failed';
-				$wd->error = $msg;
-
-				$this->log( $msg );
-
-			}
-
-			if ( 'pending' != $wd->status ) {
 				try {
-					$wd->save();
+					$this->log(
+						sprintf(
+							'Running individual checks for: %s',
+							$wd
+						)
+					);
+
+					/**
+					 *  Check an individual pending withdrawal to see if it's ready for execution.
+					 *
+					 *  If there are any issues with this withdrawal that cause it to not be eligible
+					 *  for execution, then the check must throw an exception.
+					 *
+					 *  @since 6.1.0 Introduced.
+					 *
+					 *  @param Transaction $wd A pending withdrawal.
+					 *  @throws \Exception If the withdrawal is not eligible for execution due to a check.
+					 */
+					do_action(
+						'wallets_withdrawal_pre_check',
+						$wd
+					);
+
 				} catch ( \Exception $e ) {
 					$this->log(
 						sprintf(
-							'%s: Failed to mark withdrawal state as failed for post_id=%d, due to: %s',
-							__METHOD__,
-							$wd->post_id,
+							'Withdrawal %s failed pre-check, due to: %s',
+							$wd,
 							$e->getMessage()
 						)
 					);
+					return false;
 				}
-			}
 
-			if ( time() >= $this->task_start_time + $this->timeout ) {
-				break;
-			}
-
-		}
-
-		// we remove again any withdrawals that are no longer marked pending after the checks
-		$withdrawals_batch = array_filter(
-			$withdrawals_batch,
-			function( $wd ) {
-				return 'pending' == $wd->status;
+				return $wd->currency->post_id == $this->currency->post_id;
 			}
 		);
 
-		return $withdrawals_batch;
-	}
+		$this->log(
+			sprintf(
+				'%d withdrawals have passed individual checks. Running batch checks now.',
+				count( $this->withdrawals_batch )
+			)
+		);
 
-	private function execute_some_withdrawals() {
+		/**
+		 * Check a batch of pending withdrawals for execution eligibility.
+		 *
+		 * The withdrawals must all be for the same currency.
+		 * The filters check to see if the withdrawals can proceed as a batch.
+		 * Withdrawals that are not eligible for execution are filtered out.
+		 * The remaining withdrawals can all be executed by the adapter as a batch.
+		 * This allows to check for user balance, hot wallet balance, daily withdrawal limits, etc.
+		 * These checks can also write logs to a callback function, to provide visibility on what is being checked.
+		 *
+		 * @since 6.1.0 Introduced.
+		 *
+		 * @param Transaction[] $withdrawals The pending withdrawals to check.
+		 */
+		$this->withdrawals_batch = apply_filters(
+			'wallets_withdrawals_pre_check',
+			$this->withdrawals_batch,
+			function( $log ) { $this->log( $log ); }
+		);
+
+		$this->log(
+			sprintf(
+				'%d withdrawals have been cleared for execution after the batch checks: %s',
+				count( $this->withdrawals_batch ),
+				implode( ', ', array_map( function( $wd ) { return $wd->post_id; }, $this->withdrawals_batch ) )
+			)
+		);
 
 		if ( $this->withdrawals_batch ) {
 
-			// passing withdrawals to adapter, hoping for the best, but also fearing for the worst
+			// We first ensure that withdrawals will not be repeated (duble-spent)
+			// in case the adapter takes too long to respond, and session times out,
+			// after executing a withdrawal but before the db is updated.
+			$this->mark_withdrawals_as_done_for_now();
+
 			try {
+				// passing withdrawals to adapter, hoping for the best, but also fearing for the worst
 				$this->currency->wallet->adapter->do_withdrawals( $this->withdrawals_batch );
 
 			} catch ( \Exception $e ) {
@@ -429,61 +156,19 @@ class Withdrawals_Task extends Task {
 				);
 			}
 
-			// whatever happened, we finally save the transaction states to the DB
+			// whatever happened, we finally save the transaction states and withdrawal limit counters to the DB
 			foreach ( $this->withdrawals_batch as $wd ) {
 				try {
 					$wd->save();
-					if ( 'done' == $wd->status ) {
 
-						// first reset the counters if they were created before today
-						$current_day = date( 'Y-m-d' );
-						$user_counters_day = get_user_meta(
-							$wd->user->ID,
-							'wallets_wd_counter_day',
-							true
-						);
-						if ( $user_counters_day != $current_day ) {
-							delete_user_meta(
-								$wd->user->ID,
-								'wallets_wd_counter_day'
-							);
-						}
-
-						// load the withdrawal counters
-						$user_counters = get_user_meta(
-							$wd->user->ID,
-							'wallets_wd_counter',
-							true
-						);
-
-						if ( ! is_array( $user_counters ) ) {
-							$user_counters = [];
-						}
-
-						if ( ! array_key_exists( $this->currency->post_id, $user_counters ) ) {
-							$user_counters[ $this->currency->post_id ] = 0;
-						}
-
-						$user_counters[ $this->currency->post_id ] -= $wd->amount + $wd->fee;
-
-						// save the updated counters
-						update_user_meta(
-							$wd->user->ID,
-							'wallets_wd_counter',
-							$user_counters
-						);
-
-						// save today's date
-						update_user_meta(
-							$wd->user->ID,
-							'wallets_wd_counter_day',
-							$current_day
-						);
-					}
+					increment_todays_withdrawal_counters(
+						$wd,
+						$this->current_day
+					);
 
 				} catch ( \Exception $e ) {
 					$msg = sprintf(
-						'%s: CRITICAL ERROR: Move transaction %d was executed but could not be saved due to: %s',
+						'%s: CRITICAL ERROR: Withdrawal transaction %d was executed but could not be saved due to: %s',
 						__FUNCTION__,
 						$wd->post_id,
 						$e->getMessage()
@@ -501,10 +186,8 @@ class Withdrawals_Task extends Task {
 					continue;
 				}
 
-				if ( time() >= $this->task_start_time + $this->timeout ) {
-					break;
-				}
 			}
+
 		}
 
 	}
@@ -554,3 +237,476 @@ class Withdrawals_Task extends Task {
 
 }
 new Withdrawals_Task; // @phan-suppress-current-line PhanNoopNew
+
+
+// Check for sane values in withdrawals
+add_action(
+	'wallets_withdrawal_pre_check',
+	function( Transaction $wd ): void {
+		// Most of these are double-checks, as we do a first check already
+		// when retrieving the data from DB.
+
+		if ( $wd->amount >= 0 || $wd->fee > 0 ) {
+			throw new \Exception( 'Amount and fee must be negative' );
+		}
+
+		if ( ! ( $wd->currency && $wd->currency instanceof Currency ) ) {
+			throw new \Exception( 'Currency must be specified in withdrawal' );
+		}
+
+		if ( ! ( $wd->address && $wd->address instanceof Address ) ) {
+			throw new \Exception( 'Address must be specified in withdrawal' );
+		}
+
+		if ( ! $wd->address->address ) {
+			throw new \Exception( 'Address string must be specified' );
+		}
+
+		if ( ! 'pending' == $wd->status ) {
+			throw new \Exception( 'Must be in pending state before execution' );
+		}
+
+	}
+);
+
+
+
+// Check for admin approval if required
+add_action(
+	'wallets_withdrawal_pre_check',
+	function( Transaction $wd ): void {
+		if ( get_ds_option( 'wallets_cron_approve_withdrawals', DEFAULT_CRON_APPROVE_WITHDRAWALS ) ) {
+			if ( ! get_post_meta( $wd->post_id, 'wallets_admin_approved', true ) ) {
+				throw new \Exception( 'Must be approved by an admin' );
+			}
+
+		}
+	}
+);
+
+
+// Check for min withdrawal limits
+add_action(
+	'wallets_withdrawal_pre_check',
+	function( Transaction $wd ): void {
+		$amount = absint( $wd->amount );
+
+		if ( $wd->currency->min_withdraw > $amount ) {
+			throw new \Exception(
+				sprintf(
+					'%s withdrawal must be at least %s',
+					$wd->currency->name,
+					sprintf(
+						$wd->currency->pattern,
+						$wd->currency->min_withdraw * 10 ** -$currency->decimals
+					)
+				)
+			);
+		}
+
+	}
+);
+
+// Check whether the user has confirmed withdrawals via email link, if the setting is enabled
+if ( get_ds_option( 'wallets_confirm_withdraw_user_enabled', DEFAULT_WALLETS_CONFIRM_WITHDRAW_USER_ENABLED ) ) {
+	add_action(
+		'wallets_withdrawal_pre_check',
+		function( Transaction $wd ): void {
+			if ( $wd->nonce ) {
+				throw new \Exception( 'Withdrawal must be verified by user' );
+			}
+		}
+	);
+}
+
+// Only let through withdrawals if the adapter is enabled and unlocked
+add_action(
+	'wallets_withdrawals_pre_check',
+	function( array $withdrawals_batch, $log = 'error_log' ): array {
+
+		foreach ( $withdrawals_batch as $wd ) {
+			if ( ! $wd->currency->wallet->is_enabled ) {
+				call_user_func(
+					$log,
+					sprintf(
+						'Wallet %s for currency %s is disabled',
+						$wd->currency->wallet,
+						$wd->currency
+					)
+				);
+
+				return [];
+			}
+
+			if ( ! $wd->currency->wallet->adapter ) {
+				call_user_func(
+					$log,
+					sprintf(
+						'Wallet %s for currency %s has no adapter attached',
+						$wd->currency->wallet,
+						$wd->currency
+					)
+				);
+
+				return [];
+			}
+
+			if ( $wd->currency->wallet->adapter->is_locked() ) {
+				call_user_func(
+					$log,
+					sprintf(
+						'Wallet %s for currency %s has an adapter that is currently locked for withdrawals',
+						$wd->currency->wallet,
+						$wd->currency
+					)
+				);
+				return [];
+			}
+
+			call_user_func(
+				$log,
+				sprintf(
+					'Adapter for wallet %s is ready to process withdrawals',
+					$wd->currency->wallet
+				)
+			);
+
+			break; // All wds have the same currency. We only need to check the first wd
+		}
+
+		return $withdrawals_batch;
+
+	},
+	10,
+	2
+);
+
+
+// Filter only withdrawals with enough user balance
+add_action(
+	'wallets_withdrawals_pre_check',
+	function( array $withdrawals_batch, $log = 'error_log' ): array {
+
+		$cleared_withdrawals = [];
+
+		$user_balances = [];
+
+		foreach ( $withdrawals_batch as $wd ) {
+
+			if ( ! isset( $user_balances[ $wd->user->ID ] ) ) {
+
+				$user_balances[ $wd->user->ID ] = get_balance_for_user_and_currency_id(
+					$wd->user->ID,
+					$wd->currency->post_id
+				);
+			}
+
+			call_user_func(
+				$log,
+				sprintf(
+					"User %d starts off with a %s balance of %s, wants to withdraw %s plus %s as fee.",
+					$wd->user->ID,
+					$wd->currency,
+					sprintf(
+						$wd->currency->pattern,
+						$user_balances[ $wd->user->ID ] * 10 ** -$wd->currency->decimals
+					),
+					$wd->get_amount_as_string( 'amount', true, true ),
+					$wd->get_amount_as_string( 'fee', true, true )
+				)
+			);
+
+
+			$user_balances[ $wd->user->ID ] -= absint( $wd->amount + $wd->fee );
+
+
+			if ( $user_balances[ $wd->user->ID ] > 0 ) {
+
+				$cleared_withdrawals[] = $wd;
+
+				call_user_func(
+					$log,
+					sprintf(
+						'Balance remaining for user %d will be %s after withdrawal %s',
+						$wd->user->ID,
+						sprintf(
+							$wd->currency->pattern,
+							$user_balances[ $wd->user->ID ] * 10 ** -$wd->currency->decimals
+						),
+						$wd
+					)
+				);
+
+			} else {
+
+				// Add the amount back again to our balance counter.
+				// Maybe subsequent withdrawals are smaller and can succeed.
+				$user_balances[ $wd->user->ID ] += absint( $wd->amount + $wd->fee );
+
+				call_user_func(
+					$log,
+					sprintf(
+						'Due to low user %d balance, will skip withdrawal for now: %s',
+						$wd->user->ID,
+						$wd
+					)
+				);
+			}
+
+		}
+
+		return $cleared_withdrawals;
+	},
+	10,
+	2
+);
+
+// Check user withdrawal counters
+// For each user performing withdrawals, the daily limit is loaded and checked
+// Only withdrawals that will not exceed the limit will pass this check
+add_action(
+	'wallets_withdrawals_pre_check',
+	function( array $withdrawals, $log = 'error_log' ): array {
+
+		$wd_counters = [];
+
+		$current_day = date( 'Y-m-d' );
+
+		$cleared_withdrawals = [];
+
+		foreach ( $withdrawals as $wd ) {
+			$user_id = $wd->user->ID;
+			$currency_id = $wd->currency->post_id;
+
+			if ( ! isset( $wd_counters[ $user_id ] ) ) {
+				$wd_counters[ $user_id ] = get_todays_withdrawal_counters( $user_id, $current_day );
+			}
+
+			if ( ! isset( $wd_counters[ $user_id ][ $currency_id ] ) ) {
+				$wd_counters[ $user_id ][ $currency_id ] = 0;
+			}
+
+			if ( $wd->currency->max_withdraw ?? 0 ) {
+
+				if ( $wd_counters[ $user_id ][ $currency_id ] + absint( $wd->amount ) > $wd->currency->max_withdraw ) {
+
+					call_user_func(
+						$log,
+						sprintf(
+							'User %d cannot perform withdrawal %s because it would exceed the daily withdrawal limit of %s for %s. User has already withdrawn, or is about to withdraw, or is about to withdraw %s today.',
+							$user_id,
+							$wd,
+							sprintf(
+								$wd->currency->pattern,
+								$wd->currency->max_withdraw * 10 ** -$wd->currency->decimals
+							),
+							$wd->currency,
+							sprintf(
+								$wd->currency->pattern,
+								$wd_counters[ $user_id ][ $currency_id ] * 10 ** -$wd->currency->decimals
+							)
+						)
+					);
+
+					continue;
+				}
+			}
+
+			// limits check per role
+			if ( $wd->currency->max_withdraw_per_role ) {
+				foreach ( $wd->user->roles as $role ) {
+
+					if ( $wd->currency->max_withdraw_per_role[ $role ] ?? 0 ) {
+
+						if ( $wd_counters[ $user_id ][ $currency_id ] + absint( $wd->amount ) > $wd->currency->max_withdraw_per_role[ $role ] ) {
+
+							call_user_func(
+								$log,
+								sprintf(
+									'User %d cannot perform withdrawal %s because it would exceed the daily withdrawal limit of %s for %s and user role "%s". User has already withdrawn, or is about to withdraw, %s today.',
+									$user_id,
+									$wd,
+									sprintf(
+										$wd->currency->pattern,
+										$wd->currency->max_withdraw_per_role[ $role ] * 10 ** -$wd->currency->decimals
+									),
+									$wd->currency,
+									$role,
+									sprintf(
+										$wd->currency->pattern,
+										$wd_counters[ $user_id ][ $currency_id ] * 10 ** -$wd->currency->decimals
+									)
+								)
+							);
+
+							continue 2;
+						}
+					}
+				}
+			}
+
+			$wd_counters[ $user_id ][ $currency_id ] += absint( $wd->amount );
+			$cleared_withdrawals[] = $wd;
+
+			call_user_func(
+				$log,
+				sprintf(
+					'Withdrawal %s does not exceed daily withdrawal limits for currency %s',
+					$wd,
+					$wd->currency
+				)
+			);
+		}
+
+		return $cleared_withdrawals;
+	},
+	10,
+	2
+);
+
+
+// This check sends an email to admins if the total of pending withdrawals is less than the hot wallet balance.
+// It will let a subset of withdrawals pass, such that the sum of their amounts is less than the hot wallet balance.
+add_action(
+	'wallets_withdrawals_pre_check',
+	function( array $withdrawals, $log = 'error_log' ): array {
+
+		$cleared_withdrawals = [];
+
+		$currency_id = null;
+		$hot_balance = null;
+
+		foreach ( $withdrawals as $wd ) {
+
+			try {
+				$hot_balance = $wd->currency->wallet->adapter->get_hot_balance( $wd->currency );
+				$currency_id = $wd->currency->post_id;
+				break;
+
+			} catch ( \Exception $e ) {
+				call_user_func(
+					$log,
+					sprintf(
+						__( 'We cannot determine current hot wallet balance for %s, due to: %s', 'wallets' ),
+						$wd->currency,
+						$e->getMessage()
+					)
+				);
+
+				return [];
+			}
+		}
+
+		if ( ! $currency_id ) {
+			return [];
+		}
+
+		call_user_func(
+			$log,
+			sprintf(
+				__( 'Wallet %s has hot balance: %s', 'wallets' ),
+				$wd->currency->wallet,
+				sprintf(
+					$wd->currency->pattern,
+					$hot_balance * 10 ** -$wd->currency->decimals
+				)
+			)
+		);
+
+		$email = false;
+
+		foreach ( $withdrawals as $wd ) {
+
+			if ( ( $hot_balance - absint( $wd->amount + $wd->fee ) ) >= 0 ) {
+
+				$cleared_withdrawals[] = $wd;
+				$hot_balance -= absint( $wd->amount + $wd->fee );
+
+				call_user_func(
+					$log,
+					sprintf(
+						__( 'There is enough hot wallet balance to execute withdrawal %s', 'wallets' ),
+						$wd
+					)
+				);
+
+			} else {
+
+				call_user_func(
+					$log,
+					sprintf(
+						__( 'There is not enough hot wallet balance to execute withdrawal %s', 'wallets' ),
+						$wd
+					)
+				);
+
+				$email = true;
+			}
+
+		}
+
+		// notify the admins that this currency has insufficient balance for all withdrawals
+		if ( $email ) {
+
+			// do not send emails more than once per 24 hours
+			if ( ! get_ds_transient( "wallets-email-stalled-wds-{$currency_id}" ) ) {
+
+				wp_mail_enqueue_to_admins(
+
+					sprintf(
+						__( '%s: %s hot balance insufficient for %s withdrawals', 'wallets' ),
+						get_bloginfo( 'name' ),
+						$wd->currency->name,
+						$wd->currency->symbol
+					),
+
+					sprintf(
+						__(
+							"Some user withdrawals cannot be executed due to low hot wallet balance.\n\n" .
+							"Wallet: %s\n\n" .
+							"Currency: %s (%s)\n" .
+							"Hot wallet balance: %s\n" .
+							"Pending withdrawals: %s\n" .
+							"To deposit funds from cold storage, visit: %s\n\n" .
+							"All the admins with the manage_wallets capability have been notified.\n" .
+							"If this issue is not resolved, you will be notified again in 24 hours.",
+							'wallets'
+						),
+						$wd->currency->wallet->name,
+						$wd->currency->name,
+						$wd->currency->symbol,
+						sprintf(
+							$wd->currency->pattern,
+							$wd->currency->wallet->adapter->get_hot_balance( $wd->currency ) * 10 ** -$wd->currency->decimals
+						),
+						sprintf(
+							$wd->currency->pattern,
+							$pending_withdrawals_sum * 10 ** -$wd->currency->decimals
+						),
+						add_query_arg(
+							[
+								'action'              => 'wallets_cold_storage_deposit',
+								'page'                => 'wallets-cold-storage',
+								'wallets_currency_id' => $wd->currency->post_id,
+							],
+							admin_url( 'tools.php' )
+						)
+					)
+				);
+
+				set_ds_transient(
+					"wallets-email-stalled-wds-{$wd->currency->post_id}",
+					true,
+					DAY_IN_SECONDS
+				);
+
+			}
+
+		}
+
+		return $cleared_withdrawals;
+
+	},
+	10,
+	2
+);

@@ -448,19 +448,6 @@ class Address extends Post_Type {
 
 					$query->set( 'meta_query', $mq );
 
-					if ( isset( $_GET['wallets_address_tag'] ) ) {
-						$query->set(
-							'tax_query',
-							[
-								[
-									'taxonomy' => 'wallets_address_tags',
-									'field' => 'term_id',
-									'terms' => $_GET['wallets_address_tag'],
-								]
-							]
-						);
-					}
-
 				}
 			);
 
@@ -481,7 +468,7 @@ class Address extends Post_Type {
 						$link_text = sprintf( __( '%s User: %s', 'wallets' ), '&#128100;', $author->display_name );
 
 						$links[ "wallets_author_$author->ID" ] = sprintf(
-							'<a href="%s" class="current wallets_author">%s</a>',
+							'<a href="%s" class="current wallets_author current" aria-current="page">%s</a>',
 							$url,
 							$link_text
 						);
@@ -501,10 +488,16 @@ class Address extends Post_Type {
 
 						$link_text = sprintf( __( '%s Type: %s', 'wallets' ), $icon, $type );
 
+						if ( ( $_GET['wallets_address_type'] ?? '' ) == $type ) {
+							$pattern = '<a href="%s" class="%s wallets_address_type current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="%s wallets_address_type">%s</a>';
+						}
+
 						$links[ "wallets_type_$type" ] = sprintf(
-							'<a href="%s" class="%s wallets_address_type">%s</a>',
+							$pattern,
 							$url,
-							$type == ( $_GET['wallets_address_type'] ?? '' ) ? 'current ' : '',
+							$type,
 							$link_text
 						);
 					}
@@ -525,11 +518,16 @@ class Address extends Post_Type {
 							$currency->symbol
 						);
 
+						if ( ( $_GET['wallets_currency_id'] ?? '' ) == $currency->post_id ) {
+							$pattern = '<a href="%s" class="wallets_currency %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_currency %s">%s</a>';
+						}
 
 						$links[ "wallets_currency_$currency->post_id" ] = sprintf(
-							'<a href="%s" class="wallets_currency %s">%s</a>',
+							$pattern,
 							$url,
-							$currency->post_id == ( $_GET['wallets_currency_id'] ?? '' ) ? 'current' : '',
+							"currency_{$currency->post_id}",
 							$link_text
 						);
 					}
@@ -538,17 +536,24 @@ class Address extends Post_Type {
 					foreach ( get_terms( [ 'taxonomy' => 'wallets_address_tags', 'hide_empty' => true] ) as $term ) {
 
 						$url = add_query_arg(
-							'wallets_address_tag',
-							$term->term_id,
+							'wallets_address_tags',
+							$term->slug,
 							$_SERVER['REQUEST_URI']
 						);
 
 						$link_text = sprintf( __( '%s Tag: %s', 'wallets' ), '&#127991;', $term->name );
 
+						if ( in_array( $term->slug, explode( ',', ( $_GET['wallets_address_tags'] ?? '' ) ) ) ) {
+							$pattern = '<a href="%s" class="wallets_address_tag %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_address_tag %s">%s</a>';
+						}
+
+
 						$links[ "wallets_address_tag_$term->slug" ] = sprintf(
-							'<a href="%s" class="wallets_address_tag %s">%s</a>',
+							$pattern,
 							$url,
-							$term->term_id == ( $_GET['wallets_address_tag'] ?? '' ) ? 'current' : '',
+							$term->slug,
 							$link_text
 						);
 

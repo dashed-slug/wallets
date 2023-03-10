@@ -28,7 +28,7 @@ class Email_Queue_Task extends Task {
 		while ( $i++ < $max_batch_size && $email_queue && time() < $this->task_start_time + $this->timeout ) {
 			$email_args = array_shift( $email_queue );
 
-			$sending_to = 'n/a';
+			$sending_to = null;
 
 			if ( isset( $email_args[ 0 ] ) ) {
 				if ( is_array( $email_args[ 0 ] ) ) {
@@ -38,7 +38,7 @@ class Email_Queue_Task extends Task {
 				}
 			}
 
-			if ( 'n/a' != $sending_to ) {
+			if ( $sending_to ) {
 				$this->log( 'Sending email to: ' . $sending_to  );
 
 				$result = call_user_func_array( 'wp_mail', $email_args );

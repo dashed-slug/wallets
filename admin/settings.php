@@ -14,11 +14,13 @@ namespace DSWallets;
 defined( 'ABSPATH' ) || die( -1 );
 
 const DEFAULT_ADDRESS_MAX_COUNT = 10;
+const DEFAULT_FRONTEND_VS_AMOUNT_DECIMALS = 4;
 const DEFAULT_FRONTEND_POLLING_INTERVAL = 30;
 const DEFAULT_FRONTEND_LEGACY_JSON_API = '';
 const DEFAULT_FRONTEND_MOVE_SPILLS_USERS = 'on';
 const DEFAULT_CRON_INTERVAL = 'wallets_one_minute';
 const DEFAULT_CRON_VERBOSE = '';
+const DEFAULT_CRON_APPROVE_WITHDRAWALS = '';
 const DEFAULT_CRON_AUTOCANCEL_INTERVAL = 0;
 const DEFAULT_HTTP_TIMEOUT = 10;
 const DEFAULT_HTTP_REDIRECTS = 2;
@@ -37,11 +39,13 @@ const DEFAULT_CRON_TASK_TIMEOUT = 5;
 
 register_activation_hook( DSWALLETS_FILE, function() {
 	add_ds_option( 'wallets_addresses_max_count',           DEFAULT_ADDRESS_MAX_COUNT );
+	add_ds_option( 'wallets_frontend_vs_amount_decimals',   DEFAULT_FRONTEND_VS_AMOUNT_DECIMALS );
 	add_ds_option( 'wallets_polling_interval',              DEFAULT_FRONTEND_POLLING_INTERVAL );
 	add_ds_option( 'wallets_legacy_json_api',               DEFAULT_FRONTEND_LEGACY_JSON_API );
 	add_ds_option( 'wallets_move_spills_users',             DEFAULT_FRONTEND_MOVE_SPILLS_USERS );
 	add_ds_option( 'wallets_cron_interval',                 DEFAULT_CRON_INTERVAL );
 	add_ds_option( 'wallets_cron_verbose',                  DEFAULT_CRON_VERBOSE );
+	add_ds_option( 'wallets_cron_approve_withdrawals',      DEFAULT_CRON_APPROVE_WITHDRAWALS );
 	add_ds_option( 'wallets_cron_autocancel',               DEFAULT_CRON_AUTOCANCEL_INTERVAL );
 	add_ds_option( 'wallets_http_timeout',                  DEFAULT_HTTP_TIMEOUT );
 	add_ds_option( 'wallets_http_redirects',                DEFAULT_HTTP_REDIRECTS );
@@ -289,6 +293,27 @@ add_action(
 			register_setting(
 					"wallets_{$tab}_section",
 					'wallets_shortcodes_in_posts'
+			);
+
+			add_settings_field(
+				'wallets_frontend_vs_amount_decimals',
+				sprintf( (string) __( '%s Frontend VS amount decimals', 'wallets' ), '&#x1F4E7;' ),
+				__NAMESPACE__ . '\numeric_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for'   => 'wallets_frontend_vs_amount_decimals',
+					'description' => __( 'Amounts shown in the frontend are also shown expressed in VS Currencies, using the latest known exchange rates. Here you can choose how many decimals to show these amounts in.', 'wallets' ),
+					'min'         => 0,
+					'max'         => 16,
+					'step'        => 1,
+					'default'     => DEFAULT_FRONTEND_VS_AMOUNT_DECIMALS,
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_frontend_vs_amount_decimals'
 			);
 
 			add_settings_field(
@@ -592,6 +617,26 @@ add_action(
 			register_setting(
 				"wallets_{$tab}_section",
 				'wallets_cron_verbose'
+			);
+
+			add_settings_field(
+				'wallets_cron_approve_withdrawals',
+				sprintf( (string) __( '%s Admin must approve withdrawals', 'wallets' ), '&#x2713;' ),
+				__NAMESPACE__ . '\checkbox_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for' => 'wallets_cron_approve_withdrawals',
+					'description' => __(
+						'If enabled, withdrawals will remain pending until approved by an admin. To approve withdrawals, go to transactions list, check some pending withdrawals, and choose the bulk action "Approve".',
+						'wallets'
+					),
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_cron_approve_withdrawals'
 			);
 
 			add_settings_field(

@@ -326,7 +326,7 @@ The TXID associated with this blockchain transaction. Can be empty. For example,
 
 #### Transaction: Internal-transfer-specific attributes
 
-##### Inrenal transfer transaction: Counterpart transaction
+##### Internal transfer transaction: Counterpart transaction
 
 For internal transfers (moves), *Debits* have their corresponding *Credit* transaction assigned as parent.
 
@@ -342,6 +342,35 @@ User's name and full home address. Multi-line field.
 ##### Bank Fiat transaction: Bank name and address
 
 Name and address of user's bank. Multi-line field.
+
+#### Transaction: Pending withdrawal checks
+
+Pending withdrawals can only proceed if certain checks pass.
+
+The withdrawals cron sends withdrawals of each coin in batches to the wallet adapter. This allows transactions with multi-UTXO outputs which save on miner fees. For this reason, some checks apply to batches of pending withdrawals, while other checks apply to individual pending withdrawals.
+
+##### Individual checks performed
+
+The transaction object is passed to the `wallets_withdrawal_pre_check` action. If the action throws an exception, this means that the withdrawal is not eligible for execution. You can attach your own checks to this action.
+
+- Amount and fee must be negative
+- Currency must be specified in withdrawal
+- Address must be specified in withdrawal
+- Address string must be specified
+- Must be in pending state before execution
+- Amount must be at least the minimum allowed by the currency
+- If the withdrawal must be verified by email link, the user must have clicked on the link
+
+##### Batch checks performed
+
+An array of transaction objects is passed to the `wallets_withdrawals_pre_check` filter (note the plural in the hook name). All of the transactions must be pending withdrawals for one currency, but can originate from multiple users. The filter will write output to the log and will return an array of transactions that can proceeed to be executed. If not all transactions can be executed, then a subset of the withdrawals will be returned. This subset is ok to be sent to the adapter.
+
+- The wallet adapter for the currencies must be enabled.
+- The wallet adapter for the currencies must be unlocked for withdrawals.
+- The user must hold enough balance to perform all the withdrawals that will pass this filter.
+- If the currency specifies a maximum withdrawal limit per day, this must not be exceeded.
+- If the currency specifies a maximum withdrawal limit per day for a user role, this must not be exceeded for any of the user's roles.
+- The hot wallet must hold enough balance to perform all the withdrawals that will pass this filter. If this filter fails for any withdrawal, the filter has a side effect: All the users with the `manage_wallets` capability (admins) will be notified by email that the hot wallet balance is low. This email will not be sent more often than once per day (24 hours).
 
 
 ### Transaction tags

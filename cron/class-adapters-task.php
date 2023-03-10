@@ -45,22 +45,22 @@ class Adapters_Task extends Task {
 		} catch ( \Exception $e ) {
 			$this->log(
 				sprintf(
-					'Could not run do_cron() on wallet "%s" (ID: %d)',
-					$wallet->name,
+					'Could not run do_cron() on wallet %d',
 					$wallet_id
 				)
 			);
 		}
 
-		$this->log(
-			sprintf(
-				'Running do_cron() on wallet "%s" (ID: %d)',
-				$wallet->name,
-				$wallet_id
-			)
-		);
 
-		if ( $wallet && $wallet->adapter instanceof Wallet_Adapter ) {
+		if ( isset( $wallet ) && $wallet && $wallet->adapter instanceof Wallet_Adapter ) {
+
+			$this->log(
+				sprintf(
+					'Running do_cron() on wallet "%s" (ID: %d)',
+					$wallet->name,
+					$wallet_id
+				)
+			);
 
 			try {
 

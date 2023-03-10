@@ -96,6 +96,7 @@ add_action(
 				<th><?php esc_html_e( 'Ticker symbol', 'wallets' ); ?></th>
 				<th><?php esc_html_e( 'Balance', 'wallets' ); ?></th>
 				<th><?php esc_html_e( 'Available Balance', 'wallets' ); ?></th>
+				<th><?php esc_html_e( 'Withdrawn today', 'wallets' ); ?></th>
 				<th><?php esc_html_e( 'Addresses', 'wallets' ); ?></th>
 				<th><?php esc_html_e( 'Transactions', 'wallets' ); ?></th>
 			</thead>
@@ -115,6 +116,7 @@ add_action(
 						continue;
 					}
 
+					$withdrawal_counters = get_todays_withdrawal_counters( $user_id );
 					?>
 					<tr>
 						<td>
@@ -159,6 +161,15 @@ add_action(
 								$currency->pattern ?? '%f',
 								$available_balance * 10 ** - $currency->decimals
 							);
+							?>
+						</td>
+
+						<td>
+							<?php
+								printf(
+									$currency->pattern ?? '%f',
+									( $withdrawal_counters[ $currency->post_id ] ?? 0 ) * 10 ** - $currency->decimals
+								);
 							?>
 						</td>
 

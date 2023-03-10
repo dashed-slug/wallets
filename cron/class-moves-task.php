@@ -36,7 +36,7 @@ class Moves_Task extends Task {
 		$this->currency = $this->get_next_currency_with_pending_moves();
 
 		if ( ! $this->currency ) {
-			$this->log( 'No currencies are ready to process withdrawals!' );
+			$this->log( 'No currencies are ready to process moves!' );
 			return;
 		}
 

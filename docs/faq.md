@@ -1,57 +1,14 @@
 # Frequently Asked Questions
 
-## General
+
+## The Bitcoin and Altcoin Wallets plugin
+
 
 ### Where is the plugin's documentation?
 
 Since version `6.0.0`, the plugin displays its own documentation in the admin screens. Just go to the Wallets Admin Docs menu, where you'll find the documentation for the plugin, and for any plugin extensions you have installed.
 
 Developers can study the PHPdocumentor pages at: https://wallets-phpdoc.dashed-slug.net/
-
-## Membership questions
-
-### How can I become a premium member and get access to the app extensions?
-
-Paying members can download the available *[App extensions][glossary-app-extension]* and can download updates to those extensions.
-
-Study the available [Membership plans](https://www.dashed-slug.net/dashed-slug/membership-plans/)
-
-
-### Can I pay without using PayPal?
-
-If you wish to pay with cryptocurrencies, please do the following:
-
-1. Select a [membership plan](https://www.dashed-slug.net/dashed-slug/membership-plans/)
-
-2. Send the equivalent of the USD amount to one of the following addresses.
-
-Bitcoin Address: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
-DOGE Address: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
-LTC Address: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
-
-Dogecoin usually has very low fees, due to it not being used as much as more "serious" blockchains.
-
-3. [Contact me by email](https://www.dashed-slug.net/contact/) with your selection of membership plan, the TXID and the email you used to sign up.
-
-I will then activate your membership manually within 1 business day.
-
-### I cannot download the premium plugins after paying for membership.
-
-If you have paid for an EU business plan, you must provide a valid VATIN. Please enter the VATIN without the country code prefix, and enter the correct _City_ and _Country_ for your business, in your profile details.
-
-If you have paid for a regular plan, and for some reason you still cannot download the premium plugins, please contact me by email.
-
-### How can I cancel my membership?
-
-If you have signed up with a PayPal recurring payment, you can go to your [PayPal dashboard](https://www.paypal.com/cgi-bin/webscr?cmd=_manage-paylist) to cancel the recurring payment.
-
-Additionally, if you wish, you may delete your account from the profile screen on the dashed-slug website. Deleting your account does not automatically cancel your PayPal subscription. Simply visit [your profile](https://www.dashed-slug.net/membership-login/membership-profile/)
-
-### I am not happy with the plugin. Can I ask for a refund?
-
-You can ask for a refund of any payment within 30 days from the day of payment, no questions asked. Please contact me by email.
-
-## The Bitcoin and Altcoin Wallets plugin
 
 ### How secure is it?
 
@@ -209,6 +166,48 @@ It's best if you are prepared beforehand: Keep the software on the site updated 
 Finally, only keep a small percentage of the user balances on the hot wallet, utilizing the _Cold storage_ feature to transfer the remaining funds to offline wallets. That way, in case WordPress is compromised, you don't lose all your users' funds! Please take wallet management seriously. There is no software that will automatically do opsec for you. Have a plan on how to act in case of theft.
 
 If you think you have discovered a security vulnerability in this plugin, please let me know over email (not on a public forum).
+
+
+## Membership questions
+
+### How can I become a premium member and get access to the app extensions?
+
+Paying members can download the available *[App extensions][glossary-app-extension]* and can download updates to those extensions.
+
+Study the available [Membership plans](https://www.dashed-slug.net/dashed-slug/membership-plans/)
+
+
+### What payment methods are available
+
+The site accepts Bitcoin and Ethereum. Please [deposit the correct amount to your account, then choose a subscription](https://www.dashed-slug.net/dashed-slug/membership-plans/).
+
+[Since 1 November 2022](https://www.dashed-slug.net/important-changes-to-membership/),
+membership is implemented using the plugin itself. The downloads are protected behind a paywall
+using the [Paywall extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/paywall-extension/).
+
+Previously the site accepted PayPal recurring payments. If you have already signed up using PayPal, you can continue to use it to pay for membership. New PayPal accounts are no longer available.
+
+If you wish to pay via a different method, [contact me by email](https://www.dashed-slug.net/contact/).
+
+You can send a PayPal payment to my business email address and let me know. I will then activate your membership manually, within 1 business day.
+
+### I cannot download the premium plugins after paying for membership.
+
+If you have paid for an EU business plan, you must provide a valid VATIN. Please enter the VATIN without the country code prefix, and enter the correct _City_ and _Country_ for your business, in your profile details.
+
+If you have paid for a regular plan, and for some reason you still cannot download the premium plugins, please [contact me by email](https://www.dashed-slug.net/contact/).
+
+### How can I cancel my membership?
+
+If you have signed up with a PayPal recurring payment, you can go to your [PayPal dashboard](https://www.paypal.com/cgi-bin/webscr?cmd=_manage-paylist) to cancel the recurring payment.
+
+Additionally, if you wish, you may delete your account from the profile screen on the dashed-slug website. Deleting your account does not automatically cancel your PayPal subscription. Simply visit [your profile](https://www.dashed-slug.net/membership-login/membership-profile/)
+
+If you have paid via cryptocurrencies, there is no need to cancel. You can delete your account if you want, by visiting [your profile](https://www.dashed-slug.net/membership-login/membership-profile/). There is usually no need to do so.
+
+### I am not happy with the plugin. Can I ask for a refund?
+
+You can ask for a refund of any payment within 30 days from the day of payment, no questions asked. Please contact me by email.
 
 
 ## Contacting / feedback

@@ -10,9 +10,9 @@ function get_balance_for_user_and_currency_id( int $user_id, int $currency_id ):
 }
 
 /**
- * Get all available balances for a user or for all users.
+ * Get all balances for a user or for all users.
  *
- * Available balances are the sum of all transactions with "done" state.
+ * Balances are the sum of all transactions with "done" state.
  * Balances for all enabled currencies are returned.
  *
  * @param int $user_id The ID for the user, or 0 to retrieve balance sums over all users.

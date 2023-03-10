@@ -367,7 +367,7 @@
 				if ( sc && vsCurrency && 'number' == typeof( sc.rates[ vsCurrency ] ) ) {
 					let amount = self.amountNumber();
 					return sprintf(
-						'%s %01.4f',
+						`%s %01.${dsWallets.vs_decimals ?? 4}f`,
 						vsCurrency.toUpperCase(),
 						parseFloat( amount * sc.rates[ vsCurrency ] )
 					);
@@ -392,7 +392,7 @@
 				if ( sc && vsCurrency && 'number' == typeof( sc.rates[ vsCurrency ] ) ) {
 					let fee = sc.fee_move_site * Math.pow( 10, -sc.decimals );
 					return sprintf(
-						'%s %01.4f',
+						`%s %01.${dsWallets.vs_decimals ?? 4}f`,
 						vsCurrency.toUpperCase(),
 						parseFloat( fee * sc.rates[ vsCurrency ] )
 					);
@@ -420,7 +420,7 @@
 					let amount = self.amountNumber();
 					let fee    = sc.fee_move_site * Math.pow( 10, -sc.decimals );
 					return sprintf(
-						'%s %01.4f',
+						`%s %01.${dsWallets.vs_decimals ?? 4}f`,
 						vsCurrency.toUpperCase(),
 						parseFloat( ( amount + fee ) * sc.rates[ vsCurrency ] )
 					);

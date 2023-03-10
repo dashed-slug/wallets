@@ -966,19 +966,6 @@ class Currency extends Post_Type {
 							);
 						}
 					}
-
-					if ( isset( $_GET['wallets_currency_tag'] ) ) {
-						$query->set(
-							'tax_query',
-							[
-								[
-									'taxonomy' => 'wallets_currency_tags',
-									'field' => 'term_id',
-									'terms' => $_GET['wallets_currency_tag'],
-								]
-							]
-						);
-					}
 				}
 			);
 
@@ -1011,10 +998,16 @@ class Currency extends Post_Type {
 							$link_text = sprintf( __( '%s Wallet: %d', 'wallets' ), '&#128091;', $wallet->post_id );
 						}
 
+						if ( ( $_GET['wallets_wallet_id'] ?? '' ) == $wallet->post_id ) {
+							$pattern = '<a href="%s" class="wallets_wallet %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_wallet %s">%s</a>';
+						}
+
 						$links["wallets_wallet_$wallet->post_id"] = sprintf(
-							'<a href="%s" class="wallets_wallet %s">%s</a>',
+							$pattern,
 							$url,
-							$wallet->post_id == ( $_GET['wallets_wallet_id'] ?? '' ) ? 'current' : '',
+							"wallet_{$wallet->post_id}",
 							$link_text
 						);
 					}
@@ -1023,15 +1016,21 @@ class Currency extends Post_Type {
 					foreach ( get_terms( [ 'taxonomy' => 'wallets_currency_tags', 'hide_empty' => true ] ) as $term ) {
 
 						$url = add_query_arg(
-							'wallets_currency_tag',
-							$term->term_id,
+							'wallets_currency_tags',
+							$term->slug,
 							$_SERVER['REQUEST_URI']
 						);
 
 						$link_text = sprintf( __( '%s Tag: %s', 'wallets' ), '&#127991;', $term->name );
 
+						if ( in_array( $term->slug, explode( ',', ( $_GET['wallets_currency_tags'] ?? '' ) ) ) ) {
+							$pattern = '<a href="%s" class="wallets_currency_tag %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_currency_tag %s">%s</a>';
+						}
+
 						$links["wallets_currency_tag_$term->slug"] = sprintf(
-							'<a href="%s" class="wallets_currency_tag %s">%s</a>',
+							$pattern,
 							$url,
 							$term->term_id == ( $_GET['wallets_currency_tag'] ?? '' ) ? 'current' : '',
 							$link_text

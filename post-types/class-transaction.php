@@ -875,99 +875,105 @@ class Transaction extends Post_Type {
 						return;
 					}
 
-					if ( ! $query->is_main_query() ) {
-						return;
-					}
-
 					if ( 'wallets_tx' != $query->query['post_type'] ) {
 						return;
 					}
 
-					$mq = [ 'relation' => 'AND' ];
+					if ( $query->is_main_query() ) {
 
-					if ( isset( $_GET['wallets_user_id'] ) ) {
-						$mq[] = [
-							'key'   => 'wallets_user',
-							'value' => absint( $_GET['wallets_user_id'] ),
-						];
-					}
+						$mq = [ 'relation' => 'AND' ];
 
-					if ( isset( $_GET['wallets_currency_id'] ) ) {
-
-						$mq[] = [
-							'key'   => 'wallets_currency_id',
-							'value' => absint( $_GET['wallets_currency_id'] ),
-						];
-					}
-
-					if ( isset( $_GET['wallets_category'] ) ) {
-
-						switch ( $_GET['wallets_category'] ) {
-
-							case 'deposit':
-							case 'withdrawal':
-							case 'move':
-
-								$mq[] = [
-									'key'   => 'wallets_category',
-									'value' => $_GET['wallets_category'],
-								];
-								break;
+						if ( isset( $_GET['wallets_user_id'] ) ) {
+							$mq[] = [
+								'key'   => 'wallets_user',
+								'value' => absint( $_GET['wallets_user_id'] ),
+							];
 						}
-					}
 
-					if ( isset( $_GET['wallets_status'] ) ) {
+						if ( isset( $_GET['wallets_currency_id'] ) ) {
 
-						switch ( $_GET['wallets_status'] ) {
-
-							case 'pending':
-								$query->set( 'post_status', 'pending' );
-								break;
-
-							case 'done':
-								$query->set( 'post_status', 'publish' );
-								break;
-
-							case 'cancelled':
-
-								$query->set( 'post_status', 'draft' );
-
-								$mq[] = [
-									'key'   => 'error',
-									'value' => '',
-								];
-								break;
-
-							case 'failed':
-								$query->set( 'post_status', 'draft' );
-
-								$mq[] = [
-									'key'     => 'error',
-									'compare' => '!=',
-									'value'   => '',
-								];
-								break;
-
-							default:
-
+							$mq[] = [
+								'key'   => 'wallets_currency_id',
+								'value' => absint( $_GET['wallets_currency_id'] ),
+							];
 						}
+
+						if ( isset( $_GET['wallets_category'] ) ) {
+
+							switch ( $_GET['wallets_category'] ) {
+
+								case 'deposit':
+								case 'withdrawal':
+								case 'move':
+
+									$mq[] = [
+										'key'   => 'wallets_category',
+										'value' => $_GET['wallets_category'],
+									];
+									break;
+							}
+						}
+
+						if ( isset( $_GET['wallets_status'] ) ) {
+
+							switch ( $_GET['wallets_status'] ) {
+
+								case 'pending':
+									$query->set( 'post_status', 'pending' );
+									break;
+
+								case 'done':
+									$query->set( 'post_status', 'publish' );
+									break;
+
+								case 'cancelled':
+
+									$query->set( 'post_status', 'draft' );
+
+									$mq[] = [
+										'key'   => 'wallets_error',
+										'value' => '',
+									];
+									break;
+
+								case 'failed':
+									$query->set( 'post_status', 'draft' );
+
+									$mq[] = [
+										'key'     => 'wallets_error',
+										'compare' => '!=',
+										'value'   => '',
+									];
+									break;
+
+								default:
+
+							}
+						}
+
+						if ( $query->is_search() ) {
+
+							$term = trim( $query->query_vars['s'] );
+
+							// Unfortunately it's hard to search against post_title OR post meta values in WP
+
+							if ( $term && strleng( $term ) > 16 && ctype_xdigit( $term ) ) {
+
+								// Here the term is likely a TXID, so we'll only search against TXIDs
+
+								$mq[] = [
+									'key'     => 'wallets_txid',
+									'compare' => 'LIKE',
+									'value'   => $term,
+								];
+
+								$query->query_vars['s'] = '';
+							}
+						}
+
+						$query->set( 'meta_query', $mq );
+
 					}
-
-					$query->set( 'meta_query', $mq );
-
-					if ( isset( $_GET['wallets_tx_tag'] ) ) {
-						$query->set(
-							'tax_query',
-							[
-								[
-									'taxonomy' => 'wallets_tx_tags',
-									'field' => 'term_id',
-									'terms' => $_GET['wallets_tx_tag'],
-								]
-							]
-						);
-					}
-
 				}
 			);
 
@@ -993,7 +999,7 @@ class Transaction extends Post_Type {
 						$link_text = sprintf( __( 'User: %s', 'wallets' ), $author->display_name );
 
 						$links[ "wallets_author_$author->ID" ] = sprintf(
-							'<a href="%s" class="current wallets_author">%s</a>',
+							'<a href="%s" class="current wallets_author current" aria-current="page">%s</a>',
 							$url,
 							$link_text
 						);
@@ -1018,10 +1024,16 @@ class Transaction extends Post_Type {
 							$cat_data['text']
 						);
 
+						if ( ( $_GET['wallets_category'] ?? '' ) == $cat ) {
+							$pattern = '<a href="%s" class="wallets_category %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_category %s">%s</a>';
+						}
+
 						$links[ "wallets_category_$cat" ] = sprintf(
-							'<a href="%s" class="%s wallets_category">%s</a>',
+							$pattern,
 							$url,
-							$cat == ( $_GET['wallets_category'] ?? '' ) ? 'current ' : '',
+							$cat,
 							$link_text
 						);
 					}
@@ -1043,14 +1055,19 @@ class Transaction extends Post_Type {
 
 						$link_text = sprintf( __( '%s Status: %s', 'wallets' ), $icon, $status );
 
+						if ( ( $_GET['wallets_status'] ?? '' ) == $status ) {
+							$pattern = '<a href="%s" class="wallets_status %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_status %s">%s</a>';
+						}
+
 						$links[ "wallets_status_$status" ] = sprintf(
-							'<a href="%s" class="%s wallets_status">%s</a>',
+							$pattern,
 							$url,
-							$status == ( $_GET['wallets_status'] ?? '' ) ? 'current' : '',
+							$status,
 							$link_text
 						);
 					}
-
 
 					foreach ( get_all_currencies() as $currency ) {
 
@@ -1067,11 +1084,16 @@ class Transaction extends Post_Type {
 							$currency->symbol
 						);
 
+						if ( $currency->post_id == ( $_GET['wallets_currency_id'] ?? '' ) ) {
+							$pattern = '<a href="%s" class="wallets_currency %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_currency %s">%s</a>';
+						}
 
 						$links[ "wallets_currency_$currency->post_id" ] = sprintf(
-							'<a href="%s" class="wallets_currency %s">%s</a>',
+							$pattern,
 							$url,
-							$currency->post_id == ( $_GET['wallets_currency_id'] ?? '' ) ? 'current' : '',
+							"currency_{$currency->post_id}",
 							$link_text
 						);
 					}
@@ -1080,17 +1102,23 @@ class Transaction extends Post_Type {
 					foreach ( get_terms( [ 'taxonomy' => 'wallets_tx_tags', 'hide_empty' => true ] ) as $term ) {
 
 						$url = add_query_arg(
-							'wallets_tx_tag',
-							$term->term_id,
+							'wallets_tx_tags',
+							$term->slug,
 							$_SERVER['REQUEST_URI']
 						);
 
 						$link_text = sprintf( __( '%s Tag: %s', 'wallets' ), '&#127991;', $term->name );
 
+						if ( in_array( $term->slug, explode( ',', ( $_GET['wallets_tx_tags'] ?? '' ) ) ) ) {
+							$pattern = '<a href="%s" class="wallets_tx_tag %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern = '<a href="%s" class="wallets_tx_tag %s">%s</a>';
+						}
+
 						$links[ "wallets_tx_tag_$term->slug" ] = sprintf(
-							'<a href="%s" class="wallets_tx_tag %s">%s</a>',
+							$pattern,
 							$url,
-							$term->term_id == ( $_GET['wallets_tx_tag'] ?? '' ) ? 'current' : '',
+							$term->slug,
 							$link_text
 						);
 
@@ -1133,7 +1161,84 @@ class Transaction extends Post_Type {
 				2
 			);
 
+			add_filter(
+				'bulk_actions-edit-wallets_tx',
+				function( $actions ) {
+					if ( ds_current_user_can( 'manage_wallets' ) ) {
+						if ( get_ds_option( 'wallets_cron_approve_withdrawals' ) ) {
+							$actions['approved_by_admin'] = __( 'Approve', 'wallets' );
+						}
+					}
+					return $actions;
+				}
+			);
+
+			add_action(
+				'handle_bulk_actions-edit-wallets_tx',
+				function( $redirect_to, $doaction, $post_ids ) {
+					if ( ds_current_user_can( 'manage_wallets' ) ) {
+
+						$query_args = [
+							'fields'      => 'ids',
+							'post_type'   => 'wallets_tx',
+							'post_status' => [ 'pending' ],
+							'post__in'    => $post_ids,
+							'meta_query'  => [
+								'relation' => 'AND',
+								[
+									'key'   => 'wallets_category',
+									'value' => 'withdrawal',
+								],
+								[
+									'key'     => 'wallets_admin_approved',
+									'compare' => 'NOT EXISTS',
+								],
+							],
+						];
+
+						$query = new \WP_Query( $query_args );
+
+						$eligible_post_ids = array_values( $query->posts );
+
+						foreach ( $post_ids as $post_id ) {
+							update_post_meta( $post_id, 'wallets_admin_approved', true );
+						}
+
+						$redirect_to = add_query_arg( 'approved_by_admin', count( $eligible_post_ids ), $redirect_to );
+					}
+
+					return $redirect_to;
+				},
+				10,
+				3
+			);
+
+			add_action(
+				'admin_notices',
+				function() {
+
+					$updated_count = $_REQUEST['approved_by_admin'] ?? 0;
+
+					if ( $updated_count > 0 ) {
+						$message = sprintf(
+							_n(
+								'%s pending withdrawal approved by admin.',
+								'%s pending withdrawals approved by admin.',
+								$updated_count,
+								'wallets'
+							),
+							number_format_i18n( $updated_count )
+						);
+
+						?>
+						<div class="notice notice-success is-dismissible"><p><?php esc_html_e( $message ) ?></p></div>
+						<?php
+					}
+
+				}
+			);
 		}
+
 	}
 
 	public static function register_post_type() {
@@ -1311,6 +1416,18 @@ class Transaction extends Post_Type {
 			);
 		}
 
+		if ( 'withdrawal' == $tx->category && 'pending' == $tx->status ) {
+
+			add_meta_box(
+				'wallets-transaction-pending-wd',
+				__( 'Pending withdrawal checks', 'wallets' ),
+				[ self::class, 'meta_box_pending_wd' ],
+				'wallets_tx',
+				'normal',
+				'default',
+				$tx
+			);
+		}
 	}
 
 	/**
@@ -1978,6 +2095,58 @@ class Transaction extends Post_Type {
 	}
 
 	/**
+	 * @internal
+	 */
+	public static function meta_box_pending_wd( $post, $meta_box ) {
+		$wd = $meta_box['args'];
+
+		try {
+
+			/** This action is documented in cron/class-withdrawals-task.php */
+			do_action(
+				'wallets_withdrawal_pre_check',
+				$wd
+			);
+
+		} catch ( \Exception $e ) {
+			?>
+				<p style="color:red;"><?php esc_html_e( 'A withdrawal pre-check has raised an error: ', 'wallets' ); ?></p>
+				<p style="color:red;"><?php esc_html_e( $e->getMessage() ); ?></p>
+
+			<?php
+
+			return;
+		}
+
+		?>
+		<p style="color:green;"><?php esc_html_e( 'All withdrawal pre-checks have passsed', 'wallets' ); ?></p>
+
+		<hr />
+
+		<?php
+
+		if (
+			/** This filter is documented in cron/class-withdrawals-task.php */
+			apply_filters(
+				'wallets_withdrawals_pre_check',
+				[ $wd ],
+				function( $log ) {
+					?><p><code><?php esc_html_e( $log ); ?></code></p><?php
+				}
+			)
+		): ?>
+
+			<p style="color:green;"><?php esc_html_e( 'All pre-filters pass', 'wallets' ); ?></p>
+
+		<?php else: ?>
+
+			<p style="color:red;"><?php esc_html_e( 'A withdrawal pre-filter has failed on this transaction', 'wallets' ); ?></p>
+
+		<?php endif;
+	}
+
+
+	/**
 	 * Save post meta values taken from metabox inputs
 	 */
 	public static function save_post( $post_id, $post, $update ) {
@@ -2206,6 +2375,10 @@ class Transaction extends Post_Type {
 		$columns['tx_address']    = esc_html__( 'Address', 'wallets' );
 		$columns['tx_txid']       = esc_html__( 'TXID', 'wallets' );
 
+		if ( get_ds_option( 'wallets_cron_approve_withdrawals', DEFAULT_CRON_APPROVE_WITHDRAWALS ) ) {
+			$columns['tx_approved'] = esc_html__( 'Approved by admin', 'wallets' );
+		}
+
 		return $columns;
 	}
 
@@ -2345,6 +2518,17 @@ class Transaction extends Post_Type {
 				<?php
 			else:
 				?>&mdash;<?php
+			endif;
+
+		elseif( 'tx_approved' == $column ):
+
+			if ( 'pending' == $tx->status && 'withdrawal' == $tx->category ):
+				if ( get_post_meta( $tx->post_id, 'wallets_admin_approved', true ) ):
+					printf(
+						'&#x2713; %s',
+						__( 'Approved', 'wallets' )
+					);
+				endif;
 			endif;
 
 		endif;

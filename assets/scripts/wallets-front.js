@@ -28,7 +28,9 @@
 
 	// when vs currency choice changes, save to local storage
 	dsWalletsRest.vsCurrency.subscribe( function( vsCurrency ) {
-		localStorage.setItem( 'dswallets-vs-currency', vsCurrency );
+		if ( vsCurrency ) {
+			localStorage.setItem( 'dswallets-vs-currency', vsCurrency );
+		}
 	} );
 
 	// on calling this, select the next available vs currency from the list of available choices. wraps around.

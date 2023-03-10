@@ -212,7 +212,7 @@
 				}
 
 				return sprintf(
-					'%s %01.4f',
+					`%s %01.${dsWallets.vs_decimals ?? 4}f`,
 					vsCurrency.toUpperCase(),
 					parseFloat( c.balance * Math.pow( 10, -c.decimals ) * c.rates[ vsCurrency ] )
 				);
@@ -240,7 +240,7 @@
 				}
 
 				return sprintf(
-					'%s %01.4f',
+					`%s %01.${dsWallets.vs_decimals ?? 4}f`,
 					vsCurrency.toUpperCase(),
 					parseFloat( c.available_balance * Math.pow( 10, -c.decimals ) * c.rates[ vsCurrency ] )
 				);

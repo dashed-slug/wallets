@@ -896,3 +896,111 @@ function get_or_make_transaction( Transaction $tx, bool $notify = true ): Transa
 
 	throw new \Exception( 'Did not get or make transaction' );
 }
+
+
+function get_todays_withdrawal_counters( int $user_id, $current_day = '' ): array {
+
+	if ( ! $current_day ) {
+		$current_day = date( 'Y-m-d' );
+	}
+
+	// first reset the counters if they were created before today
+	$wd_counters_day = get_user_meta(
+		$user_id,
+		'wallets_wd_counter_day',
+		true
+	);
+
+	if ( $wd_counters_day != $current_day ) {
+
+		delete_user_meta(
+			$user_id,
+			'wallets_wd_counter_day'
+		);
+
+		delete_user_meta(
+			$user_id,
+			'wallets_wd_counter'
+		);
+	}
+
+	// load the withdrawal counters
+	$wd_counters = get_user_meta(
+		$user_id,
+		'wallets_wd_counter',
+		true
+	);
+
+	if ( ! is_array( $wd_counters ) ) {
+		$wd_counters = [];
+	}
+
+	return $wd_counters;
+}
+
+function increment_todays_withdrawal_counters( Transaction $wd, string $current_day = null ): void {
+	if ( ! $current_day ) {
+		$current_day = date( 'Y-m-d' );
+	}
+
+	$wd_counters = get_todays_withdrawal_counters( $wd->user->ID, $current_day );
+
+	if ( ! isset( $wd_counters[ $wd->currency->post_id ] ) ) {
+		$wd_counters[ $wd->currency->post_id ] = 0;
+	}
+
+	$wd_counters[ $wd->currency->post_id ] += absint( $wd->amount );
+
+	update_user_meta(
+		$wd->user->ID,
+		'wallets_wd_counter',
+		$wd_counters
+	);
+
+	update_user_meta(
+		$wd->user->ID,
+		'wallets_wd_counter_day',
+		$current_day
+	);
+}
+
+/**
+ * Get next currency with pending withdrawals
+ *
+ * All currencies with enabled unlocked wallets are processed, one currency per cron run, with no starvation.
+ * Currencies with no pending withdrawals are skipped.
+ * If no eligible currencies have pending withdrawals, the loop ends.
+ *
+ * @return ?Currency
+ */
+function get_next_currency_with_pending_withdrawals(): ?Currency {
+	$found_currency = null;
+
+	$currencies = get_currencies_with_wallets_with_unlocked_adapters( false );
+
+	if ( ! $currencies ) {
+		return null;
+	}
+
+	$count = count( $currencies );
+
+	$i = get_ds_option( 'wallets_withdrawals_last_currency', 0 );
+
+	do {
+
+		$i = ( $i + 1 ) % count( $currencies );
+
+		$currency = $currencies[ $i ];
+		$count--;
+		if ( get_pending_transactions_by_currency_and_category( $currency, 'withdrawal', 1 ) ) {
+			$found_currency = $currency;
+			break;
+		}
+	}
+	while ( $count >= 0 ); // we loop around the currencies only once and no more
+
+	update_ds_option( 'wallets_withdrawals_last_currency', $i );
+
+	return $found_currency;
+
+}

@@ -256,6 +256,8 @@ function get_all_enabled_currencies( $with_wallet = true ): array {
 		'post_type'   => 'wallets_currency',
 		'post_status' => 'publish', // enabled currencies
 		'nopaging'    => true,
+		'orderby'     => 'title',
+		'order'       => 'ASC',
 		'meta_query'  => [
 			'relation' => 'AND',
 			[
@@ -733,4 +735,10 @@ function get_paged_currencies_with_coingecko_id( int $limit = 10, int $page = 0 
 	maybe_restore_blog();
 
 	return $currencies;
+}
+
+function get_vs_decimals(): int {
+	$decimals = get_ds_option( 'wallets_frontend_vs_amount_decimals', DEFAULT_FRONTEND_VS_AMOUNT_DECIMALS );
+
+	return absint( $decimals );
 }

@@ -325,10 +325,16 @@ class Wallet extends Post_Type {
 
 						$link_text = sprintf( __( '%s Adapter: %s', 'wallets' ), '&#128268;', $class_name );
 
+						if ( $current_class == $class_name ) {
+							$pattern ='<a href="%s" class="wallets_adapter %s current" aria-current="page">%s</a>';
+						} else {
+							$pattern ='<a href="%s" class="wallets_adapter %s">%s</a>';
+						}
+
 						$links[ $class_class_name ] = sprintf(
-							'<a href="%s" class="wallets_adapter %s">%s</a>',
+							$pattern,
 							$url,
-							$current_class == $class_name ? 'current' : '',
+							$class_name,
 							$link_text
 						);
 					}

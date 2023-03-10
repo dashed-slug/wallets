@@ -132,7 +132,7 @@ class Currency_Icons_Task extends Task {
 
 					} else {
 
-						if ( $coingecko_currency_data->id == $currency->coingecko_id ) {
+						if ( isset( $coingecko_currency_data->id ) && $coingecko_currency_data->id == $currency->coingecko_id ) {
 
 							foreach ( [ 'large', 'small', 'thumb' ] as $image_size ) {
 								if ( isset( $coingecko_currency_data->image->{$image_size} ) ) {
@@ -289,8 +289,7 @@ class Currency_Icons_Task extends Task {
 						}
 					}
 				}
-			} // end if currency has a coingecko id
-
+			}
 
 			if ( time() >= $this->task_start_time + $this->timeout ) {
 				break;

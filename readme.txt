@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 6.0.0
+Stable tag: 6.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,7 @@ Premium [dashed-slug](https://www.dashed-slug.net) members get unlimited access 
 - [Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/exchange-extension/) - Allows your users to enter market orders and exchange cryptocurrencies.
 - [Airdrop extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension/) - Distribute coins or pay interest to your users by performing airdrops and recurring airdrops.
 - [Faucet extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/) - Reward your users for solving CAPTCHAs.
+- [Paywall extension)(https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/paywall-extension/) - Let users pay for subscription to various user roles, and use shortcodes to control what content they see, based on these roles.
 - [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/) - Allows users with cryptocurrency wallets to tip content authors.
 - [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/) - Let logged in users pay at WooCommerce checkout from their cryptocurrency wallet.
 
@@ -76,56 +77,13 @@ By continuing to use the Bitcoin and Altcoin Wallets plugin, you indicate that y
 
 
 
+
+
 = Where is the plugin's documentation? =
 
 Since version `6.0.0`, the plugin displays its own documentation in the admin screens. Just go to the Wallets Admin Docs menu, where you'll find the documentation for the plugin, and for any plugin extensions you have installed.
 
 Developers can study the PHPdocumentor pages at: https://wallets-phpdoc.dashed-slug.net/
-
-
-
-= How can I become a premium member and get access to the app extensions? =
-
-Paying members can download the available *App extensions* and can download updates to those extensions.
-
-Study the available [Membership plans](https://www.dashed-slug.net/dashed-slug/membership-plans/)
-
-
-= Can I pay without using PayPal? =
-
-If you wish to pay with cryptocurrencies, please do the following:
-
-1. Select a [membership plan](https://www.dashed-slug.net/dashed-slug/membership-plans/)
-
-2. Send the equivalent of the USD amount to one of the following addresses.
-
-Bitcoin Address: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
-DOGE Address: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
-LTC Address: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
-
-Dogecoin usually has very low fees, due to it not being used as much as more "serious" blockchains.
-
-3. [Contact me by email](https://www.dashed-slug.net/contact/) with your selection of membership plan, the TXID and the email you used to sign up.
-
-I will then activate your membership manually within 1 business day.
-
-= I cannot download the premium plugins after paying for membership. =
-
-If you have paid for an EU business plan, you must provide a valid VATIN. Please enter the VATIN without the country code prefix, and enter the correct _City_ and _Country_ for your business, in your profile details.
-
-If you have paid for a regular plan, and for some reason you still cannot download the premium plugins, please contact me by email.
-
-= How can I cancel my membership? =
-
-If you have signed up with a PayPal recurring payment, you can go to your [PayPal dashboard](https://www.paypal.com/cgi-bin/webscr?cmd=_manage-paylist) to cancel the recurring payment.
-
-Additionally, if you wish, you may delete your account from the profile screen on the dashed-slug website. Deleting your account does not automatically cancel your PayPal subscription. Simply visit [your profile](https://www.dashed-slug.net/membership-login/membership-profile/)
-
-= I am not happy with the plugin. Can I ask for a refund? =
-
-You can ask for a refund of any payment within 30 days from the day of payment, no questions asked. Please contact me by email.
-
-
 
 = How secure is it? =
 
@@ -287,6 +245,48 @@ If you think you have discovered a security vulnerability in this plugin, please
 
 
 
+= How can I become a premium member and get access to the app extensions? =
+
+Paying members can download the available *App extensions* and can download updates to those extensions.
+
+Study the available [Membership plans](https://www.dashed-slug.net/dashed-slug/membership-plans/)
+
+
+= What payment methods are available =
+
+The site accepts Bitcoin and Ethereum. Please [deposit the correct amount to your account, then choose a subscription](https://www.dashed-slug.net/dashed-slug/membership-plans/).
+
+[Since 1 November 2022](https://www.dashed-slug.net/important-changes-to-membership/),
+membership is implemented using the plugin itself. The downloads are protected behind a paywall
+using the [Paywall extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/paywall-extension/).
+
+Previously the site accepted PayPal recurring payments. If you have already signed up using PayPal, you can continue to use it to pay for membership. New PayPal accounts are no longer available.
+
+If you wish to pay via a different method, [contact me by email](https://www.dashed-slug.net/contact/).
+
+You can send a PayPal payment to my business email address and let me know. I will then activate your membership manually, within 1 business day.
+
+= I cannot download the premium plugins after paying for membership. =
+
+If you have paid for an EU business plan, you must provide a valid VATIN. Please enter the VATIN without the country code prefix, and enter the correct _City_ and _Country_ for your business, in your profile details.
+
+If you have paid for a regular plan, and for some reason you still cannot download the premium plugins, please [contact me by email](https://www.dashed-slug.net/contact/).
+
+= How can I cancel my membership? =
+
+If you have signed up with a PayPal recurring payment, you can go to your [PayPal dashboard](https://www.paypal.com/cgi-bin/webscr?cmd=_manage-paylist) to cancel the recurring payment.
+
+Additionally, if you wish, you may delete your account from the profile screen on the dashed-slug website. Deleting your account does not automatically cancel your PayPal subscription. Simply visit [your profile](https://www.dashed-slug.net/membership-login/membership-profile/)
+
+If you have paid via cryptocurrencies, there is no need to cancel. You can delete your account if you want, by visiting [your profile](https://www.dashed-slug.net/membership-login/membership-profile/). There is usually no need to do so.
+
+= I am not happy with the plugin. Can I ask for a refund? =
+
+You can ask for a refund of any payment within 30 days from the day of payment, no questions asked. Please contact me by email.
+
+
+
+
 
 = Are you available for custom development work? =
 
@@ -335,6 +335,22 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.0 =
+- Add: New option "Admin must approve withdrawals". When on, pending withdrawals must be approved by an admin in the Transactions list screen using the "Approve" batch action.
+- Add: The frontend "VS amounts", i.e. the equivalent amounts expressed in "VS currencies", are now shown with a number of decimals that is configurable by the admin.
+- Add: Admin can now search transactions by TXID.
+- Fix: Admin can now search for cancelled or failed transactions.
+- Fix: When filtering posts, all enabled filters are now shown in bold and with ARIA accessibility attributes.
+- Add: For pending withdrawals, admin can view the results of withdrawal pre-checks.
+- Fix: Daily withdrawal counters for currencies are now correctly enforced at all times.
+- Add: Daily withdrawal counters are now visible in the profile screen of each user.
+- Add: For pending withdrawals, developer can add withdrawal pre-checks with action `wallets_withdrawal_pre_check` and with filter `wallets_withdrawals_pre_check`.
+- Fix: When showing `[wallets_account_value]` shortcode without any enabled "VS currencies", the account value is now shown as '?' and not 'Undefined ?'.
+- Fix: Documentation updated to reflect changes in premium plugin payment method and added mention to new Paywall extension.
+- Fix: Improved logging for wallet adapters cron task.
+- Fix: Added guard clause in currency icons cron task to protect against missing returned data from remote service.
+
 
 = 6.0.0 =
 - Change: Sourcecode rewritten from scratch and modernized for PHP7.x compatibility: Namespaces, callbacks, etc.
@@ -1456,7 +1472,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.0.0` is a rewrite of the original plugin. See the [release notes](https://dashed-slug.net/wallets6-release-notes-final/) for details.
+Version `6.1.0` improves the batching of withdrawals, adds admin visibility to the withdrawals cron, improves transaction filtering in the admin screens, and fixes a few bugs. See https://dashed-slug.net/wallets-6-1-0-release-notes
 
 == Donating ==
 
