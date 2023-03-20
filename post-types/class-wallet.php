@@ -631,6 +631,8 @@ class Wallet extends Post_Type {
 								foreach ( $wallet->adapter->get_settings_schema() as $schema ) {
 									if ( isset( $_POST['wallets_adapter_settings'][ $schema['id'] ] ) ) {
 										$wallet->adapter->__set( $schema['id'], $_POST['wallets_adapter_settings'][ $schema['id'] ] );
+									} else {
+										$wallet->adapter->__set( $schema['id'], $_POST['wallets_adapter_settings'][ $schema['default'] ?? null ] );
 									}
 								}
 							}

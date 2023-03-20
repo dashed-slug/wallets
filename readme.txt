@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 6.1.0
+Stable tag: 6.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,7 +43,7 @@ Premium [dashed-slug](https://www.dashed-slug.net) members get unlimited access 
 - [Exchange extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/exchange-extension/) - Allows your users to enter market orders and exchange cryptocurrencies.
 - [Airdrop extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/airdrop-extension/) - Distribute coins or pay interest to your users by performing airdrops and recurring airdrops.
 - [Faucet extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/faucet-extension/) - Reward your users for solving CAPTCHAs.
-- [Paywall extension)(https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/paywall-extension/) - Let users pay for subscription to various user roles, and use shortcodes to control what content they see, based on these roles.
+- [Paywall extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/paywall-extension/) - Let users pay for subscription to various user roles, and use shortcodes to control what content they see, based on these roles.
 - [Tip the Author extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/tip-the-author-extension/) - Allows users with cryptocurrency wallets to tip content authors.
 - [WooCommerce Cryptocurrency Payment Gateway extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/woocommerce-cryptocurrency-payment-gateway-extension/) - Let logged in users pay at WooCommerce checkout from their cryptocurrency wallet.
 
@@ -335,6 +335,10 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.1 =
+- Fix: Issue with transactions search in admin is now fixed.
+- Fix: When editing wallet adapter settings, it is now possible to uncheck boxes for boolean values.
 
 = 6.1.0 =
 - Add: New option "Admin must approve withdrawals". When on, pending withdrawals must be approved by an admin in the Transactions list screen using the "Approve" batch action.
@@ -1472,7 +1476,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.0` improves the batching of withdrawals, adds admin visibility to the withdrawals cron, improves transaction filtering in the admin screens, and fixes a few bugs. See https://dashed-slug.net/wallets-6-1-0-release-notes
+Version `6.1.1` fixes a couple of minor bugs.
 
 == Donating ==
 

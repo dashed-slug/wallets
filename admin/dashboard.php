@@ -348,8 +348,8 @@ add_filter(
 	function( $debug_data ) {
 		global $wpdb;
 
-		$debug_data[ (string) __( 'Plugin version', 'wallets' ) ]         = '6.1.0';
-		$debug_data[ (string) __( 'Git SHA', 'wallets' ) ]                = '5dc9d204';
+		$debug_data[ (string) __( 'Plugin version', 'wallets' ) ]         = '6.1.1';
+		$debug_data[ (string) __( 'Git SHA', 'wallets' ) ]                = '7eb3f1ef';
 		$debug_data[ (string) __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 		$debug_data[ (string) __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 		$debug_data[ (string) __( 'WordPress version', 'wallets' ) ]      = (string) get_bloginfo( 'version' );

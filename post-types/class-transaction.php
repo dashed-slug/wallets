@@ -957,7 +957,7 @@ class Transaction extends Post_Type {
 
 							// Unfortunately it's hard to search against post_title OR post meta values in WP
 
-							if ( $term && strleng( $term ) > 16 && ctype_xdigit( $term ) ) {
+							if ( $term && strlen( $term ) > 16 && ctype_xdigit( $term ) ) {
 
 								// Here the term is likely a TXID, so we'll only search against TXIDs
 
