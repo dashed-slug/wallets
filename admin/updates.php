@@ -8,6 +8,7 @@
  * Additionally, displays extra information under the main plugin in the plugin list. (Link to settings, link to release notes.)
  *
  * @since 6.0.0 Integrated into tabbed settings page.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

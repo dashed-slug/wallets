@@ -4,7 +4,7 @@
  * Customizer integration.
  *
  * @since 4.1.0
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 

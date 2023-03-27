@@ -7,7 +7,7 @@
  * This JSON API is deprecated.
  * It is emulated here to allow compatibility for users who have already built Android apps.
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @deprecated Since 6.0.0 this API is deprecated and may be removed in a future version.
  */
 

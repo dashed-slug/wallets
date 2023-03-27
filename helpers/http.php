@@ -1,9 +1,10 @@
 <?php
 
 /**
- *  HTTP helper functions
+ * HTTP helper functions
  *
- *  @since 6.0.0 Introduced.
+ * @since 6.0.0 Introduced.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

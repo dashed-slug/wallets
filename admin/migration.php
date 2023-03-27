@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *
  * @see Migration_Task
  * @since 6.0.0 Introduced.
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 add_action(

@@ -6,7 +6,7 @@ namespace DSWallets;
 /**
  * Load backend assets.
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 // don't load directly
@@ -19,7 +19,7 @@ add_action( 'admin_enqueue_scripts', function() {
 			'wallets-admin-styles',
 			get_asset_path( 'wallets-admin', 'style' ),
 			[],
-			'6.1.1'
+			'6.1.2'
 		);
 
 		wp_register_script(
@@ -49,7 +49,7 @@ add_action( 'admin_enqueue_scripts', function() {
 			'wallets-admin-menu-item',
 			get_asset_path( 'wallets-admin-menu-item' ),
 			[ 'jquery' ],
-			'6.1.1',
+			'6.1.2',
 			true
 		);
 
@@ -57,7 +57,7 @@ add_action( 'admin_enqueue_scripts', function() {
 			'wallets-admin-cs-tool',
 			get_asset_path( 'wallets-admin-cs-tool' ),
 			[ 'jquery-qrcode' ],
-			'6.1.1',
+			'6.1.2',
 			true
 		);
 
@@ -72,7 +72,7 @@ add_action( 'admin_enqueue_scripts', function() {
 			'wallets-admin-capabilities',
 			get_asset_path( 'wallets-admin-capabilities' ),
 			[ 'jquery-ui-tabs' ],
-			'6.1.1',
+			'6.1.2',
 			true
 		);
 
@@ -80,7 +80,7 @@ add_action( 'admin_enqueue_scripts', function() {
 			'wallets-admin-dashboard',
 			get_asset_path( 'wallets-admin-dashboard' ),
 			[ 'jquery-ui-tabs', 'jqcloud' ],
-			'6.1.1',
+			'6.1.2',
 			true
 		);
 
@@ -88,7 +88,7 @@ add_action( 'admin_enqueue_scripts', function() {
 			'wallets-admin-docs',
 			get_asset_path( 'wallets-admin-docs' ),
 			[ 'jquery' ],
-			'6.1.1',
+			'6.1.2',
 			true
 		);
 

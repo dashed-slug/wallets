@@ -24,7 +24,7 @@
  * the UI is "dynamic", i.e. it is rendered on the frontend after data is loaded via the WP-REST API.
  *
  * @since 2.0.0 Templates now encapsulate associated CSS and JS code inline with the markup.
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @phan-suppress PhanTypePossiblyInvalidDimOffset
  */
 

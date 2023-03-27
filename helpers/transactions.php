@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Helper functions that retrieve transactions.
+ *
+ * @since 6.0.0 Introduced.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
+ */
+
 namespace DSWallets;
 
 defined( 'ABSPATH' ) || die( -1 );
@@ -1002,5 +1009,78 @@ function get_next_currency_with_pending_withdrawals(): ?Currency {
 	update_ds_option( 'wallets_withdrawals_last_currency', $i );
 
 	return $found_currency;
+
+}
+
+
+/**
+ * Get possible counterpart transactions to specified transaction.
+ *
+ * Retrieve all transactions that can possibly be set to be the counterpart to the sepcified transaction.
+ * These must be move transactions. The amounts between counterpart transactions must have opposing signs (+/-)
+ * and they must be of the same currency.
+ *
+ * Will not retrieve more than 1000 transactions since it doesn't make sense to display this many transactions as a dropdown.
+ *
+ * @param Transaction $tx
+ * @return array (id,Title) touples
+ */
+function get_possible_transaction_counterparts( Transaction $tx ): array {
+	if ( 'move' != $tx->category ) { return []; }
+
+	$comparator = $tx->amount > 0 ? '<' : '>';
+
+	maybe_switch_blog();
+
+	global $wpdb;
+
+	$query = $wpdb->prepare( "
+			SELECT
+				p.ID,
+				p.post_title
+
+			FROM
+				{$wpdb->posts} p
+
+			JOIN
+				{$wpdb->postmeta} pm_cat ON (
+					p.ID = pm_cat.post_id
+					AND pm_cat.meta_key = 'wallets_category'
+					AND pm_cat.meta_value = 'move'
+				)
+
+			JOIN
+				{$wpdb->postmeta} pm_cur ON (
+					p.ID = pm_cur.post_id
+					AND pm_cur.meta_key = 'wallets_currency_id'
+					AND pm_cur.meta_value = %d
+				)
+		",
+		$tx->currency->post_id
+	);
+
+	$query .= "
+		JOIN
+			{$wpdb->postmeta} pm_a ON (
+				p.ID = pm_a.post_id
+				AND pm_a.meta_key = 'wallets_amount'
+				AND pm_a.meta_value $comparator 0
+			)";
+
+	$query .= $wpdb->prepare( "
+		WHERE
+			p.post_type = 'wallets_tx'
+			AND p.post_status = 'publish'
+
+		LIMIT
+			%d",
+		MAX_DROPDOWN_LIMIT
+	);
+
+	$result = $wpdb->get_results( $query, 'OBJECT_K' );
+
+	maybe_restore_blog();
+
+	return $result;
 
 }

@@ -3,7 +3,7 @@
 /**
  * Functions used for parsing user values for some shortcode attributes.
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

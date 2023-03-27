@@ -4,7 +4,7 @@
  * Tool that assists the admin to move a percentage of all funds offline for security.
  *
  * @since 6.0.0 Introduced.
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

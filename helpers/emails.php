@@ -10,6 +10,7 @@ namespace DSWallets;
  *
  * @see \DSWallets\Email_Queue_Task
  * @since 6.0.0 Introduced.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 defined( 'ABSPATH' ) || die( -1 );

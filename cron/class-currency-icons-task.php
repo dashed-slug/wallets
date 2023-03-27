@@ -16,6 +16,7 @@
  * for a currency to be that media library entry.
  *
  *
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  */
 

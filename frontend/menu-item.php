@@ -8,7 +8,7 @@ namespace DSWallets;
  * You can now show the user balances as part of your menu.
  *
  * @since 2.5.0
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 // don't load directly

@@ -9,7 +9,7 @@
  * @var DSWallets\Transaction $tx The transaction that this email message is about.
  * @phan-file-suppress PhanUndeclaredVariable
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  */
 defined( 'ABSPATH' ) || die( -1 );

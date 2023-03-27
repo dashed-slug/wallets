@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *
  * Cron jobs only run on the main site (usually site_id = 1).
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  */
 

@@ -37,7 +37,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *
  * Statistics about the migration progress are shown in the admin screens to all admins.
  *
- * @author alexg
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  *
  */

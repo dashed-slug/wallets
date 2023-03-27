@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || die( -1 );
  * - declares a non-herarchical (tag) custom taxonomy
  *
  * @since 6.0.0 Introduced.
- * @author alexg
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 abstract class Post_Type {
 

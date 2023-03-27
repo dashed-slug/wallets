@@ -5,7 +5,7 @@
  * Use the 'wallets_settings_tabs' filter to add more tabs.
  *
  * @since 6.0.0 Introduced.
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;
@@ -36,6 +36,7 @@ const DEFAULT_WALLETS_CONFIRM_WITHDRAW_USER_ENABLED = 'on';
 const DEFAULT_CRON_WITHDRAWALS_MAX_BATCH_SIZE = 4;
 const DEFAULT_CRON_MOVES_MAX_BATCH_SIZE = 8;
 const DEFAULT_CRON_TASK_TIMEOUT = 5;
+const MAX_DROPDOWN_LIMIT = 1000;
 
 register_activation_hook( DSWALLETS_FILE, function() {
 	add_ds_option( 'wallets_addresses_max_count',           DEFAULT_ADDRESS_MAX_COUNT );

@@ -8,6 +8,7 @@ namespace DSWallets;
  *
  * We do this so that users have at least one example of a currency to work with.
  *
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  */
 

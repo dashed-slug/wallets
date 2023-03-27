@@ -4,7 +4,7 @@
  * Displays helpful pointers for new users in the admin screens.
  *
  * @since 6.0.0 Introduced.
- * @author undefined
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

@@ -6,6 +6,7 @@ namespace DSWallets;
  * Retrieve all fiat currencies known by fixer.io, and create or update the currency records.
  *
  * @see DSWallets\WalletAdapter\do_cron
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  */
 

@@ -3,7 +3,7 @@
 /**
  * The wallet adapter class
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;
@@ -599,7 +599,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.1',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.2',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',

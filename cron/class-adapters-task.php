@@ -8,6 +8,7 @@ namespace DSWallets;
  *
  * This allows adapters to do their thing, i.e. perform various housekeeping tasks.
  *
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @see DSWallets\WalletAdapter\do_cron
  * @since 6.0.0 Introduced.
  */

@@ -11,6 +11,7 @@
  * ...where SYMBOL is the ticker symbol for the currency.
  *
  * @since 6.0.0 Introduced.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

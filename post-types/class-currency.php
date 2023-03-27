@@ -110,7 +110,7 @@ add_theme_support( 'post-thumbnails' );
  *
  *
  * @since 6.0.0 Introduced.
- * @author alexg
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 class Currency extends Post_Type {
 

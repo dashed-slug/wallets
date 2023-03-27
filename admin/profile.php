@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Show user balances and other info on the profile admin screen.
+ *
+ * @author Alexandros Georgiou <info@dashed-slug.net>
+ */
+
 namespace DSWallets;
 
 defined( 'ABSPATH' ) || die( -1 );

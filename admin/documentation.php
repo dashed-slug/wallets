@@ -4,7 +4,7 @@
  * Renders the markdown docs in the plugin for easier access.
  *
  * @since 6.0.0 Introduced.
- * @author undefined
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

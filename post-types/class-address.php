@@ -62,7 +62,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *			}
  *
  * @since 6.0.0 Introduced.
- * @author alexg
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 class Address extends Post_Type {
 

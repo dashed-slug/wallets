@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *
  * The exchange rates for the enabled VS Currencies are retrieved.
  *
- * @author alexg
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  *
  */
 class CoinGecko_Task extends Task {

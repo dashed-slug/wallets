@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Helper functions that retrieve front-end assets (css,js,images).
+ *
+ * @since 6.0.0 Introduced.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
+ */
+
 namespace DSWallets;
 
 defined( 'ABSPATH' ) || die( -1 );

@@ -1,13 +1,13 @@
 <?php
 
-namespace DSWallets;
-
-
 /**
  * Cancel transactions that have been in pending state for too long.
  *
  * @since 6.0.0 Introduced.
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
+
+namespace DSWallets;
 
 defined( 'ABSPATH' ) || die( -1 );
 

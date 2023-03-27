@@ -4,7 +4,7 @@
  * Compliance with European Union's General Data Protection Regulation.
  *
  * @since 3.3.0
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

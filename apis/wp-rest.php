@@ -6,7 +6,7 @@
  * Superseeds JSON-API v3. If you are building new apps, don't even think about using anything other than this API.
  * The JSON-API is deprecated and will soon be removed.
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  * @since 6.0.0 Introduced.
  */
 

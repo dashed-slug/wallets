@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * Functions that queue outgoing emails.
+ *
+ * @author Alexandros Georgiou <info@dashed-slug.net>
+ * @since 6.0.0
+ */
+
 namespace DSWallets;
 
 defined( 'ABSPATH' ) || die( -1 );

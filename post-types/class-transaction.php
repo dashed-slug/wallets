@@ -128,7 +128,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *		}
  *
  * @since 6.0.0 Introduced.
- * @author alexg
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 class Transaction extends Post_Type {
 
@@ -1720,24 +1720,43 @@ class Transaction extends Post_Type {
 		</label>
 
 		<?php if ( 'move' == $tx->category ): ?>
+			<?php $possible_transaction_counterparts = get_possible_transaction_counterparts( $tx ); ?>
+
 		<label class="wallets_meta_box_label">
+
+
+			<?php if ( count( $possible_transaction_counterparts ) < MAX_DROPDOWN_LIMIT ): ?>
 			<span><?php esc_html_e( 'Parent transaction', 'wallets' ); ?></span>
 
-			<?php wp_dropdown_pages( [
-				'post_type'         => 'wallets_tx',
-				'post_status'       => array( 'draft', 'pending', 'publish' ),
-				'id'                => 'wallets-parent-id',
-				'name'              => 'wallets_parent_id',
-				'meta_key'          => 'wallets_category',
-				'meta_value'        => 'move',
-				'show_option_none'  => __( 'None', 'wallets' ),
-				'option_none_value' => 0,
-				'selected'          => $tx->parent_id,
-			] ); ?>
+			<select
+				id="wallets-parent-id"
+				name="wallets_parent_id">
+
+				<option value="0"><?php esc_html_e( 'None', 'wallets' ); ?></option>
+
+				<?php foreach ( $possible_transaction_counterparts as $txc_id => $txc ): ?>
+				<option
+					value="<?php esc_attr_e( $txc_id );?>"
+					<?php selected( $txc_id == $tx->parent_id ); ?>>
+					<?php esc_html_e( $txc->post_title ); ?>
+				</option>
+				<?php endforeach; ?>
+
+			</select>
+			<?php else: ?>
+			<span><?php esc_html_e( 'Parent transaction post ID', 'wallets' ); ?></span>
+			<input
+				id="wallets-parent-id"
+				name="wallets_parent_id"
+				type="number"
+				min="0"
+				value="<?php echo absint( $tx->parent_id ); ?>" />
+
+			<?php endif; ?>
 
 			<p class="description"><?php esc_html_e(
-				'For internal transfers (moves), debits have their corresponding credit transaction assigned as parent. ' .
-				'If this is a credit transaction, do not assign a parent.',
+				'For internal transfers (moves), debits (i.e. amount>0) have their corresponding credit transaction assigned as parent. ' .
+				'If this is a credit transaction (i.e. amount<0), do not assign a parent.',
 				'wallets'
 			); ?></p>
 

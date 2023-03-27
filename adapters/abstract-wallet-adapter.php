@@ -3,7 +3,7 @@
 /**
  * The wallet adapter class
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

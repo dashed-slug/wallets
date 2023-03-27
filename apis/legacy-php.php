@@ -7,7 +7,7 @@
  *
  * @since 6.0.0 The `wallets_api_adapters` filter is disabled, because there are no coin adapters any more.
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

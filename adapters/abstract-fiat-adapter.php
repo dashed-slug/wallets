@@ -5,7 +5,7 @@
  *
  * Subclasses can implement various modes of deposit/withdrawal.
  *
- * @author dashed-slug <info@dashed-slug.net>
+ * @author Alexandros Georgiou <info@dashed-slug.net>
  */
 
 namespace DSWallets;

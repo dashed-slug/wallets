@@ -2,18 +2,18 @@
 /*
  * Plugin Name:			Bitcoin and Altcoin Wallets
  * Description:			Custodial cryptocurrency wallets.
- * Version:				6.1.1
+ * Version:				6.1.2
  * Plugin URI:			https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
  * Requires at least:	5.0
  * Requires PHP:		7.2
- * Author:				dashed-slug <info@dashed-slug.net>
+ * Author:				Alexandros Georgiou <info@dashed-slug.net>
  * Author URI:			http://dashed-slug.net
  * Text Domain:			wallets
  * License:				GPLv2 or later
  * License URI:			https://www.gnu.org/licenses/gpl-2.0.html
  * Release Notes:		https://dashed-slug.net/wallets6-release-notes
  *
- * @author    Alexandros Georgiou
+ * @author    Alexandros Georgiou <info@dashed-slug.net>
  * @copyright 2023 Alexandros Georgiou
  * @license   GPL-2.0-or-later
  * @since     1.0.0
