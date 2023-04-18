@@ -390,7 +390,7 @@ add_action(
 				'user_id'      => get_current_user_id(), // The ID of the user whose data to show.
 				'user'         => null, // The login name, slug, or email of the user whose data to show.
 				'symbol'       => null, // The symbol of the currency whose data to show.
-				'currency_id ' => null, // The currency_id of the currency whose data to show.
+				'currency_id' => null, // The currency_id of the currency whose data to show.
 				'coingecko_id' => null, // The coingecko_id of the currency whose data to show.
 				'template'     => null, // The specialized template part.
 				'qrsize'       => 'inherit',

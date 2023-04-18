@@ -112,7 +112,20 @@ function get_address_by_strings( string $address, string $extra = null, string $
 	return $address;
 }
 
-function get_all_addresses_for_user_id( int $user_id, int $page = null, int $rows = null ): array {
+/**
+ * Get all the addresses for a user specified by numeric ID.
+ *
+ * This function features pagination.
+ *
+ * @param int $user_id The ID of the user to query.
+ * @param int $page The page to request.
+ * @param int $rows The amount of rows per page.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
+ * @return array
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
+ */
+function get_all_addresses_for_user_id( int $user_id, int $page = null, int $rows = null, bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -140,6 +153,17 @@ function get_all_addresses_for_user_id( int $user_id, int $page = null, int $row
 
 	} else {
 		$query_args['nopaging'] = true;
+	}
+
+	if ( ! $include_archived ) {
+		$query_args['tax_query'] = [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
 	}
 
 	$query = new \WP_Query( $query_args );
@@ -309,9 +333,12 @@ function get_or_make_address( Address $address ): Address {
  * @param int $user_id The user id.
  * @param Currency $currency The currency.
  * @param string $type One of 'deposit', 'withdrawal'.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
  * @return Address|NULL The address found, or null.
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
  */
-function get_latest_address_for_user_id_and_currency( int $user_id, Currency $currency, string $type = 'deposit' ): ?Address {
+function get_latest_address_for_user_id_and_currency( int $user_id, Currency $currency, string $type = 'deposit', bool $include_archived = true ): ?Address {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -339,6 +366,17 @@ function get_latest_address_for_user_id_and_currency( int $user_id, Currency $cu
 		]
 	];
 
+	if ( ! $include_archived ) {
+		$query_args['tax_query'] = [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
+	}
+
 	$query = new \WP_Query( $query_args );
 
 	$post_ids = array_values( $query->posts );
@@ -364,7 +402,17 @@ function get_latest_address_for_user_id_and_currency( int $user_id, Currency $cu
 	return $address;
 }
 
-function get_latest_address_per_currency_for_user_id( int $user_id, string $type = 'deposit' ): array {
+/**
+ * Get latest address per currency for user specified by numeric ID.
+ *
+ * @param int $user_id The ID of the user to query.
+ * @param string $type One of `deposit` or `withdrawal`.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
+ * @return array The Addresses found, one per currency maximum.
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
+ */
+function get_latest_address_per_currency_for_user_id( int $user_id, string $type = 'deposit', bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -388,6 +436,17 @@ function get_latest_address_per_currency_for_user_id( int $user_id, string $type
 			],
 		]
 	];
+
+	if ( ! $include_archived ) {
+		$query_args['tax_query'] = [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
+	}
 
 	$query = new \WP_Query( $query_args );
 
@@ -430,9 +489,12 @@ function get_latest_address_per_currency_for_user_id( int $user_id, string $type
  * @param int $user_id The user id.
  * @param int $currency_id The currency_id.
  * @param string $type One of 'deposit', 'withdrawal'.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
  * @return Address[] The addresses found.
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
  */
-function get_all_addresses_for_user_id_and_currency_id( int $user_id, int $currency_id, string $type = 'deposit' ): array {
+function get_all_addresses_for_user_id_and_currency_id( int $user_id, int $currency_id, string $type = 'deposit', bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -460,6 +522,17 @@ function get_all_addresses_for_user_id_and_currency_id( int $user_id, int $curre
 			]
 		]
 	];
+
+	if ( ! $include_archived ) {
+		$query_args['tax_query'] = [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
+	}
 
 	$query = new \WP_Query( $query_args );
 
@@ -498,9 +571,12 @@ function get_all_addresses_for_user_id_and_currency_id( int $user_id, int $curre
  *
  * @param int $currency_id The ID of the currency whose addresses to retrieve..
  * @param string $type Type of addresses to retrieve. One of 'deposit', 'withdrawal'. Default is deposit addresses.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
  * @return int[] The IDs of the addresses found.
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
  */
-function get_address_ids_for_currency_id( int $currency_id, string $type = 'deposit' ): array {
+function get_address_ids_for_currency_id( int $currency_id, string $type = 'deposit', bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -523,6 +599,17 @@ function get_address_ids_for_currency_id( int $currency_id, string $type = 'depo
 		]
 	];
 
+	if ( ! $include_archived ) {
+		$query_args['tax_query'] = [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
+	}
+
 	$query = new \WP_Query( $query_args );
 
 
@@ -540,9 +627,12 @@ function get_address_ids_for_currency_id( int $currency_id, string $type = 'depo
  * @param int $currency_id The ID of the currency whose addresses to retrieve.
  * @param string $type Type of addresses to retrieve. One of 'deposit', 'withdrawal'. Default is deposit addresses.
  * @param string[] $tags The addresses found must have all the specified tags.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
  * @return int[] The IDs of the addresses found.
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
  */
-function get_address_ids_by_currency_id_and_type_and_tags( int $currency_id, string $type = 'deposit', array $tags = [] ): array {
+function get_address_ids_by_currency_id_and_type_and_tags( int $currency_id, string $type = 'deposit', array $tags = [], bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -566,11 +656,20 @@ function get_address_ids_by_currency_id_and_type_and_tags( int $currency_id, str
 		],
 	];
 
-	if ( $tags ) {
-		$query_args['tax_query'] = [
-			'relation' => 'AND',
-		];
+	$query_args['tax_query'] = ['relation' => 'AND' ];
 
+	if ( ! $include_archived ) {
+		$query_args['tax_query'][]= [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
+	}
+
+	if ( $tags ) {
 		foreach ( $tags as $tag ) {
 			$query_args['tax_query'][] = [
 				'taxonomy' => 'wallets_address_tags',
@@ -578,6 +677,7 @@ function get_address_ids_by_currency_id_and_type_and_tags( int $currency_id, str
 				'terms'    => $tag,
 			];
 		}
+
 	}
 
 	$query = new \WP_Query( $query_args );
@@ -594,9 +694,12 @@ function get_address_ids_by_currency_id_and_type_and_tags( int $currency_id, str
  * Get the IDs of deposit addresses with the specified tags.
  *
  * @param array $tags The addresses found must have all these tags.
+ * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
  * @return array The IDs of the matching addresses.
+ * @since 6.0.0 Introduced.
+ * @since 6.1.3 Added argument `$include_archived`.
  */
-function get_deposit_address_ids_by_tags( array $tags = [] ): array {
+function get_deposit_address_ids_by_tags( array $tags = [], bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -615,11 +718,21 @@ function get_deposit_address_ids_by_tags( array $tags = [] ): array {
 		],
 	];
 
-	if ( $tags ) {
-		$query_args['tax_query'] = [
-			'relation' => 'AND',
-		];
 
+	$query_args['tax_query'] = ['relation' => 'AND' ];
+
+	if ( ! $include_archived ) {
+		$query_args['tax_query'][] = [
+			[
+				'taxonomy' => 'wallets_address_tags',
+				'field'    => 'slug',
+				'terms'    => 'archived',
+				'operator' => 'NOT IN',
+			]
+		];
+	}
+
+	if ( $tags ) {
 		foreach ( $tags as $tag ) {
 			$query_args['tax_query'][] = [
 				'taxonomy' => 'wallets_address_tags',

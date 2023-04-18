@@ -423,6 +423,13 @@ class Address extends Post_Type {
 
 					$mq = [ 'relation' => 'AND' ];
 
+					if ( isset( $_GET['wallets_user_id'] ) ) {
+						$mq[] = [
+							'key'   => 'wallets_user',
+							'value' => absint( $_GET['wallets_user_id'] ),
+						];
+					}
+
 					if ( isset( $_GET['wallets_currency_id'] ) ) {
 
 						$mq[] = [
@@ -431,19 +438,58 @@ class Address extends Post_Type {
 						];
 					}
 
-					if ( isset( $_GET['wallets_type'] ) ) {
+					if ( isset( $_GET['wallets_address_type'] ) ) {
 
-						switch ( $_GET['wallets_type'] ) {
+						switch ( $_GET['wallets_address_type'] ) {
 
 							case 'deposit':
 							case 'withdrawal':
 
 								$mq[] = [
 									'key'   => 'wallets_type',
-									'value' => $_GET['wallets_type'],
+									'value' => $_GET['wallets_address_type'],
 								];
 								break;
 						}
+					}
+
+					if ( $query->is_search() ) {
+
+						add_filter(
+							'posts_search',
+							function( $search, $wp_query ) {
+								global $wpdb;
+
+								if ( $wp_query->is_main_query() && $wp_query->is_search() && preg_match( '/\(wp_posts.post_title LIKE \'(\{[0-9a-f]+\})([^{]+)\{/', $search, $matches ) ) {
+									$delimiter = $matches[ 1 ];
+									$term = $matches[ 2 ];
+
+									$search = str_replace(
+										"({$wpdb->posts}.post_title",
+										"(meta_address.meta_key = 'wallets_address' AND meta_address.meta_value LIKE '{$delimiter}{$term}{$delimiter}') OR ({$wpdb->posts}.post_title" ,
+										$search
+									);
+								}
+
+								return $search;
+							},
+							11,
+							2
+						);
+
+						add_filter(
+							'posts_join',
+							function( $join, $wp_query ) {
+								global $wpdb;
+								if ( $wp_query->is_main_query() && $wp_query->is_search() ) {
+									$join = "$join INNER JOIN {$wpdb->postmeta} AS meta_address ON ( wp_posts.ID = meta_address.post_id )";
+								}
+
+								return $join;
+							},
+							11,
+							2
+						);
 					}
 
 					$query->set( 'meta_query', $mq );
@@ -596,6 +642,24 @@ class Address extends Post_Type {
 				2
 			);
 
+			add_action(
+				'admin_notices',
+				function() {
+					global $post;
+					$screen = get_current_screen();
+
+					if ( $screen->post_type == 'wallets_address' && $screen->base == 'post' && isset( $post ) && is_object( $post ) ):
+						$address = Address::load( $post->ID );
+						if ( in_array( 'archived', $address->tags ) ):
+							?>
+							<div class="notice notice-info">
+								<p>&#x26A0; <?php esc_html_e( 'This address has been archived. It will not be shown in the frontend UIs.', 'wallets' ); ?></p>
+							</div>';
+							<?php
+						endif;
+					endif;
+				}
+			);
 		}
 	}
 
@@ -631,11 +695,15 @@ class Address extends Post_Type {
 			'menu_icon'          => 'dashicons-tickets-alt',
 			'supports'           => [
 				'title',
-				'author'
 			],
 			'map_meta_cap'       => true,
 			'capability_type'    => [ 'wallets_address', 'wallets_addresses' ],
 		] );
+
+		if ( count_users()['total_users'] < MAX_DROPDOWN_LIMIT ) {
+			add_post_type_support( 'wallets_address', 'author' );
+		}
+
 	}
 
 
@@ -678,9 +746,6 @@ class Address extends Post_Type {
 		} catch ( \Exception $e ) {
 			$address = new self;
 		}
-
-		// in case some theme removes this
-		add_post_type_support( 'wallets_address', 'author' );
 
 		add_meta_box(
 			'wallets-address-attributes',
@@ -815,15 +880,13 @@ class Address extends Post_Type {
 		<label class="wallets_meta_box_label">
 			<span><?php esc_html_e( 'User', 'wallets' ); ?></span>
 
-			<?php wp_dropdown_users(
-				[
-					'selected' => $address->user->ID ?? 0,
-					'id'       => 'wallets-address-user',
-					'name'     => 'wallets_user',
-					'who'      => '',
-					'exclude'  => get_ids_for_users_without_cap( 'has_wallets' ),
-				]
-			);?>
+			<input
+				id="wallets-address-user"
+				name="wallets_user"
+				type="text"
+				value="<?php echo $address->user->user_login ?? ''; ?>"
+				class="wallets-login-suggest"
+				autocomplete="off" />
 
 			<p class="description"><?php esc_html_e(
 				'The address is associated with this user.',
@@ -1115,8 +1178,14 @@ add_action(
 						$address->__set( 'currency', null );
 					}
 
-					if ( is_numeric( $_POST['wallets_user'] ?? null ) ) {
-						$address->__set( 'user', new \WP_User( $_POST['wallets_user'] ) );
+					if ( $_POST['wallets_user'] ?? null ) {
+						$user = get_user_by( 'login', $_POST['wallets_user'] );
+
+						if ( $user ) {
+							$address->__set( 'user', $user );
+						} else {
+							$address->__set( 'user', null );
+						}
 					} else {
 						$address->__set( 'user', null );
 					}
@@ -1214,6 +1283,11 @@ add_action(
 
 		elseif( 'address_type' == $column ):
 			echo ucfirst( $address->type );
+
+			if ( in_array( 'archived', $address->tags ) ):
+				echo ' ';
+				esc_html_e( '(archived)', 'wallets' );
+			endif;
 
 		elseif( 'address_currency' == $column ):
 			if ( $address->currency ) {

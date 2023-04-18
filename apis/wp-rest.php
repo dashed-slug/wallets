@@ -1000,6 +1000,7 @@ add_action(
 						'type'        => $address->type,
 						'currency_id' => $address->currency->post_id,
 						'label'       => $address->label,
+						'archived'    => in_array( 'archived', $address->tags ),
 					];
 				},
 				'args' => [

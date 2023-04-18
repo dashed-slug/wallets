@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 5.0
-Tested up to: 6.1.1
+Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.1.2
+Stable tag: 6.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,15 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.1 =
+- Fix: Setting the `currency_id` attribute on the `[wallets_deposit]` shortcode now works again.
+- Fix: Listing the addresses of a specific user now works again.
+- Fix: Listing the addresses of a specific type (deposits, withdrawals) now works again.
+- Improve: The transactions editor now loads faster on sites with many thousands of users. The user dropdown is replaced with an text input where you type a `user_login` and it autocompletes with AJAX.
+- Improve: It is now possible to search addresses by keyword, and the keyword is matched against the address title AND the address string.
+- Add: Addresses with the `archived` tag will not be shown in the REST API and frontend. This will be useful for the Lightning adapter later, among other things.
+
 
 = 6.1.1 =
 - Fix: Issue with transactions search in admin is now fixed.
@@ -1476,7 +1485,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.2` addresses an issue where transactions were not editable on systems with too many transactions on the DB ledger.
+Version `6.1.3` fixes some admin search issues, and contains performance improvements that allow the plugin to scale to many thousands of users.
 
 == Donating ==
 

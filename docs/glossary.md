@@ -63,6 +63,10 @@ This is an [sprintf()][php-sprintf] pattern that is set on each *Currency*. It s
 
 For example, with Bitcoin you might use `BTC %01.8f` as your amount pattern.
 
+## Archived address {#archived-address}
+
+An *[Address](#address)* with the special tag slug: `archived`. Such an address will not be shown in the frontend. Deposit addresses marked `archived` will continue to be usable as deposit addresses.
+
 ## App extension {#app-extension}
 
 An *[extension](#extension)* to the parent plugin, *[Bitcoin and Altcoin Wallets](#bitcoin-and-altcoin-wallets)*, that provides useful functionality. Contrast with *[Wallet adapter extension](#wallet-adapter-extension)*.

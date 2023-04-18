@@ -21,7 +21,7 @@ $other_tx = $tx->get_other_tx();
 	<?php
 		esc_html_e(
 			sprintf(
-				// translators: %1$s is replaced with the currency name. %2$s is replaced with the amount. %3$s is replaced with the user name.
+				// translators: %1$s is replaced with the user name. %2$s is replaced with the currency name. %3$s is replaced with the amount.
 				__(
 					'User %1$s has attempted to send you the %2$s amount of %3$s, but the transaction has failed to execute.',
 					'wallets'

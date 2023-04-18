@@ -1271,11 +1271,15 @@ class Transaction extends Post_Type {
 			'supports'           => [
 				'title',
 				'revisions',
-				'author',
 			],
 			'map_meta_cap'       => true,
 			'capability_type'	 => [ 'wallets_tx', 'wallets_txs' ],
 		] );
+
+		if ( count_users()['total_users'] < MAX_DROPDOWN_LIMIT ) {
+			add_post_type_support( 'wallets_address', 'author' );
+		}
+
 	}
 
 	public static function register_taxonomy() {
@@ -1311,9 +1315,6 @@ class Transaction extends Post_Type {
 		} catch ( \Exception $e ) {
 			$tx = new self;
 		}
-
-		// in case some theme removes this
-		add_post_type_support( 'wallets_address', 'author' );
 
 		add_meta_box(
 			'wallets-transaction-attributes',
@@ -1568,14 +1569,13 @@ class Transaction extends Post_Type {
 		<label class="wallets_meta_box_label">
 			<span><?php esc_html_e( 'User', 'wallets' ); ?></span>
 
-			<?php wp_dropdown_users(
-				[
-					'selected' => $tx->user->ID ?? 0,
-					'id'       => 'wallets-transaction-user',
-					'name'     => 'wallets_user',
-					'exclude'  => get_ids_for_users_without_cap( 'has_wallets' ),
-				]
-			); ?>
+			<input
+				id="wallets-transaction-user"
+				name="wallets_user"
+				type="text"
+				value="<?php echo $tx->user->user_login ?? ''; ?>"
+				class="wallets-login-suggest"
+				autocomplete="off" />
 
 			<p class="description"><?php esc_html_e(
 				'The transaction will affect this user\'s balance.',
@@ -2187,8 +2187,14 @@ class Transaction extends Post_Type {
 
 					$tx->__set( 'category', $_POST['wallets_category'] ?? $tx->category );
 
-					if ( is_numeric( $_POST['wallets_user'] ?? null ) ) {
-						$tx->__set( 'user', new \WP_User( absint( $_POST['wallets_user'] ) ) );
+					if ( $_POST['wallets_user'] ?? null ) {
+						$user = get_user_by( 'login', $_POST['wallets_user'] );
+
+						if ( $user ) {
+							$tx->__set( 'user', $user );
+						} else {
+							$tx->__set( 'user', null );
+						}
 					} else {
 						$tx->__set( 'user', null );
 					}

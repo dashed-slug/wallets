@@ -254,6 +254,8 @@ Therefore, the currency associated with the address must always be specified. Th
 
 You can optionally organize your addresses using tags. These tags are part of the `wallets_address_tags` custom taxonomy. You can then list addresses with a particular tag in the admin screens.
 
+Addresses with the special tag slug `archived` will not be shown in the frontend. Deposit addresses marked `archived` will continue to be usable as deposit addresses.
+
 ### Navigating away from Address
 
 If the associated currency has block explorer links assigned, then you will get a navigation link from the address editor to the block explorer.
