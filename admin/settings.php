@@ -1007,6 +1007,7 @@ function numeric_cb( $arg ) {
 	<input
 		type="number"
 		name="<?php esc_attr_e( $arg['label_for'] ); ?>"
+		class="small-text"
 		value="<?php esc_attr_e( get_ds_option( $arg['label_for'], $arg['default'] ?? 0 ) ); ?>"
 		min="<?php esc_attr_e( $arg['min'] ); ?>"
 		max="<?php esc_attr_e( $arg['max'] ); ?>"
@@ -1023,6 +1024,7 @@ function string_cb( $arg ) {
 	<input
 		type="text"
 		name="<?php esc_attr_e( $arg['label_for'] ); ?>"
+		class="regular-text"
 		value="<?php esc_attr_e( get_ds_option( $arg['label_for'], $arg['default'] ?? '' ) ); ?>"
 		<?php disabled( $arg['disabled'] ?? false ); ?>
 		<?php if ( isset( $arg['pattern'] ) ): ?>
@@ -1059,6 +1061,7 @@ function select_cb( $arg ) {
 
 	<select
 		name="<?php esc_attr_e( $arg['label_for'] ); ?>"
+		class="select"
 		id="<?php esc_attr_e( $arg['label_for'] ); ?>"
 		<?php disabled( $arg['disabled'] ?? false ); ?>>
 	<?php
@@ -1083,6 +1086,7 @@ function checkbox_cb( $arg ) {
 	?>
 	<input
 		type="checkbox"
+		class="checkbox"
 		name="<?php esc_attr_e( $arg['label_for'] ); ?>"
 		<?php checked( get_ds_option( $arg['label_for'] ), 'on' ); ?>
 		<?php disabled( $arg['disabled'] ?? false ); ?>	/>
@@ -1100,6 +1104,7 @@ function multicheckbox_cb( $arg ) {
 
 			<input
 				type="checkbox"
+				class="checkbox"
 				id="<?php esc_attr_e( "{$arg['label_for']}_{$key}" ); ?>"
 				name="<?php esc_attr_e( $arg['label_for'] ); ?>[]"
 				value="<?php esc_attr_e( $key ); ?>"
@@ -1120,6 +1125,7 @@ function page_cb( $arg ) {
 		[
 			'name'              => esc_attr( $arg['label_for'] ),
 			'id'                => esc_attr( $arg['label_for'] ),
+			'class'             => 'select',
 			'selected'          => absint( get_ds_option( $arg['label_for'] ) ),
 			'show_option_none'  => __( '(none)', 'wallets' ),
 			'option_none_value' => '0',

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.1.3
+Stable tag: 6.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -336,7 +336,15 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
-= 6.1.1 =
+= 6.1.4 =
+- Fix: Shortcode `[wallets_fiat_withdraw]` does not submit withdrawal requests with invalid amount.
+- Add: Shortcode `[wallets_fiat_withdraw]` now accepts atttributes: `currency_id`, `symbol` to specify the default currency.
+- Add: New WP-REST API endpoint `/users/U/currencies/C` for retrieving a single currency `C` and the balances of user `U` for that currency.
+- Improve: Added a new withdrawal check: It is now impossible for a withdrawal to be executed as long as it has a TXID assigned. If you need to repeat execution, you must clear the TXID.
+- Improve: The `[wallets_withdraw]` UI now uses a `getUserMedia()` call to determine if a camera is available to scan QR-Codes. Previous method using CSS media queries was not optimal.
+- Improve: The included copy of `moment.js` is now upgraded to version `2.29.4`.
+
+= 6.1.3 =
 - Fix: Setting the `currency_id` attribute on the `[wallets_deposit]` shortcode now works again.
 - Fix: Listing the addresses of a specific user now works again.
 - Fix: Listing the addresses of a specific type (deposits, withdrawals) now works again.
@@ -344,6 +352,8 @@ Please state your request on the forums or over email, and I will respond within
 - Improve: It is now possible to search addresses by keyword, and the keyword is matched against the address title AND the address string.
 - Add: Addresses with the `archived` tag will not be shown in the REST API and frontend. This will be useful for the Lightning adapter later, among other things.
 
+= 6.1.2 =
+- Fix: Issue with editing transactions in admin when system holds too many transactions is now fixed.
 
 = 6.1.1 =
 - Fix: Issue with transactions search in admin is now fixed.
@@ -1485,7 +1495,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.3` fixes some admin search issues, and contains performance improvements that allow the plugin to scale to many thousands of users.
+Version `6.1.4` brings some minor fixes and improvements, a new REST API endpoint, and some more form validation for fiat withdrawals.
 
 == Donating ==
 

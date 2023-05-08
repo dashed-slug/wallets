@@ -808,6 +808,8 @@ add_action(
 		 *
 		 * @param string[] $atts The attributes passed to the shortcode.
 		 *   - `[user_id]`               WordPress user ID for the user whose balances to display.
+		 *   - `[symbol]`                Ticker symbol of the currency to display, or to set as default in the UI.
+		 *   - `[currency_id]`           `post_id` of the currency to display, or to set as default in the UI.
 		 *   - `[user]`                  Can be either a `login`, `slug`, or `email` of the user whose balances to display.
 		 *   - `[template]`              Specialized template part.
 		 * @param string $content For nested shortcodes, the enclosed text. Should be empty for wallets shortcodes.
@@ -819,10 +821,12 @@ add_action(
 			$template_slug = preg_replace( '/^wallets_/', '', $tag );
 
 			$defaults = [
-				'user_id'    => get_current_user_id(), // The ID of the user whose data to show.
-				'user'       => null, // The login name of the user whose data to show.
-				'template'   => null, // The specialized template part.
-				'validation' => '', // Set to "off" to disable all validation for this input.
+				'user_id'      => get_current_user_id(), // The ID of the user whose data to show.
+				'user'         => null, // The login name of the user whose data to show.
+				'symbol'       => null, // The symbol of the currency whose data to show.
+				'currency_id'  => null, // The currency_id of the currency whose data to show.
+				'template'     => null, // The specialized template part.
+				'validation'   => '', // Set to "off" to disable all validation for this input.
 			];
 
 			$atts = shortcode_atts(
@@ -852,6 +856,8 @@ add_action(
 				// are going to load the data statically, and disable the
 				// reload button.
 				$atts['static'] = get_current_user_id() != $atts['user_id'];
+
+				parse_atts_for_currency( $atts );
 
 				include $template_file;
 

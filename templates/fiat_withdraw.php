@@ -523,6 +523,7 @@
 						colspan="3">
 						<input
 							type="submit"
+							data-bind="enabled: amount() > 0 && amount() <= self.maxAmount()"
 							value="<?php
 								echo apply_filters(
 									'wallets_fiat_ui_text_requestbanktransfer',
@@ -1062,6 +1063,10 @@
 					comment: self.comment(),
 				};
 
+				if ( ! data.amount || ( data.amount < sc.min_withdraw * Math.pow( 10, -sc.decimals ) ) || ( data.amount > self.maxAmount() ) ) {
+					return;
+				}
+
 				if ( 'iban' == self.addressingMethod() ) {
 					data.swiftBic = self.swiftBic();
 					data.iban = self.iban();
@@ -1187,7 +1192,6 @@
 
 		const vm = new ViewModel<?php echo ucfirst( $id ); ?>();
 		ko.applyBindings( vm, el );
-
 	} );
 
 }(jQuery));

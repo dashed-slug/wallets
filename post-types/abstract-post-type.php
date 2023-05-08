@@ -193,6 +193,7 @@ abstract class Post_Type {
 		<input
 			id="<?php esc_attr_e( $schema['id'] ); ?>"
 			name="wallets_adapter_settings[<?php esc_attr_e( $schema['id'] ); ?>]"
+			class="regular-text"
 			type="text"
 			<?php if ( isset( $schema['pattern'] ) && $schema['pattern'] ): ?>pattern="<?php esc_attr_e( $schema['pattern'] ); ?>"<?php endif; ?>
 			title="<?php esc_attr_e( strip_tags( $schema['description'] ?? '' ) ); ?>"
@@ -217,6 +218,7 @@ abstract class Post_Type {
 		<input
 			id="<?php esc_attr_e( $schema['id'] ); ?>"
 			name="wallets_adapter_settings[<?php esc_attr_e( $schema['id'] ); ?>]"
+			class="small-text"
 			type="number"
 			title="<?php esc_attr_e( strip_tags( $schema['description'] ?? '' ) ); ?>"
 			<?php if ( isset( $schema['min']  ) && is_numeric( $schema['min']  ) ):  ?>min="<?php esc_attr_e( $schema['min']  ); ?>"<?php endif; ?>
@@ -232,6 +234,7 @@ abstract class Post_Type {
 		<input
 			id="<?php esc_attr_e( $schema['id'] ); ?>"
 			name="wallets_adapter_settings[<?php esc_attr_e( $schema['id'] ); ?>]"
+			class="small-text"
 			type="password"
 			title="<?php esc_attr_e( strip_tags( $schema['description'] ?? '' ) ); ?>"
 			placeholder="<?php echo str_repeat( '&bull;', 8 ); ?>"
@@ -249,6 +252,7 @@ abstract class Post_Type {
 		<input
 			id="<?php esc_attr_e( $schema['id'] ); ?>"
 			name="wallets_adapter_settings[<?php esc_attr_e( $schema['id'] ); ?>]"
+			class="checkbox"
 			type="checkbox"
 			title="<?php esc_attr_e( strip_tags( $schema['description'] ?? '' ) ); ?>"
 			<?php checked( $value, 'on' ); ?> />
@@ -261,6 +265,7 @@ abstract class Post_Type {
 		<select
 			id="<?php esc_attr_e( $schema['id'] ); ?>"
 			name="wallets_adapter_settings[<?php esc_attr_e( $schema['id'] ); ?>]"
+			class="select"
 			title="<?php esc_attr_e( strip_tags( $schema['description'] ?? '' ) ); ?>">
 
 			<?php foreach ( $schema['options'] as $id => $name ): ?>

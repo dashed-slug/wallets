@@ -245,6 +245,19 @@ For example, here's how you could call the `/users/USER_ID/currencies` endpoint 
 
 Retrieves details about all currencies on the system.
 
+#### /currencies/CURRENCY_ID
+
+|     |     |
+| --- | --- |
+| *Endpoint* | `/dswallets/v1/currencies/CURRENCY_ID` |
+| *Method* | `GET` |
+| *URI Parameters* | `CURRENCY_ID`, an integer |
+| *Optional GET Parameters* | None |
+| *Requires login* | No |
+| *Requires capabilities* | No |
+
+Retrieves details about the specified on the system.
+
 #### /users/USER_ID/currencies
 
 |     |     |
@@ -254,9 +267,22 @@ Retrieves details about all currencies on the system.
 | *URI Parameters* | `USER_ID`, an integer |
 | *Optional GET Parameters* | None |
 | *Requires login* | No |
-| *Requires capabilities* | No. If data on a user other than the currently logged in user is requested, the endpoit requires the current user to have `manage_wallets`. |
+| *Requires capabilities* | `has_wallets` is required. If data on a user other than the currently logged in user is requested, the endpoit requires the current user to have `manage_wallets`. |
 
 Retrieves details about all currencies on the system, as well as the user's Balance and Available Balance for each currency.
+
+#### /users/USER_ID/currencies/CURRENCY_ID
+
+|     |     |
+| --- | --- |
+| *Endpoint* | `/dswallets/v1/users/USER_ID/currencies/CURRENCY_ID` |
+| *Method* | `GET` |
+| *URI Parameters* | `USER_ID` and `CURRENCY_ID`, both integers |
+| *Optional GET Parameters* | None |
+| *Requires login* | Yes |
+| *Requires capabilities* | `has_wallets` is required. If data on a user other than the currently logged in user is requested, the endpoit requires the current user to have `manage_wallets`. |
+
+Retrieves details about the specified currency on the system, as well as the user's Balance and Available Balance for this currency.
 
 #### /users/USER_ID/transactions
 

@@ -28,18 +28,16 @@
 			opacity: 0;
 		}
 
-		.qrcode-text {
-			vertical-align: middle;
+		.qrcode-text-btn.no-camera {
+			pointer-events:none;
+			overflow: hidden;
+			width: 1px;
+			height: 1px;
+			opacity: 0;
 		}
 
-		@media only screen and (min-device-width:751px) {
-			.qrcode-text-btn {
-				pointer-events:none;
-				overflow: hidden;
-				width: 1px;
-				height: 1px;
-				opacity: 0;
-			}
+		.qrcode-text {
+			vertical-align: middle;
 		}
 
 	</style>
@@ -124,6 +122,7 @@
 						style="position: relative;">
 
 						<label
+							data-bind="css: { 'no-camera': cameraNotExists }"
 							class="qrcode-text-btn">
 							&#128247;
 							<input
@@ -354,7 +353,6 @@
 
 			self.currencies   = ko.observable( [] );
 			self.addresses    = ko.observable( [] );
-			self.transactions = ko.observable( [] );
 
 			self.reload = function() {
 
@@ -646,6 +644,24 @@
 					self.amount( maxAmount );
 				}
 			};
+
+			self.cameraNotExists = ko.computed( function() {
+				let exists = false;
+				if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+					navigator.mediaDevices.getUserMedia( { video: true } )
+						.then( function( stream ) {
+							exists = true;
+						} )
+						.catch( function( error ) {
+							exists = false;
+						} );
+				} else {
+					exists = false;
+				}
+
+				return ! exists;
+			} );
+
 		};
 
 		const vm = new ViewModel<?php echo ucfirst( $id ); ?>();

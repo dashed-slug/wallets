@@ -611,17 +611,12 @@ class Transaction extends Post_Type {
 
 			$term_ids = [];
 
-			foreach ( $value as $tag_slug ) {
+			foreach ( array_unique( array_filter( $value ) ) as $tag_slug ) {
 				if ( ! is_string( $tag_slug ) ) {
 
 					maybe_restore_blog();
 
 					throw new \InvalidArgumentException( 'Provided tag is not a string!' );
-				}
-
-				// do not write empty slugs
-				if ( ! $tag_slug ) {
-					continue;
 				}
 
 				// look for custom post type tag by slug
@@ -951,7 +946,7 @@ class Transaction extends Post_Type {
 							}
 						}
 
-						if ( $query->is_search() ) {
+						if ( $query->is_search() && $query->is_main_query() ) {
 
 							$term = trim( $query->query_vars['s'] );
 

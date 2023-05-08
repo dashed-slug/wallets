@@ -356,6 +356,80 @@ add_action(
 			]
 		);
 
+		register_rest_route(
+			'dswallets/v1',
+			'/users/(?P<user_id>\d+)/currencies/(?P<currency_id>\d+)',
+			[
+				'methods'  => \WP_REST_SERVER::READABLE,
+				'callback' => function( $data ) {
+					$params  = $data->get_url_params();
+					$user_id = $params['user_id'];
+
+					try {
+						$currency = Currency::load( $params['currency_id'] );
+					} catch ( \Exception $e ) {
+						return new \WP_Error(
+							'currency_not_found',
+							__( 'Currency not found!', 'wallets' ),
+							[ 'status' => 404 ]
+						);
+					}
+
+					$rates = [];
+					$vs_currencies = get_ds_option( 'wallets_rates_vs', [] );
+					if ( $vs_currencies && is_array( $vs_currencies ) ) {
+						foreach ( $vs_currencies as $vs_currency ) {
+							$rates[ $vs_currency ] = $currency->get_rate( $vs_currency );
+						}
+					}
+
+					$block_height = null;
+					if ( $currency->is_online() ) {
+						try {
+							$block_height = $currency->wallet->adapter->get_block_height( $currency );
+						} catch ( \Exception $e ) {
+							// Nothing
+						}
+					}
+
+					$result = [
+						'id'                => $currency->post_id,
+						'name'              => $currency->name,
+						'symbol'            => $currency->symbol,
+						'decimals'          => $currency->decimals,
+						'pattern'           => $currency->pattern,
+						'balance'           => get_balance_for_user_and_currency_id( $user_id, $currency->post_id ),
+						'available_balance' => get_available_balance_for_user_and_currency_id( $user_id, $currency->post_id ),
+						'min_withdraw'      => $currency->min_withdraw,
+						'fee_deposit_site'  => $currency->fee_deposit_site,
+						'fee_move_site'     => $currency->fee_move_site,
+						'fee_withdraw_site' => $currency->fee_withdraw_site,
+						'icon_url'          => $currency->icon_url,
+						'rates'             => $rates,
+						'explorer_uri_tx'   => $currency->explorer_uri_tx,
+						'explorer_uri_add'  => $currency->explorer_uri_add,
+						'extra_field_name'  => $currency->extra_field_name,
+						'is_fiat'           => $currency->is_fiat(),
+						'is_online'         => $currency->is_online(),
+						'block_height'      => $block_height,
+					];
+
+					$max_age = max( 0, absint( get_ds_option( 'wallets_polling_interval', 0 ) ) - 1 );
+					$response = new \WP_Rest_Response( $result, 200 );
+					$response->set_headers( [ 'Cache-Control' => "max-age=$max_age" ] );
+
+					return $response;
+				},
+				'args' => [
+					'user_id' => [
+						'sanitize_callback' => 'absint',
+					],
+
+				],
+				'permission_callback' => $permission_callback,
+			]
+		);
+
 		$tx_callback = function( $data ) {
 			$params     = $data->get_url_params();
 			$user_id    = $params['user_id'];

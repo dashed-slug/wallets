@@ -247,6 +247,10 @@ add_action(
 		// Most of these are double-checks, as we do a first check already
 		// when retrieving the data from DB.
 
+		if ( $wd->txid ) {
+			throw new \Exception( 'The withdrawal already has a TXID. To repeat the transaction, delete the current TXID field.' );
+		}
+
 		if ( $wd->amount >= 0 || $wd->fee > 0 ) {
 			throw new \Exception( 'Amount and fee must be negative' );
 		}
@@ -267,6 +271,13 @@ add_action(
 			throw new \Exception( 'Must be in pending state before execution' );
 		}
 
+		if ( ! ds_user_can( $wd->user, 'has_wallets' ) ) {
+			throw new \Exception( 'User does not have wallets' );
+		}
+
+		if ( ! ds_user_can( $wd->user, 'withdraw_funds_from_wallet' ) ) {
+			throw new \Exception( 'User not allowed to withdraw' );
+		}
 	}
 );
 
@@ -651,6 +662,11 @@ add_action(
 
 			// do not send emails more than once per 24 hours
 			if ( ! get_ds_transient( "wallets-email-stalled-wds-{$currency_id}" ) ) {
+
+				$pending_withdrawals_sum = 0;
+				foreach ( $withdrawals as $withdrawal ) {
+					$pending_withdrawals_sum -= $withdrawal->amount;
+				}
 
 				wp_mail_enqueue_to_admins(
 

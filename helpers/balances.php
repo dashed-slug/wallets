@@ -127,7 +127,7 @@ function get_all_balances_assoc_for_user( int $user_id = 0 ): array {
 
 		$balances = [];
 		foreach ( $result as $currency_id => $row ) {
-			$balances[ $currency_id ] = $row->amount;
+			$balances[ $currency_id ] = intval( $row->amount );
 		}
 
 		/**
@@ -271,7 +271,7 @@ function get_all_available_balances_assoc_for_user( int $user_id = 0 ): array {
 
 		$balances = [];
 		foreach ( $result as $currency_id => $row ) {
-			$balances[ $currency_id ] = $row->amount;
+			$balances[ $currency_id ] = intval( $row->amount );
 		}
 
 		/**

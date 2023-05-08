@@ -249,7 +249,7 @@ To display a rows UI of the default user's past and pending transactions for a s
 
 ### Wallets fiat withdrawal to bank `fiat_withdraw.php`
 
-> Accepted attributes: `user_id`, `user`, `template`, `validation`
+> Accepted attributes: `user_id`, `user`, `symbol`, `currency_id`, `template`, `validation`
 
 > Text filters: `wallets_ui_text_no_coins`, `wallets_fiat_ui_text_fiat_currency`, `wallets_fiat_ui_text_amount`, `wallets_fiat_ui_text_max`, `wallets_fiat_ui_text_fee`, `wallets_fiat_ui_text_amountplusfee`, `wallets_fiat_ui_text_nameaddress`, `wallets_fiat_ui_text_banknameaddress`, `wallets_fiat_ui_text_swiftbiciban`, `wallets_fiat_ui_text_routingaccnum`, `wallets_fiat_ui_text_ifscaccnum`, `wallets_fiat_ui_text_swiftbic`, `wallets_fiat_ui_text_iban`, `wallets_fiat_ui_text_routingnum`, `wallets_fiat_ui_text_accountnum`, `wallets_fiat_ui_text_ifsc`, `wallets_fiat_ui_text_indianaccountnum`, `wallets_fiat_ui_text_comment`, `wallets_fiat_ui_text_requestbanktransfer`, `wallets_ui_text_resetform`, `wallets_fiat_ui_text_no_swift_bic_entered`, `wallets_fiat_ui_text_invalid_swift_bic`, `wallets_fiat_ui_text_no_routing_number_entered`, `wallets_fiat_ui_text_routing_number_must_be_a_number`, `wallets_fiat_ui_text_routing_number_must_have_nine_digits`, `wallets_fiat_ui_text_no_acc_num_entered`, `wallets_fiat_ui_text_acc_num_must_be_num`, `wallets_fiat_ui_text_acc_num_six_to_fourteen_digits`, `wallets_fiat_ui_text_no_ifsc_entered`, `wallets_fiat_ui_text_invalid_ifsc_entered`, `wallets_fiat_ui_text_no_acc_num_entered`, `wallets_fiat_ui_text_acc_num_nine_to_eighteen_digits`, `wallets_fiat_ui_alert_bank_withdrawal_created`, `wallets_fiat_ui_alert_bank_withdrawal_creation_failed`
 

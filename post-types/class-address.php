@@ -277,17 +277,12 @@ class Address extends Post_Type {
 
 				$term_ids = [];
 
-				foreach ( $value as $tag_slug ) {
+				foreach ( array_unique( array_filter( $value ) ) as $tag_slug ) {
 					if ( ! is_string( $tag_slug ) ) {
 
 						maybe_restore_blog();
 
 						throw new \InvalidArgumentException( 'Provided tag is not a string!' );
-					}
-
-					// do not write empty slugs
-					if ( ! $tag_slug ) {
-						continue;
 					}
 
 					// look for custom post type tag by slug
@@ -1104,13 +1099,13 @@ class Address extends Post_Type {
 		<p>
 			<?php
 			esc_html_e(
-				'Want to get notified in PHP when the wallet adapter reports deposits to this address?',
+				'You can hook your own PHP code to run whenever there is a deposit to this address.',
 				'wallets'
 			);
 			?>
 		</p>
 
-		<?php if ( $address->currency->post_id && $address->address ): ?>
+		<?php if ( $address->currency->post_id && $address->address && $address->user ): ?>
 
 		<pre
 			style="overflow-x: scroll;">
@@ -1140,7 +1135,8 @@ add_action(
 		<?php else:
 
 		esc_html_e(
-			'You must specify the currency and address string first for this deposit address.',
+
+			'For the hooks to work, the address must have the following fields defined: address string, user, currency.',
 			'wallets'
 		);
 
