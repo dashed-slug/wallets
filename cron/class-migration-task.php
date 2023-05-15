@@ -955,7 +955,7 @@ EMAIL
 		} elseif ( 'move' == $row->category ) {
 
 			if( $row->amount >= 0 ) {
-				// we only read the credit transactions and infer the debit transactions
+				// we only read the debit transactions and infer the credit transactions
 				return;
 			}
 

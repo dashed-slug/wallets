@@ -2,7 +2,7 @@
 /*
  * Plugin Name:			Bitcoin and Altcoin Wallets
  * Description:			Custodial cryptocurrency wallets.
- * Version:				6.1.4
+ * Version:				6.1.5
  * Plugin URI:			https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
  * Requires at least:	5.0
  * Requires PHP:		7.2
@@ -190,3 +190,50 @@ add_filter(
 	10,
 	2
 );
+
+add_action(
+	'admin_notices',
+	function() {
+		if ( ! get_user_meta( get_current_user_id(), 'dismiss_wallets_615_notice', true ) ):
+		?>
+		    <div class="notice notice-info is-dismissible" id="wallets-615-notice">
+				<p>
+					<?php
+						printf(
+							__(
+								'Usage of the words “debit” and “credit” in the plugin was wrong, and will be fixed in the upcoming release 6.1.5 of the plugin. See the <a href="%s" target="_blank">release notes</a> for details.',
+								'wallets'
+							),
+							'https://www.dashed-slug.net/wallets-6-1-5-release-notes/'
+						);
+					?>
+				</p>
+			</div>
+
+			<script>
+				jQuery(document).ready(function($) {
+					$('body').on('click', '#wallets-615-notice .notice-dismiss', function() {
+						$.ajax({
+							url: ajaxurl,
+							data: {
+								action: 'dismiss_wallets_615_notice'
+							}
+						});
+					});
+				});
+			</script>
+		<?php
+		endif;
+	}
+);
+
+add_action(
+	'admin_init',
+	function() {
+		if ( isset( $_GET['action'] ) && 'dismiss_wallets_615_notice' == $_GET['action'] ) {
+			update_user_meta( get_current_user_id(), 'dismiss_wallets_615_notice', true );
+			wp_die();
+		}
+	}
+);
+

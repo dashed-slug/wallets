@@ -59,7 +59,7 @@ $other_tx = $tx->get_other_tx();
 
 <p style="font-size:xx-large;"><a href="<?php esc_attr_e( $tx->get_confirmation_link() ); ?>" target="_blank"><?php esc_html_e( $tx->get_confirmation_link() ); ?></a></p>
 
-<p><?php esc_html_e( 'Once the transaction is confirmed, your wallet will be credited and the recipient\'s wallet will be debited.', 'wallets' ); ?></p>
+<p><?php esc_html_e( 'Once the transaction is confirmed, your wallet will be debited and the recipient\'s wallet will be credited.', 'wallets' ); ?></p>
 <?php endif; ?>
 
 <p><?php esc_html_e( 'Transaction details follow:', 'wallets' ); ?></p>

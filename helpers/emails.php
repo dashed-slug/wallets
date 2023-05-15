@@ -228,9 +228,9 @@ add_filter(
 
 			case 'move':
 				if ( $tx->amount > 0 ) {
-					$category = __( 'debit', 'wallets' );
-				} else {
 					$category = __( 'credit', 'wallets' );
+				} else {
+					$category = __( 'debit', 'wallets' );
 				}
 				break;
 

@@ -223,7 +223,7 @@ abstract class Wallet_Adapter {
 	public abstract function is_locked(): bool;
 
 	/**
-	 * Perform additional tasks before an internal credit transaction.
+	 * Perform additional tasks before an internal debit transaction.
 	 *
 	 * Most adapters will NOT need to override this.
 	 *
@@ -231,16 +231,16 @@ abstract class Wallet_Adapter {
 	 * If the adapter returns false, then the transaction will be marked with "failed" status.
 	 * The adapter can also set an error message in the transaction:
 	 *
-	 * 		$credit->error = 'I do not like this tranasction!';
+	 * 		$debit->error = 'I do not like this tranasction!';
 	 *
-	 * The adapter can get the corresponding debit transaction with:
+	 * The adapter can get the corresponding credit transaction with:
 	 *
-	 * 		$debit = $credit->get_other_tx();
+	 * 		$credit = $debit->get_other_tx();
 	 *
-	 * @param Transaction $credit The credit transaction (the one that removes balance from the sender).
+	 * @param Transaction $debit The debit transaction (the one that removes balance from the sender).
 	 * @return bool Whether the internal transfer should proceed.
 	 */
-	public function do_move( Transaction $credit ): bool {
+	public function do_move( Transaction $debit ): bool {
 		return true;
 	}
 

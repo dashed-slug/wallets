@@ -23,7 +23,7 @@
 [glossary-coinpayments-adapter]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#coinpayments-adapter
 [glossary-cold-storage]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#cold-storage
 [glossary-confirmation]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#confirmation
-[glossary-credit-transaction]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#credit-transaction
+[glossary-debit-transaction]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#debit-transaction
 [glossary-cron]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#cron
 [glossary-cron-job]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#cron-job
 [glossary-cron-tasks]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#cron-tasks
@@ -34,7 +34,7 @@
 [glossary-customizer]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#customizer
 [glossary-dashboard]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#dashboard
 [glossary-dashed-slug]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#dashed-slug
-[glossary-debit-transaction]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#debit-transaction
+[glossary-credit-transaction]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#credit-transaction
 [glossary-debug-info]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#debug-info
 [glossary-deposit]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#deposit
 [glossary-deposit-address]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#deposit-address

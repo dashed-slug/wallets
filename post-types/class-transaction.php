@@ -11,17 +11,17 @@ defined( 'ABSPATH' ) || die( -1 );
  * Represents a transaction on the plugin's ledger.
  * A transaction object can represent:
  * - a user's blockchain transaction (`category=withdrawal` or `category=deposit`)
- * - a debit to the user (`category=move` and `amount>0`)
- * - a credit to the user (`category=move` and `amount<0`)
+ * - a credit to the user (`category=move` and `amount>0`)
+ * - a debit to the user (`category=move` and `amount<0`)
  * - a fiat bank deposit or withdrawal (`category=withdrawal` or `category=deposit`, and `currency->is_fiat()===true` )
  *
  * Once you {@link \DSWallets\Transaction::save() save()} a transaction, depending on its state, it may be modified by cron tasks.
  *
  * e.g., a transaction with `category=withdrawal` and `status=pending`, may be picked up by {@link \DSWallets\Withdrawals_Task Withdrawals_Task}.
  *
- * # Debit a user
+ * # Credit a user
  *
- * Here we create a transaction to debit a specific user with `0.23` Litecoin.
+ * Here we create a transaction to credit a specific user with `0.23` Litecoin.
  * Once the transaction is saved to the DB, it will cound towards that user's balance.
  * The balance does not get subtracted from any other account.
  *
@@ -55,9 +55,9 @@ defined( 'ABSPATH' ) || die( -1 );
  * from the {@link files/build-apis-legacy-php.html legacy PHP API}.
  *
  *
- * # Credit a user and charge a fee
+ * # Debit a user and charge a fee
  *
- * Now let's create a transaction to credit the same user.
+ * Now let's create a transaction to debit the same user.
  * The user will be charged 10 USD plus fees, where fees are 5% of the amount.
  * The user will therefore be charged `10.50` USD. We need to set a negative amount and fee.
  * Both these values are integers so we need to shift the decimals.
@@ -265,9 +265,9 @@ class Transaction extends Post_Type {
 	/**
 	 * Parent `post_id`.
 	 *
-	 * If it's a debit transaction, the credit transaction to which it corresponds.
-	 * Debit transactions have category = move and amount >= 0.
-	 * Credit transactions have category = move and amount < 0.
+	 * If it's a credit transaction, the debit transaction to which it corresponds.
+	 * Credit transactions have category = move and amount >= 0.
+	 * Debit transactions have category = move and amount < 0.
 	 * @var int
 	 */
 	private $parent_id = 0;
@@ -816,7 +816,7 @@ class Transaction extends Post_Type {
 		return sprintf(
 			'[[wallets_tx ID:%d type:"%s" status:"%s" currency:"%s" amount:"%s"%s]]',
 			$this->post_id ?? 'null',
-			'move' == $this->category ? ( $this->amount > 0 ? 'debit' : 'credit' ) : $this->category,
+			'move' == $this->category ? ( $this->amount > 0 ? 'credit' : 'debit' ) : $this->category,
 			$this->status,
 			$this->currency ? ( $this->currency->name ?? $this->currency->post_id ?? 'null' ) : 'null',
 			$this->get_amount_as_string( 'amount', true, true ),
@@ -1670,7 +1670,7 @@ class Transaction extends Post_Type {
 				step="<?php echo number_format( 10 ** - absint( $tx->currency->decimals ), $tx->currency->decimals, '.', '' ); ?>" />
 
 				<p class="description"><?php esc_html_e(
-					'Amount to transact without fees. Must be POSITIVE for deposits and NEGATIVE for withdrawals. For internal transfers (moves), a positive amount is a debit and a negative amount is a credit transaction.',
+					'Amount to transact without fees. Must be POSITIVE for deposits and NEGATIVE for withdrawals. For internal transfers (moves), a positive amount is a credit and a negative amount is a debit transaction.',
 					'wallets'
 				); ?></p>
 
@@ -1700,7 +1700,7 @@ class Transaction extends Post_Type {
 				<?php disabled( 'deposit' == $tx->category || ( 'move' == $tx->category && $tx->amount > 0 ) ); ?> />
 
 				<p class="description"><?php esc_html_e(
-					'The fee to subtract from the sender. This amount must be NEGATIVE. For deposits, and internal debits, it is ignored.',
+					'The fee to subtract from the sender. This amount must be NEGATIVE. For deposits, and internal credits, it is ignored.',
 					'wallets'
 				); ?></p>
 
@@ -1750,8 +1750,8 @@ class Transaction extends Post_Type {
 			<?php endif; ?>
 
 			<p class="description"><?php esc_html_e(
-				'For internal transfers (moves), debits (i.e. amount>0) have their corresponding credit transaction assigned as parent. ' .
-				'If this is a credit transaction (i.e. amount<0), do not assign a parent.',
+				'For internal transfers (moves), credits (i.e. amount>0) have their corresponding debit transaction assigned as parent. ' .
+				'If this is a debit transaction (i.e. amount<0), do not assign a parent.',
 				'wallets'
 			); ?></p>
 
@@ -2351,16 +2351,16 @@ class Transaction extends Post_Type {
 									if ( $tx->amount > 0 ) {
 
 										/** This action is documented in this file. See above. */
-										do_action( 'wallets_email_notify', $tx ); // notify about the debit tx
+										do_action( 'wallets_email_notify', $tx ); // notify about the credit tx
 
 										if ( $counterpart_tx ) {
 											/** This action is documented in this file. See above. */
-											do_action( 'wallets_email_notify', $counterpart_tx ); // notify about the corresponding credit tx
+											do_action( 'wallets_email_notify', $counterpart_tx ); // notify about the corresponding debit tx
 										}
 
 									} elseif ( $tx->amount < 0 && ! $counterpart_tx ) {
 										/** This action is documented in this file. See above. */
-										do_action( 'wallets_email_notify', $tx ); // notify about a dangling credit tx (without a corresponding debit tx)
+										do_action( 'wallets_email_notify', $tx ); // notify about a dangling debit tx (without a corresponding credit tx)
 									}
 								}
 

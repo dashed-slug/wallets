@@ -245,7 +245,7 @@
 			esc_html__(
 				'IMPORTANT: You MUST attach the following code to your bank transfer. '.
 				'Please attach the code as a comment or message/note to the recipient. ' .
-				'This will allow us to debit your account.',
+				'This will allow us to credit your account.',
 				'wallets'
 			)
 		);

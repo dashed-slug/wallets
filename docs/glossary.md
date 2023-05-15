@@ -187,19 +187,19 @@ A wallet that holds a part of the website's funds and is offline. That is, there
 
 2. In the context of the *[Bitcoin and Altcoin Wallets](#bitcoin-and-altcoin-wallets)* plugin, a transaction requires confirmation if its `wallets_nonce` meta is set. The user who placed the transaction must click a link in their email to confirm the transaction. The link contains a nonce specific to the transaction. If the nonce is correct, it is removed from the transaction. The transaction then becomes eligible to be executed.
 
-## Credit transaction {#credit-transaction}
+## Debit transaction {#debit-transaction}
 
-A crediting *internal transfer*. Subtracts from the user's [balance](#user-balance).
+A debiting *internal transfer*. Subtracts from the user's [balance](#user-balance).
 
 Any *[internal transfer fees](#internal-transfer-fees)* are charged on the sender's balance via this transaction.
 
 The amount transacted is stored as a negative value on the transaction post.
 
-On the DB, the *[credit transaction](#credit-transaction)* is the parent post of the counterpart *[debit transaction](#debit-transaction)*.
+On the DB, the *[debit transaction](#debit-transaction)* is the parent post of the counterpart *[credit transaction](#credit-transaction)*.
 
 A complete *internal transfer* between users will typically include two transaction counterparts:
-- The *credit transaction*. Subtracts from the sender's balance.
-- The *[debit transaction](#debit-transaction)*.
+- The *debit transaction*. Subtracts from the sender's balance.
+- The *[credit transaction](#credit-transaction)*.
 
 ## Cron {#cron}
 
@@ -268,9 +268,9 @@ To learn more about the dashboard widget, go to: *[Dashboard][wordpress-dashboar
 
 Software house that churns out cryptocurrency plugins for WordPress at an alarmingly sluggish rate. The dashed-slug is just a [slug](https://www.hostinger.com/tutorials/what-is-a-wordpress-slug/) with dashes, i.e. it's the best kind of slug.
 
-## Debit transaction {#debit-transaction}
+## Credit transaction {#credit-transaction}
 
-A debiting *[internal transfer](#internal-transfer)*. Adds to the recipient's [balance](#user-balance). The amount is stored as a positive value on the transaction post. There are no fees associated with this transaction. On the DB, it is marked as the child post of the counterpart *[credit transaction](#credit-transaction)*.
+A crediting *[internal transfer](#internal-transfer)*. Adds to the recipient's [balance](#user-balance). The amount is stored as a positive value on the transaction post. There are no fees associated with this transaction. On the DB, it is marked as the child post of the counterpart *[debit transaction](#debit-transaction)*.
 
 ## Debug info {#debug-info}
 
@@ -290,7 +290,7 @@ A cryptocurrency [address](#address) with which a user can perform a *[deposit](
 
 ## Deposit code {#deposit-code}
 
-When performing *[Fiat deposits](#fiat-deposits)*, a user has to perform a bank transfer, and attach a *Deposit code* as a reference code to the transfer. This code is unique to each user, and allows the plugin and its operator to debit the correct user upon entering the deposit to the *Fiat deposits* *[tool](#tools)*.
+When performing *[Fiat deposits](#fiat-deposits)*, a user has to perform a bank transfer, and attach a *Deposit code* as a reference code to the transfer. This code is unique to each user, and allows the plugin and its operator to credit the correct user upon entering the deposit to the *Fiat deposits* *[tool](#tools)*.
 
 ## Documentation {#documentation}
 
@@ -786,7 +786,7 @@ How much of a user's balance can be used to send in new transactions. Equals to 
 
 ## User balance {#user-balance}
 
-The total sum of all *[Done](#done)* *[transactions](#transaction)* that a user has performed. *Deposits* and received *debit moves* carry positive (debiting) amounts, while *credit moves* and *withdrawals* carry negative (crediting) amounts.
+The total sum of all *[Done](#done)* *[transactions](#transaction)* that a user has performed. *Deposits* and received *credit moves* carry positive (crediting) amounts, while *debit moves* and *withdrawals* carry negative (debiting) amounts.
 
 ## Verbose Logging {#verbose-logging}
 

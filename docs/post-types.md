@@ -283,21 +283,21 @@ Transactions can be:
   - They are typically created when a user uses the `[wallets_move]` shortcode.
   - These do not correspond to any blockchain transaction, but are internal to the plugin.
   - They live on your MySQL DB only, and are meant to transfer funds among users.
-  - An internal transfer is typically represented by two posts, one for crediting the sending user, and one for debiting the receiving user. However, you are allowed to create as stand-alone debit or credit transaction to manually affect a user's balance.
-  - A *Debit* transaction has a positive *Amount* and a *Credit* transaction has a negative *Amount*.
-  - A *Debit* transaction that is associated with a *Credit* transaction, must be set to have its *Credit* counterpart as a *Parent post*. This is done automatically when users use the `[wallets_move]` shortcode, but must be done manually by the admin if it is needed for custom transfers.
-  - Typically the sender pays fees, so these are specified on the *Credit* transaction.
+  - An internal transfer is typically represented by two posts, one for debiting the sending user, and one for crediting the receiving user. However, you are allowed to create as stand-alone credit or debit transaction to manually affect a user's balance.
+  - A *Credit* transaction has a positive *Amount* and a *Debit* transaction has a negative *Amount*.
+  - A *Credit* transaction that is associated with a *Debit* transaction, must be set to have its *Debit* counterpart as a *Parent post*. This is done automatically when users use the `[wallets_move]` shortcode, but must be done manually by the admin if it is needed for custom transfers.
+  - Typically the sender pays fees, so these are specified on the *Debit* transaction.
   - Fees are always negative, since they are always subtracted from user balances.
 
 #### Transaction Status
 
 The status of a transaction can be one of:
 
-- *[Pending][glossary-pending]*: The transaction has not been finalized but is about to. If it is a crediting transaction (i.e. withdrawal, or credit part of internal transfer) then it affects the *[Available Balance][glossary-available-balance]* of the user, but not the *[Balance][glossary-balance]*. This ensures that the funds are reserved and will not be used for other purposes. However, if the transaction fails or is cancelled, the funds will become available again.
+- *[Pending][glossary-pending]*: The transaction has not been finalized but is about to. If it is a debiting transaction (i.e. withdrawal, or debit part of internal transfer) then it affects the *[Available Balance][glossary-available-balance]* of the user, but not the *[Balance][glossary-balance]*. This ensures that the funds are reserved and will not be used for other purposes. However, if the transaction fails or is cancelled, the funds will become available again.
 - *[Done][glossary-done]*: The transaction has been finalized. It affects the user's *[Balance][glossary-balance]*.
 - *[Cancelled][glossary-cancelled]*: The transaction has been manually cancelled. It no longer affects the user's balance.
   - Be careful when cancelling deposits/withdrawals: Cancelling a transaction on your DB cannot cancel a transaction on the blockchain.
-  - Cancelling a *Debit*/*Credit* pair will also cancel the transaction's counterpart. The *Credit* for a *Debit* transaction post is its parent. The *Debit* for a *Credit* transaction post is its child.
+  - Cancelling a *Credit*/*Debit* pair will also cancel the transaction's counterpart. The *Debit* for a *Credit* transaction post is its parent. The *Credit* for a *Debit* transaction post is its child.
 
 #### Transaction Currency
 
@@ -305,7 +305,7 @@ The currency associated with the transaction. If this is a deposit/withdrawal, t
 
 #### Transaction Amount
 
-The transacted amount. *Debit* transactions and *[Deposits][glossary-deposit]* have positive amounts. *Credit* transactions and *[Withdrawals][glossary-withdrawal]* have negative amounts. The amount sign denotes the fact that these amounts are added to, and subtracted from, user balances, respectively.
+The transacted amount. *Credit* transactions and *[Deposits][glossary-deposit]* have positive amounts. *Debit* transactions and *[Withdrawals][glossary-withdrawal]* have negative amounts. The amount sign denotes the fact that these amounts are added to, and subtracted from, user balances, respectively.
 
 #### Transaction fee paid to site
 
@@ -330,9 +330,9 @@ The TXID associated with this blockchain transaction. Can be empty. For example,
 
 ##### Internal transfer transaction: Counterpart transaction
 
-For internal transfers (moves), *Debits* have their corresponding *Credit* transaction assigned as parent.
+For internal transfers (moves), *Credits* have their corresponding *Debit* transaction assigned as parent.
 
-Allows linking a *Debit* transaction with its *Credit* counterpart. Create the *Credit* transaction first. Then, when creating the *Debit* transaction, set its parent to be the *Credit* transaction you previously created.
+Allows linking a *Credit* transaction with its *Debit* counterpart. Create the *Debit* transaction first. Then, when creating the *Credit* transaction, set its parent to be the *Debit* transaction you previously created.
 
 
 #### Transaction: Bank Fiat-specific transaction attributes

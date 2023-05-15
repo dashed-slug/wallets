@@ -667,40 +667,40 @@ function api_move_action( $args = [] ) {
 		$nonce = '';
 	}
 
-	$credit           = new Transaction();
-	$credit->category = 'move';
-	$credit->user     = new \WP_User( $args['from_user_id'] );
-	$credit->currency = $currency;
-	$credit->amount   = intval( round( -$args['amount'] * 10 ** $currency->decimals ) );
-	$credit->fee      = $fee;
-	$credit->comment  = $args['comment'];
-	$credit->status   = 'pending';
-	$credit->nonce    = $nonce;
+	$debit           = new Transaction();
+	$debit->category = 'move';
+	$debit->user     = new \WP_User( $args['from_user_id'] );
+	$debit->currency = $currency;
+	$debit->amount   = intval( round( -$args['amount'] * 10 ** $currency->decimals ) );
+	$debit->fee      = $fee;
+	$debit->comment  = $args['comment'];
+	$debit->status   = 'pending';
+	$debit->nonce    = $nonce;
 
-	$debit            = new Transaction();
-	$debit->category  = 'move';
-	$debit->user      = new \WP_User( $args['to_user_id'] );
-	$debit->currency  = $currency;
-	$debit->amount    = intval( round( $args['amount'] * 10 ** $currency->decimals ) );
-	$debit->fee       = 0;
-	$debit->comment   = $args['comment'];
-	$debit->status    = 'pending';
-	$debit->nonce     = $nonce;
+	$credit            = new Transaction();
+	$credit->category  = 'move';
+	$credit->user      = new \WP_User( $args['to_user_id'] );
+	$credit->currency  = $currency;
+	$credit->amount    = intval( round( $args['amount'] * 10 ** $currency->decimals ) );
+	$credit->fee       = 0;
+	$credit->comment   = $args['comment'];
+	$credit->status    = 'pending';
+	$credit->nonce     = $nonce;
 
 	// write both in an atomic DB transaction
 
 	try {
-		$credit->save();
-		$debit->parent_id = $credit->post_id;
 		$debit->save();
+		$credit->parent_id = $debit->post_id;
+		$credit->save();
 
 	} catch ( \Exception $e ) {
 
-		if ( $credit->post_id ) {
-			wp_delete_post( $credit->post_id, true );
-		}
 		if ( $debit->post_id ) {
 			wp_delete_post( $debit->post_id, true );
+		}
+		if ( $credit->post_id ) {
+			wp_delete_post( $credit->post_id, true );
 		}
 
 		throw new \Exception( sprintf( 'Could not insert both move transactions into the DB: %s', $e->getMessage() ) );

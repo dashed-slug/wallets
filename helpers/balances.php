@@ -156,7 +156,7 @@ function get_available_balance_for_user_and_currency_id( int $user_id, int $curr
  * Get all available balances for a user or for all users.
  *
  * Available balances are the sum of all transactions in "done" state
- * and any crediting balances (withdrawals, negative moves) that are in a "pending" state.
+ * and any debiting balances (withdrawals, negative moves) that are in a "pending" state.
  * Balances for all enabled currencies are returned.
  *
  * @param int $user_id The ID for the user. If zero, then return total balances for all users.
@@ -296,7 +296,7 @@ function get_all_available_balances_assoc_for_user( int $user_id = 0 ): array {
  *
  * Gets the transaction objects from the passed array and sums them into an assoc array
  * of currency_id to balance sum.
- * Applies fees to crediting transactions (withdrawals, negative moves).
+ * Applies fees to debiting transactions (withdrawals, negative moves).
  *
  * @param array $txs The array of Transaction objects.
  * @return number[] The assoc array of currency_ids to balances.
@@ -316,22 +316,22 @@ function sum_transactions( array $txs ) {
 
 		switch ( $tx->category ) {
 			case 'deposit':
-				// amount is debited to user (incoming)
+				// amount is credited to user (incoming)
 				// fee is purely informational, has no effect towards balances
 				$sums[ $currency_id ] += $tx->amount;
 				break;
 
 			case 'withdrawal':
-				// amount and fee is credited to user (outgoing)
+				// amount and fee is debited to user (outgoing)
 				$sums[ $currency_id ] += $tx->amount + $tx->fee;
 				break;
 
 			case 'move':
 				if ( $tx->amount >= 0 ) {
-					// amount is debited to user (incoming)
+					// amount is credited to user (incoming)
 					$sums[ $currency_id ] += $tx->amount;
 				} else {
-					// amount and fee is credited to user (outgoing)
+					// amount and fee is debited to user (outgoing)
 					$sums[ $currency_id ] += ( $tx->amount + $tx->fee );
 				}
 				break;

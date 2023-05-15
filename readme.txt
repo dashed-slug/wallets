@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.1.4
+Stable tag: 6.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -336,6 +336,9 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
+= 6.1.5 =
+- Fix: Usage of words "debit" and "credit" is now correct according to how the terms are used in everyday language, as opposed to their usage in accounting.
+
 = 6.1.4 =
 - Fix: Shortcode `[wallets_fiat_withdraw]` does not submit withdrawal requests with invalid amount.
 - Add: Shortcode `[wallets_fiat_withdraw]` now accepts atttributes: `currency_id`, `symbol` to specify the default currency.
@@ -498,7 +501,7 @@ Please state your request on the forums or over email, and I will respond within
 
 = 5.0.3 =
 - Fix: Exchange rates subsystem no longer attempts to access the old public CoinMarketCap API that has been recently discontinued. An API key is now required, no longer optional.
-- Improve: The efficiency of CoinMarketCap API queries has been improved, both in terms of performance, and API credits used.
+- Improve: The efficiency of CoinMarketCap API queries has been improved, both in terms of performance, and API debits used.
 
 = 5.0.2 =
 - Improve: More JavaScript assets are not loaded if not needed in current front-end page. This also prevents unneeded JSON-API hits when not logged in.
@@ -1495,7 +1498,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.4` brings some minor fixes and improvements, a new REST API endpoint, and some more form validation for fiat withdrawals.
+Version `6.1.5` was necessary to fix a textual error: the usage of the terms `debit` and `credit` was inverted throughout the plugin. Please see the [6.1.5 release notes](https://www.dashed-slug.net/wallets-6-1-5-release-notes/) for details.
 
 == Donating ==
 

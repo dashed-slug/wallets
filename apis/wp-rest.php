@@ -764,40 +764,40 @@ add_action(
 						$status = 'done';
 					}
 
-					$credit           = new Transaction();
-					$credit->category = 'move';
-					$credit->user     = new \WP_User( $user_id );
-					$credit->currency = $currency;
-					$credit->amount   = intval( round ( -$amount * 10 ** $currency->decimals ) );
-					$credit->fee      = -$currency->fee_move_site;
-					$credit->comment  = $comment;
-					$credit->status   = $status;
-					$credit->nonce    = $nonce;
+					$debit           = new Transaction();
+					$debit->category = 'move';
+					$debit->user     = new \WP_User( $user_id );
+					$debit->currency = $currency;
+					$debit->amount   = intval( round ( -$amount * 10 ** $currency->decimals ) );
+					$debit->fee      = -$currency->fee_move_site;
+					$debit->comment  = $comment;
+					$debit->status   = $status;
+					$debit->nonce    = $nonce;
 
-					$debit            = new Transaction();
-					$credit->category = 'move';
-					$debit->user      = $recipient;
-					$debit->currency  = $currency;
-					$debit->amount    = intval( round( $amount * 10 ** $currency->decimals ) );
-					$debit->fee       = 0;
-					$debit->comment   = $comment;
-					$debit->status    = $status;
-					$debit->nonce     = $nonce;
+					$credit            = new Transaction();
+					$debit->category = 'move';
+					$credit->user      = $recipient;
+					$credit->currency  = $currency;
+					$credit->amount    = intval( round( $amount * 10 ** $currency->decimals ) );
+					$credit->fee       = 0;
+					$credit->comment   = $comment;
+					$credit->status    = $status;
+					$credit->nonce     = $nonce;
 
 					// write both in an atomic DB transaction
 
 					try {
-						$credit->save();
-						$debit->parent_id = $credit->post_id;
 						$debit->save();
+						$credit->parent_id = $debit->post_id;
+						$credit->save();
 
 					} catch ( \Exception $e ) {
 
-						if ( $credit->post_id ) {
-							wp_delete_post( $credit->post_id, true );
-						}
 						if ( $debit->post_id ) {
 							wp_delete_post( $debit->post_id, true );
+						}
+						if ( $credit->post_id ) {
+							wp_delete_post( $credit->post_id, true );
 						}
 
 						return new \WP_Error(

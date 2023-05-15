@@ -21,7 +21,7 @@ add_action( 'admin_init', function() {
 		$content =
 			(string) __(
 				'When you perform cryptocurrency transactions to and from this site, such as deposits or ' .
-				'withdrawals, we record details of these transactions to credit or debit your cryptocurrency wallets. ' .
+				'withdrawals, we record details of these transactions to debit or credit your cryptocurrency wallets. ' .
 
 				'The details recorded for cryptocurrency transactions include blockchain addresses and transaction IDs ' .
 				'that can potentially be used to personally identify you via blockchain analytics tools or other methods.',

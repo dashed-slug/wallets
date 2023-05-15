@@ -24,7 +24,7 @@
             - Can also set limits per WordPress user role.
         - Group currencies into tags using a special Currencies taxonomy.
         - Quickly navigate from a currency to a list of associated Addresses/Transactions
-        - The currencies can represent cryptocurrencies, fiat currencies, or other custom currencies that are internal to the site, like credits.
+        - The currencies can represent cryptocurrencies, fiat currencies, or other custom currencies that are internal to the site, like debits.
         - Once there exist transactions associated with a currency, its "Decimals" field becomes uneditable. This is done to prevent serious errors in interpreting integer amounts stored on the DB.
 
     - Can create/edit *[Addresses][glossary-address]*:
@@ -46,7 +46,7 @@
         - For deposits/withdrawals
             - Edit the address that this transaction is associated with
         - For internal transfers
-            - Assign a counterpart transaction (for debit/credit pairs)
+            - Assign a counterpart transaction (for credit/debit pairs)
         - Group transactions into tags using a special Transactions taxonomy.
 
      - Can modify the frontend UIs

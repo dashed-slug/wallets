@@ -54,7 +54,7 @@ $other_tx = $tx->get_other_tx();
 <?php endif; ?>
 
 <?php if ( $tx->nonce ): ?>
-<p><?php esc_html_e( 'A confirmation link has been emailed to the sender. Once the transaction is confirmed, your wallet will be debited.', 'wallets' ); ?></p>
+<p><?php esc_html_e( 'A confirmation link has been emailed to the sender. Once the transaction is confirmed, your wallet will be credited.', 'wallets' ); ?></p>
 <?php endif; ?>
 
 <p><?php esc_html_e( 'Transaction details follow:', 'wallets' ); ?></p>

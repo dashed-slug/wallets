@@ -85,83 +85,83 @@ class Moves_Task extends Task {
 		// when retrieving the data from DB.
 		$moves_batch = array_filter(
 			$moves_batch,
-			function( $credit ) {
+			function( $debit ) {
 				return
-					$credit
-					&& $credit->amount < 0
-					&& $credit->fee <= 0
-					&& $credit->currency instanceof Currency
-					&& $credit->currency->post_id == $this->currency->post_id
-					&& 'pending' == $credit->status
-					&& ( ! $credit->nonce );
+					$debit
+					&& $debit->amount < 0
+					&& $debit->fee <= 0
+					&& $debit->currency instanceof Currency
+					&& $debit->currency->post_id == $this->currency->post_id
+					&& 'pending' == $debit->status
+					&& ( ! $debit->nonce );
 			}
 		);
 
 		$user_balances = [];
-		foreach ( $moves_batch as $credit ) {
+		foreach ( $moves_batch as $debit ) {
 
-			if ( ! isset( $user_balances[ $credit->user->ID ] ) ) {
+			if ( ! isset( $user_balances[ $debit->user->ID ] ) ) {
 
-				$user_balances[ $credit->user->ID ] = get_balance_for_user_and_currency_id(
-					$credit->user->ID,
+				$user_balances[ $debit->user->ID ] = get_balance_for_user_and_currency_id(
+					$debit->user->ID,
 					$this->currency->post_id
 				);
 
 				$this->log(
 					sprintf(
 						'User %d starts off with a balance of %s %s',
-						$credit->user->ID,
-						$user_balances[ $credit->user->ID ] * 10 ** -$credit->currency->decimals,
+						$debit->user->ID,
+						$user_balances[ $debit->user->ID ] * 10 ** -$debit->currency->decimals,
 						$this->currency->symbol
 					)
 				);
 			}
 
-			$user_balances[ $credit->user->ID ] += ( $credit->amount + $credit->fee );
+			$user_balances[ $debit->user->ID ] += ( $debit->amount + $debit->fee );
 
 			$this->log(
 				sprintf(
 					'User %d wants to move %s plus %s as fee. Balance remaining for user will be %s',
-					$credit->user->ID,
-					$credit->get_amount_as_string(),
-					$credit->get_amount_as_string( 'fee' ),
-					$user_balances[ $credit->user->ID ]
+					$debit->user->ID,
+					$debit->get_amount_as_string(),
+					$debit->get_amount_as_string( 'fee' ),
+					$user_balances[ $debit->user->ID ]
 				)
 			);
 
-			if ( $user_balances[ $credit->user->ID ] < 0 ) {
+			if ( $user_balances[ $debit->user->ID ] < 0 ) {
 
 				// Add the amount back again to our balance counter. Maybe subsequent moves are smaller and can succeed.
-				$user_balances[ $credit->user->ID ] -= ( $credit->amount + $credit->fee );
+				$user_balances[ $debit->user->ID ] -= ( $debit->amount + $debit->fee );
 
 				$this->log(
-					"User {$credit->user->ID} does not have enough balance to execute this move. " .
-					"Marking move $credit->post_id as 'failed'."
+					"User {$debit->user->ID} does not have enough balance to execute this move. " .
+					"Marking move $debit->post_id as 'failed'."
 				);
 
 				// let's mark it as failed
-				$credit->status = 'failed';
-				$credit->error  = 'Failed due to insufficient user balance.';
+				$debit->status = 'failed';
+				$debit->error  = 'Failed due to insufficient user balance.';
 			}
 
-			if ( 'pending' != $credit->status ) {
+			if ( 'pending' != $debit->status ) {
 				try {
-					$credit->save();
+					$debit->save();
 
-					$debit = $credit->get_other_tx();
+					$credit = $debit->get_other_tx();
 
-					if ( $debit ) {
-						$debit->status = $credit->status;
-						$debit->error  = $credit->error;
+					if ( $credit ) {
+						$credit->status = $debit->status;
+						$credit->error  = $debit->error;
 
-						$debit->save();
+						$credit->save();
 					} else {
 						$this->log(
 							sprintf(
-								'%s: Set credit move %d to %s, but could not find a corresponding debit move.',
+								'%s: Set debit move %d to %s, but could not find a corresponding credit move.',
 								__METHOD__,
-								$credit->post_id,
-								$credit->status
+								$debit->post_id,
+								$debit->status
 							)
 						);
 					}
@@ -171,7 +171,7 @@ class Moves_Task extends Task {
 						sprintf(
 							'%s: Failed to mark transaction state as failed for post_id=%d, due to: %s',
 							__METHOD__,
-							$credit->post_id,
+							$debit->post_id,
 							$e->getMessage()
 						)
 					);
@@ -182,8 +182,8 @@ class Moves_Task extends Task {
 		// we remove again any moves that are no longer marked pending after the checks
 		$moves_batch = array_filter(
 			$moves_batch,
-			function( $credit ) {
-				return 'pending' == $credit->status;
+			function( $debit ) {
+				return 'pending' == $debit->status;
 			}
 		);
 
@@ -194,7 +194,7 @@ class Moves_Task extends Task {
 
 		if ( $this->moves_batch ) {
 
-			foreach ( $this->moves_batch as $credit ) {
+			foreach ( $this->moves_batch as $debit ) {
 				// Let's give the adapter a chance to do its thing.
 				// Most adapters won't need to do anything here.
 				// But if the adapter returns false, we will mark
@@ -202,13 +202,13 @@ class Moves_Task extends Task {
 
 				$adapter_response = false;
 				try {
-					$adapter_response = $this->currency->wallet->adapter->do_move( $credit );
+					$adapter_response = $this->currency->wallet->adapter->do_move( $debit );
 
 				} catch ( \Exception $e ) {
 					$this->log(
 						sprintf(
 							'Move transaction %d of currency %s failed due to: %s',
-							$credit->post_id,
+							$debit->post_id,
 							$this->currency->name,
 							$e->getMessage()
 						)
@@ -216,32 +216,32 @@ class Moves_Task extends Task {
 				}
 
 				if ( ! $adapter_response ) {
-					$credit->status = 'failed';
-					if ( ! $credit->error ) {
-						$credit->error  = 'The wallet adapter did not allow this internal transfer to proceed.';
+					$debit->status = 'failed';
+					if ( ! $debit->error ) {
+						$debit->error  = 'The wallet adapter did not allow this internal transfer to proceed.';
 					}
 				} else {
-					$credit->status = 'done';
-					$credit->error  = '';
+					$debit->status = 'done';
+					$debit->error  = '';
 				}
 
 				try {
-					$credit->save();
+					$debit->save();
 
-					$debit = $credit->get_other_tx();
+					$credit = $debit->get_other_tx();
 
-					if ( $debit ) {
-						$debit->status = $credit->status;
-						$debit->error  = $credit->error;
+					if ( $credit ) {
+						$credit->status = $debit->status;
+						$credit->error  = $debit->error;
 
-						$debit->save();
+						$credit->save();
 					}
 
 				} catch ( \Exception $e ) {
 					$msg = sprintf(
 						'%s: CRITICAL ERROR: Move transaction %d was executed but could not be saved due to: %s',
 						__FUNCTION__,
-						$credit->post_id,
+						$debit->post_id,
 						$e->getMessage()
 					);
 

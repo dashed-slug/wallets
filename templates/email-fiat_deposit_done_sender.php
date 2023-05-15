@@ -31,7 +31,7 @@ if ( $payment_details && isset( $payment_details->iban ) && isset( $payment_deta
 		sprintf(
 			// translators: %1$s is replaced with the currency name. %2$s is replaced with the amount.
 			__(
-				'You have performed a %1$s deposit of %2$s from your bank account. The deposit has now been debited to your account on this site.',
+				'You have performed a %1$s deposit of %2$s from your bank account. The deposit has now been credited to your account on this site.',
 				'wallets'
 			),
 			$tx->currency->name,
