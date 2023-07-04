@@ -458,6 +458,8 @@
 								console.error( jqXHR, textStatus, errorThrown );
 							}
 
+							let errorMessage = jqXHR.responseJSON.message ?? '?';
+
 							Swal.fire( {
 								position: 'top-end',
 								icon: 'error',
@@ -467,7 +469,7 @@
 									apply_filters(
 										'wallets_ui_alert_address_creation_fail',
 										__(
-											'Your address was not created, due to: ${jqXHR.responseJSON.message}',
+											'Your address was not created, due to: ${errorMessage}',
 											'wallets'
 										)
 									)

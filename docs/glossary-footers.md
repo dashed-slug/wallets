@@ -14,7 +14,6 @@
 [glossary-bitcoin-and-altcoin-wallets]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#bitcoin-and-altcoin-wallets
 [glossary-block-explorer-uri-pattern-for-addresses]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#block-explorer-uri-pattern-for-addresses
 [glossary-block-explorer-uri-pattern-for-transactions]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#block-explorer-uri-pattern-for-transactions
-[glossary-bundle-download]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#bundle-download
 [glossary-cancelled]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#cancelled
 [glossary-capabilities]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#capabilities
 [glossary-coin-adapter]: /wp-admin/admin.php?page=wallets_docs&wallets-component=wallets&wallets-doc=glossary#coin-adapter

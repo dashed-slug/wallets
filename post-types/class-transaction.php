@@ -371,6 +371,10 @@ class Transaction extends Post_Type {
 	 * Assigns a new `post_id` if not already assigned, or edits existing transaction if `post_id` is set.
 	 */
 	public function save(): void {
+		if ( $this->post_id && ! $this->dirty ) {
+			return;
+		}
+
 		maybe_switch_blog();
 
 		$post_status = 'draft';
@@ -450,6 +454,8 @@ class Transaction extends Post_Type {
 			);
 		}
 
+		$this->dirty = false;
+
 		maybe_restore_blog();
 	}
 
@@ -467,6 +473,7 @@ class Transaction extends Post_Type {
 
 		if ( 'category' == $name ) {
 			if ( 'deposit' == $value || 'withdrawal' == $value || 'move' == $value ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->category = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Category must be one of: deposit, withdrawal, move.' );
@@ -475,6 +482,7 @@ class Transaction extends Post_Type {
 		} elseif ( 'user' == $name ) {
 
 			if ( is_null( $value ) || $value instanceof \WP_User ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->user = $value;
 			} else {
 				throw new \InvalidArgumentException( 'User must be a WP_User!' );
@@ -483,6 +491,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'txid' == $name ) {
 			if ( ! $value ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->txid = null;
 				return;
 			}
@@ -490,6 +499,7 @@ class Transaction extends Post_Type {
 			if ( is_string( $value ) ) {
 
 				if ( 'deposit' == $this->category || 'withdrawal' == $this->category ) {
+					$this->dirty = $this->dirty || ( $this->{$name} != $value );
 					$this->txid = $value;
 				} else {
 					throw new \InvalidArgumentException( 'Category must be one of: deposit, withdrawal before setting TXID.' );
@@ -500,6 +510,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'address' == $name ) {
 			if ( ( $value && $value instanceof Address ) || is_null( $value ) ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->address = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Address must be an Address!' );
@@ -507,6 +518,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'currency' == $name ) {
 			if ( ( $value && $value instanceof Currency ) || is_null( $value ) ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->currency = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Currency must be a Currency!' );
@@ -526,6 +538,7 @@ class Transaction extends Post_Type {
 					}
 				}
 
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->{$name} = intval( $value );
 			} else {
 				throw new \InvalidArgumentException( "Value for field '$name' must be an integer number!" );
@@ -534,6 +547,7 @@ class Transaction extends Post_Type {
 		} elseif ( 'fee' == $name ) {
 			if ( is_numeric( $value ) && ( $value == intval( $value ) ) && $value <= 0 ) {
 
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->{$name} = intval( $value );
 			} else {
 				throw new \InvalidArgumentException( "Fee must be a non-positive integer!" );
@@ -542,6 +556,7 @@ class Transaction extends Post_Type {
 		} elseif ( 'chain_fee' == $name ) {
 			if ( is_numeric( $value ) && ( $value == intval( $value ) ) && $value >= 0 ) {
 
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->{$name} = intval( $value );
 			} else {
 				throw new \InvalidArgumentException( "Chain fee must be a non-negative integer!" );
@@ -549,23 +564,29 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'comment' == $name ) {
 			if ( is_string( $value ) ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->comment = $value;
 			} elseif ( ! $value ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->comment = '';
 			} else {
 				throw new \InvalidArgumentException( 'Comment must be a string!' );
 			}
 
 		} elseif ( 'block' == $name ) {
+			$this->dirty = $this->dirty || ( $this->{$name} != $value );
 			$this->block = absint( $value );
 
 		} elseif ( 'timestamp' == $name ) {
+			$this->dirty = $this->dirty || ( $this->{$name} != $value );
 			$this->timestamp = absint( $value );
 
 		} elseif ( 'nonce' == $name ) {
 			if ( is_null( $value ) ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->nonce = '';
 			} elseif ( is_string( $value ) ) {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->nonce = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Nonce must be a string!' );
@@ -577,6 +598,7 @@ class Transaction extends Post_Type {
 				case 'done':
 				case 'failed':
 				case 'cancelled':
+					$this->dirty = $this->dirty || ( $this->{$name} != $value );
 					$this->status = $value;
 					break;
 				default:
@@ -589,14 +611,17 @@ class Transaction extends Post_Type {
 					throw new \InvalidArgumentException( 'Error message must be a string!' );
 				}
 
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->error  = $value;
 				$this->status = 'failed';
 
 			} else {
+				$this->dirty = $this->dirty || ( $this->{$name} != $value );
 				$this->error = '';
 			}
 
 		} elseif ( 'parent_id' == $name ) {
+			$this->dirty = $this->dirty || ( $this->{$name} != $value );
 			$this->parent_id = absint( $value );
 
 		} elseif ( 'tags' == $name ) {
@@ -721,6 +746,9 @@ class Transaction extends Post_Type {
 					},
 					$terms
 				);
+
+			case 'is_dirty':
+				return (bool) $this->dirty;
 
 			default:
 				throw new \InvalidArgumentException( "No field $name in Transaction!" );
@@ -2465,7 +2493,7 @@ class Transaction extends Post_Type {
 			if ( $tx->address ) {
 
 				/** This filter is documented in post-types/class-currency.php */
-				$pattern = apply_filters( "wallets_explorer_uri_add_{$tx->currency->symbol}", null );
+				$pattern = apply_filters( "wallets_explorer_uri_add_{$tx->currency->symbol}", $tx->currency->explorer_uri_add );
 
 				if ( $pattern ) {
 					?>
@@ -2495,7 +2523,7 @@ class Transaction extends Post_Type {
 		elseif ( 'tx_txid' == $column ):
 			if ( $tx->txid ) {
 
-				$pattern = apply_filters( "wallets_explorer_uri_tx_{$tx->currency->symbol}", null );
+				$pattern = apply_filters( "wallets_explorer_uri_tx_{$tx->currency->symbol}", $tx->currency->explorer_uri_tx );
 
 				if ( $pattern ) {
 					?>

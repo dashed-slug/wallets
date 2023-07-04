@@ -1225,7 +1225,7 @@ add_action(
 						);
 					}
 
-					$existing_addresses_count = count_all_addresses_for_user_id( $user_id );
+					$existing_addresses_count = count_all_addresses_for_user_id_and_currency_id( $user_id, $currency->post_id );
 					$address_count_limit = get_ds_option(
 						'wallets_addresses_max_count',
 						\DSWallets\DEFAULT_ADDRESS_MAX_COUNT
@@ -1235,7 +1235,7 @@ add_action(
 						return new \WP_Error(
 							'too_many_addresses',
 							sprintf(
-								__( 'You have exceeded the maximum of %d deposit addresses!', 'wallets' ),
+								__( 'You have exceeded the maximum of %d deposit addresses per currency!', 'wallets' ),
 								$address_count_limit
 							),
 							[ 'status' => 503 ]

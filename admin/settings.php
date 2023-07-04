@@ -230,13 +230,13 @@ add_action(
 
 			add_settings_field(
 				'wallets_addresses_max_count',
-				sprintf( (string) __( '%s Max deposit address count', 'wallets' ), '&#x1F3F7;' ),
+				sprintf( (string) __( '%s Max deposit address count per currency', 'wallets' ), '&#x1F3F7;' ),
 				__NAMESPACE__ . '\numeric_cb',
 				"wallets_settings_{$tab}_page",
 				"wallets_{$tab}_section",
 				[
 					'label_for'   => 'wallets_addresses_max_count',
-					'description' => __( 'Restricts the amount of deposit addresses that a user can create via the WP REST API (frontend).', 'wallets' ),
+					'description' => __( 'Restricts the amount of deposit addresses that a user can create per each currency via the WP REST API (frontend).', 'wallets' ),
 					'min'         => 1,
 					'max'         => 1000,
 					'step'        => 1,

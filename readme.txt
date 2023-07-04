@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 5.0
-Tested up to: 6.2
+Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 6.1.5
+Stable tag: 6.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,13 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.6 =
+- Change: In the plugin's general settings, the maximum deposit address limit is now applied per user and per currency. Was previously applied per user only over all currencies.
+- Fix: When listing transactions in the admin screens, if the associated currency has block explorer URIs, these are now used to link addresses and TXIDs to a block explorer.
+- Add: New filter `wallets_tags_exclude_min_withdraw` allows a currency's minimum withdrawal amount to not apply to transactions with the specified tags. This will allow the upcoming lnd extension to bypass this restriction for Layer2 transactions.
+- Improve: Transactions that are not modified will no longer be re-written to the DB. This improves performance, plus it allows the last modified timestamp to remain intact in case of no actual modification of transaction data.
+- Fix: The new mechanism for detecting whether a camera is available for scanning QR-Codes, introduced in `6.1.4`, was buggy and is now fixed.
 
 = 6.1.5 =
 - Fix: Usage of words "debit" and "credit" is now correct according to how the terms are used in everyday language, as opposed to their usage in accounting.
@@ -1498,7 +1505,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.5` was necessary to fix a textual error: the usage of the terms `debit` and `credit` was inverted throughout the plugin. Please see the [6.1.5 release notes](https://www.dashed-slug.net/wallets-6-1-5-release-notes/) for details.
+Version `6.1.6` fixes a few bugs and introduces changes necessary for the upcoming Bitcoin Lightning Wallet Adapter extension.
 
 == Donating ==
 

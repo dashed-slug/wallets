@@ -12,13 +12,13 @@ The settings are organized into tabs, and App extensions to the plugin can add a
 ## General settings {#general}
 
 
-### Max deposit address count
+### Max deposit address count per currency
 
 |     |     |
 | --- | --- |
 | *Option* | `wallets_addresses_max_count` |
 | *Default* | `10` |
-| *Description* | *Restricts the amount of deposit addresses that a user can create via the WP REST API (frontend).* |
+| *Description* | *Restricts the amount of deposit addresses that a user can create per currency via the WP REST API (frontend).* |
 
 Effectively this controls up to how many deposit addresses a user can have. A user would typically create a deposit address via the `[wallets_deposit]` shortcode. The user clicks the "Get new address" button, which triggers a WP-REST API POST request to `dswallets/v1/users/(user_id)/currencies/(currency_id)/addresses`. If the deposit addresses of the user have reached this max count, the request returns with the HTTP 420 Enhance Your Calm status code and no address is created.
 

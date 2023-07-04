@@ -354,6 +354,8 @@
 			self.currencies   = ko.observable( [] );
 			self.addresses    = ko.observable( [] );
 
+			self.cameraNotExists = ko.observable( true );
+
 			self.reload = function() {
 
 				if ( window.document.hidden ) {
@@ -645,23 +647,15 @@
 				}
 			};
 
-			self.cameraNotExists = ko.computed( function() {
-				let exists = false;
-				if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-					navigator.mediaDevices.getUserMedia( { video: true } )
-						.then( function( stream ) {
-							exists = true;
-						} )
-						.catch( function( error ) {
-							exists = false;
-						} );
-				} else {
-					exists = false;
-				}
-
-				return ! exists;
-			} );
-
+			if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+				navigator.mediaDevices.getUserMedia( { video: true } )
+					.then( function( stream ) {
+						self.cameraNotExists( false );
+					} )
+					.catch( function( error ) {
+						self.cameraNotExists( true );
+					} );
+			};
 		};
 
 		const vm = new ViewModel<?php echo ucfirst( $id ); ?>();

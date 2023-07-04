@@ -126,19 +126,6 @@ For example, the following is a block explorer URI pattern for displaying Bitcoi
 
 Previously it was possible to change these links only using the `wallets_explorer_uri_add_SYMBOL` WordPress filter, where `SYMBOL` is the ticker symbol of the currency. In version `6.0.0`, an admin can enter the links directly in the *Currency* details. The filter is no longer needed, but is kept for compatibility. The filter can modify or override the values entered by the admin in the *Currency* details.
 
-## Bundle download {#bundle-download}
-
-You can download the [parent plugin](#bitcoin-and-altcoin-wallets) from wordpress.org, or from [dashed-slug.net](#dashed-slug.net).
-
-On dashed-slug.net you will find two downloads:
-
-- *Plugin zip file* &mdash; This is just the plugin. You can extract it in your WordPress plugins directory and it will be ready to be activated. Or, go to _Plugins_ &rarr; _Add new_ &rarr; _Upload Plugin_ to add this zip file to your site.
-
-- *Bundle download* &mdash; This bundle is a `.zip` file that contains other stuff you may also need to download:
-  - the above *Plugin zip file*
-  - the PHPDocumentor documentation
-  - the plugin's documentation, in a PDF file
-
 ## Cancelled {#cancelled}
 
 The *[status of a transaction](#transaction-status)* that was cancelled manually by an [admin](#admins).
@@ -297,8 +284,6 @@ When performing *[Fiat deposits](#fiat-deposits)*, a user has to perform a bank 
 The plugin's documentation is composed of:
 - This documentation, a collection of Markdown files
 - [PHPDocumentor documentation][phpdoc], auto-generated from the plugin's source code. Available at http://wallets-phpdoc.dashed-slug.net/ .
-
-The PHPDocumentor documentation is also included in the *[Bundle download](#bundle-download)* of the plugin.
 
 ## Done {#done}
 

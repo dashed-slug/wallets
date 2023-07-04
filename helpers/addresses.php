@@ -563,6 +563,10 @@ function get_all_addresses_for_user_id_and_currency_id( int $user_id, int $curre
 	return array_filter( $addresses );
 }
 
+function count_all_addresses_for_user_id_and_currency_id( int $user_id, int $currency_id ): int {
+	return count( get_all_addresses_for_user_id_and_currency_id( $user_id, $currency_id ) );
+}
+
 
 /**
  * Get all address IDs for a currency ID.

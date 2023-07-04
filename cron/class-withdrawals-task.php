@@ -137,13 +137,13 @@ class Withdrawals_Task extends Task {
 
 		if ( $this->withdrawals_batch ) {
 
-			// We first ensure that withdrawals will not be repeated (duble-spent)
+			// We first ensure that withdrawals will not be repeated (double-spent)
 			// in case the adapter takes too long to respond, and session times out,
 			// after executing a withdrawal but before the db is updated.
 			$this->mark_withdrawals_as_done_for_now();
 
 			try {
-				// passing withdrawals to adapter, hoping for the best, but also fearing for the worst
+				// Passing withdrawals to adapter, hoping for the best, but also fearing for the worst
 				$this->currency->wallet->adapter->do_withdrawals( $this->withdrawals_batch );
 
 			} catch ( \Exception $e ) {
@@ -157,11 +157,18 @@ class Withdrawals_Task extends Task {
 				);
 			}
 
-			// whatever happened, we finally save the transaction states and withdrawal limit counters to the DB
+			// Any withdrawals that were not modified at all by the adapter
+			// need to be returned to a pending state.
+			$this->mark_withdrawals_as_pending_again_if_not_modified();
+
+			// Whatever happened, we finally save the transaction states and withdrawal limit counters to the DB
 			foreach ( $this->withdrawals_batch as $wd ) {
 				try {
+
+					// Save new tx state (if it was modified)
 					$wd->save();
 
+					// Increment withdrawal counters so as to enforce daily limits per user
 					increment_todays_withdrawal_counters(
 						$wd,
 						$this->current_day
@@ -216,7 +223,7 @@ class Withdrawals_Task extends Task {
 	 *
 	 * TL;DR It's better to err on the side of caution on this one!
 	 */
-	private function mark_withdrawals_as_done_for_now() {
+	private function mark_withdrawals_as_done_for_now(): void {
 		global $wpdb;
 
 		$post_ids = implode(
@@ -233,6 +240,46 @@ class Withdrawals_Task extends Task {
 		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_value = 'done' WHERE post_id IN ( $post_ids ) AND meta_key = 'wallets_status'" );
 		if ( $wpdb->last_error ) {
 			throw new \Exception( "Could not set withdrawals to done for safety before attempting execution. Post IDs: $post_ids, Error: $wpdb->last_error" );
+		}
+	}
+
+	/**
+	 * Mark withdrawals that haven't been touched as pending again.
+	 *
+	 * We have forced the DB state of all pending withdrawals to be "done" for safery reasons.
+	 *
+	 * We now go through all the withdrawals that haven't been modified in-memory by the adapter,
+	 * and we reset their DB state to "pending".
+	 *
+	 * Any withdrawals that have been modified in-memory by the adapter, such as successful or unsuccessful withdrawals,
+	 * will be saved to the DB using their Transaction->save() method.
+	 *
+	 * @throws \Exception
+	 */
+	private function mark_withdrawals_as_pending_again_if_not_modified(): void {
+		global $wpdb;
+
+		$post_ids = implode(
+			',',
+			array_map(
+				function ( Transaction $wd ): int {
+					return $wd->post_id;
+				},
+				array_filter(
+					$this->withdrawals_batch,
+					function( Transaction $wd ): bool {
+						return ! $wd->is_dirty;
+					}
+				)
+			)
+		);
+
+		if ( $post_ids ) {
+			$wpdb->flush();
+			$wpdb->query( "UPDATE $wpdb->postmeta SET meta_value = 'pending' WHERE post_id IN ( $post_ids ) AND meta_key = 'wallets_status'" );
+			if ( $wpdb->last_error ) {
+				throw new \Exception( "Could not set unmodified withdrawals to pending again after attempting execution. Post IDs: $post_ids, Error: $wpdb->last_error" );
+			}
 		}
 	}
 
@@ -301,21 +348,32 @@ add_action(
 add_action(
 	'wallets_withdrawal_pre_check',
 	function( Transaction $wd ): void {
-		$amount = absint( $wd->amount );
 
-		if ( $wd->currency->min_withdraw > $amount ) {
-			throw new \Exception(
-				sprintf(
-					'%s withdrawal must be at least %s',
-					$wd->currency->name,
+		/**
+		 * Allows extensions to specify that some transaction tags mean
+		 * "don't apply the min_withdraw restriction to this withdrawal".
+		 *
+		 * @since 6.1.6 Introduced for use with the lnd adapter.
+		 * @param array $tags_to_exclude Array of tag slugs.
+		 */
+		$tags_to_exclude = apply_filters( 'wallets_tags_exclude_min_withdraw', [] );
+
+		if ( ! array_intersect( $wd->tags, $tags_to_exclude ) ) {
+			$amount = absint( $wd->amount );
+
+			if ( $wd->currency->min_withdraw > $amount ) {
+				throw new \Exception(
 					sprintf(
-						$wd->currency->pattern,
-						$wd->currency->min_withdraw * 10 ** -$currency->decimals
+						'%s withdrawal must be at least %s',
+						$wd->currency->name,
+						sprintf(
+							$wd->currency->pattern,
+							$wd->currency->min_withdraw * 10 ** -$wd->currency->decimals
+						)
 					)
-				)
-			);
+				);
+			}
 		}
-
 	}
 );
 
