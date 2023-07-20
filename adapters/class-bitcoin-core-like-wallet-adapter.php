@@ -599,7 +599,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.6',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.7',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',
@@ -1027,34 +1027,65 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				[
 					'methods'  => \WP_REST_SERVER::READABLE,
 					'callback' => function( $data ) {
+
+						if ( \DSWallets\Migration_Task::is_running() ) {
+
+							/** This filter is documented in apis/wp-rest.php */
+							$wallets_migration_api_message = apply_filters(
+								'wallets_migration_api_message',
+								'The server is currently performing data migration. Please come back later!',
+							);
+
+							return new \WP_Error(
+								'migration_in_progress',
+								$wallets_migration_api_message,
+								[
+									'status' => 503,
+								]
+							);
+						}
+
 						try {
 							$currency = Currency::load( $data['currency_id'] );
 
 						} catch ( \Exception $e ) {
-							return [
-								'message' => 'Invalid wallet specified.',
-								'status'  => 'error',
-							];
+							return new \WP_Error(
+								'currency_not_found',
+								'Currency not found!',
+								[
+									'status' => 404,
+								]
+							);
 						}
 
 						if ( ! $currency->wallet ) {
-							return [
-								'message' => 'The specified currency is not yet assigned to a wallet.',
-								'status'  => 'error',
-							];
+							return new \WP_Error(
+								'wallet_for_currency_not_found',
+								'The wallet for the specified currency was not found!',
+								[
+									'status' => 404,
+								]
+							);
 						}
 
 						if ( ! $currency->wallet->is_enabled ) {
-							return [
-								'message' => 'The specified currency\'s wallet is disabled by an admin.',
-								'status'  => 'error',
-							];
+							return new \WP_Error(
+								'wallet_not_enabled',
+								'The wallet for the specified currency is disabled by an admin!',
+								[
+									'status' => 503,
+								]
+							);
 						}
-						if ( ! $currency->wallet->adapter ) {
-							return [
-								'message' => 'The specified currency\'s wallet does not have an adapter assigned to it. Cannot query TXID.',
-								'status'  => 'error',
-							];
+
+						if ( ! ( $currency->wallet->adapter && $currency->wallet->adapter instanceof self ) ) {
+							return new \WP_Error(
+								'invalid_wallet_type',
+								'The wallet for the specified currency is not compatible with Bitcoin core!',
+								[
+									'status' => 405,
+								]
+							);
 						}
 
 						error_log(
@@ -1074,7 +1105,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 							'message' => 'The plugin is being notified about this TXID. ' .
 							             'If a user is associated with one of its output addresses, ' .
 							             'a deposit will be registered for this user.',
-							'status'  => 'success',
+							'status'  => 200,
 
 						];
 					},
@@ -1098,34 +1129,64 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				[
 					'methods'  => \WP_REST_SERVER::READABLE,
 					'callback' => function( $data ) {
+						if ( \DSWallets\Migration_Task::is_running() ) {
+
+							/** This filter is documented in apis/wp-rest.php */
+							$wallets_migration_api_message = apply_filters(
+								'wallets_migration_api_message',
+								'The server is currently performing data migration. Please come back later!',
+							);
+
+							return new \WP_Error(
+								'migration_in_progress',
+								$wallets_migration_api_message,
+								[
+									'status' => 503,
+								]
+							);
+						}
+
 						try {
 							$currency = Currency::load( $data['currency_id'] );
 
 						} catch ( \Exception $e ) {
-							return [
-								'message' => 'Invalid wallet specified.',
-								'status'  => 'error',
-							];
+							return new \WP_Error(
+								'currency_not_found',
+								'Currency not found!',
+								[
+									'status' => 404,
+								]
+							);
 						}
 
 						if ( ! $currency->wallet ) {
-							return [
-								'message' => 'The specified currency is not yet assigned to a wallet.',
-								'status'  => 'error',
-							];
+							return new \WP_Error(
+								'wallet_for_currency_not_found',
+								'The wallet for the specified currency was not found!',
+								[
+									'status' => 404,
+								]
+							);
 						}
 
 						if ( ! $currency->wallet->is_enabled ) {
-							return [
-								'message' => 'The specified currency\'s wallet is disabled by an admin.',
-								'status'  => 'error',
-							];
+							return new \WP_Error(
+								'wallet_not_enabled',
+								'The wallet for the specified currency is disabled by an admin!',
+								[
+									'status' => 503,
+								]
+							);
 						}
-						if ( ! $currency->wallet->adapter ) {
-							return [
-								'message' => 'The specified currency\'s wallet does not have an adapter assigned to it. Cannot query TXID.',
-								'status'  => 'error',
-							];
+
+						if ( ! ( $currency->wallet->adapter && $currency->wallet->adapter instanceof self ) ) {
+							return new \WP_Error(
+								'invalid_wallet_type',
+								'The wallet for the specified currency is not compatible with Bitcoin core!',
+								[
+									'status' => 405,
+								]
+							);
 						}
 
 						error_log(
@@ -1145,7 +1206,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 								'and will iterate over all the block\'s transactions. For each transaction, ' .
 								'if a user is associated with one of its output addresses, ' .
 								'a deposit will be registered for this user.',
-							'status'  => 'success',
+							'status'  => 200,
 						];
 					},
 					'args' => [

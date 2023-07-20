@@ -27,16 +27,6 @@ abstract class Post_Type {
 	 */
 	protected $post_id;
 
-
-	/**
-	 * Whether the data has changed since last DB load.
-	 *
-	 * When save() is called, data should be saved only if dirty.
-	 *
-	 * @var boolean Whether data needs saving.
-	 */
-	protected $dirty = null;
-
 	/**
 	 * Load a Wallet, Currency, Transaction or Address from its custom post entry.
 	 *

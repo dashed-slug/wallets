@@ -273,6 +273,15 @@ class Transaction extends Post_Type {
 	private $parent_id = 0;
 
 	/**
+	 * Whether the TX data has changed since last DB load.
+	 *
+	 * When save() is called, data should be saved only if dirty.
+	 *
+	 * @var boolean Whether data needs saving.
+	 */
+	private $dirty = false;
+
+	/**
 	 * Load a Transaction from its custom post entry.
 	 *
 	 * @inheritdoc
@@ -510,7 +519,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'address' == $name ) {
 			if ( ( $value && $value instanceof Address ) || is_null( $value ) ) {
-				$this->dirty = $this->dirty || ( $this->{$name} != $value );
+				$this->dirty = $this->dirty || ( $this->address->post_id != $value->post_id );
 				$this->address = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Address must be an Address!' );
@@ -518,7 +527,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'currency' == $name ) {
 			if ( ( $value && $value instanceof Currency ) || is_null( $value ) ) {
-				$this->dirty = $this->dirty || ( $this->{$name} != $value );
+				$this->dirty = $this->dirty || ( $this->currency->post_id != $value->post_id );
 				$this->currency = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Currency must be a Currency!' );
@@ -898,7 +907,7 @@ class Transaction extends Post_Type {
 						return;
 					}
 
-					if ( 'wallets_tx' != $query->query['post_type'] ) {
+					if ( 'wallets_tx' != ( $query->query['post_type'] ?? '' ) ) {
 						return;
 					}
 

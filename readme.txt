@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 6.1.6
+Stable tag: 6.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,11 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.7 =
+- Fix: Issue introduced in 6.1.6 which prevented admin transaction editing is now fixed.
+- Fix: If you have setup walletnotify for Bitcoin core and similar wallets, the notification API is now disabled while migration is underway.
+- Change: The `walletnotify` and `blocknotify` WP-REST API endpoints associated with Bitcoin core and similar wallets now returns uniform error messages. The HTTP status is not always 200, but reflects the error that was encountered. The value of the returned `status` field is no longer success/error but is the HTTP response code, which is 200 when the call was successful.
 
 = 6.1.6 =
 - Change: In the plugin's general settings, the maximum deposit address limit is now applied per user and per currency. Was previously applied per user only over all currencies.
@@ -1505,7 +1510,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.6` fixes a few bugs and introduces changes necessary for the upcoming Bitcoin Lightning Wallet Adapter extension.
+Version `6.1.7` fixes two important user-reported bugs that affect usability. Please upgrade as soon as possible.
 
 == Donating ==
 

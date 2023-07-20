@@ -50,7 +50,7 @@ add_action(
 				 */
 				$wallets_migration_api_message = apply_filters(
 					'wallets_migration_api_message',
-					__( 'The server is currently performing data migration. Please come back later!', 'wallets' )
+					'The server is currently performing data migration. Please come back later!',
 				);
 
 				return new \WP_Error(
