@@ -37,6 +37,29 @@ The plugin circumvents this via a clever hack if this option is set to `on`.
 
 A test transient is set to expire in one minute, with the current timestamp. If the transient is found one minute after it has been created according to its timestamp, this means that it did not expire when it should, and this option is set to `on`. Otherwise you can keep it off.
 
+### Deposit cutoff timestamp
+
+|     |     |
+| --- | --- |
+| *Option* | `wallets_deposit_cutoff` |
+| *Default* | `0` |
+| *Description* | *The plugin will reject any deposits with timestamps before this cutoff. This is set automatically by the migration tool when initiating a new balances-only migration. The cutoff ensures that no deposits before a balance migration are repeated if the plugin receives notifications for them. Do not change this value unless you know what you are doing.* |
+
+This setting allows the plugin to reject any deposits with a timestamp earlier than a cutoff.
+
+This is useful for systems where balances migration has been performed from versions previous to `6.0.0`.
+
+Because on such systems, early deposits have not been migrated, if such deposits are notified again on the plugin, then
+the deposits will be re-entered into the plugin's ledger, resulting in double counting of old deposits.
+
+This can happen for example if a Bitcoin core node is re-synced, and therefore it repeats walletnotify curl calls.
+
+When an admin initiates a *Balances-only migration*, this setting is set to the current timestamp. Thus, all deposits with
+a timestamp before the start of the migration will never be counted twice.
+
+An admin can manually change this value, however this is not recommended.
+
+A value of `0` means that all deposits are accepted.
 
 ## Exchange rates {#rates}
 

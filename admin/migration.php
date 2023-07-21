@@ -181,6 +181,16 @@ add_action(
 						$migration_state
 					);
 
+					if ( 'balances' == $_POST['wallets_migration_type'] ) {
+
+						// We don't want the plugin to be re-processing any deposits
+						// having timestamps earlier than the start of the last migration.
+						$deposit_cutoff = get_ds_option( 'wallets_deposit_cutoff', 0 );
+						if ( time() > $deposit_cutoff ) {
+							update_ds_option( 'wallets_deposit_cutoff', time() );
+						}
+					}
+
 				}
 
 				?>

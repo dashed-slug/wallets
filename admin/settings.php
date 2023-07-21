@@ -63,6 +63,7 @@ register_activation_hook( DSWALLETS_FILE, function() {
 	add_ds_option( 'wallets_withdrawals_max_batch_size',    DEFAULT_CRON_WITHDRAWALS_MAX_BATCH_SIZE );
 	add_ds_option( 'wallets_moves_max_batch_size',          DEFAULT_CRON_MOVES_MAX_BATCH_SIZE );
 	add_ds_option( 'wallets_cron_task_timeout',             DEFAULT_CRON_TASK_TIMEOUT );
+	add_ds_option( 'wallets_deposit_cutoff',                0 );
 
 	set_ds_transient( 'wallets_wordpress_org_nag', true, MONTH_IN_SECONDS );
 } );
@@ -269,6 +270,35 @@ add_action(
 				"wallets_{$tab}_section",
 				'wallets_transients_broken'
 			);
+
+			add_settings_field(
+				'wallets_deposit_cutoff',
+				sprintf( (string) __( '%s Deposit cutoff timestamp', 'wallets' ), '&#x2607;' ),
+				__NAMESPACE__ . '\numeric_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for'   => 'wallets_deposit_cutoff',
+					'description' => __(
+						'The plugin will reject any deposits with timestamps before this cutoff. ' .
+						'This is set automatically by the migration tool when initiating a new balances-only migration. ' .
+						'The cutoff ensures that no deposits before a balance migration are repeated ' .
+						'if the plugin receives notifications for them. ' .
+						'Do not change this value unless you know what you are doing.',
+						'wallets'
+					),
+					'min'         => 0,
+					'max'         => time(),
+					'step'        => 1,
+					'default'     => 0,
+				]
+				);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_deposit_cutoff'
+		);
+
 
 		} // general
 

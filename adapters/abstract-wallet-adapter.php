@@ -352,6 +352,25 @@ abstract class Wallet_Adapter {
 			);
 		}
 
+		// We don't want the plugin to be re-processing any deposits
+		// having timestamps earlier than the start of the last migration.
+		if ( $potential_deposit->timestamp ?? 0 ) {
+			$deposit_cutoff = get_ds_option( 'wallets_deposit_cutoff', 0 );
+			if ( $deposit_cutoff ) {
+				if ( $potential_deposit->timestamp < $deposit_cutoff ) {
+
+					throw new \Exception(
+						sprintf(
+							'%s: Received deposit with timestamp %d which is earlier than deposit cutoff %d',
+							__METHOD__,
+							$potential_deposit->timestamp,
+							$deposit_cutoff
+						)
+					);
+				}
+			}
+		}
+
 		maybe_switch_blog();
 
 		$existing_deposit = get_deposit_transaction_by_txid_and_address(

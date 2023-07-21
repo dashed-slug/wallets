@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 6.1.7
+Stable tag: 6.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,10 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.8 =
+- Add: New setting allows for deposits to be ignored if they have a timestamp earlier than a set cutoff value.
+- Add: When initiating an addresses and balances-only migration, the deposit cutoff value is set to the current timestamp.
 
 = 6.1.7 =
 - Fix: Issue introduced in 6.1.6 which prevented admin transaction editing is now fixed.
@@ -1510,7 +1514,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.7` fixes two important user-reported bugs that affect usability. Please upgrade as soon as possible.
+Version `6.1.8` adresses a potential issue with balances-only migration and repeated blocknotify messages from Bitcoin core wallets.
 
 == Donating ==
 

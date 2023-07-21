@@ -1,5 +1,7 @@
 <?php
 
+use function DSWallets\delete_ds_option;
+
 if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
 	require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 }
@@ -49,7 +51,9 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 					error_log( "Deleted option: $o" );
 				}
 			}
-			foreach ( [ 'wallets_email_queue' ] as $o ) {
+			foreach ( [
+				'wallets_email_queue',
+			] as $o ) {
 				if ( delete_option( $o ) ) {
 					error_log( "Deleted option: $o" );
 				}

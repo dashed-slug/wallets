@@ -43,6 +43,8 @@ If you choose to migrate all transactions, then each transaction row in wp_walle
 
 If you choose to migrate the balances only, then for each user and each coin with non-zero balance, one transaction will be recorded. The user history will not be transferred, but all the user balances will be migrated correctly, and this can be done a lot faster. On each cron job run, once per minute, the balances of a few coins for one user can be transferred. Unless you have many coins and users, this will run in minutes to hours at most, even with many transactions on the ledger. This is because all transactions per user and coin are summed into one balance transfer.
 
+When an admin initiates a balances-only migration, the setting _Deposit cutoff timestamp_ is set. See the _Settings_ section for details.
+
 ### Revert
 
 At any time the migration process creates *[Currencies][glossary-currency]*, *[Addresses][glossary-address]* or *[Transactions][glossary-transaction]*, it attaches the `migrated` tag to them. If you choose to revert a migration, the cron task will start to delete all such entities. It will take a few runs, but once finished, you will be able to initiate a migration process again. This is possible because the custom SQL tables remain unchanged.
