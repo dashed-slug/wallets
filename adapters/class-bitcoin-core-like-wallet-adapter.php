@@ -599,7 +599,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.8',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.9',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',
@@ -1033,7 +1033,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 							/** This filter is documented in apis/wp-rest.php */
 							$wallets_migration_api_message = apply_filters(
 								'wallets_migration_api_message',
-								'The server is currently performing data migration. Please come back later!',
+								'The server is currently performing data migration. Please come back later!'
 							);
 
 							return new \WP_Error(
@@ -1134,7 +1134,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 							/** This filter is documented in apis/wp-rest.php */
 							$wallets_migration_api_message = apply_filters(
 								'wallets_migration_api_message',
-								'The server is currently performing data migration. Please come back later!',
+								'The server is currently performing data migration. Please come back later!'
 							);
 
 							return new \WP_Error(

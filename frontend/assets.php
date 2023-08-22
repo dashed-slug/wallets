@@ -22,7 +22,7 @@ add_action( 'wp_enqueue_scripts', function() {
 			'wallets-front-styles',
 			get_asset_path( 'wallets', 'style' ),
 			[],
-			'6.1.8'
+			'6.1.9'
 		);
 
 		$reload_button_url = plugins_url( 'assets/sprites/reload-icon.png', DSWALLETS_FILE );
@@ -85,7 +85,7 @@ add_action( 'wp_enqueue_scripts', function() {
 			'jsqrcode',
 			get_asset_path( 'jsqrcode' ),
 			[ 'jquery' ],
-			'6.1.8',
+			'6.1.9',
 			true
 		);
 
@@ -127,7 +127,7 @@ add_action( 'wp_enqueue_scripts', function() {
 			'wallets-front',
 			get_asset_path( 'wallets-front' ),
 			[ 'knockout', 'jquery', 'style-scoped', 'sprintf.js' ],
-			'6.1.8',
+			'6.1.9',
 			true
 		);
 

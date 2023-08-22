@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 5.0
-Tested up to: 6.2.2
+Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.1.8
+Stable tag: 6.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,9 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.9 =
+- Fix: Silly syntax errors introduced right before summer vacation.
 
 = 6.1.8 =
 - Add: New setting allows for deposits to be ignored if they have a timestamp earlier than a set cutoff value.
@@ -1514,7 +1517,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.8` adresses a potential issue with balances-only migration and repeated blocknotify messages from Bitcoin core wallets.
+Version `6.1.9` is a bug fix release.
 
 == Donating ==
 
