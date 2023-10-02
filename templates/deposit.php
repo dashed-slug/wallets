@@ -1,5 +1,22 @@
-<?php namespace DSWallets; defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
+<?php namespace DSWallets; defined( 'ABSPATH' ) || die( -1 ); // don't load directly
 
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !!!                                         WARNING                                           !!!
+ * !!!                                                                                           !!!
+ * !!! DO NOT EDIT THESE TEMPLATE FILES IN THE wp-content/plugins/wallets/templates DIRECTORY    !!!
+ * !!!                                                                                           !!!
+ * !!! Any changes you make here will be overwritten the next time the plugin is updated.        !!!
+ * !!!                                                                                           !!!
+ * !!! If you want to modify a template, copy it under a theme or child theme.                   !!!
+ * !!!                                                                                           !!!
+ * !!! To learn how to do this, see the plugin's documentation at:                               !!!
+ * !!! "Frontend & Shortcodes" -> "Modifying the UI appearance" -> "Editing the template files". !!!
+ * !!!                                                                                           !!!
+ * !!! Try not to break the JavaScript code or knockout.js bindings.                             !!!
+ * !!! I don't provide support for modified templates.                                           !!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+?>
 <div
 	id="<?php esc_attr_e( $id = str_replace( '-', '_', uniqid( basename( __FILE__, '.php' ) ) ) ); ?>"
 	data-bind="css: { 'wallets-ready': !pollingActive() }"
@@ -211,7 +228,7 @@
 				<input
 					type="button"
 					class="button"
-					data-bind="click: getNewAddress"
+					data-bind="click: getNewAddress, css: { 'wallets-submit-active': submitActive() }"
 					value="<?php
 						echo apply_filters(
 							'wallets_ui_text_get_new_address',
@@ -251,7 +268,8 @@
 			self.selectedCurrencyId = ko.observable( <?php echo absint( $atts['currency_id'] ?? 0 ); ?> );
 			self.selectedAddressId = ko.observable( 0 );
 
-			self.pollingActive = ko.observable( false );
+			self.pollingActive = ko.observable( 0 );
+			self.submitActive = ko.observable( false );
 
 			<?php if ( $atts['static'] ): ?>
 			self.lastMessage = ko.observable( null );
@@ -403,8 +421,9 @@
 
 					const label = reply.value;
 
+					self.submitActive( true );
+
 					$.ajax( {
-						async: false,
 						method: 'post',
 						url: `${dsWallets.rest.url}dswallets/v1/users/${dsWallets.user.id}/currencies/${self.selectedCurrencyId()}/addresses`,
 						headers: {
@@ -414,8 +433,6 @@
 							label: label
 						},
 					    success: function( response ) {
-
-							self.pollingActive( true );
 
 							Swal.fire( {
 								position: 'top-end',
@@ -477,9 +494,11 @@
 
 								?>`,
 							} );
+						},
+						complete: function() {
+							self.submitActive( false );
 						}
 					} );
-					self.pollingActive( false );
 				});
 			};
 

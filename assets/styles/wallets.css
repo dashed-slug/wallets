@@ -45,6 +45,16 @@
 	animation: none;
 }
 
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.25; }
+	100% { opacity: 1; }
+}
+
+.wallets-submit-active {
+	animation: blink 2s infinite;
+}
+
 .dashed-slug-wallets .walletstatus.online {
 	color: lightgreen;
 }

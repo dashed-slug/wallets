@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 5.0
-Tested up to: 6.3
+Tested up to: 6.3.1
 Requires PHP: 5.6
-Stable tag: 6.1.9
+Stable tag: 6.1.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,15 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.1.10 =
+- Fix: Fixed issue where the PHP curl library would not return meaningful error messages to the admin user in case of connection failures.
+- Add: When actions are initiated via the frontend UIs by clicking a button, the button is now animated until the action completes. Additionally, the actions are performed asynchronously for a better user experience.
+- Remove: Duplicate display of Confirmation link in withdrawal transactions is now removed. The Confirmation link is shown once at the top left part of the screen.
+- Remove: The "post slug" metaboxes are not useful and have been removed from the following CPTs: Wallets, Currencies, Addresses, Transactions.
+- Remove: The plugin's CPTs are no longer available to be added to frontend menus, since the posts themselves are only useful in the backend.
+- Add: The PHP templates now come with a warning about not editing the templates in-place. The warning links to the documentation where the admin can learn more about this.
+- Add: Troubleshooting section in documentation now has more information on how to restore the `manage_wallets` capability to the admin user.
 
 = 6.1.9 =
 - Fix: Silly syntax errors introduced right before summer vacation.
@@ -1517,7 +1526,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.9` is a bug fix release.
+Version `6.1.10` is a bug fix release.
 
 == Donating ==
 

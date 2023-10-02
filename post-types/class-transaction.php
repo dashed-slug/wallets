@@ -1299,6 +1299,7 @@ class Transaction extends Post_Type {
 			'publicly_queryable' => false,
 			'hierarchical'       => true,
 			'rewrite'            => [ 'slug' => 'txs' ],
+			'show_in_nav_menus'  => false,
 			'menu_icon'          => 'dashicons-sort',
 			'supports'           => [
 				'title',
@@ -1321,6 +1322,7 @@ class Transaction extends Post_Type {
 			[
 				'hierarchical' => false,
 				'show_in_rest' => true,
+				'show_in_nav_menus' => false,
 				'labels' => [
 					'name'              => _x( 'TX Tags', 'taxonomy general name',  'wallets' ),
 					'singular_name'     => _x( 'TX Tag',  'taxonomy singular name', 'wallets' ),
@@ -1347,6 +1349,12 @@ class Transaction extends Post_Type {
 		} catch ( \Exception $e ) {
 			$tx = new self;
 		}
+
+		remove_meta_box(
+			'slugdiv',
+			'wallets_tx',
+			'normal'
+		);
 
 		add_meta_box(
 			'wallets-transaction-attributes',
@@ -1795,41 +1803,6 @@ class Transaction extends Post_Type {
 		</label>
 		<?php
 		endif;
-
-		if ( in_array( $tx->category, [ 'move', 'withdraw' ] ) && 'pending' == $tx->status ):
-			$link = $tx->get_confirmation_link();
-			?>
-			<label class="wallets_meta_box_label">
-				<span><?php esc_html_e( 'Confirmation link', 'wallets' ); ?></span>
-
-				<?php if ( $link ): ?>
-				<div>
-					<span
-						class="wallets-clipboard-copy"
-						style="float:right;font-size:large;"
-						onClick="jQuery(this).next()[0].select();document.execCommand('copy');"
-						title="<?php esc_attr__( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
-
-					<input
-						type="text"
-						readonly="readonly"
-						style="clear:right;width:100%;"
-						title="<?php esc_attr_e( 'Confirmation link', 'wallets' ); ?>"
-						value="<?php esc_attr_e( $link ); ?>" />
-				</div>
-
-				<p class="description"><?php esc_html_e(
-					'The sender will receive this link in their mail. It can be used to confirm this transaction.',
-					'wallets'
-				); ?></p>
-
-				<?php else: ?>
-				<p><?php esc_html_e( 'None. The transaction is a candidate for execution.', 'wallets' ); ?></p>
-				<?php endif; ?>
-
-			</label>
-			<?php
-		endif;
 	}
 
 	public static function meta_box_attributes_bank_fiat( $post, $meta_box ) {
@@ -2090,10 +2063,8 @@ class Transaction extends Post_Type {
 	 */
 	public static function meta_box_nonce( $post, $meta_box ) {
 		$tx   = $meta_box['args'];
-		$link = get_rest_url(
-			null,
-			"/dswallets/v1/transactions/validate/$tx->nonce"
-		);
+		$link = $tx->get_confirmation_link();
+
 		?>
 		<label class="wallets_meta_box_label">
 

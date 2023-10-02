@@ -51,12 +51,15 @@ function ds_http_get( string $url, array $headers = [] ): ?string {
 		}
 
 		$result = curl_exec( $ch );
-		$msg    = curl_error( $ch );
-		curl_close( $ch );
 
 		if ( false === $result ) {
-			error_log( "PHP curl returned error while retrieving $url. The error was: $msg" );
+			$errno = curl_errno( $ch );
+			$msg   = curl_strerror( $errno );
+
+			error_log( "PHP curl returned error $errno while retrieving $url. The error was: $msg" );
 		}
+
+		curl_close( $ch );
 
 	} elseif ( ini_get( 'allow_url_fopen' ) && ! get_ds_option( 'wallets_http_tor_enabled', DEFAULT_HTTP_TOR_ENABLED ) ) {
 

@@ -1,9 +1,27 @@
-<?php namespace DSWallets; defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
+<?php namespace DSWallets; defined( 'ABSPATH' ) || die( -1 ); // don't load directly
+
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !!!                                         WARNING                                           !!!
+ * !!!                                                                                           !!!
+ * !!! DO NOT EDIT THESE TEMPLATE FILES IN THE wp-content/plugins/wallets/templates DIRECTORY    !!!
+ * !!!                                                                                           !!!
+ * !!! Any changes you make here will be overwritten the next time the plugin is updated.        !!!
+ * !!!                                                                                           !!!
+ * !!! If you want to modify a template, copy it under a theme or child theme.                   !!!
+ * !!!                                                                                           !!!
+ * !!! To learn how to do this, see the plugin's documentation at:                               !!!
+ * !!! "Frontend & Shortcodes" -> "Modifying the UI appearance" -> "Editing the template files". !!!
+ * !!!                                                                                           !!!
+ * !!! Try not to break the JavaScript code or knockout.js bindings.                             !!!
+ * !!! I don't provide support for modified templates.                                           !!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+?>
 
 <form
 	id="<?php esc_attr_e( $id = str_replace( '-', '_', uniqid( basename( __FILE__, '.php' ) ) ) ); ?>"
-	data-bind="css: { 'wallets-ready': !pollingActive() }, submit: send"
-	class="dashed-slug-wallets dashed-slug-wallets-fiat withdraw-fiat fiat-withdraw fiat-coin">
+	data-bind="submit: send"
+	class="dashed-slug-wallets dashed-slug-wallets-fiat withdraw-fiat fiat-withdraw fiat-coin wallets-ready">
 
 	<style scoped>
 		table, th, td {
@@ -523,7 +541,7 @@
 						colspan="3">
 						<input
 							type="submit"
-							data-bind="enabled: amount() > 0 && amount() <= self.maxAmount()"
+							data-bind="enabled: amount() > 0 && amount() <= self.maxAmount(), css: { 'wallets-submit-active': submitActive() }"
 							value="<?php
 								echo apply_filters(
 									'wallets_fiat_ui_text_requestbanktransfer',
@@ -841,7 +859,7 @@
 
 			self.lastMessage = ko.observable( null );
 
-			self.pollingActive = ko.observable( false );
+			self.submitActive = ko.observable( false );
 
 			self.currencies = ko.observable( [] );
 
@@ -851,8 +869,6 @@
 					return;
 				}
 
-				self.pollingActive( true );
-
 				$.ajax( {
 					url: `${dsWallets.rest.url}dswallets/v1/users/${dsWallets.user.id}/currencies`,
 					headers: {
@@ -860,9 +876,6 @@
 					},
 					success: function( response ) {
 						self.currencies( response.filter( function( c ) { return c.is_fiat; } ) );
-					},
-					complete: function() {
-						self.pollingActive( false );
 					}
 				} );
 			};
@@ -1078,8 +1091,9 @@
 					data.indianAccNum = self.indianAccNum();
 				}
 
+				self.submitActive( true );
+
 				$.ajax( {
-					async: false,
 					method: 'post',
 					url: `${dsWallets.rest.url}dswallets/v1/users/${dsWallets.user.id}/currencies/${sc.id}/banktransfers/withdrawal`,
 					headers: {
@@ -1127,6 +1141,9 @@
 								);
 							?>`,
 						} );
+					},
+					complete: function() {
+						self.submitActive( false );
 					}
 				} );
 			};

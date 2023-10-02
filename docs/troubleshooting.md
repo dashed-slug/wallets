@@ -19,6 +19,28 @@ There can be multiple reasons for the UIs not working as expected. Here's an inc
 11. Does your theme or child override any wallets *[templates][glossary-templates]*? If you have developed custom templates, the problem may be with the templates. Try another theme to see if the problem is theme-related.
 
 
+## In the admin screens, the following error is shown: "Sorry, you are not allowed to access this page". Or, alternatively, the admin screen is shown, but the plugin's settings and post types are not shown.
+
+Some times on multisite not all permissions are correctly assigned. Not sure why :-(
+
+If the plugin's cron jobs are running, the issue will be fixed automatically after a few minutes. But if the cron jobs are not running, the issue will not be auto-repaired.
+
+The issue will also resolve itself if the capability `manage_wallets` is assigned to the admin user.
+
+It is possible to do this using the command line tool `wp-cli`, or using another plugin.
+
+For example, if the admin user name is `admin`, type into the shell:
+
+	wp user add-cap admin manage_wallets
+
+Or, using the `wp-console` plugin, load the user and add the capability manually with:
+
+	$user = new WP_User( 'admin' );
+
+	$user->add_cap( 'manage_wallets' );
+
+Running the above code should resolve the issue.
+
 
 ## In the adapters list template, the Hot Wallet Balance is not equal to the Sum of User Balances
 

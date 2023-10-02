@@ -569,6 +569,8 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 			'id'     => $this->sequence_id++,
 		] );
 
+		$error = false;
+
 		if ( extension_loaded( 'curl' ) ) {
 
 			$ch = curl_init();
@@ -586,7 +588,11 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 			$response = curl_exec( $ch );
 
 			$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-			$error     = curl_error( $ch );
+
+			if ( false === $response ) {
+				$errno = curl_errno( $ch );
+				$error = curl_strerror( $errno );
+			}
 
 			curl_close( $ch );
 
@@ -599,7 +605,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.9',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.1.10',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',

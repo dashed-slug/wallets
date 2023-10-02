@@ -687,6 +687,7 @@ class Address extends Post_Type {
 			'publicly_queryable' => false,
 			'hierarchical'       => true,
 			'rewrite'            => [ 'slug' => 'address' ],
+			'show_in_nav_menus'  => false,
 			'menu_icon'          => 'dashicons-tickets-alt',
 			'supports'           => [
 				'title',
@@ -698,7 +699,6 @@ class Address extends Post_Type {
 		if ( count_users()['total_users'] < MAX_DROPDOWN_LIMIT ) {
 			add_post_type_support( 'wallets_address', 'author' );
 		}
-
 	}
 
 
@@ -712,6 +712,7 @@ class Address extends Post_Type {
 			[
 				'hierarchical' => false,
 				'show_in_rest' => true,
+				'show_in_nav_menus' => false,
 				'labels' => [
 					'name'              => _x( 'Address Tags',         'taxonomy general name',  'wallets' ),
 					'singular_name'     => _x( 'Address Tag',          'taxonomy singular name', 'wallets' ),
@@ -741,6 +742,12 @@ class Address extends Post_Type {
 		} catch ( \Exception $e ) {
 			$address = new self;
 		}
+
+		remove_meta_box(
+			'slugdiv',
+			'wallets_address',
+			'normal'
+		);
 
 		add_meta_box(
 			'wallets-address-attributes',

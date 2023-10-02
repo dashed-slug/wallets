@@ -1,4 +1,22 @@
-<?php namespace DSWallets; defined( 'ABSPATH' ) || die( -1 ); // don't load directly ?>
+<?php namespace DSWallets; defined( 'ABSPATH' ) || die( -1 ); // don't load directly
+
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !!!                                         WARNING                                           !!!
+ * !!!                                                                                           !!!
+ * !!! DO NOT EDIT THESE TEMPLATE FILES IN THE wp-content/plugins/wallets/templates DIRECTORY    !!!
+ * !!!                                                                                           !!!
+ * !!! Any changes you make here will be overwritten the next time the plugin is updated.        !!!
+ * !!!                                                                                           !!!
+ * !!! If you want to modify a template, copy it under a theme or child theme.                   !!!
+ * !!!                                                                                           !!!
+ * !!! To learn how to do this, see the plugin's documentation at:                               !!!
+ * !!! "Frontend & Shortcodes" -> "Modifying the UI appearance" -> "Editing the template files". !!!
+ * !!!                                                                                           !!!
+ * !!! Try not to break the JavaScript code or knockout.js bindings.                             !!!
+ * !!! I don't provide support for modified templates.                                           !!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+?>
 
 <script type="text/html" id="wallets-txrows-type-withdrawal">
 <th

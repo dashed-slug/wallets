@@ -1070,6 +1070,7 @@ class Currency extends Post_Type {
 				'publicly_queryable' => false,
 				'hierarchical'       => true,
 				'rewrite'            => [ 'slug' => 'currency' ],
+				'show_in_nav_menus'  => false,
 				'menu_icon'          => 'dashicons-money-alt',
 				'show_in_rest'       => true,
 				'map_meta_cap'       => true,
@@ -1092,6 +1093,7 @@ class Currency extends Post_Type {
 			[
 				'hierarchical' => false,
 				'show_in_rest' => true,
+				'show_in_nav_menus' => false,
 				'labels' => [
 					'name'              => _x( 'Currency Tags', 'taxonomy general name', 'wallets' ),
 					'singular_name'     => _x( 'Currency Tag', 'taxonomy singular name', 'wallets' ),
@@ -1121,6 +1123,12 @@ class Currency extends Post_Type {
 		} catch ( \Exception $e ) {
 			$currency = new self;
 		}
+
+		remove_meta_box(
+			'slugdiv',
+			'wallets_currency',
+			'normal'
+		);
 
 		add_meta_box(
 			'wallets-currency-attributes',
