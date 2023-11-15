@@ -276,7 +276,11 @@ add_action(
 
 							// render markdown
 							if ( $parsedown_extra ) {
-								$pd = new \ParsedownExtra;
+								try {
+									$pd = new \ParsedownExtra;
+								} catch ( \Exception $e ) {
+									$pd = new \Parsedown;
+								}
 							} else {
 								$pd = new \Parsedown;
 
@@ -307,4 +311,3 @@ add_action(
 		);
 	}
 );
-

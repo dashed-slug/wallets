@@ -18,6 +18,70 @@ There can be multiple reasons for the UIs not working as expected. Here's an inc
 10. If using the CoinPayments adapter: Check to make sure that your CoinPayments API key has the correct permissions. Refer to the installation instructions for the CoinPayments adapter for details.
 11. Does your theme or child override any wallets *[templates][glossary-templates]*? If you have developed custom templates, the problem may be with the templates. Try another theme to see if the problem is theme-related.
 
+## In the admin screens, the following error is shown: "Cron tasks have not run for at least one hour..."
+
+The full message would be:
+
+> Cron tasks have not run for at least one hour. If you see this message once only, you can ignore it. If the message persists, you must trigger cron manually. Consult the documentation under "Troubleshooting" to see how.
+
+The plugin runs some tasks periodically. These are called "cron tasks" or "cron jobs".
+
+Such tasks are: executing transactions, communicating with the wallet adapters, sending emails in batches, cleanup and administration tasks, etc. These tasks are meant to run asynchronously to the main user experience.
+
+Due to the server-client architecture of web servers, WordPress does not normally run when it is not getting traffic. By default, when it does get traffic, it can execute a few of these tasks along with serving the user request. However this is not ideal for two reasons:
+
+- Cron jobs will not run unless the site gets traffic.
+- Cron jobs may slow down the user experience, since they have to run in the same request.
+
+Additionally, some web hosts disable cron jobs either to improve performance or to enhance security.
+
+For all the above reasons it is recommended that you setup an external cron trigger as soon as you can. This will improve performance of all plugins using the WordPress cron mechanism. Here's how to do this:
+
+1. Disable the build-in cron running. Edit `wp-config.php` and add the following:
+
+	define( 'DISABLE_WP_CRON', true );
+
+2. Verify that you have edited the config correctly. Go to: _Settings_ &rarr; _Bitcoin & Altcoin Wallets_ &rarr; _⌛ Cron tasks_.
+
+If everything is correct, you will see the following messages:
+
+> ⚠ You have set `DISABLE_WP_CRON` in your `wp-config.php`. Cron jobs will not run on user requests, and transactions will not be processed. You should trigger the following URL manually using a UNIX cron job: http://example.com/wp-cron.php.
+
+...where example.com will be replaced with the actual domain of your site.
+
+You now have several options to choose from:
+
+Option 1: You can setup a `curl` command in another Linux server to hit this URL once per minute. The request will run the cron tasks periodically without affecting user performance for your visitors.
+
+First, determine if curl is installed and the exact path to the curl binary with:
+
+	which curl
+
+Let's say you get a response of `/usr/bin/curl`.
+
+Now type in your shell `crontab -e`, and this will bring up the crontab editor.
+
+Add a line like the following:
+
+	* * * * * /usr/bin/curl -s -o /dev/null https://example.com
+
+Option 2: If you are on a hosting provider that supports it, you can use cPanel or any other software that the hosting provider offers to set up a cron job, like the one above.
+
+Option 3: You can use a service like *[EasyCron](https://www.easycron.com/?ref=124245)*.
+
+1. Sign up and login.
+
+2. Click on "+ Cron job".
+
+3. Under "URL & Time" set "URL to call" to `https://example.com/wp-cron.php` (replacing example.com with your domain).
+
+4. Set "When to execute" to "every minute".
+
+5. Click "Create Cron Job".
+
+
+Finally, check to see if the cron jobs are running OK. You can check by navigating to _Dashboard_ &rarr; _Bitcoin and Altcoin Wallets_ &rarr; _Debug_ &rarr; _Cron jobs last run on_. The time you see here should not be more than a couple of minutes old.
+
 
 ## In the admin screens, the following error is shown: "Sorry, you are not allowed to access this page". Or, alternatively, the admin screen is shown, but the plugin's settings and post types are not shown.
 
@@ -215,6 +279,24 @@ Check the transaction status. It may be either `pending` or `done`, depending on
 While a deposit has less confirmations than those required, the plugin will recheck the transaction and will update the status to `done` once the required confirmations are reached.
 
 `pending` transactions are not counted towards the user balance, while `done` transactions do.
+
+## I am unable to setup the transaction notification mechanism on a Bitcoin-like full node wallet. How can I ensure that transactions are eventually scraped from the wallet and appear in the plugin?
+
+This is not optimal. The notification mechanism ensures that transactions appear almost immediately in the plugin.
+
+Scraping runs on cron, and one block is checked on every run.
+
+Go to the wallet editing screen: _Wallets_ &rarr; _(your wallet)_ &rarr; _Edit_ &rarr; _DSWallets\Bitcoin_Core_Like_Adapter_ &rarr; _Scraping wallet for transactions_.
+
+Here you can set a block height to start scanning from. Enter a block height and click _Re-scrape_.
+
+On each cron run, one active wallet adapter performs its periodic tasks. The wallet adapters are rotated so that on each cron run, one active wallet adapter runs.
+
+When the adapter runs, it will check one block for transactions. If there are any unknown transactions that hae outputs to a user deposit address, the deposit transactions are created.
+
+It will also check for the latest transactions using the `listtransactions` RPC command. This will retrieve the latest transactions and if they are deposits, these will also be created.
+
+This mechanism is provided as a fail-safe. The best way to ensure that all deposits are processed is to setup the wallet notification mechanism using curl in the wallet's `.conf` file.
 
 
 ## Withdrawal transactions do not get processed by a full-node wallet.

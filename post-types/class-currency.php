@@ -163,7 +163,11 @@ class Currency extends Post_Type {
 	private $coingecko_id;
 
 	/**
-	 * Contract address, if this is a token (null means it's a coin).
+	 * Contract address or asset_id.
+	 *
+	 * - For EVM tokens, this will always start with 0x.
+	 * - For Taproot Assets, this will typically be a string without the 0x prefix.
+	 * - For other coins that are native to their blockchain, this will be null.
 	 *
 	 *  @var ?string
 	 */
@@ -1346,23 +1350,23 @@ class Currency extends Post_Type {
 		</label>
 
 		<label class="wallets_meta_box_label">
-			<span><?php esc_html_e( 'Contract address (for tokens only)', 'wallets' ); ?></span>
+			<span><?php esc_html_e( 'Contract address / Asset ID (hex string)', 'wallets' ); ?></span>
 
 			<input
 				id="wallets-currency-contract-address"
 				name="wallets_contract_address"
-				title="<?php esc_attr_e( 'Contract address (for tokens only)', 'wallets' ); ?>"
+				title="<?php esc_attr_e( 'Contract address / Asset ID (hex string)', 'wallets' ); ?>"
 				type="text"
-				pattern="^0x[0-9A-Fa-f]{8,}"
+				pattern="^(0x)?[0-9A-Fa-f]{8,}"
 				value="<?php esc_attr_e( $currency->contract_address ); ?>" />
 
 				<p class="description"><?php esc_html_e(
-					'Enter here the contract address representing this token. Currently only useful for the CoinPayments adapter. ' .
-					'Leave blank for coins and other currencies, or if you are not using the CoinPayments adapter. ' .
-					'If you set the CoingeckoID correctly, then the contract address will be filled in automatically for you from CoinGecko. ' .
-					'Tokens are different from coins. Coins are native assets such as Bitcoin, Ethereum, etc. ' .
-					'Tokens are assets that adhere to contract APIs such as ERC-20, BEP2, BEP-20, TRC-20, Waves, etc. ' .
-					'Enter here the contract address only (hex strings starting with 0x).',
+					'Enter here the contract address or asset_id uniquely identifying this EVM token or Taproot asset. ' .
+					'For EVM tokens, this will always start with 0x. ' .
+					'For Taproot Assets, this will typically be a string without the 0x prefix. ' .
+					'For other coins that are native to their blockchain, this should be left empty. ' .
+					'NOTE: If you set the CoingeckoID correctly and there is a contract address, ' .
+					'the contract address will be filled in automatically for you from CoinGecko. ',
 					'wallets'
 				); ?></p>
 		</label>

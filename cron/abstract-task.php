@@ -181,13 +181,25 @@ abstract class Task {
 				if ( time() - $cron_last_run > HOUR_IN_SECONDS ):
 				?>
 				<div class="notice wallets-notice notice-warning">
-					<?php esc_html_e(
-						'Cron tasks have not run for at least one hour. ' .
-						'If you see this message once only, you can ignore it. ' .
-						'If the message persists, you must trigger cron manually. ' .
-						'Consult the documentation under "Cron" to see how.',
-						'wallets'
-					); ?>
+				<?php
+					printf(
+						__(
+							'Cron tasks have not run for at least one hour. ' .
+							'If you see this message once only, you can ignore it. ' .
+							'If the message persists, you must trigger cron manually. ' .
+							'Consult the documentation under "<a href="%s">Troubleshooting</a>" to see how.',
+							'wallets'
+						),
+						add_query_arg(
+							[
+								'page' => 'wallets_docs',
+								'wallets-component' => 'wallets',
+								'wallets-doc' => 'troubleshooting',
+							],
+							admin_url( 'admin.php')
+						)
+					);
+				?>
 				</div>
 				<?php
 				endif;

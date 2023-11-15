@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 5.0
-Tested up to: 6.3.1
+Tested up to: 6.4.1
 Requires PHP: 5.6
-Stable tag: 6.1.10
+Stable tag: 6.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,6 +335,12 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.2.0 =
+- Add: New feature for Bitcoin Core (and similar) wallet adapters: Admin can now restart scraping from a specific block height.
+- Fix: If another theme or plugin loads an old version of Parsedown, causing ParsedownExtra to fail to load, the documentation viewer falls back gracefully to whatever Parsedown is currently loaded.
+- Change: The "Contract address" field for "Currency" entries can now accept Asset ID hex strings. This is necessary for the upcoming Taproot Assets Wallet Adapter.
+- Improve: If cron jobs are not running, the warning message in the admin screens now links to the relevant documentation.
 
 = 6.1.10 =
 - Fix: Fixed issue where the PHP curl library would not return meaningful error messages to the admin user in case of connection failures.
@@ -1526,7 +1532,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.1.10` is a bug fix release.
+Version `6.2` brings a few minor improvements to the plugin. See the changelog for details.
 
 == Donating ==
 

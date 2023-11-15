@@ -141,15 +141,17 @@ For example, to create a Dogecoin currency entry:
 
 7. Enter a display pattern. This is a [PHP sprintf() pattern][php-sprintf]. For example, to display a doge amount with 8 decimals, preceded by the Ď character, you would enter: `Ď %01.8f`.
 
-#### Contract address.
+#### Contract address or asset ID
 
 8. If this currency is a token on a blockchain that supports multiple tokens, enter here the contract's address string (the hex string starting with `0x` that uniquely identifies this token).
+
+If this is a Taproot Asset on the Lightning network, enter here the Asset ID hex string.
 
 If you have set the CoingeckoID correctly above (step 3), then the contract address will be filled in automatically for you from CoinGecko, if it exists.
 
 Typically tokens have contract addresses, while coins do not. Tokens are different from coins. Coins are assets that are native to their blockchain; examples are Bitcoin, Ethereum, Dogecoin, etc. Tokens are assets that adhere to contract APIs such as ERC-20, BEP2, BEP-20, TRC-20, Waves, etc. and examples of tokens include Tether, DAI, Shiba Inu, etc.
 
-This field is currently only useful for the CoinPayments adapter. Leave blank for coins and other currencies or if you are not using the CoinPayments adapter.
+Leave blank for coins and other currencies.
 
 #### Fees
 

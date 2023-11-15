@@ -362,7 +362,7 @@ For a definition of *Fiat* money see: [Investopedia on Fiat Money][investopedia-
 
 A *[Currency](#currency)* that represents *[fiat money](#fiat)*.
 
-Fiat currencies can be auto-generated from *[fixer.io][fixer-io]*. They get assigned the `fiat` and `fixer` tags in the `wallets_currencies_tags` custom taxonomy.
+Fiat currencies can be auto-generated from *[fixer.io][fixer-io]*. They get assigned the `fiat` and `fixer` tags in the `wallets_currency_tags` custom taxonomy.
 
 The plugin will create *[Currencies](#currency)* for all known *Fiat currencies*, from fixer.io. The plugin will keep the exchange rates of these currencies updated. For details, see [FixerIO_Task][fixerio-task].
 
