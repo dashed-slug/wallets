@@ -547,7 +547,20 @@ class Wallet extends Post_Type {
 	public static function meta_box_adapter_text( $post, $meta_box ) {
 		$wallet  = $meta_box['args'];
 
-		$wallet->adapter->do_description_text();
+		try {
+			$wallet->adapter->do_description_text();
+		} catch ( \Exception $e ) {
+			?>
+			<p style="color:red;"><?php
+				esc_html_e(
+					sprintf(
+						'This wallet adapter failed to display its description text. The error was: %s',
+						$e->getMessage()
+					)
+				);
+			?></p>
+			<?php
+		}
 	}
 
 	/**

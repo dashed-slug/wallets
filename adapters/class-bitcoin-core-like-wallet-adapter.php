@@ -215,11 +215,13 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 		<p><?php esc_html_e( 'As a backup, the wallet adapter also scrapes the wallet for transactions in case anything is missed. This failsafe mechanism requires cron jobs to be running.', 'wallets' ); ?></p>
 
 		<?php
-		$transient_name = "dsw_bitcoin_{$this->wallet->post_id}_height";
-		$block_height   = absint( get_ds_transient( $transient_name, 0 ) );
+			try {
+				$transient_name = "dsw_bitcoin_{$this->wallet->post_id}_height";
+				$block_height   = absint( get_ds_transient( $transient_name, 0 ) );
+				$current_block_height = $this->get_block_height();
 		?>
 
-		<p><?php printf( __( 'The wallet is synced up to a block height of <code>%1$d</code>. The wallet adapter is currently scraping the wallet for transactions with block height of <code>%2$d</code> or more.', 'wallets' ), $this->get_block_height(), $block_height  ); ?></p>
+		<p><?php printf( __( 'The wallet is synced up to a block height of <code>%1$d</code>. The wallet adapter is currently scraping the wallet for transactions with block height of <code>%2$d</code> or more.', 'wallets' ), $current_block_height, $block_height  ); ?></p>
 
 		<p><?php esc_html_e( 'If some transactions were missed, you may restart scraping from a specific block height. If you set the height too far back, scraping will take a long time.', 'wallets' ); ?></p>
 
@@ -265,6 +267,12 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 			/>
 
 		</form>
+		<?php
+			} catch ( \Exception $e ) {
+				// don't show re-scrape form if wallet is not connected
+			};
+		?>
+
 
 		<p>
 			<?php
@@ -689,7 +697,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.2.0',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.2.1',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',

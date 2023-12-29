@@ -1251,7 +1251,7 @@ class Currency extends Post_Type {
 				'Enter the CoinGecko ID for this currency. This allows the plugin to retrieve ' .
 				'the exchange rate (current value) of this currency against other currencies. ' .
 				'If you enter the CoinGecko ID only and click "Update", the plugin will fill in the following details, if they are missing: ' .
-				'name/title, ticker symbol, tags, icon/logo, and contract address (for tokens).',
+				'name/title, ticker symbol, tags, icon/logo, and contract address (for EVM tokens).',
 				'wallets'
 			); ?></p>
 
@@ -1350,22 +1350,22 @@ class Currency extends Post_Type {
 		</label>
 
 		<label class="wallets_meta_box_label">
-			<span><?php esc_html_e( 'Contract address / Asset ID (hex string)', 'wallets' ); ?></span>
+			<span><?php esc_html_e( 'Contract address or asset group key (hex string)', 'wallets' ); ?></span>
 
 			<input
 				id="wallets-currency-contract-address"
 				name="wallets_contract_address"
-				title="<?php esc_attr_e( 'Contract address / Asset ID (hex string)', 'wallets' ); ?>"
+				title="<?php esc_attr_e( 'Contract address or asset group key (hex string)', 'wallets' ); ?>"
 				type="text"
 				pattern="^(0x)?[0-9A-Fa-f]{8,}"
 				value="<?php esc_attr_e( $currency->contract_address ); ?>" />
 
 				<p class="description"><?php esc_html_e(
-					'Enter here the contract address or asset_id uniquely identifying this EVM token or Taproot asset. ' .
-					'For EVM tokens, this will always start with 0x. ' .
-					'For Taproot Assets, this will typically be a string without the 0x prefix. ' .
-					'For other coins that are native to their blockchain, this should be left empty. ' .
-					'NOTE: If you set the CoingeckoID correctly and there is a contract address, ' .
+					'Enter here the unique ID identifying this asset. ' .
+					'For EVM tokens, this will be the contract address (a hex string starting with 0x). ' .
+					'For Taproot Assets, this will be the asset\'s group_key (a hex string without a 0x prefix). ' .
+					'For other coins that are native to their blockchain (e.g. Bitcoin), this should be left empty. ' .
+					'NOTE: If you set the CoingeckoID correctly and the currency is an EVM token, then ' .
 					'the contract address will be filled in automatically for you from CoinGecko. ',
 					'wallets'
 				); ?></p>

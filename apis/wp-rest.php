@@ -1147,6 +1147,64 @@ add_action(
 
 		register_rest_route(
 			'dswallets/v1',
+			'/users/(?P<user_id>\d+)/addresses/(?P<address_id>\d+)',
+			[
+				'methods'  => \WP_REST_SERVER::READABLE,
+				'callback' => function( $data ) {
+					$params     = $data->get_url_params();
+					$user_id    = $params['user_id'];
+					$address_id = $params['address_id'];
+
+					try {
+						$address = Address::load( $address_id );
+					} catch ( \Exception $e ) {
+						return new \WP_Error(
+							'address_not_found',
+							__( 'Address not found!', 'wallets' ),
+							[ 'status' => 404 ]
+						);
+					}
+
+					if ( $address->user->ID != $user_id ) {
+						return new \WP_Error(
+							'address_not_found',
+							__( 'Address not found!', 'wallets' ),
+							[ 'status' => 404 ]
+						);
+					}
+
+					$result = [
+						'id'          => $address->post_id,
+						'address'     => $address->address,
+						'extra'       => $address->extra ? $address->extra : null,
+						'type'        => $address->type,
+						'currency_id' => $address->currency->post_id,
+						'label'       => $address->label,
+					];
+
+					/** This filter is documented in this file. See above. */
+					$result = apply_filters( 'wallets_address_filter', $result );
+
+					$max_age = max( 0, absint( get_ds_option( 'wallets_polling_interval', 0 ) ) - 1 );
+					$response = new \WP_Rest_Response( $result, 200 );
+					$response->set_headers( [ 'Cache-Control' => "max-age=$max_age" ] );
+
+					return $response;
+				},
+				'args' => [
+					'user_id' => [
+						'sanitize_callback' => 'absint',
+					],
+					'address_id' => [
+						'sanitize_callback' => 'absint',
+					],
+				],
+				'permission_callback' => $permission_callback,
+			]
+		);
+
+		register_rest_route(
+			'dswallets/v1',
 			'/users/(?P<user_id>\d+)/currencies/(?P<currency_id>\d+)/addresses',
 			[
 				'methods'  => \WP_REST_SERVER::CREATABLE,

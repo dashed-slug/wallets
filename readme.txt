@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
 Requires at least: 5.0
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Requires PHP: 5.6
-Stable tag: 6.2.0
+Stable tag: 6.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,7 @@ Your users can deposit, withdraw and transfer Bitcoins and other cryptocurrencie
 
  The following wallet adapters are available for free to all [dashed-slug subscribers](https://www.dashed-slug.net/dashed-slug/subscribe/).
 
+- [lnd Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/lnd-wallet-adapter-extension/) - Connect to an lnd node, and perform transactions on the Bitcoin Lightning network.
 - [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - Third-party wallet for many cryptocurrencies. Saves you from the hassle of hosting wallets on servers. But you don't control the private keys.
 - [Monero Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/) - Full node wallet adapter for Monero and its forks.
 - [TurtleCoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/turtlecoin-adapter-extension/) - Full node wallet adapter for TurtleCoin and its forks.
@@ -335,6 +336,12 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.2.1 =
+- Fix: Issue introduced in `6.2.0` where the wallet admin screen would crash on new installations is now fixed.
+- Add: Generic error handling for when the metabox of a wallet adapter crashes.
+- Add: New REST API endpoint for retrieving an Address by its post ID. See the REST API documentation for details.
+- Change: The wording for the description for the "Contract Address" field under Addresses is now changed to include Taproot Asset IDs for the upcoming tapd Wallet adapter.
 
 = 6.2.0 =
 - Add: New feature for Bitcoin Core (and similar) wallet adapters: Admin can now restart scraping from a specific block height.
@@ -1532,7 +1539,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.2` brings a few minor improvements to the plugin. See the changelog for details.
+Version `6.2.1` includes a bug fix and some changes necessary for the upcoming taproot assets adapter. See the changelog for details.
 
 == Donating ==
 

@@ -437,6 +437,19 @@ If `latest` is set to a truthy value, only the latest deposit address will be re
 
 Allows a user to set a `label` text string to an existing address. The address is specified by its post ID.
 
+#### /users/USER_ID/addresses/ADDRESS_ID
+
+|     |     |
+| --- | --- |
+| *Endpoint* | `/dswallets/v1/users/USER_ID/addresses/ADDRESS_ID` |
+| *Method* | `GET` |
+| *URI Parameters* | `USER_ID`, an integer and `ADDRESS_ID`, an integer |
+| *Optional GET Parameters* | No |
+| *Requires login* | Yes |
+| *Requires capabilities* | If data on a user other than the currently logged in user is requested, requires `manage_wallets`. |
+
+Retrieves an existing address. The address is specified by its post ID and must correspond to the specified user.
+
 
 #### /users/USER_ID/currencies/CURRENCY_ID/addresses
 
