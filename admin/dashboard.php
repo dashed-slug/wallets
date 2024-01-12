@@ -348,13 +348,14 @@ add_filter(
 	function( $debug_data ) {
 		global $wpdb;
 
-		$debug_data[ (string) __( 'Plugin version', 'wallets' ) ]         = '6.2.1';
-		$debug_data[ (string) __( 'Git SHA', 'wallets' ) ]                = 'fbcc11f2';
+		$debug_data[ (string) __( 'Plugin version', 'wallets' ) ]         = '6.2.2';
+		$debug_data[ (string) __( 'Git SHA', 'wallets' ) ]                = '4bafbcf3';
 		$debug_data[ (string) __( 'Web Server', 'wallets' ) ]             = $_SERVER['SERVER_SOFTWARE'];
 		$debug_data[ (string) __( 'PHP version', 'wallets' ) ]            = PHP_VERSION;
 		$debug_data[ (string) __( 'WordPress version', 'wallets' ) ]      = (string) get_bloginfo( 'version' );
 		$debug_data[ (string) __( 'MySQL DB name', 'wallets' ) ]          = $wpdb->dbname;
 		$debug_data[ (string) __( 'MySQL DB prefix', 'wallets' ) ]        = $wpdb->prefix;
+		$debug_data[ (string) __( 'MySQL DB version', 'wallets' ) ]       = $wpdb->db_version();
 		$debug_data[ (string) __( 'Is multisite', 'wallets' ) ]           = is_multisite();
 		$debug_data[ (string) __( 'Is network activated', 'wallets' ) ]   = is_net_active();
 		$debug_data[ (string) __( 'PHP max execution time', 'wallets' ) ] = ini_get( 'max_execution_time' );

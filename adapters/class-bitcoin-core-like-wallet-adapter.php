@@ -11,6 +11,30 @@ namespace DSWallets;
 
 defined( 'ABSPATH' ) || die( -1 );
 
+// Handler for rescrape button
+if ( 'wallets_scrape_restart' == ( $_POST['action'] ?? '' ) ) {
+	add_action(
+		'admin_init',
+		function() {
+			if ( ! current_user_can( 'manage_wallets' ) ) {
+				return;
+			}
+
+			$wallet_id = absint( $_POST['wallet_id'] );
+			$new_height = absint( $_POST['wallets_height'] );
+			if ( $wallet_id ) {
+				error_log( "User requested to restart scraping for wallet $wallet_id" );
+				$transient_name = "dsw_bitcoin_{$wallet_id}_height";
+				set_ds_transient( $transient_name, $new_height );
+			}
+
+			$redirect_url = admin_url( "post.php?post=$wallet_id&action=edit" );
+			wp_redirect( $redirect_url );
+			exit;
+		}
+	);
+};
+
 /**
  * The Bitcoin core-like adapter is for communicating with Bitcoin core and with similar wallets.
  *
@@ -236,13 +260,30 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				);
 		?>
 
-		<form
-			method="post"
-			action="<?php esc_attr( admin_url() ); ?>">
 
+		<div>
+
+			<script>
+				function wallets_scrape_restart() {
+					let wallet_id = <?php echo absint( $this->wallet->post_id ); ?>;
+					let wallet_height = jQuery('#wallets_rescrape_height').val();
+
+					jQuery.ajax({
+						method: 'post',
+						data: {
+							'action': 'wallets_scrape_restart',
+							'wallet_id': wallet_id,
+							'wallets_height': wallet_height,
+						},
+						complete: location.reload
+					});
+				}
+			</script>
+
+<!--
 			<input type="hidden" name="action" value="wallets_scrape_restart" />
 			<input type="hidden" name="wallet_id" value="<?php echo absint( $this->wallet->post_id ); ?>" />
-
+-->
 			<label>
 
 				<p>
@@ -253,20 +294,21 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 						type="number"
 						min="1"
 						max="<?php echo absint( $this->get_block_height() ); ?>"
-						name="wallets_height"
+						id="wallets_rescrape_height"
 						value="<?php echo absint( $this->get_block_height() - $this->scrape_behind ); ?>" />
 
 				</p>
 			</label>
 
-			<input
-				style="width: 100%"
+			<button
 				class="button"
-				type="submit"
-				value="Re-scrape"
-			/>
+				type="button"
+				onclick="wallets_scrape_restart();"
+				style="width: 100%">
+				<?php esc_html_e( 'Re-scrape', 'wallets' ); ?>
+			</button>
 
-		</form>
+		</div>
 		<?php
 			} catch ( \Exception $e ) {
 				// don't show re-scrape form if wallet is not connected
@@ -697,7 +739,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.2.1',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.2.2',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',

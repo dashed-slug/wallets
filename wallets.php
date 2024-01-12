@@ -2,7 +2,7 @@
 /*
  * Plugin Name:			Bitcoin and Altcoin Wallets
  * Description:			Custodial cryptocurrency wallets.
- * Version:				6.2.1
+ * Version:				6.2.2
  * Plugin URI:			https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
  * Requires at least:	5.0
  * Requires PHP:		7.2
@@ -14,7 +14,7 @@
  * Release Notes:		https://dashed-slug.net/wallets6-release-notes
  *
  * @author    Alexandros Georgiou <info@dashed-slug.net>
- * @copyright 2023 Alexandros Georgiou
+ * @copyright 2024 Alexandros Georgiou
  * @license   GPL-2.0-or-later
  * @since     1.0.0
  */
@@ -34,7 +34,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-	Copyright 2023 Alexandros Georgiou
+	Copyright 2024 Alexandros Georgiou
  */
 
 namespace DSWallets;
@@ -190,50 +190,3 @@ add_filter(
 	10,
 	2
 );
-
-add_action(
-	'admin_notices',
-	function() {
-		if ( ! get_user_meta( get_current_user_id(), 'dismiss_wallets_615_notice', true ) ):
-		?>
-		    <div class="notice notice-info is-dismissible" id="wallets-615-notice">
-				<p>
-					<?php
-						printf(
-							__(
-								'Usage of the words “debit” and “credit” in the plugin was wrong, and will be fixed in the upcoming release 6.1.5 of the plugin. See the <a href="%s" target="_blank">release notes</a> for details.',
-								'wallets'
-							),
-							'https://www.dashed-slug.net/wallets-6-1-5-release-notes/'
-						);
-					?>
-				</p>
-			</div>
-
-			<script>
-				jQuery(document).ready(function($) {
-					$('body').on('click', '#wallets-615-notice .notice-dismiss', function() {
-						$.ajax({
-							url: ajaxurl,
-							data: {
-								action: 'dismiss_wallets_615_notice'
-							}
-						});
-					});
-				});
-			</script>
-		<?php
-		endif;
-	}
-);
-
-add_action(
-	'admin_init',
-	function() {
-		if ( isset( $_GET['action'] ) && 'dismiss_wallets_615_notice' == $_GET['action'] ) {
-			update_user_meta( get_current_user_id(), 'dismiss_wallets_615_notice', true );
-			wp_die();
-		}
-	}
-);
-

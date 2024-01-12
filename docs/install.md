@@ -90,9 +90,10 @@ With the next steps we install a Bitcoin core wallet. This will also work with o
 
 29. Enter the following configuration lines:
 
-	server=1
-	rpcallowip=127.0.0.1/8
-	rpcport=8332
+		server=1
+		rpcallowip=127.0.0.1/8
+		rpcbindip=127.0.0.1
+		rpcport=8332
 
 30. If the Bitcoin wallet runs on a different machine to your WordPress server, replace the IP address on the `rpcallowip` line. Note that the address is in CIDR notation (You must add a netmask, which is usually `/8`, `/16`, or `/24` depending on whether your server is on a Class A, Class B, or Class C network).
 

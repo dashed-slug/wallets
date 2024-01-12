@@ -652,7 +652,7 @@ class Wallet extends Post_Type {
 									if ( isset( $_POST['wallets_adapter_settings'][ $schema['id'] ] ) ) {
 										$wallet->adapter->__set( $schema['id'], $_POST['wallets_adapter_settings'][ $schema['id'] ] );
 									} else {
-										$wallet->adapter->__set( $schema['id'], $_POST['wallets_adapter_settings'][ $schema['default'] ?? null ] );
+										$wallet->adapter->__set( $schema['id'], $schema['default'] ?? null );
 									}
 								}
 							}

@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.4.2
 Requires PHP: 5.6
-Stable tag: 6.2.1
+Stable tag: 6.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -336,6 +336,12 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.2.2 =
+- Fix: Issue introduced in `6.2.0` where wallets were prevented from being enabled/disabled, now fixed.
+- Fix: Minor warning in logs when saving bitcoin wallet adapters.
+- Add: The debug tab in the Dashboard panel now shows the database version.
+- Add: Mention of rpcbind in accompanying installation instructions.
 
 = 6.2.1 =
 - Fix: Issue introduced in `6.2.0` where the wallet admin screen would crash on new installations is now fixed.
@@ -1548,4 +1554,3 @@ This is a free plugin built by the [dashed-slug team](https://www.dashed-slug.ne
 - Bitcoin: `1DaShEDyeAwEc4snWq14hz5EBQXeHrVBxy`
 - Litecoin: `LdaShEdER2UuhMPvv33ttDPu89mVgu4Arf`
 - Dogecoin: `DASHEDj9RrTzQoJvP3WC48cFzUerKcYxHc`
-

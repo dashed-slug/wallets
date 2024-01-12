@@ -578,26 +578,3 @@ abstract class Wallet_Adapter {
 	}
 
 }
-
-if ( 'wallets_scrape_restart' == ( $_POST['action'] ?? '' ) ) {
-	add_action(
-		'admin_init',
-		function() {
-			if ( ! current_user_can( 'manage_wallets' ) ) {
-				return;
-			}
-
-			$wallet_id = absint( $_POST['wallet_id'] );
-			$new_height = absint( $_POST['wallets_height'] );
-			if ( $wallet_id ) {
-				error_log( "User requested to restart scraping for wallet $wallet_id" );
-				$transient_name = "dsw_bitcoin_{$wallet_id}_height";
-				set_ds_transient( $transient_name, $new_height );
-			}
-
-			$redirect_url = admin_url( "post.php?post=$wallet_id&action=edit" );
-			wp_redirect( $redirect_url );
-			exit;
-		}
-	);
-};
