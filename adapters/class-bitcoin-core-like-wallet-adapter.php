@@ -275,15 +275,13 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 							'wallet_id': wallet_id,
 							'wallets_height': wallet_height,
 						},
-						complete: location.reload
+						complete: function() {
+							location.reload();
+						}
 					});
 				}
 			</script>
 
-<!--
-			<input type="hidden" name="action" value="wallets_scrape_restart" />
-			<input type="hidden" name="wallet_id" value="<?php echo absint( $this->wallet->post_id ); ?>" />
--->
 			<label>
 
 				<p>
@@ -739,7 +737,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.2.2',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.2.3',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',

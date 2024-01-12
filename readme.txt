@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, de
 Requires at least: 5.0
 Tested up to: 6.4.2
 Requires PHP: 5.6
-Stable tag: 6.2.2
+Stable tag: 6.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -336,6 +336,9 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.2.3 =
+- Fix: Clicking the re-scrape button in Bitcoin-like wallet adapters now refreshes the page again.
 
 = 6.2.2 =
 - Fix: Issue introduced in `6.2.0` where wallets were prevented from being enabled/disabled, now fixed.
@@ -1545,7 +1548,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.2.1` includes a bug fix and some changes necessary for the upcoming taproot assets adapter. See the changelog for details.
+Version `6.2.3` is a bugfix release.
 
 == Donating ==
 
