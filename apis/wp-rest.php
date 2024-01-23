@@ -124,10 +124,14 @@ add_action(
 			[
 				'methods'  => \WP_REST_SERVER::READABLE,
 				'callback' => function( $data ) {
-					$currencies = get_all_currencies();
+					$currencies   = get_all_currencies();
+					$exclude_tags = explode(',',$data['exclude_tags'] );
 					$result     = [];
 
 					foreach ( $currencies as $currency ) {
+						if ( array_intersect( $currency->tags, $exclude_tags ) ) {
+							continue;
+						}
 
 						$rates = [];
 						$vs_currencies = get_ds_option( 'wallets_rates_vs', [] );
@@ -268,6 +272,7 @@ add_action(
 						'is_fiat'           => $currency->is_fiat(),
 						'is_online'         => $currency->is_online(),
 						'block_height'      => $block_height,
+						'tags'              => $currency->tags,
 					];
 
 					$max_age = max( 0, absint( get_ds_option( 'wallets_polling_interval', 0 ) ) - 1 );
@@ -286,8 +291,9 @@ add_action(
 			[
 				'methods'  => \WP_REST_SERVER::READABLE,
 				'callback' => function( $data ) {
-					$params  = $data->get_url_params();
-					$user_id = $params['user_id'];
+					$params       = $data->get_url_params();
+					$user_id      = $params['user_id'];
+					$exclude_tags = explode(',',$data['exclude_tags'] );
 
 					$currencies           = get_all_currencies();
 					$balances             = get_all_balances_assoc_for_user( $user_id );
@@ -296,6 +302,10 @@ add_action(
 					$result = [];
 
 					foreach ( $currencies as $currency ) {
+
+						if ( array_intersect( $currency->tags, $exclude_tags ) ) {
+							continue;
+						}
 
 						$rates = [];
 						$vs_currencies = get_ds_option( 'wallets_rates_vs', [] );
@@ -350,8 +360,17 @@ add_action(
 					'user_id' => [
 						'sanitize_callback' => 'absint',
 					],
-
-				],
+					'exclude_tags' => [
+						'required' => false,
+						'validate_callback' => function( $param, $request, $key ) {
+							foreach ( explode( ',', $param ) as $slug ) {
+								if ( ! preg_match( '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug ) ) {
+									return false;
+								}
+							}
+							return true;
+						}
+					],				],
 				'permission_callback' => $permission_callback,
 			]
 		);
@@ -424,7 +443,6 @@ add_action(
 					'user_id' => [
 						'sanitize_callback' => 'absint',
 					],
-
 				],
 				'permission_callback' => $permission_callback,
 			]

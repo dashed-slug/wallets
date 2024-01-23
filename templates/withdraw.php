@@ -381,11 +381,14 @@
 
 				$.ajax( {
 					url: dsWallets.rest.url + 'dswallets/v1/users/<?php echo get_current_user_id(); ?>/currencies',
+					data: {
+						'exclude_tags': '<?php echo esc_js( implode(",", apply_filters( "wallets_withdraw_currency_dropdown_exclude_tags", ["fiat"] ) ) ); ?>',
+					},
 					headers: {
 						'X-WP-Nonce': dsWallets.rest.nonce,
 					},
 				    success: function( response ) {
-						self.currencies( response.filter( function( c ) { return !c.is_fiat; } ) );
+						self.currencies( response );
 
 						$.ajax( {
 							url: dsWallets.rest.url + `dswallets/v1/users/<?php echo get_current_user_id(); ?>/currencies/${self.selectedCurrencyId()}/addresses`,

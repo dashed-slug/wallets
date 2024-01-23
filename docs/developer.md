@@ -239,7 +239,7 @@ For example, here's how you could call the `/users/USER_ID/currencies` endpoint 
 | *Endpoint* | `/dswallets/v1/currencies` |
 | *Method* | `GET` |
 | *URI Parameters* | none |
-| *Optional GET Parameters* | None |
+| *Optional GET Parameters* | `exclude_tags`, a comma-separated list of tags, where currencies with these tags will not be returned |
 | *Requires login* | No |
 | *Requires capabilities* | No |
 
@@ -265,7 +265,7 @@ Retrieves details about the specified on the system.
 | *Endpoint* | `/dswallets/v1/users/USER_ID/currencies` |
 | *Method* | `GET` |
 | *URI Parameters* | `USER_ID`, an integer |
-| *Optional GET Parameters* | None |
+| *Optional GET Parameters* | `exclude_tags`, a comma-separated list of tags, where currencies with these tags will not be returned |
 | *Requires login* | No |
 | *Requires capabilities* | `has_wallets` is required. If data on a user other than the currently logged in user is requested, the endpoit requires the current user to have `manage_wallets`. |
 

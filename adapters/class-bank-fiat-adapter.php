@@ -157,7 +157,7 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 	}
 
 	public function get_wallet_version(): string {
-		return '6.2.3';
+		return '6.2.4';
 	}
 
 	public function get_block_height( Currency $currency = null ): int {
@@ -449,7 +449,7 @@ EMAIL
 							);
 						}
 
-						if ( ! ds_current_user_can( 'has_wallet' ) ) {
+						if ( ! ds_current_user_can( 'has_wallets' ) ) {
 							return new \WP_Error(
 								'user_without_wallet',
 								(string) __( 'Specified user not allowed to have wallets!', 'wallets' ),
@@ -682,7 +682,7 @@ EMAIL
 					'wallets-admin-deposit-tool',
 					get_asset_path( 'wallets-admin-deposit-tool' ),
 					[ 'jquery' ],
-					'6.2.3',
+					'6.2.4',
 					true
 				);
 			}

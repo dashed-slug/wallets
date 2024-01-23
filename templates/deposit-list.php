@@ -250,6 +250,9 @@
 				$.ajax( {
 					url: `${dsWallets.rest.url}dswallets/v1/users/${dsWallets.user.id}/currencies`,
 					cache: true !== force,
+					data: {
+						'exclude_tags': '<?php echo esc_js( implode(",", apply_filters( "wallets_deposit_currency_dropdown_exclude_tags", ["fiat"] ) ) ); ?>',
+					},
 					headers: {
 						'X-WP-Nonce': dsWallets.rest.nonce,
 					},
