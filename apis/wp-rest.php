@@ -125,7 +125,7 @@ add_action(
 				'methods'  => \WP_REST_SERVER::READABLE,
 				'callback' => function( $data ) {
 					$currencies   = get_all_currencies();
-					$exclude_tags = explode(',',$data['exclude_tags'] );
+					$exclude_tags = explode( ',', $data['exclude_tags'] ?? '' );
 					$result     = [];
 
 					foreach ( $currencies as $currency ) {
@@ -293,7 +293,7 @@ add_action(
 				'callback' => function( $data ) {
 					$params       = $data->get_url_params();
 					$user_id      = $params['user_id'];
-					$exclude_tags = explode(',',$data['exclude_tags'] );
+					$exclude_tags = explode( ',', $data['exclude_tags'] ?? '' );
 
 					$currencies           = get_all_currencies();
 					$balances             = get_all_balances_assoc_for_user( $user_id );

@@ -329,6 +329,7 @@ class Transaction extends Post_Type {
 		$tx->chain_fee  = absint( get_post_meta( $post->ID, 'wallets_chain_fee', true ) );
 		$tx->comment    = $post->post_title;
 		$tx->block      = absint( get_post_meta( $post->ID, 'wallets_block', true ) );
+		$tx->timestamp  = absint( get_post_meta( $post->ID, 'wallets_timestamp', true ) );
 		$tx->nonce      = get_post_meta( $post->ID, 'wallets_nonce', true );
 		$tx->error      = get_post_meta( $post->ID, 'wallets_error', true );
 		$tx->parent_id  = absint( $post->post_parent );

@@ -2,10 +2,10 @@
 Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, coin, money, e-money, e-cash, deposit, withdraw, account, API
-Requires at least: 5.0
-Tested up to: 6.4.2
-Requires PHP: 5.6
-Stable tag: 6.2.4
+Requires at least: 6.0
+Tested up to: 6.5.2
+Requires PHP: 7.0
+Stable tag: 6.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,7 +29,7 @@ Your users can deposit, withdraw and transfer Bitcoins and other cryptocurrencie
 
  The following wallet adapters are available for free to all [dashed-slug subscribers](https://www.dashed-slug.net/dashed-slug/subscribe/).
 
-- [lnd Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/lnd-wallet-adapter-extension/) - Connect to an lnd node, and perform transactions on the Bitcoin Lightning network.
+- [lnd and tapd Wallet Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/lnd-wallet-adapter-extension/) - Connect to an lnd node, and perform transactions on the Bitcoin Lightning network. Also connect to a tapd node to mint and transact Taproot Assets.
 - [CoinPayments Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/coinpayments-adapter-extension/) - Third-party wallet for many cryptocurrencies. Saves you from the hassle of hosting wallets on servers. But you don't control the private keys.
 - [Monero Coin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/monero-coin-adapter-extension/) - Full node wallet adapter for Monero and its forks.
 - [TurtleCoin Adapter extension](https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin/turtlecoin-adapter-extension/) - Full node wallet adapter for TurtleCoin and its forks.
@@ -336,6 +336,12 @@ Please state your request on the forums or over email, and I will respond within
 11. **Capabilities settings** - Since version 6.0.0, all settings are neatly organized into tabs, both for the plugin and for its premium extensions.
 
 == Changelog ==
+
+= 6.2.5 =
+- Fix: Issue preventing the plugins from running on Windows (XAMPP).
+- Fix: Deprecation warning in WP-REST API currency endpoints.
+- Fix: Plugin header now correctly indicates that the plugin requires PHP 7.0 or later.
+- Fix: `DSWallets\Transaction` objects now correctly load the timestamp field from the DB.
 
 = 6.2.4 =
 - Fix: Issue with Fiat Withdrawals not checking for the `has_wallets` capability correctly is now fixed.
@@ -1552,7 +1558,7 @@ Fix: Race condition hazard that could compromise the security of this plugin now
 
 == Upgrade Notice ==
 
-Version `6.2.4` is a bugfix release.
+Version `6.2.5` is a bugfix release.
 
 == Donating ==
 

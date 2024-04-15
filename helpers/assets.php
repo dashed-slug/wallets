@@ -44,7 +44,7 @@ function get_asset_path( string $name, string $type = 'script', string $plugin_s
     $backtrace = debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, 1 );
 
     $plugin_dir = dirname( $backtrace[0]['file'] );
-    if ( $plugin_dir && preg_match( '*wp-content/plugins/([^/]+)/*', $plugin_dir, $matches ) ) {
+    if ( $plugin_dir && preg_match( '*wp-content[/\\\\]plugins[/\\\\]([^\\\\/]+)[\\\\/]*', $plugin_dir, $matches ) ) {
 		$plugin = $matches[ 1 ];
 
 		if ( $plugin ) {
@@ -74,4 +74,3 @@ function get_asset_path( string $name, string $type = 'script', string $plugin_s
 function get_script_path( string $name ): ?string {
 	return get_asset_path( $name, 'script' );
 }
-
