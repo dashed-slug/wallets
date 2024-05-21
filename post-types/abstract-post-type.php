@@ -27,6 +27,260 @@ abstract class Post_Type {
 	 */
 	protected $post_id;
 
+	protected static $object_cache = [];
+
+	/**
+	 * Loads Wallets, Currencies, Transactions and Addresses by their post_ids. Quickly.
+	 *
+	 * Any IDs not found are skipped silently.
+	 *
+	 * @param array $post_ids The post IDs corresponding to the objects to load.
+	 * @param ?string $post_type Optionally retrieve only posts of this type.
+	 *
+	 * @return Post_Type[] The instantiated objects.
+	 * @throws \Exception If DB access or instantiation fails.
+	 *
+	 * @since 6.2.6 Introduced.
+	 */
+	public static function load_many( array $post_ids, ?string $post_type = null ): array {
+
+		global $wpdb;
+
+		$cache_hit_post_ids    = [];
+		$cache_missed_post_ids = [];
+
+		foreach ( array_unique( $post_ids ) as $post_id ) {
+
+			if ( array_key_exists( $post_id, self::$object_cache ) ) {
+				$cache_hit_post_ids[] = absint( $post_id );
+			} else {
+				$cache_missed_post_ids[] = absint( $post_id );
+			}
+
+		}
+
+		if ( $cache_missed_post_ids ) {
+
+			maybe_switch_blog();
+
+			$cache_missed_post_ids_imploded = implode( ',', $cache_missed_post_ids );
+
+
+			$wpdb->flush();
+
+			$query = "
+				SELECT
+					ID,
+					post_title,
+					post_type,
+					post_status,
+					post_parent
+				FROM
+					{$wpdb->posts} p
+				WHERE
+					ID IN ( $cache_missed_post_ids_imploded )
+				";
+
+			if ( in_array( $post_type, [ 'wallets_wallet', 'wallets_address', 'wallets_tx', 'wallets_currency' ], true ) ) {
+				$query .= 'AND post_type = "' . $post_type . '"';
+			}
+
+			$posts = $wpdb->get_results( $query, OBJECT_K );
+
+			if ( false === $posts ) {
+				throw new \Exception(
+					sprintf(
+						'%s: Failed getting posts with: %s',
+						__FUNCTION__,
+						$wpdb->last_error
+					)
+				);
+			}
+
+			$wpdb->flush();
+
+			$query = "
+				SELECT
+					post_id,
+					meta_key,
+					meta_value
+				FROM
+					{$wpdb->postmeta} p
+				WHERE
+					post_id IN ( $cache_missed_post_ids_imploded )
+				";
+
+			$postmeta = $wpdb->get_results( $query, OBJECT );
+
+			if ( false === $postmeta ) {
+				throw new \Exception(
+					sprintf(
+						'%s: Failed getting post meta with: %s',
+						__FUNCTION__,
+						$wpdb->last_error
+					)
+				);
+			}
+
+
+			$wpdb->flush();
+
+			$query = "
+				SELECT
+					tr.object_id object_id,
+					tt.taxonomy taxonomy,
+					t.slug slug
+				FROM
+					{$wpdb->terms} t
+
+				JOIN
+					{$wpdb->term_relationships} tr ON t.term_id = tr.term_taxonomy_id
+
+				JOIN
+					{$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+
+				WHERE
+					tr.object_id IN ($cache_missed_post_ids_imploded) AND
+					tt.taxonomy IN ('wallets_tx_tags','wallets_currency_tags','wallets_address_tags')
+				";
+
+			$terms = $wpdb->get_results( $query, OBJECT );
+
+			if ( false === $terms ) {
+				throw new \Exception(
+					sprintf(
+						'%s: Failed getting post terms with: %s',
+						__FUNCTION__,
+						$wpdb->last_error
+					)
+				);
+			}
+
+
+			foreach ( $cache_missed_post_ids as $post_id ) {
+
+				if ( ! array_key_exists( $post_id, $posts ) ) {
+					// post not found, skip it
+					continue;
+				}
+
+				try {
+
+					$current_post      = $posts[ $post_id ];
+
+					$current_postmeta  = [];
+					foreach ( $postmeta as $pm ) {
+						if ( $post_id == $pm->post_id && preg_match( '/^wallets_/', $pm->meta_key ) ) {
+							$current_postmeta[ $pm->meta_key ] = $pm->meta_value;
+						}
+					}
+
+					$current_post_term_slugs = array_values(
+						array_map(
+							function( $t ) {
+								return $t->slug;
+							},
+							array_filter(
+								$terms,
+								function( $pm ) use ( $current_post ) {
+									return $current_post->ID == $pm->object_id && "{$current_post->post_type}_tags" == $pm->taxonomy;
+								}
+							)
+						)
+					);
+
+					switch ( $posts[ $post_id ]->post_type ) {
+
+						case 'wallets_wallet':
+
+							$wallet = Wallet::from_values(
+								$current_post->ID,
+								$current_post->post_title,
+								$current_post->post_status,
+								$current_postmeta
+							);
+
+							// save to cache
+							self::$object_cache[ $post_id ] = $wallet;
+
+							break;
+
+						case 'wallets_currency':
+
+
+							$currency = Currency::from_values(
+								$current_post->ID,
+								$current_post->post_title,
+								$current_postmeta,
+								$current_post_term_slugs
+							);
+
+							// save to cache
+							self::$object_cache[ $post_id ] = $currency;
+
+							break;
+
+						case 'wallets_tx':
+
+							$tx = Transaction::from_values(
+								$current_post->ID,
+								$current_post->post_title,
+								$current_post->post_status,
+								$current_post->post_parent,
+								$current_postmeta,
+								$current_post_term_slugs
+							);
+
+							// save to cache
+							self::$object_cache[ $post_id ] = $tx;
+
+							break;
+
+						case 'wallets_address':
+
+							$address = Address::from_values(
+								$current_post->ID,
+								$current_post->post_title,
+								$current_postmeta,
+								$current_post_term_slugs
+							);
+
+							// save to cache
+							self::$object_cache[ $post_id ] = $address;
+
+							break;
+
+					}
+
+				} catch ( \Exception $e ) {
+
+					error_log(
+						sprintf(
+							'%s: Failed to instantiate object %d, due to: %s',
+							__FUNCTION__,
+							$post_id,
+							$e->getMessage()
+						)
+					);
+
+					continue;
+				}
+
+			}
+
+		}
+
+		maybe_restore_blog();
+
+		$result = array_values( array_intersect_key( self::$object_cache, array_flip( $post_ids ) ) );
+
+		if ( get_ds_option( 'wallets_disable_cache' ) ) {
+			self::$object_cache = [];
+		}
+
+		return $result;
+	}
+
 	/**
 	 * Load a Wallet, Currency, Transaction or Address from its custom post entry.
 	 *

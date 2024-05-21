@@ -29,6 +29,7 @@ const DEFAULT_HTTP_TOR_IP = '127.0.0.1';
 const DEFAULT_HTTP_TOR_PORT = 9050;
 const DEFAULT_RATES_VS = [ 'btc', 'usd' ];
 const DEFAULT_CRON_EMAILS_MAX_BATCH_SIZE = 8;
+const DEFAULT_DISABLE_CACHE = false;
 const DEFAULT_TRANSIENTS_BROKEN = false;
 const DEFAULT_FIAT_FIXERIO_CURRENCIES = [ 'USD' ];
 const DEFAULT_WALLETS_CONFIRM_MOVE_USER_ENABLED = '';
@@ -54,6 +55,7 @@ register_activation_hook( DSWALLETS_FILE, function() {
 	add_ds_option( 'wallets_http_tor_ip',                   get_option( 'wallets_rates_tor_ip',      DEFAULT_HTTP_TOR_IP ) );
 	add_ds_option( 'wallets_http_tor_port',                 get_option( 'wallets_rates_tor_port',    DEFAULT_HTTP_TOR_PORT ) );
 	add_ds_option( 'wallets_rates_vs',                      DEFAULT_RATES_VS );
+	add_ds_option( 'wallets_disable_cache',                 DEFAULT_DISABLE_CACHE );
 	add_ds_option( 'wallets_transients_broken',             DEFAULT_TRANSIENTS_BROKEN );
 	add_ds_option( 'wallets_fiat_fixerio_key',              get_ds_option( 'wallets_rates_fixer_key', '' ) );
 	add_ds_option( 'wallets_fiat_fixerio_currencies',       get_ds_option( 'wallets_fiat_fixerio_currencies', DEFAULT_FIAT_FIXERIO_CURRENCIES ) );
@@ -248,6 +250,28 @@ add_action(
 			register_setting(
 				"wallets_{$tab}_section",
 				'wallets_addresses_max_count'
+			);
+
+			add_settings_field(
+				'wallets_disable_cache',
+				sprintf( (string) __( '%s Disable built-in object cache (debug)', 'wallets' ), '&#128455;' ),
+				__NAMESPACE__ . '\checkbox_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for' => 'wallets_disable_cache',
+					'description' => __(
+						'The plugin speeds up DB reads of its Wallets, Currencies, Transactions and Addresses into its built-in object cache. ' .
+						'If this uses up too much memory and causes the plugin to crash, you can disable the cache here and see if it helps. ' .
+						'Otherwise, it\'s best to leave it on.',
+						'wallets'
+					),
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_disable_cache'
 			);
 
 			add_settings_field(

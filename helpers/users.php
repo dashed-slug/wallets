@@ -78,7 +78,7 @@ function get_move_recipient_suggestions( $user_id = null ): array {
 
 	$post_ids = array_values( $query->posts );
 
-	$send_moves = load_transactions( $post_ids );
+	$send_moves = Transaction::load_many( $post_ids );
 	foreach ( $send_moves as $send_move ) {
 		$other_tx = $send_move->get_other_tx();
 		if ( $other_tx && $other_tx->amount > 0 && $other_tx->user->ID != $user_id ) {

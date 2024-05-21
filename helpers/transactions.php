@@ -15,36 +15,23 @@ defined( 'ABSPATH' ) || die( -1 );
  * Takes an array of transaction post_ids and instantiates them into an array of Transaction objects.
  *
  * If a transaction cannot be loaded due to Transaction::load() throwing (i.e. bad DB data),
- * then the error will be logged and the rest of the transactions will be loaded.
+ * then it is skipped and the rest of the transactions will be loaded.
  *
  * @param array $post_ids The array of integer post_ids
  * @return array The array of Transaction objects.
+ *
+ * @deprecated since 6.2.6
+ * @since 6.2.6 Deprecated in favor of the Currency::load_many() factory.
  */
 function load_transactions( array $post_ids ): array {
-	return
-		array_values(
-			array_filter(
-				array_map(
-					function( int $post_id ) {
-						try {
-							return Transaction::load( $post_id );
-
-						} catch ( \Exception $e ) {
-							error_log(
-								sprintf(
-									'load_transactions: Could not instantiate transaction %d due to: %s',
-									$post_id,
-									$e->getMessage()
-								)
-							);
-						}
-						return null;
-					},
-					$post_ids
-				)
-			)
-		);
+	_doing_it_wrong(
+		__FUNCTION__,
+		'Calling load_transactions( $post_ids ) is deprecated and may be removed in a future version. Instead, use the new currency factory: Transaction::load_many( $post_ids )',
+		'6.2.6'
+	);
+	return Transaction::load_many( $post_ids );
 }
+
 
 /**
  * Retrieves a transaction by its blockchain TXID.
@@ -222,28 +209,11 @@ function get_pending_transactions_by_currency_and_category( Currency $currency, 
 
 	$query = new \WP_Query( $query_args );
 
-	$transactions = array_map(
-		function( $post_id ) {
-			try {
-				return Transaction::load( $post_id );
-
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_pending_transactions_by_currency_and_category: Could not instantiate transaction with ID %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		array_values( $query->posts )
-	);
+	$transactions = Transaction::load_many( $query->posts );
 
 	maybe_restore_blog();
 
-	return array_values( array_filter( $transactions ) );
+	return $transactions;
 }
 
 /**
@@ -336,25 +306,7 @@ function get_transactions( int $user_id = null, Currency $currency = null, array
 
 	$query = new \WP_Query( $query_args );
 
-	$transactions = array_map(
-		function( $post_id ) {
-			try {
-
-				return Transaction::load( $post_id );
-
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_transactions: Could not instantiate transaction %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		array_values( $query->posts )
-	);
+	$transactions = Transaction::load_many( $query->posts );
 
 	maybe_restore_blog();
 
@@ -388,29 +340,11 @@ function get_transactions_for_address( Address $address ): ?array {
 
 	$query = new \WP_Query( $query_args );
 
-	$transactions = array_map(
-		function( $post_id ) {
-			try {
-
-				return Transaction::load( $post_id );
-
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_transactions_for_address: Could not instantiate transaction %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		array_values( $query->posts )
-	);
+	$transactions = Transaction::load_many( $query->posts );
 
 	maybe_restore_blog();
 
-	return array_values( array_filter( $transactions ) );
+	return $transactions;
 }
 
 function get_executable_withdrawals( Currency $currency, int $limit = -1 ): array {
@@ -468,11 +402,11 @@ function get_executable_withdrawals( Currency $currency, int $limit = -1 ): arra
 
 	$post_ids = array_values( $query->posts );
 
-	$txs = load_transactions( $post_ids );
+	$transactions = Transaction::load_many( $post_ids );
 
 	maybe_restore_blog();
 
-	return array_values( $txs );
+	return $transactions;
 }
 
 function get_executable_moves( $currency, $limit = -1 ) {
@@ -526,11 +460,11 @@ function get_executable_moves( $currency, $limit = -1 ) {
 
 	$post_ids = array_values( $query->posts );
 
-	$txs = load_transactions( $post_ids );
+	$txs = Transaction::load_many( $post_ids );
 
 	maybe_restore_blog();
 
-	return array_values( $txs );
+	return $txs;
 }
 
 /**
@@ -613,11 +547,11 @@ function get_transactions_by_time( int $interval_days, bool $before = true, $pos
 
 	$post_ids = array_values( $query->posts );
 
-	$txs = load_transactions( $post_ids );
+	$txs = Transaction::load_many( $post_ids );
 
 	maybe_restore_blog();
 
-	return array_values( $txs );
+	return $txs;
 }
 
 function do_validate_pending_transactions( string $nonce ): void {
@@ -654,7 +588,7 @@ function do_validate_pending_transactions( string $nonce ): void {
 
 	$post_ids = array_values( $query->posts );
 
-	$txs = load_transactions( $post_ids );
+	$txs = Transaction::load_many( $post_ids );
 
 	if ( count( $txs ) > 2 ) {
 		throw new \Exception(
@@ -745,7 +679,7 @@ function get_latest_fiat_withdrawal_by_user( int $user_id = null ): ?Transaction
 
 	$post_ids = array_values( $query->posts );
 
-	$txs = load_transactions( $post_ids );
+	$txs = Transaction::load_many( $post_ids );
 
 	$tx = null;
 	foreach ( $txs as $t ) {
@@ -794,7 +728,7 @@ function fiat_deposit_exists_by_txid_currency( string $txid, Currency $currency 
 
 	$post_ids = array_values( $query->posts );
 
-	$txs = load_transactions( $post_ids );
+	$txs = Transaction::load_many( $post_ids );
 
 	maybe_restore_blog();
 
@@ -883,7 +817,7 @@ function get_or_make_transaction( Transaction $tx, bool $notify = true ): Transa
 	$post_ids = array_values( $query->posts );
 
 	if ( $post_ids ) {
-		$found = Transaction::load( $post_ids[ 0 ] );
+		$found = Transaction::load( array_shift( $post_ids ) );
 		return $found;
 	}
 

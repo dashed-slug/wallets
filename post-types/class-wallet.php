@@ -118,42 +118,76 @@ class Wallet extends Post_Type {
 	private $adapter = null;
 
 	/**
+	 * Factory to construct a wallet in one go from database values.
+	 *
+	 * @param int $post_id The ID of the post in the database
+	 * @param string $post_title The post's title to be used as wallet name
+	 * @param array $postmeta Key-value pairs
+	 *
+	 * @return Wallet The constructed instance of the wallet object
+	 */
+	public static function from_values( int $post_id, string $post_title, string $post_status, array $postmeta ): Wallet {
+
+		$wallet = new self;
+
+		// populate fields
+		$wallet->post_id = $post_id;
+		$wallet->name             = $post_title;
+		$wallet->is_enabled       = 'publish' === $post_status;
+
+		// Due to a bug introduced in an earlier version,
+		// the settings are double-serialized,
+		// once by WordPress and once by the plugin :(
+		$wallet->adapter_settings = unserialize(
+			unserialize(
+				$postmeta['wallets_adapter_settings'] ?? 's:6:"a:0:{}";',
+				[ 'allowed_classes' => false ]
+			),
+			[ 'allowed_classes' => false ]
+		);
+
+		$adapter_class = $postmeta['wallets_adapter_class'] ?? '';
+		if ( class_exists( $adapter_class ) ) {
+		      $wallet->adapter = new $adapter_class( $wallet );
+		}
+
+
+		return $wallet;
+	}
+
+	/**
+	 * Retrieve many walletts by their post_ids.
+	 *
+	 * Any post_ids not found are skipped silently.
+	 *
+	 * @param int[] $post_ids The post IDs
+	 * @param ?string $unused Do not use. Ignored.
+	 *
+	 * @return Wallet[] The wallets
+	 * @throws \Exception If DB access or instantiation fails.
+	 *
+	 * @since 6.2.6 Introduced.
+	 */
+	public static function load_many( array $post_ids, ?string $unused = null ): array {
+		return parent::load_many( $post_ids, 'wallets_wallet' );
+	}
+
+	/**
 	 * Load a Wallet from its custom post entry.
 	 *
 	 * @inheritdoc
 	 * @see Post_Type::load()
-	 * @throws \InvalidArgumentException If the post id is not valid.
 	 * @return Wallet
+	 * @throws \Exception If not found or failed to instantiate.
 	 */
 	public static function load( int $post_id ): Wallet {
-		maybe_switch_blog();
-
-		$post = get_post( $post_id );
-
-		if ( ! $post ) {
-			throw new \InvalidArgumentException( sprintf( "%s with %d does not exist!", __CLASS__, $post_id ) );
+		$one = self::load_many( [ $post_id ] );
+		if ( 1 !== count( $one ) ) {
+			throw new \Exception( 'Not found' );
 		}
-
-		if ( ! ( $post && 'wallets_wallet' == $post->post_type ) ) {
-			throw new \InvalidArgumentException( "Post $post_id is not a wallet!" );
+		foreach ( $one as $o ) {
+			return $o;
 		}
-
-		$wallet = new self;
-		$wallet->post_id           = $post->ID;
-		$wallet->name              = $post->post_title;
-		$wallet->is_enabled        = $post->post_status == 'publish';
-		$wallet->adapter_settings  = unserialize( get_post_meta( $post->ID, 'wallets_adapter_settings', true ) );
-		if ( ! is_array( $wallet->adapter_settings ) ) {
-			$wallet->adapter_settings = [];
-		}
-		$adapter_class             = get_post_meta( $post->ID, 'wallets_adapter_class', true );
-		if ( class_exists( $adapter_class ) ) {
-			$wallet->adapter = new $adapter_class( $wallet );
-		}
-
-		maybe_restore_blog();
-
-		return $wallet;
 	}
 
 	public function save(): void {
@@ -398,10 +432,20 @@ class Wallet extends Post_Type {
 
 		if ( ! $post ) return;
 
+		if ( 'wallets_wallet' !== $post->post_type ) return;
+
 		try {
 			$wallet = self::load( $post->ID );
 		} catch ( \Exception $e ) {
-			$wallet = new self;
+			error_log(
+				sprintf(
+					'%s: Cannot instantiate %d to show metaboxes, due to: %s',
+					__CLASS__,
+					$post->ID,
+					$e->getMessage()
+				)
+			);
+			return;
 		}
 
 		remove_meta_box(

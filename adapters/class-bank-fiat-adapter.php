@@ -157,7 +157,7 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 	}
 
 	public function get_wallet_version(): string {
-		return '6.2.5';
+		return '6.2.6';
 	}
 
 	public function get_block_height( Currency $currency = null ): int {
@@ -682,7 +682,7 @@ EMAIL
 					'wallets-admin-deposit-tool',
 					get_asset_path( 'wallets-admin-deposit-tool' ),
 					[ 'jquery' ],
-					'6.2.5',
+					'6.2.6',
 					true
 				);
 			}
@@ -1285,7 +1285,7 @@ EMAIL
 
 									$query = new \WP_Query( $query_args );
 
-									$this->items = load_transactions( $query->posts );
+									$this->items = Transaction::load_many( $query->posts );
 
 									$this->set_pagination_args(
 										[
@@ -1840,7 +1840,7 @@ EMAIL
 
 									$query = new \WP_Query( $query_args );
 
-									$this->items = load_transactions( $query->posts );
+									$this->items = Transaction::load_many( $query->posts );
 
 									$this->set_pagination_args(
 										[

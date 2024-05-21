@@ -95,7 +95,7 @@ function get_address_by_strings( string $address, string $extra = null, string $
 
 	$address = null;
 	try {
-		$address = Address::load( $post_ids[ 0 ] );
+		$address = Address::load( array_shift( $post_ids ) );
 
 	} catch ( \Exception $e ) {
 		error_log(
@@ -170,25 +170,8 @@ function get_all_addresses_for_user_id( int $user_id, int $page = null, int $row
 
 	$post_ids = array_values( $query->posts );
 
-	$addresses = array_map(
-		function( $post_id ) {
-			try {
+	$addresses = Address::load_many( $post_ids );
 
-				return Address::load( $post_id );
-
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_all_addresses_for_user_id: Could not instantiate address %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		$post_ids
-	);
 	maybe_restore_blog();
 
 	return array_values(
@@ -304,7 +287,7 @@ function get_or_make_address( Address $address ): Address {
 
 	if ( $post_ids ) {
 
-		$found = Address::load( $post_ids[ 0 ] );
+		$found = Address::load( array_shift( $post_ids ) );
 
 		if (
 			$address->address           == $found->address &&
@@ -385,7 +368,7 @@ function get_latest_address_for_user_id_and_currency( int $user_id, Currency $cu
 
 	if ( $post_ids ) {
 		try {
-			$address = Address::load( $post_ids[ 0 ] );
+			$address = Address::load( array_shift( $post_ids ) );
 		} catch ( \Exception $e ) {
 			error_log(
 				sprintf(
@@ -452,34 +435,24 @@ function get_latest_address_per_currency_for_user_id( int $user_id, string $type
 
 	$post_ids = array_values( $query->posts );
 
-	$addresses = [];
+	$addresses = Address::load_many( $post_ids );
 
-	foreach ( $post_ids as $post_id ) {
-		try {
-			$address = Address::load( $post_id );
-		} catch ( \Exception $e ) {
-			error_log(
-				sprintf(
-					'%s: Could not instantiate address %d due to: %s',
-					__FUNCTION__,
-					$post_id,
-					$e->getMessage()
-				)
-			);
-		}
+	$last_addresses = [];
 
-		if ( ! isset( $addresses[ $address->currency->post_id ] ) ) {
-			$addresses[ $address->currency->post_id ] = $address;
+	foreach ( $addresses as $address ) {
+
+		if ( ! isset( $last_addresses[ $address->currency->post_id ] ) ) {
+			$last_addresses[ $address->currency->post_id ] = $address;
 		} else {
-			if ( get_post_time( 'U', true, $address->post_id ) > get_post_time( 'U', true, $addresses[ $address->currency->post_id ]->post_id ) ) {
-				$addresses[ $address->currency->post_id ] = $address;
+			if ( get_post_time( 'U', true, $address->post_id ) > get_post_time( 'U', true, $last_addresses[ $address->currency->post_id ]->post_id ) ) {
+				$last_addresses[ $address->currency->post_id ] = $address;
 			}
 		}
 	}
 
 	maybe_restore_blog();
 
-	return array_values( $addresses );
+	return array_values( $last_addresses );
 }
 
 
@@ -538,29 +511,11 @@ function get_all_addresses_for_user_id_and_currency_id( int $user_id, int $curre
 
 	$post_ids = array_values( $query->posts );
 
-	$addresses = array_map(
-		function( int $post_id ): ?Address {
-			try {
-
-				return Address::load( $post_id );
-
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_all_addresses_for_user_id_and_currency_id: Could not instantiate address %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		$post_ids
-	);
+	$addresses = Address::load_many( $post_ids );
 
 	maybe_restore_blog();
 
-	return array_filter( $addresses );
+	return $addresses;
 }
 
 function count_all_addresses_for_user_id_and_currency_id( int $user_id, int $currency_id ): int {

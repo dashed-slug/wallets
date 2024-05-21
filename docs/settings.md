@@ -22,6 +22,15 @@ The settings are organized into tabs, and App extensions to the plugin can add a
 
 Effectively this controls up to how many deposit addresses a user can have. A user would typically create a deposit address via the `[wallets_deposit]` shortcode. The user clicks the "Get new address" button, which triggers a WP-REST API POST request to `dswallets/v1/users/(user_id)/currencies/(currency_id)/addresses`. If the deposit addresses of the user have reached this max count, the request returns with the HTTP 420 Enhance Your Calm status code and no address is created.
 
+### Disable built-in object cache (debug)
+
+|     |     |
+| --- | --- |
+| *Option* | `wallets_disable_cache` |
+| *Default* | `''` (off) |
+| *Description* | *The plugin speeds up DB reads of its Wallets, Currencies, Transactions and Addresses into its built-in object cache. If this uses up too much memory and causes the plugin to crash, you can disable the cache here and see if it helps. Otherwise, it's best to leave it on.* |
+
+This is a built-in cache for the plugin's CPTs: Wallets, Currencies, Transactions and Addresses. Since `6.0.0`, these are loaded as objects. Since `6.2.6`, these are loaded in batches where possible, to minimize SQL queries to the DB. They are also cached. This won't be a problem unless if the plugin loads too many objects in memory per request. This shouldn't be the case, since all cron jobs process data in small batches. But if you notice the plugin crashing due to insufficient memory, AND you are unable to increase the memory available to WordPress, then disabling this cache MAY help.
 
 ### Transients broken (debug)
 

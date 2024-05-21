@@ -17,32 +17,21 @@ defined( 'ABSPATH' ) || die( -1 );
  * Takes an array of wallet post_ids and instantiates them into an array of Wallet objects.
  *
  * If a wallet cannot be loaded due to Wallet::load() throwing,
- * then the error will be logged and the rest of the wallets will be loaded.
+ * then it is skipped and the rest of the wallets will be loaded.
  *
  * @param array $post_ids The array of integer post_ids
  * @return array The array of Wallet objects.
+ *
+ * @deprecated since 6.2.6
+ * @since 6.2.6 Deprecated in favor of the Currency::load_many() factory.
  */
 function load_wallets( array $post_ids ): array {
-	return array_filter(
-		array_map(
-			function( int $post_id ) {
-				try {
-					return Wallet::load( $post_id );
-
-				} catch ( \Exception $e ) {
-					error_log(
-						sprintf(
-							'load_wallets: Could not instantiate wallet %d due to: %s',
-							$post_id,
-							$e->getMessage()
-						)
-					);
-				}
-				return null;
-			},
-			$post_ids
-		)
+	_doing_it_wrong(
+		__FUNCTION__,
+		'Calling load_wallets( $post_ids ) is deprecated and may be removed in a future version. Instead, use the new currency factory: Wallet::load_many( $post_ids )',
+		'6.2.6'
 	);
+	return Wallet::load_many( $post_ids );
 }
 
 /**
@@ -66,7 +55,7 @@ function get_wallets(): array {
 
 	$post_ids = array_values( $query->posts );
 
-	$wallets = load_wallets( $post_ids );
+	$wallets = Wallet::load_many( $post_ids );
 
 	maybe_restore_blog();
 
@@ -142,4 +131,3 @@ function get_wallet_adapter_class_names(): array {
 
 	return $adapters;
 }
-

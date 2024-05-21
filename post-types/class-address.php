@@ -114,51 +114,87 @@ class Address extends Post_Type {
 	private $label;
 
 	/**
-	 * Load an Address from its custom post entry.
+	 * Array of tags.
 	 *
-	 * @inheritdoc
-	 * @see Post_Type::load()
-	 * @return Address
+	 * Tags correspond to term slugs in the wallets_address_tags taxonomy.
+	 *
+	 * @var ?string[]
 	 */
-	public static function load( int $post_id ): Address {
-		maybe_switch_blog();
+	private $tags = null;
 
-		$post = get_post( $post_id );
-
-		if ( ! $post ) {
-			maybe_restore_blog();
-			throw new \InvalidArgumentException( sprintf( "%s with %d does not exist!", __CLASS__, $post_id ) );
-		}
-
-		if ( 'wallets_address' != $post->post_type ) {
-			maybe_restore_blog();
-			throw new \InvalidArgumentException( "Post $post_id is not an address!" );
-		}
+	/**
+	 * Factory to construct an address in one go from database values.
+	 *
+	 * @param int $post_id The ID of the post in the database
+	 * @param string $post_title The post's title to be used as address label
+	 * @param array $postmeta Key-value pairs
+	 * @param string[] $tags The slugs of the terms on taxonomy wallets_address_tags
+	 *
+	 * @return Address The constructed instance of the address object
+	 */
+	public static function from_values( int $post_id, string $post_title, array $postmeta, array $tags ): Address {
 
 		$address = new self;
-		$address->post_id     = $post->ID;
-		$address->address     = get_post_meta( $post->ID, 'wallets_address', true );
-		$address->extra       = get_post_meta( $post->ID, 'wallets_extra', true );
-		$address->type        = get_post_meta( $post->ID, 'wallets_type', true );
-		$address->label       = $post->post_title;
 
-		$currency_id = get_post_meta( $post->ID, 'wallets_currency_id', true );
+		// populate fields
+		$address->post_id  = $post_id;
+		$address->address  = $postmeta['wallets_address'] ?? '';
+		$address->extra    = $postmeta['wallets_extra'] ?? '';
+		$address->type     = $postmeta['wallets_type'] ?? 'withdrawal';
+		$address->label    = $post_title;
+
+		$currency_id = $postmeta['wallets_currency_id'] ?? null;
 		if ( $currency_id ) {
 			try {
-				$address->currency = Currency::load( $currency_id );
+				$address->currency = Currency::load( $currency_id ) ?? null;
 			} catch ( \Exception $e ) {
 				$address->currency = null;
 			}
 		}
 
-		$user_id = absint( get_post_meta( $post->ID, 'wallets_user', true ) );
+		$user_id = absint( $postmeta['wallets_user'] ?? null );
 		if ( $user_id ) {
 			$address->user = new \WP_User( $user_id );
 		}
 
-		maybe_restore_blog();
+		$address->tags = $tags;
 
 		return $address;
+	}
+
+	/**
+	 * Retrieve many addresses by their post_ids.
+	 *
+	 * Any post_ids not found are skipped silently.
+	 *
+	 * @param int[] $post_ids The post IDs
+	 * @param ?string $unused Do not use. Ignored.
+	 *
+	 * @return Address[] The addresses
+	 * @throws \Exception If DB access or instantiation fails.
+	 *
+	 * @since 6.2.6 Introduced.
+	 */
+	public static function load_many( array $post_ids, ?string $unused = null ): array {
+		return parent::load_many( $post_ids, 'wallets_address' );
+	}
+
+	/**
+	 * Load an Address from its custom post entry.
+	 *
+	 * @inheritdoc
+	 * @see Post_Type::load()
+	 * @return Address
+	 * @throws \Exception If not found or failed to instantiate.
+	 */
+	public static function load( int $post_id ): Address {
+		$one = self::load_many( [ $post_id ] );
+		if ( 1 !== count( $one ) ) {
+			throw new \Exception( 'Not found' );
+		}
+		foreach ( $one as $o ) {
+			return $o;
+		}
 	}
 
 	public function save(): void {
@@ -275,7 +311,9 @@ class Address extends Post_Type {
 
 				maybe_switch_blog();
 
-				$term_ids = [];
+
+				$term_ids   = [];
+				$this->tags = [];
 
 				foreach ( array_unique( array_filter( $value ) ) as $tag_slug ) {
 					if ( ! is_string( $tag_slug ) ) {
@@ -311,6 +349,9 @@ class Address extends Post_Type {
 								)
 							);
 						}
+
+						$this->tags[] = $value;
+
 					}
 				}
 
@@ -361,18 +402,24 @@ class Address extends Post_Type {
 
 			case 'tags':
 
+				if ( ! is_null( $this->tags ) ) {
+					return $this->tags;
+				}
+
 				maybe_switch_blog();
 
 				$tags = wp_get_post_terms( $this->post_id, 'wallets_address_tags' );
 
 				maybe_restore_blog();
 
-				return array_map(
+				$this->tags = array_map(
 					function( $tag ) {
 						return $tag->slug;
 					},
 					$tags
 				);
+
+				return $this->tags;
 
 			default:
 				throw new \InvalidArgumentException( "No field $name in Address!" );
@@ -645,6 +692,7 @@ class Address extends Post_Type {
 
 					if ( $screen->post_type == 'wallets_address' && $screen->base == 'post' && isset( $post ) && is_object( $post ) ):
 						$address = Address::load( $post->ID );
+						$address->__get( 'tags' );
 						if ( in_array( 'archived', $address->tags ) ):
 							?>
 							<div class="notice notice-info">
@@ -737,10 +785,20 @@ class Address extends Post_Type {
 
 		if ( ! $post ) return;
 
+		if ( 'wallets_address' !== $post->post_type ) return;
+
 		try {
 			$address = self::load( $post->ID );
 		} catch ( \Exception $e ) {
-			$address = new self;
+			error_log(
+				sprintf(
+					'%s: Cannot instantiate %d to show metaboxes, due to: %s',
+					__CLASS__,
+					$post->ID,
+					$e->getMessage()
+				)
+			);
+			return;
 		}
 
 		remove_meta_box(
@@ -1287,6 +1345,7 @@ add_action(
 		elseif( 'address_type' == $column ):
 			echo ucfirst( $address->type );
 
+			$address->__get( 'tags' );
 			if ( in_array( 'archived', $address->tags ) ):
 				echo ' ';
 				esc_html_e( '(archived)', 'wallets' );

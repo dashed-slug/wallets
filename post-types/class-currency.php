@@ -78,11 +78,11 @@ add_theme_support( 'post-thumbnails' );
  *
  * Fiat currencies should have the `fiat` taxonomy term (tag) assigned to them.
  *
- *		$fiat_currencies = load_currencies( get_currency_ids( 'fiat' ) );
+ *		$fiat_currencies = Currency::load_many( get_currency_ids( 'fiat' ) );
  *
  * # Get all cryptocurrencies (i.e. not fiat)
  *
- *		$cryptocurrencies = load_currencies(
+ *		$cryptocurrencies = Currency::load_many(
  *			array_diff(
  *				get_currency_ids(), // gets all currency IDs
  *				get_currency_ids( 'fiat' )
@@ -262,62 +262,97 @@ class Currency extends Post_Type {
 	private $explorer_uri_add = null;
 
 	/**
-	 * Load a Currency object from its custom post entry.
+	 * Array of tags.
 	 *
-	 * @inheritdoc
-	 * @see Post_Type::load()
-	 * @return Currency
+	 * Tags correspond to term slugs in the wallets_currency_tags taxonomy.
+	 *
+	 * @var ?string[]
 	 */
-	public static function load( int $post_id ): Currency {
-		maybe_switch_blog();
+	private $tags = null;
 
-		$post = get_post( $post_id );
-
-		if ( ! $post ) {
-			maybe_restore_blog();
-			throw new \InvalidArgumentException( sprintf( "%s with %d does not exist!", __CLASS__, $post_id ) );
-		}
-
-		if ( ! 'wallets_currency' == $post->post_type ) {
-			maybe_restore_blog();
-			throw new \InvalidArgumentException( "Post $post_id is not a currency!" );
-		}
+	/**
+	 * Factory to construct a currency in one go from database values.
+	 *
+	 * @param int $post_id The ID of the post in the database
+	 * @param string $post_title The post's title to be used as currency name
+	 * @param array $postmeta Key-value pairs
+	 * @param string[] $tags The slugs of the terms on taxonomy wallets_currency_tags
+	 *
+	 * @return Currency The constructed instance of the currency object
+	 */
+	public static function from_values( int $post_id, string $post_title, array $postmeta, array $tags ): Currency {
 
 		$currency = new self;
-		$currency->post_id               = $post->ID;
-		$currency->name                  = $post->post_title;
-		$currency->symbol                = get_post_meta( $post->ID, 'wallets_symbol', true );
-		$currency->decimals              = get_post_meta( $post->ID, 'wallets_decimals', true );
-		$currency->pattern               = get_post_meta( $post->ID, 'wallets_pattern', true );
-		$currency->coingecko_id          = get_post_meta( $post->ID, 'wallets_coingecko_id', true );
-		$currency->contract_address      = get_post_meta( $post->ID, 'wallets_contract_address', true );
-		$currency->rates                 = get_post_meta( $post->ID, 'wallets_rates', true );
-		$currency->min_withdraw          = absint( get_post_meta( $post->ID, 'wallets_min_withdraw',          true ) );
-		$currency->max_withdraw          = absint( get_post_meta( $post->ID, 'wallets_max_withdraw',          true ) );
-		$currency->max_withdraw_per_role = (array) get_post_meta( $post->ID, 'wallets_max_withdraw_per_role', true )  ;
-		$currency->fee_deposit_site      = absint( get_post_meta( $post->ID, 'wallets_fee_deposit_site',      true ) );
-		$currency->fee_move_site         = absint( get_post_meta( $post->ID, 'wallets_fee_move_site',         true ) );
-		$currency->fee_withdraw_site     = absint( get_post_meta( $post->ID, 'wallets_fee_withdraw_site',     true ) );
-		$currency->icon_url              = get_the_post_thumbnail_url( $post->ID );
-		$currency->explorer_uri_tx       = get_post_meta( $post->ID, 'wallets_explorer_uri_tx', true );
-		$currency->explorer_uri_add      = get_post_meta( $post->ID, 'wallets_explorer_uri_add', true );
+
+		// populate fields
+		$currency->post_id               = $post_id;
+		$currency->name                  = $post_title ?? '';
+		$currency->symbol                = $postmeta['wallets_symbol'] ?? '';
+		$currency->decimals              = absint( $postmeta['wallets_decimals'] ?? 0 );
+		$currency->pattern               = $postmeta['wallets_pattern'] ?? '%f';
+		$currency->coingecko_id          = $postmeta['wallets_coingecko_id'] ?? '';
+		$currency->contract_address      = $postmeta['wallets_contract_address'] ?? '';
+		$currency->rates                 = unserialize( $postmeta['wallets_rates'] ?? [] );
+		$currency->min_withdraw          = absint( $postmeta['wallets_min_withdraw'] ?? 0 );
+		$currency->max_withdraw          = absint( $postmeta['wallets_max_withdraw'] ?? 0 );
+		$currency->max_withdraw_per_role = (array) unserialize( $postmeta['wallets_max_withdraw_per_role'] ?? [], [ 'allowed_classes' => false ] );
+		$currency->fee_deposit_site      = absint( $postmeta['wallets_fee_deposit_site'] ?? 0 );
+		$currency->fee_move_site         = absint( $postmeta['wallets_fee_move_site'] ?? 0 );
+		$currency->explorer_uri_tx       = $postmeta['wallets_explorer_uri_tx'] ?? '';
+		$currency->explorer_uri_add      = $postmeta['wallets_explorer_uri_add'] ?? '';
+
 
 		if ( ! is_array( $currency->rates ) ) {
 			$currency->rates = [];
 		}
 
-		$wallet_id = get_post_meta( $post->ID, 'wallets_wallet_id', true );
+		$wallet_id = $postmeta['wallets_wallet_id'] ?? null;
 		if ( $wallet_id ) {
 			try {
-				$currency->wallet = Wallet::load( $wallet_id );
+				$currency->wallet = Wallet::load( $wallet_id ) ?? null;
 			} catch ( \Exception $e ) {
 				$currency->wallet = null;
 			}
 		}
 
-		maybe_restore_blog();
+		$currency->tags = $tags;
 
 		return $currency;
+	}
+
+	/**
+	 * Retrieve many currencies by their post_ids.
+	 *
+	 * Any post_ids not found are skipped silently.
+	 *
+	 * @param int[] $post_ids The post IDs
+	 * @param ?string $unused Do not use. Ignored.
+	 *
+	 * @return Currency[] The currencies
+	 * @throws \Exception If DB access or instantiation fails.
+	 *
+	 * @since 6.2.6 Introduced.
+	 */
+	public static function load_many( array $post_ids, ?string $unused = null ): array {
+		return parent::load_many( $post_ids, 'wallets_currency' );
+	}
+
+	/**
+	 * Load a Currency object from its custom post entry.
+	 *
+	 * @inheritdoc
+	 * @see Post_Type::load()
+	 * @return Currency
+	 * @throws \Exception If not found or failed to instantiate.
+	 */
+	public static function load( int $post_id ): Currency {
+		$one = self::load_many( [ $post_id ] );
+		if ( 1 !== count( $one ) ) {
+			throw new \Exception( 'Not found' );
+		}
+		foreach ( $one as $o ) {
+			return $o;
+		}
 	}
 
 	public function save(): void {
@@ -463,7 +498,7 @@ class Currency extends Post_Type {
 				break;
 
 			case 'decimals':
-				if ( has_transactions( $this ) && $value != $this->decimals ) {
+				if ( $this->post_id && has_transactions( $this ) && $value != $this->decimals ) {
 					throw new \Exception( "Cannot change the number of decimals for currency $this->name because it already has transactions." );
 				}
 
@@ -495,7 +530,8 @@ class Currency extends Post_Type {
 
 				maybe_switch_blog();
 
-				$term_ids = [];
+				$term_ids   = [];
+				$this->tags = [];
 
 				foreach ( array_unique( array_filter( $value ) ) as $tag_slug ) {
 					if ( ! is_string( $tag_slug ) ) {
@@ -526,6 +562,7 @@ class Currency extends Post_Type {
 						}
 					}
 
+					$this->tags[] = $value;
 				}
 
 				$result = wp_set_object_terms( $this->post_id, $term_ids, 'wallets_currency_tags' );
@@ -567,6 +604,11 @@ class Currency extends Post_Type {
 				return apply_filters( "wallets_coin_name_{$this->symbol}", $this->name );
 
 			case 'icon_url':
+
+				if ( is_null( $this->icon_url ) ) {
+					$this->icon_url = get_the_post_thumbnail_url( $this->post_id ) ?? '';
+				}
+
 				/**
 				 * Coin/currency icon URL filter.
 				 *
@@ -627,18 +669,24 @@ class Currency extends Post_Type {
 
 			case 'tags':
 
+				if ( ! is_null( $this->tags ) ) {
+					return $this->tags;
+				}
+
 				maybe_switch_blog();
 
 				$tags = wp_get_post_terms( $this->post_id, 'wallets_currency_tags' );
 
 				maybe_restore_blog();
 
-				return array_map(
+				$this->tags = array_map(
 					function( $tag ) {
 						return $tag->slug;
 					},
 					$tags
 				);
+
+				return $this->tags;
 
 			case 'extra_field_name':
 				if ( $this->wallet && ! is_null( $this->wallet->adapter ) ) {
@@ -660,6 +708,12 @@ class Currency extends Post_Type {
 	 * @return bool
 	 */
 	public function is_fiat(): bool {
+
+		if ( is_null( $this->tags ) ) {
+			$this->__get( 'tags' );
+		}
+
+
 		if ( in_array( 'fiat', $this->tags ) ) {
 			return true;
 		}
@@ -769,6 +823,10 @@ class Currency extends Post_Type {
 		$platforms = get_coingecko_platforms();
 
 		$platform = null;
+
+		if ( is_null( $this->tags ) ) {
+			$this->__get( 'tags' );
+		}
 
 		foreach ( $this->tags as $tag ) {
 			if ( preg_match( '/^(.*)\-token$/', $tag, $matches ) ) {
@@ -1122,10 +1180,20 @@ class Currency extends Post_Type {
 
 		if ( ! $post ) return;
 
+		if ( 'wallets_currency' !== $post->post_type ) return;
+
 		try {
 			$currency = self::load( $post->ID );
 		} catch ( \Exception $e ) {
-			$currency = new self;
+			error_log(
+				sprintf(
+					'%s: Cannot instantiate %d to show metaboxes, due to: %s',
+					__CLASS__,
+					$post->ID,
+					$e->getMessage()
+				)
+			);
+			return;
 		}
 
 		remove_meta_box(

@@ -202,7 +202,7 @@ class Transaction extends Post_Type {
 	private $chain_fee = 0;
 
 	/**
-	 * Transacton comment.
+	 * Transaction comment.
 	 *
 	 * Free text string, stored on the post_title column in the DB.
 	 *
@@ -272,6 +272,16 @@ class Transaction extends Post_Type {
 	 */
 	private $parent_id = 0;
 
+
+	/**
+	 * Array of tags.
+	 *
+	 * Tags correspond to term slugs in the wallets_tx_tags taxonomy.
+	 *
+	 * @var ?string[]
+	 */
+	private $tags = null;
+
 	/**
 	 * Whether the TX data has changed since last DB load.
 	 *
@@ -282,59 +292,55 @@ class Transaction extends Post_Type {
 	private $dirty = false;
 
 	/**
-	 * Load a Transaction from its custom post entry.
+	 * Factory to construct a transaction in one go from database values.
 	 *
-	 * @inheritdoc
-	 * @see Post_Type::load()
-	 * @return Transaction
+	 * @param int $post_id The ID of the post in the database
+	 * @param string $post_title The post's title to be used as transaction comment
+	 * @param string $post_status The status of the post, to populate the transaction state field
+	 * @param string $post_parent The post's parent post, for transaction counterparts
+	 * @param array $postmeta Key-value pairs
+	 * @param string[] $tags The slugs of the terms on taxonomy wallets_tx_tags
+	 *
+	 * @return Transaction The constructed instance of the transaction object
 	 */
-	public static function load( int $post_id ): Transaction {
-		maybe_switch_blog();
-
-		$post = get_post( $post_id );
-
-		if ( ! $post ) {
-			maybe_restore_blog();
-			throw new \InvalidArgumentException( sprintf( "%s with %d does not exist!", __CLASS__, $post_id ) );
-		}
-
-		if ( 'wallets_tx' != $post->post_type ) {
-			maybe_restore_blog();
-			throw new \InvalidArgumentException( "Post $post_id is not a transaction!" );
-		}
+	public static function from_values( int $post_id, string $post_title, string $post_status, int $post_parent, array $postmeta, array $tags ): Transaction {
 
 		$tx = new self;
-		$tx->post_id    = $post->ID;
-		$tx->category   = get_post_meta( $post->ID, 'wallets_category', true );
-		$tx->txid       = get_post_meta( $post->ID, 'wallets_txid', true );
 
-		$address_id     = get_post_meta( $post->ID, 'wallets_address_id', true );
+		// populate fields
+		$tx->post_id = $post_id;
+		$tx->category   = $postmeta['wallets_category'] ?? 'move';
+		$tx->txid       = $postmeta['wallets_txid'] ?? '';
+
+		$address_id = $postmeta['wallets_address_id'] ?? null;
 		if ( $address_id ) {
 			try {
-				$tx->address = Address::load( $address_id );
+				$tx->address = Address::load( $address_id ) ?? null;
 			} catch ( \Exception $e ) {
 				$tx->address = null;
 			}
 		}
-		$currency_id = get_post_meta( $post->ID, 'wallets_currency_id', true );
+
+		$currency_id = $postmeta['wallets_currency_id'] ?? null;
 		if ( $currency_id ) {
 			try {
-				$tx->currency = Currency::load( $currency_id );
+				$tx->currency = Currency::load( $currency_id ) ?? null;
 			} catch ( \Exception $e ) {
 				$tx->currency = null;
 			}
 		}
-		$tx->amount     = intval( get_post_meta( $post->ID, 'wallets_amount', true ) );
-		$tx->fee        = intval( get_post_meta( $post->ID, 'wallets_fee', true ) );
-		$tx->chain_fee  = absint( get_post_meta( $post->ID, 'wallets_chain_fee', true ) );
-		$tx->comment    = $post->post_title;
-		$tx->block      = absint( get_post_meta( $post->ID, 'wallets_block', true ) );
-		$tx->timestamp  = absint( get_post_meta( $post->ID, 'wallets_timestamp', true ) );
-		$tx->nonce      = get_post_meta( $post->ID, 'wallets_nonce', true );
-		$tx->error      = get_post_meta( $post->ID, 'wallets_error', true );
-		$tx->parent_id  = absint( $post->post_parent );
 
-		switch ( $post->post_status ) {
+		$tx->amount    = intval( $postmeta['wallets_amount'] ?? 0 );
+		$tx->fee       = intval( $postmeta['wallets_fee'] ?? 0 );
+		$tx->chain_fee = absint( $postmeta['wallets_chain_fee'] ?? 0 );
+		$tx->comment   = $post_title;
+		$tx->block     = absint( $postmeta['wallets_block'] ?? 0);
+		$tx->timestamp = absint( $postmeta['wallets_timestamp'] ?? 0 );
+		$tx->nonce     = $postmeta['wallets_nonce'] ?? '';
+		$tx->error     = $postmeta['wallets_error'] ?? '';
+		$tx->parent_id = $post_parent;
+
+		switch ( $post_status ) {
 			case 'publish':
 				$tx->status = 'done';
 				break;
@@ -349,14 +355,49 @@ class Transaction extends Post_Type {
 				throw new \Exception( sprintf( "Invalid transaction post status $post->post_status" ) );
 		}
 
-		$user_id = absint( get_post_meta( $post->ID, 'wallets_user', true ) );
+		$user_id = absint( $postmeta['wallets_user'] );
 		if ( $user_id ) {
 			$tx->user = new \WP_User( $user_id );
 		}
 
-		maybe_restore_blog();
+		$tx->tags = $tags;
 
 		return $tx;
+	}
+
+	/**
+	 * Retrieve many transactions by their post_ids.
+	 *
+	 * Any post_ids not found are skipped silently.
+	 *
+	 * @param int[] $post_ids The post IDs
+	 * @param ?string $unused Do not use. Ignored.
+	 *
+	 * @return Transaction[] The transactions
+	 * @throws \Exception If DB access or instantiation fails.
+	 *
+	 * @since 6.2.6 Introduced.
+	 */
+	public static function load_many( array $post_ids, ?string $unused = null ): array {
+		return parent::load_many( $post_ids, 'wallets_tx' );
+	}
+
+	/**
+	 * Load a Transaction from its custom post entry.
+	 *
+	 * @inheritdoc
+	 * @see Post_Type::load()
+	 * @return Transaction
+	 * @throws \Exception If not found or failed to instantiate.
+	 */
+	public static function load( int $post_id ): Transaction {
+		$one = self::load_many( [ $post_id ] );
+		if ( 1 !== count( $one ) ) {
+			throw new \Exception( 'Not found' );
+		}
+		foreach ( $one as $o ) {
+			return $o;
+		}
 	}
 
 	/**
@@ -644,7 +685,8 @@ class Transaction extends Post_Type {
 
 			maybe_switch_blog();
 
-			$term_ids = [];
+			$term_ids   = [];
+			$this->tags = [];
 
 			foreach ( array_unique( array_filter( $value ) ) as $tag_slug ) {
 				if ( ! is_string( $tag_slug ) ) {
@@ -680,6 +722,8 @@ class Transaction extends Post_Type {
 							)
 						);
 					}
+
+					$this->tags[] = $value;
 				}
 
 			}
@@ -744,18 +788,24 @@ class Transaction extends Post_Type {
 
 			case 'tags':
 
+				if ( ! is_null( $this->tags ) ) {
+					return $this->tags;
+				}
+
 				maybe_switch_blog();
 
 				$terms = wp_get_post_terms( $this->post_id, 'wallets_tx_tags' );
 
 				maybe_restore_blog();
 
-				return array_map(
+				$this->tags = array_map(
 					function( $tag ) {
 						return $tag->slug;
 					},
-					$terms
+					$tags
 				);
+
+				return $this->tags;
 
 			case 'is_dirty':
 				return (bool) $this->dirty;
@@ -1345,10 +1395,20 @@ class Transaction extends Post_Type {
 
 		if ( ! $post ) return;
 
+		if ( 'wallets_tx' !== $post->post_type ) return;
+
 		try {
 			$tx = self::load( $post->ID );
 		} catch ( \Exception $e ) {
-			$tx = new self;
+			error_log(
+				sprintf(
+					'%s: Cannot instantiate %d to show metaboxes, due to: %s',
+					__CLASS__,
+					$post->ID,
+					$e->getMessage()
+				)
+			);
+			return;
 		}
 
 		remove_meta_box(

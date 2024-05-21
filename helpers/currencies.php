@@ -16,35 +16,20 @@ defined( 'ABSPATH' ) || die( -1 );
  * Takes an array of currency post_ids and instantiates them into an array of Currency objects.
  *
  * If a currency cannot be loaded due to Currency::load() throwing (i.e. bad DB data),
- * then the error will be logged and the rest of the currencies will be loaded.
+ * then it is skipped and the rest of the currencies will be loaded.
  *
  * @param array $post_ids The array of integer post_ids
  * @return array The array of Currency objects.
+ * @deprecated since 6.2.6
+ * @since 6.2.6 Deprecated in favor of the Currency::load_many() factory.
  */
 function load_currencies( array $post_ids ): array {
-	return
-		array_values(
-			array_filter(
-				array_map(
-					function( int $post_id ) {
-						try {
-							return Currency::load( $post_id );
-
-						} catch ( \Exception $e ) {
-							error_log(
-								sprintf(
-									'load_currencies: Could not instantiate currency %d due to: %s',
-									$post_id,
-									$e->getMessage()
-								)
-							);
-						}
-						return null;
-					},
-					$post_ids
-				)
-			)
-		);
+	_doing_it_wrong(
+		__FUNCTION__,
+		'Calling load_currencies( $post_ids ) is deprecated and may be removed in a future version. Instead, use the new currency factory: Currency::load_many( $post_ids )',
+		'6.2.6'
+	);
+	return Currency::load_many( $post_ids );
 }
 
 function get_coingecko_currencies(): array {
@@ -151,7 +136,7 @@ function get_currency_ids_for_wallet( Wallet $wallet ): array {
  * return Currency[] The found currencies.
  */
 function get_currencies_for_wallet( Wallet $wallet ): array {
-	return load_currencies( get_currency_ids_for_wallet( $wallet ) );
+	return Currency::load_many( get_currency_ids_for_wallet( $wallet ) );
 }
 
 /**
@@ -165,33 +150,31 @@ function get_currencies_for_wallet( Wallet $wallet ): array {
 function get_currency_symbols_names_for_wallet( Wallet $wallet ): array {
 	maybe_switch_blog();
 
-	$query_args = [
-		'fields'      => 'ids',
-		'post_type'   => 'wallets_currency',
-		'post_status' => 'publish',
-		'nopaging'    => true,
-		'meta_query'  => [
-			[
-				'key'   => 'wallets_wallet_id',
-				'value' => $wallet->post_id,
-			],
-		],
-	];
+	global $wpdb;
 
-	$query = new \WP_Query( $query_args );
+	$query = $wpdb->prepare(
+		"
+		SELECT
+			p.post_title AS name,
+			pm_symbol.meta_value AS symbol
+		FROM
+			{$wpdb->posts} p
+		JOIN
+			{$wpdb->postmeta} AS pm_wallet_id ON ( p.ID = pm_wallet_id.post_id AND pm_wallet_id.meta_key = 'wallets_wallet_id' AND pm_wallet_id.meta_value = %d )
+		JOIN
+			{$wpdb->postmeta} as pm_symbol ON ( p.ID = pm_symbol.post_id AND pm_symbol.meta_key = 'wallets_symbol' )
+		WHERE
+			p.post_status = 'publish'
+			AND p.post_type = 'wallets_currency'
+		",
+		$wallet->post_id
+	);
 
-	$post_ids = array_values( $query->posts );
+	$data = $wpdb->get_results( $query, OBJECT );
 
 	$assoc = [];
-
-	foreach ( $post_ids as $post_id ) {
-		$symbol = get_post_meta( $post_id, 'wallets_symbol', true );
-		if ( $symbol ) {
-			$post = get_post( $post_id );
-			if ( $post ) {
-				$assoc[ $symbol ] = $post->post_title;
-			}
-		}
+	foreach ( $data as $row ) {
+		$assoc[ $row->symbol ] = $row->name;
 	}
 
 	maybe_restore_blog();
@@ -219,30 +202,13 @@ function get_all_currencies(): array {
 
 	$query = new \WP_Query( $query_args );
 
+	$post_ids = $query->posts;
 
-	$currencies = array_map(
-		function( $post_id ) {
-			try {
-
-				return Currency::load( $post_id );
-
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_all_currencies: Could not instantiate currency %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		array_values( $query->posts )
-	);
+	$currencies = Currency::load_many( $post_ids );
 
 	maybe_restore_blog();
 
-	return array_values( array_filter( $currencies ) );
+	return $currencies;
 }
 
 /**
@@ -281,23 +247,7 @@ function get_all_enabled_currencies( $with_wallet = true ): array {
 
 	$query = new \WP_Query( $query_args );
 
-	$currencies = array_map(
-		function( $post_id ) {
-			try {
-				return Currency::load( $post_id );
-			} catch ( \Exception $e ) {
-				error_log(
-					sprintf(
-						'get_all_enabled_currencies: Could not instantiate currency %d due to: %s',
-						$post_id,
-						$e->getMessage()
-					)
-				);
-			}
-			return null;
-		},
-		array_values( $query->posts )
-	);
+	$currencies = Currency::load_many( $query->posts );
 
 	if ( $with_wallet ) {
 		$currencies = array_filter( $currencies, function( Currency $currency ) {
@@ -311,7 +261,7 @@ function get_all_enabled_currencies( $with_wallet = true ): array {
 
 	maybe_restore_blog();
 
-	return array_values( array_filter( $currencies ) );
+	return $currencies;
 }
 
 /**
@@ -425,15 +375,7 @@ function get_all_currencies_by_symbol( string $symbol ): array {
 
 	$post_ids = array_values( $query->posts );
 
-	$currencies = [];
-
-	foreach ( $post_ids as $post_id ) {
-		try {
-			$currencies[] = Currency::load( $post_id );
-		} catch ( \Exception $e ) {
-			continue;
-		}
-	}
+	$currencies = Currency::load_many( $post_ids );
 
 	maybe_restore_blog();
 
@@ -545,7 +487,7 @@ function get_currency_ids( $having_tag = null, $having_status = 'publish' ): arr
  */
 function get_all_fiat_currencies(): array {
 	return
-		load_currencies(
+		Currency::load_many(
 			get_currency_ids( 'fiat' )
 		);
 }
@@ -561,7 +503,7 @@ function get_all_fiat_currencies(): array {
  */
 function get_all_cryptocurrencies(): array {
 	return
-		load_currencies(
+		Currency::load_many(
 			array_diff(
 				get_currency_ids(),
 				get_currency_ids( 'fiat' )
@@ -737,7 +679,7 @@ function get_paged_currencies_with_coingecko_id( int $limit = 10, int $page = 0 
 
 	$post_ids = array_values( $query->posts );
 
-	$currencies = load_currencies( $post_ids );
+	$currencies = Currency::load_many( $post_ids );
 
 	maybe_restore_blog();
 
