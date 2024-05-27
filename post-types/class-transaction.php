@@ -308,7 +308,7 @@ class Transaction extends Post_Type {
 		$tx = new self;
 
 		// populate fields
-		$tx->post_id = $post_id;
+		$tx->post_id    = $post_id;
 		$tx->category   = $postmeta['wallets_category'] ?? 'move';
 		$tx->txid       = $postmeta['wallets_txid'] ?? '';
 
@@ -2380,6 +2380,15 @@ class Transaction extends Post_Type {
 			add_action(
 				'shutdown',
 				function() use ( &$old_statuses_original, &$new_statuses_final ) {
+
+					// Ensure that any tx status values come straight from DB and not from cache
+					foreach ( Post_Type::$object_cache as $id => $object ) {
+						if ( $object instanceof Transaction ) {
+							unset( Post_Type::$object_cache[ $id ] );
+						}
+					}
+					Transaction::load_many( array_keys( $old_statuses_original ) );
+
 					foreach ( array_keys( $old_statuses_original ) as $post_id ) {
 						if ( $old_statuses_original[ $post_id ] != $new_statuses_final[ $post_id ] ) {
 

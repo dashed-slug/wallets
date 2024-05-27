@@ -156,7 +156,7 @@ class Wallet extends Post_Type {
 	}
 
 	/**
-	 * Retrieve many walletts by their post_ids.
+	 * Retrieve many wallets by their post_ids.
 	 *
 	 * Any post_ids not found are skipped silently.
 	 *

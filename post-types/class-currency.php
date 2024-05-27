@@ -298,6 +298,7 @@ class Currency extends Post_Type {
 		$currency->max_withdraw_per_role = (array) unserialize( $postmeta['wallets_max_withdraw_per_role'] ?? [], [ 'allowed_classes' => false ] );
 		$currency->fee_deposit_site      = absint( $postmeta['wallets_fee_deposit_site'] ?? 0 );
 		$currency->fee_move_site         = absint( $postmeta['wallets_fee_move_site'] ?? 0 );
+		$currency->fee_withdraw_site     = absint( $postmeta['wallets_fee_withdraw_site'] ?? 0 );
 		$currency->explorer_uri_tx       = $postmeta['wallets_explorer_uri_tx'] ?? '';
 		$currency->explorer_uri_add      = $postmeta['wallets_explorer_uri_add'] ?? '';
 

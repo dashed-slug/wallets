@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, custodial
 Requires at least: 6.0
 Tested up to: 6.5.3
 Requires PHP: 7.0
-Stable tag: 6.2.6
+Stable tag: 6.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -337,6 +337,10 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
+= 6.2.7 =
+- Fix: Issue with withdrawal fees not loaded, introduced in 6.2.6 is now fixed.
+- Fix: Issue with transaction emails not being sent in some environments, introduced in 6.2.6, is possibly now fixed (CNR).
+
 = 6.2.6 =
 - Change: When the plugin loads batches of Wallets, Currencies, Transactions, or Addresses, it now does it faster and with less SQL queries to the DB to improve performance.
 - Add: New built-in object cache to further improve DB performance. Can be turned off in general settings.
@@ -491,7 +495,7 @@ Please state your request on the forums or over email, and I will respond within
 
 == Upgrade Notice ==
 
-Version `6.2.6` improves performance of the plugin, by batching and caching plugin access to database objects.
+Version `6.2.7` fixes a few issues introduced in `6.2.6`.
 
 == Donating ==
 
