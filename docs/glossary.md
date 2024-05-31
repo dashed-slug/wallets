@@ -144,7 +144,7 @@ In versions previous to `6.0.0`, coin adapters were what the plugin used to comm
 
 ## CoinGecko ID {#coingecko-id}
 
-Each cryptocurrency can receive exchange rates data from CoinGecko. To do this, you can specify the cryptocurrency's unique ID on CoinGecko. This allows the plugin to query the CoinGecko API for [exchange rates](#exchange-rates) for this currency. 
+Each cryptocurrency can receive exchange rates data from CoinGecko. To do this, you can specify the cryptocurrency's unique ID on CoinGecko. This allows the plugin to query the CoinGecko API for [exchange rates](#exchange-rates) for this currency.
 
 To learn how you can set the CoinGecko ID on a currency easily, go to: _The Post Types_ &rarr; _Currencies_ &rarr; _Fields_ &rarr; _[Currency exchange rates][currency-exchange-rates]_.
 
@@ -682,6 +682,15 @@ To create an *[Address post type][post-type-address]* with such details, enter t
 
 Replace the numbers in the JSON with the actual *SWIFT/BIC* and *Account number* of the wire transfer's destination.
 
+## SWIFT-BIC and Account Number {#swift-bic-and-accnum}
+
+An SWIFT-BIC number and an account number are the details needed to perform a bank transaction in Africa. When performing fiat deposits/withdrawals, this is one of the options for bank addressing method.
+
+To create an *[Address post type][post-type-address]* with such details, enter the following JSON data in the address's Title:
+
+	{ "swiftBic": "123456789", "accountNumber": "1234567"}
+
+Replace the numbers in the JSON with the actual *SWIFT/BIC* and *Account number* of the wire transfer's destination.
 
 ## Symbol {#symbol}
 

@@ -32,12 +32,16 @@ defined( 'ABSPATH' ) || die( -1 );
  */
 
 $payment_details = json_decode( $tx->address->label );
-if ( $payment_details && isset( $payment_details->iban ) && isset( $payment_details->swiftBic ) ) {
-	$addressing_method = 'iban';
-} elseif ( $payment_details && isset( $payment_details->routingNumber ) && isset( $payment_details->accountNumber ) ) {
-	$addressing_method = 'routing';
-} elseif ( $payment_details && isset( $payment_details->ifsc ) && isset( $payment_details->indianAccNum ) ) {
-	$addressing_method = 'ifsc';
+if ( $payment_details ) {
+	if ( isset( $payment_details->iban ) && isset( $payment_details->swiftBic ) ) {
+		$addressing_method = 'iban';
+	} elseif ( isset( $payment_details->swiftBic) && isset( $payment_details->accountNumber ) ) {
+		$addressing_method = 'swacc';
+	} elseif ( isset( $payment_details->routingNumber ) && isset( $payment_details->accountNumber ) ) {
+		$addressing_method = 'routing';
+	} elseif ( isset( $payment_details->ifsc ) && isset( $payment_details->indianAccNum ) ) {
+		$addressing_method = 'ifsc';
+	}
 }
 
 ?>
@@ -100,6 +104,18 @@ if ( $payment_details && isset( $payment_details->iban ) && isset( $payment_deta
 		<tr>
 			<th style="align: right;"><?php esc_html_e( 'IBAN:', 'wallets' ); ?></th>
 			<td><code><?php esc_html_e( $payment_details->iban ); ?></code></td>
+		</tr>
+
+		<?php elseif ( 'swacc' == $addressing_method ): ?>
+
+		<tr>
+			<th style="align: right;"><?php esc_html_e( 'SWIFT/BIC:', 'wallets' ); ?></th>
+			<td><code><?php esc_html_e( $payment_details->swiftBic ); ?></code></td>
+		</tr>
+
+		<tr>
+			<th style="align: right;"><?php esc_html_e( 'Account number:', 'wallets' ); ?></th>
+			<td><code><?php esc_html_e( $payment_details->accountNumber ); ?></code></td>
 		</tr>
 
 		<?php elseif ( 'routing' == $addressing_method ): ?>

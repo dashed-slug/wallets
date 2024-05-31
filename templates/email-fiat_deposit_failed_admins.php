@@ -121,6 +121,18 @@ $url = sprintf(
 			<td><code><?php esc_html_e( $payment_details->iban ); ?></code></td>
 		</tr>
 
+		<?php elseif ( 'swacc' == $addressing_method ): ?>
+
+		<tr>
+			<th style="align: right;"><?php esc_html_e( 'SWIFT/BIC:', 'wallets' ); ?></th>
+			<td><code><?php esc_html_e( $payment_details->swiftBic ); ?></code></td>
+		</tr>
+
+		<tr>
+			<th style="align: right;"><?php esc_html_e( 'Account number:', 'wallets' ); ?></th>
+			<td><code><?php esc_html_e( $payment_details->accountNumber ); ?></code></td>
+		</tr>
+
 		<?php elseif ( 'routing' == $addressing_method ): ?>
 
 		<tr>

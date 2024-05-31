@@ -148,7 +148,7 @@
 			<tr>
 				<td>
 					<label
-						data-bind="visible: 'iban' == selectedCurrency().bankaddressingmethod"
+						data-bind="visible: 'iban' == selectedCurrency().bankaddressingmethod || 'swacc' == selectedCurrency().bankaddressingmethod"
 						class="bank-bic">
 						<?php
 						echo apply_filters(
@@ -214,7 +214,7 @@
 					</label>
 
 					<label
-						data-bind="visible: 'routing' == selectedCurrency().bankaddressingmethod"
+						data-bind="visible: 'routing' == selectedCurrency().bankaddressingmethod || 'swacc' == selectedCurrency().bankaddressingmethod"
 						class="bank-acc-accnum">
 						<?php
 						echo apply_filters(

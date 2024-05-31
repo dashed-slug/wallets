@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, custodial
 Requires at least: 6.0
 Tested up to: 6.5.3
 Requires PHP: 7.0
-Stable tag: 6.2.7
+Stable tag: 6.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -337,6 +337,11 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
+= 6.3.0 =
+- Add: It is now possible to submit bank transfer requests with a combination of SWIFT/BIC and Account Number. This will be useful for African countries.
+- Improve: Saving transactions and addresses to the DB is now much faster. This should improve the UI experience when submitting transactions.
+- Fix: When submitting a bank transfer request, it is no longer possible to click the submit button again while another request is underway.
+
 = 6.2.7 =
 - Fix: Issue with withdrawal fees not loaded, introduced in 6.2.6 is now fixed.
 - Fix: Issue with transaction emails not being sent in some environments, introduced in 6.2.6, is possibly now fixed (CNR).
@@ -495,7 +500,7 @@ Please state your request on the forums or over email, and I will respond within
 
 == Upgrade Notice ==
 
-Version `6.2.7` fixes a few issues introduced in `6.2.6`.
+Version `6.3.0` adds a requested feature, fixes a UI defect and improves performance.
 
 == Donating ==
 

@@ -463,38 +463,117 @@ class Transaction extends Post_Type {
 			);
 		}
 
+		$user_id = $this->user ? $this->user->ID : 0;
+
 		$postarr = [
 			'ID'          => $this->post_id ?? null,
 			'post_title'  => $this->comment,
 			'post_status' => $post_status,
 			'post_type'   => 'wallets_tx',
 			'post_parent' => $this->parent_id,
-			'meta_input' => [
-				'wallets_user'        => $this->user ? $this->user->ID : 0,
-				'wallets_category'    => $this->category,
-				'wallets_txid'        => $this->txid,
-				'wallets_address_id'  => $this->address->post_id ?? null,
-				'wallets_currency_id' => $this->currency->post_id ?? null,
-				'wallets_amount'      => $this->amount,
-				'wallets_fee'         => $this->fee,
-				'wallets_chain_fee'   => $this->chain_fee,
-				'wallets_block'       => $this->block,
-				'wallets_timestamp'   => $this->timestamp,
-				'wallets_nonce'       => $this->nonce ?? null,
-				'wallets_error'       => $this->error ?? null,
-			],
 		];
 
 		// https://developer.wordpress.org/reference/hooks/save_post/#avoiding-infinite-loops
 		remove_action( 'save_post', [ __CLASS__, 'save_post' ] );
 		$result = wp_insert_post( $postarr );
 		add_action( 'save_post', [ __CLASS__, 'save_post' ], 10, 3 );
+		maybe_restore_blog();
+
+		global $wpdb;
+
+		if ( $this->post_id ) {
+			// If the post already exists in the DB,
+			// then we update all the post meta in one go,
+			// which is much faster than wp_insert_post which
+			// loops over each meta and does a separate update.
+
+			$meta_query = $wpdb->prepare(
+				"UPDATE
+					{$wpdb->postmeta}
+				SET
+					meta_value =
+					CASE
+						WHEN meta_key = 'wallets_user' THEN %d
+						WHEN meta_key = 'wallets_category' THEN %s
+						WHEN meta_key = 'wallets_txid' THEN %s
+						WHEN meta_key = 'wallets_address_id' THEN %d
+						WHEN meta_key = 'wallets_currency_id' THEN %d
+						WHEN meta_key = 'wallets_amount' THEN %d
+						WHEN meta_key = 'wallets_fee' THEN %d
+						WHEN meta_key = 'wallets_chain_fee' THEN %d
+						WHEN meta_key = 'wallets_block' THEN %d
+						WHEN meta_key = 'wallets_timestamp' THEN %d
+						WHEN meta_key = 'wallets_nonce' THEN %s
+						WHEN meta_key = 'wallets_error' THEN %s
+					END
+				WHERE post_id = %d;
+				",
+				$user_id,
+				$this->category,
+				$this->txid,
+				$this->address->post_id ?? 0,
+				$this->currency->post_id ?? 0,
+				$this->amount,
+				$this->fee,
+				$this->chain_fee,
+				$this->block,
+				$this->timestamp,
+				$this->nonce,
+				$this->error,
+				$this->post_id
+			);
+		} else {
+			$meta_query = $wpdb->prepare(
+				"INSERT INTO
+					{$wpdb->postmeta}(post_id,meta_key,meta_value)
+				VALUES
+					(%d,'wallets_user',%d),
+					(%d,'wallets_category',%s),
+					(%d,'wallets_txid',%s),
+					(%d,'wallets_address_id',%d),
+					(%d,'wallets_currency_id',%d),
+					(%d,'wallets_amount',%d),
+					(%d,'wallets_fee',%d),
+					(%d,'wallets_chain_fee',%d),
+					(%d,'wallets_block',%d),
+					(%d,'wallets_timestamp',%d),
+					(%d,'wallets_nonce',%s),
+					(%d,'wallets_error',%s)
+				;",
+				$result, $user_id,
+				$result, $this->category,
+				$result, $this->txid,
+				$result, $this->address->post_id ?? 0,
+				$result, $this->currency->post_id ?? 0,
+				$result, $this->amount,
+				$result, $this->fee,
+				$result, $this->chain_fee,
+				$result, $this->block,
+				$result, $this->timestamp,
+				$result, $this->nonce,
+				$result, $this->error
+			);
+		}
+
+		$wpdb->flush();
+
+		$meta_result = $wpdb->query( $meta_query );
+
+		if ( false === $meta_result ) {
+
+			throw new \Exception(
+				sprintf(
+					'%s: Failed saving transaction with: %s',
+					__FUNCTION__,
+					$wpdb->last_error
+				)
+			);
+		}
 
 		if ( ! $this->post_id && $result && is_integer( $result ) ) {
 			$this->post_id = $result;
 
 		} elseif ( $result instanceof \WP_Error ) {
-			maybe_restore_blog();
 
 			throw new \Exception(
 				sprintf(
@@ -507,7 +586,6 @@ class Transaction extends Post_Type {
 
 		$this->dirty = false;
 
-		maybe_restore_blog();
 	}
 
 	/**
@@ -561,7 +639,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'address' == $name ) {
 			if ( ( $value && $value instanceof Address ) || is_null( $value ) ) {
-				$this->dirty = $this->dirty || ( $this->address->post_id != $value->post_id );
+				$this->dirty = $this->dirty || ( ( $this->address->post_id ?? null ) != $value->post_id );
 				$this->address = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Address must be an Address!' );
@@ -569,7 +647,7 @@ class Transaction extends Post_Type {
 
 		} elseif ( 'currency' == $name ) {
 			if ( ( $value && $value instanceof Currency ) || is_null( $value ) ) {
-				$this->dirty = $this->dirty || ( $this->currency->post_id != $value->post_id );
+				$this->dirty = $this->dirty || ( ( $this->currency->post_id ?? null ) != $value->post_id );
 				$this->currency = $value;
 			} else {
 				throw new \InvalidArgumentException( 'Currency must be a Currency!' );

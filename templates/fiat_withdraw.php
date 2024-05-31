@@ -71,7 +71,7 @@
 			<tbody>
 				<tr>
 					<td
-						colspan="6">
+						colspan="8">
 						<label
 							class="coin currency">
 
@@ -200,7 +200,7 @@
 
 				<tr>
 					<td
-						colspan="6">
+						colspan="8">
 						<label
 							class="recipientNameAddress recipient-name-address">
 
@@ -223,7 +223,7 @@
 
 				<tr>
 					<td
-						colspan="6">
+						colspan="8">
 						<label
 							class="bankNameAddress bank-name-address">
 
@@ -244,7 +244,7 @@
 					</td>
 				</tr>
 
-				<tr>
+				<tr style="vertical-align: top">
 					<td
 						colspan="2">
 
@@ -273,6 +273,30 @@
 						colspan="2">
 
 						<label
+							class="bankWithdrawMethod addressing-method swacc">
+
+							<input
+								type="radio"
+								name="bankWithdrawMethod"
+								value="swacc"
+								data-bind="checked: addressingMethod">
+
+							<?php
+								echo apply_filters(
+									'wallets_fiat_ui_text_routingaccnum',
+									esc_html__(
+										'SWIFT/BIC & Account number',
+										'wallets'
+									)
+								);
+							?>
+						</label>
+					</td>
+
+					<td
+						colspan="2">
+
+						<label
 							class="bankWithdrawMethod addressing-method routing">
 
 							<input
@@ -285,7 +309,7 @@
 								echo apply_filters(
 									'wallets_fiat_ui_text_routingaccnum',
 									esc_html__(
-										'Routing & Account numbers',
+										'Routing & Account number',
 										'wallets'
 									)
 								);
@@ -322,7 +346,7 @@
 					data-bind="if: 'iban' == addressingMethod()">
 
 					<td
-						colspan="2">
+						colspan="3">
 						<label
 							class="swiftbic swift-bic">
 							<?php
@@ -344,7 +368,7 @@
 					</td>
 
 					<td
-						colspan="4">
+						colspan="5">
 
 						<label
 							class="iban">
@@ -364,19 +388,86 @@
 					</td>
 				</tr>
 
+				<tr
+					data-bind="if: 'swacc' == addressingMethod()">
+
+					<td
+						colspan="3">
+						<label
+							class="swacc swift-bic">
+							<?php
+								echo apply_filters(
+									'wallets_fiat_ui_text_swiftbic',
+									esc_html__(
+										'SWIFT/BIC',
+										'wallets'
+									)
+								);
+							?>:
+
+							<input
+								type="text"
+								<?php if ( 'off' != $atts['validation'] ): ?>pattern="[a-zA-Z0-9]{8,11}"<?php endif; ?>
+								data-bind="value: swiftBic, valueUpdate: ['afterkeydown', 'input']" />
+
+						</label>
+					</td>
+
+					<td
+						colspan="5">
+
+						<label
+							class="accountnum account-number">
+							<?php
+								echo apply_filters(
+									'wallets_fiat_ui_text_accountnum',
+									esc_html__(
+										'Account number',
+										'wallets'
+									)
+								);
+							?>:
+
+							<input
+								type="number"
+								min="100000"
+								max="99999999999999"
+								data-bind="value: accountNumber, valueUpdate: ['afterkeydown', 'input']" />
+						</label>
+					</td>
+
+				</tr>
+
 				<?php if ( 'off' != $atts['validation'] ): ?>
 				<tr
 					data-bind="if: 'iban' == addressingMethod()">
 
 					<td
-						colspan="6">
+						colspan="8">
 
 						<p
 							class="validationMessage"
 							data-bind="text: swiftBic.validationMessage, visible: swiftBic.hasError"></p>
+
 						<p
 							class="validationMessage"
 							data-bind="text: iban.validationMessage, visible: iban.hasError"></p>
+					</td>
+				</tr>
+				<tr
+					data-bind="if: 'swacc' == addressingMethod()">
+
+					<td
+						colspan="8">
+
+						<p
+							class="validationMessage"
+							data-bind="text: swiftBic.validationMessage, visible: swiftBic.hasError"></p>
+
+						<p
+							class="validationMessage"
+							data-bind="text: accountNumber.validationMessage, visible: accountNumber.hasError"></p>
+
 					</td>
 				</tr>
 				<?php endif; ?>
@@ -385,7 +476,7 @@
 					data-bind="if: 'routing' == addressingMethod()">
 
 					<td
-						colspan="3">
+						colspan="4">
 
 						<label
 							class="routingnum routing-number">
@@ -408,7 +499,7 @@
 					</td>
 
 					<td
-						colspan="3">
+						colspan="4">
 
 						<label
 							class="accountnum account-number">
@@ -435,7 +526,7 @@
 				<tr
 					data-bind="if: 'routing' == addressingMethod()">
 					<td
-						colspan="6">
+						colspan="8">
 
 						<p
 							class="validationMessage"
@@ -453,7 +544,7 @@
 					data-bind="if: 'ifsc' == addressingMethod()">
 
 					<td
-						colspan="3">
+						colspan="4">
 
 						<label
 							class="ifsc">
@@ -475,7 +566,7 @@
 					</td>
 
 					<td
-						colspan="3">
+						colspan="4">
 
 						<label
 							class="indian-account-number">
@@ -500,7 +591,7 @@
 				<tr
 					data-bind="if: 'ifsc' == addressingMethod()">
 					<td
-						colspan="6">
+						colspan="8">
 
 						<p
 							class="validationMessage"
@@ -516,7 +607,7 @@
 
 				<tr>
 					<td
-						colspan="6">
+						colspan="8">
 						<label
 							class="comment">
 							<?php
@@ -538,10 +629,10 @@
 				<tr
 					class="buttons-row">
 					<td
-						colspan="3">
+						colspan="4">
 						<input
 							type="submit"
-							data-bind="enabled: amount() > 0 && amount() <= self.maxAmount(), css: { 'wallets-submit-active': submitActive() }"
+							data-bind="disable: submitActive, css: { 'wallets-submit-active': submitActive }"
 							value="<?php
 								echo apply_filters(
 									'wallets_fiat_ui_text_requestbanktransfer',
@@ -551,11 +642,11 @@
 					</td>
 
 					<td
-						colspan="3">
+						colspan="4">
 						<input
 							type="button"
 							class="button"
-							data-bind="click: reset"
+							data-bind="click: reset, disable: submitActive"
 							value="<?php
 								echo apply_filters(
 									'wallets_ui_text_resetform',
@@ -919,6 +1010,8 @@
 
 					if ( $payment_details['iban'] && $payment_details['swiftBic'] ) {
 						$addressing_method = 'iban';
+					} elseif ( $payment_details['swiftBic'] && $payment_details['accountNumber'] ) {
+						$addressing_method = 'swacc';
 					} elseif ( $payment_details['routingNumber'] && $payment_details['accountNumber'] ) {
 						$addressing_method = 'routing';
 					} elseif ( $payment_details['ifsc'] && $payment_details['indianAccNum'] ) {
@@ -933,18 +1026,18 @@
 			self.bankNameAddress	  = ko.observable( '<?php echo esc_js( $bank_name_address	  ?? '' ); ?>' );
 
 			<?php if ( 'off' == $atts['validation'] ): ?>
-			self.swiftBic	  = ko.observable( '<?php echo esc_js( $payment_details['swiftBic'	   ] ?? '' ); ?>' );
-			self.iban		  = ko.observable( '<?php echo esc_js( $payment_details['iban'		   ] ?? '' ); ?>' );
+			self.swiftBic	   = ko.observable( '<?php echo esc_js( $payment_details['swiftBic'	   ] ?? '' ); ?>' );
+			self.iban		   = ko.observable( '<?php echo esc_js( $payment_details['iban'		   ] ?? '' ); ?>' );
 			self.routingNumber = ko.observable( '<?php echo esc_js( $payment_details['routingNumberic'] ?? '' ); ?>' );
 			self.accountNumber = ko.observable( '<?php echo esc_js( $payment_details['accountNumber'  ] ?? '' ); ?>' );
-			self.ifsc		  = ko.observable( '<?php echo esc_js( $payment_details['ifsc'		   ] ?? '' ); ?>' );
+			self.ifsc		   = ko.observable( '<?php echo esc_js( $payment_details['ifsc'		   ] ?? '' ); ?>' );
 			self.indianAccNum  = ko.observable( '<?php echo esc_js( $payment_details['indianAccNum'   ] ?? '' ); ?>' );
 			<?php else: ?>
-			self.swiftBic	  = ko.observable( '<?php echo esc_js( $payment_details['swiftBic'	   ] ?? '' ); ?>' ).extend( { validateSwiftBic:	  '' } );
-			self.iban		  = ko.observable( '<?php echo esc_js( $payment_details['iban'		   ] ?? '' ); ?>' ).extend( { validateIban:		  '' } );
+			self.swiftBic	   = ko.observable( '<?php echo esc_js( $payment_details['swiftBic'	   ] ?? '' ); ?>' ).extend( { validateSwiftBic:	  '' } );
+			self.iban		   = ko.observable( '<?php echo esc_js( $payment_details['iban'		   ] ?? '' ); ?>' ).extend( { validateIban:		  '' } );
 			self.routingNumber = ko.observable( '<?php echo esc_js( $payment_details['routingNumberic'] ?? '' ); ?>' ).extend( { validateRoutingNumber: '' } );
 			self.accountNumber = ko.observable( '<?php echo esc_js( $payment_details['accountNumber'  ] ?? '' ); ?>' ).extend( { validateAccountNumber: '' } );
-			self.ifsc		  = ko.observable( '<?php echo esc_js( $payment_details['ifsc'		   ] ?? '' ); ?>' ).extend( { validateIfsc:		  '' } );
+			self.ifsc		   = ko.observable( '<?php echo esc_js( $payment_details['ifsc'		   ] ?? '' ); ?>' ).extend( { validateIfsc:		  '' } );
 			self.indianAccNum  = ko.observable( '<?php echo esc_js( $payment_details['indianAccNum'   ] ?? '' ); ?>' ).extend( { validateIndianAccNum:  '' } );
 
 			// bind to form validation
@@ -1066,6 +1159,7 @@
 			} );
 
 			self.send = function() {
+
 				let sc = self.selectedCurrency();
 
 				let data = {
@@ -1076,16 +1170,26 @@
 					comment: self.comment(),
 				};
 
-				if ( ! data.amount || ( data.amount < sc.min_withdraw * Math.pow( 10, -sc.decimals ) ) || ( data.amount > self.maxAmount() ) ) {
-					return;
+				if ( data.amount === undefined ||
+					 data.amount <= 0 ||
+					 data.amount < sc.min_withdraw * Math.pow( 10, -sc.decimals ) ||
+					 data.amount > self.maxAmount()
+				) {
+				  return;
 				}
 
 				if ( 'iban' == self.addressingMethod() ) {
 					data.swiftBic = self.swiftBic();
-					data.iban = self.iban();
+					data.iban     = self.iban();
+
+				} else if ( 'swacc' == self.addressingMethod() ) {
+					data.swiftBic      = self.swiftBic();
+					data.accountNumber = self.accountNumber();
+
 				} else if ( 'routing' == self.addressingMethod() ) {
 					data.routingNumber = self.routingNumber();
 					data.accountNumber = self.accountNumber();
+
 				} else if ( 'ifsc' == self.addressingMethod() ) {
 					data.ifsc = self.ifsc();
 					data.indianAccNum = self.indianAccNum();

@@ -226,13 +226,6 @@ class Address extends Post_Type {
 			'post_title'  => $this->label,
 			'post_type'   => 'wallets_address',
 			'post_status' => 'publish',
-			'meta_input' => [
-				'wallets_user'        => $user_id,
-				'wallets_address'     => $this->address,
-				'wallets_extra'       => $this->extra,
-				'wallets_type'        => $this->type,
-				'wallets_currency_id' => $this->currency->post_id ?? null,
-			],
 		];
 
 		// https://developer.wordpress.org/reference/hooks/save_post/#avoiding-infinite-loops
@@ -240,6 +233,70 @@ class Address extends Post_Type {
 		maybe_switch_blog();
 		$result = wp_insert_post( $postarr );
 		maybe_restore_blog();
+
+		global $wpdb;
+
+		if ( $this->post_id ) {
+			// If the post already exists in the DB,
+			// then we update all the post meta in one go,
+			// which is much faster than wp_insert_post which
+			// loops over each meta and does a separate update.
+
+			$meta_query = $wpdb->prepare(
+				"UPDATE
+					{$wpdb->postmeta}
+				SET
+					meta_value =
+					CASE
+						WHEN meta_key = 'wallets_user' THEN %d
+						WHEN meta_key = 'wallets_address' THEN %s
+						WHEN meta_key = 'wallets_extra' THEN %s
+						WHEN meta_key = 'wallets_type' THEN %s
+						WHEN meta_key = 'wallets_currency_id' THEN %d
+					END
+				WHERE post_id = %d;
+				",
+				$user_id,
+				$this->address,
+				$this->extra,
+				$this->type,
+				$this->currency->post_id ?? null,
+				$this->post_id
+			);
+		} else {
+			$meta_query = $wpdb->prepare(
+				"INSERT INTO
+					{$wpdb->postmeta}(post_id,meta_key,meta_value)
+				VALUES
+					(%d,'wallets_user',%d),
+					(%d,'wallets_address',%s),
+					(%d,'wallets_extra',%s),
+					(%d,'wallets_type',%s),
+					(%d,'wallets_currency_id',%d)
+				;",
+				$result, $user_id,
+				$result, $this->address,
+				$result, $this->extra,
+				$result, $this->type,
+				$result, $this->currency->post_id ?? 0,
+				$result, $this->post_id
+			);
+		}
+
+		$wpdb->flush();
+
+		$meta_result = $wpdb->query( $meta_query );
+
+		if ( false === $meta_result ) {
+			throw new \Exception(
+				sprintf(
+					'%s: Failed saving address with: %s',
+					__FUNCTION__,
+					$wpdb->last_error
+				)
+			);
+		}
+
 		add_action( 'save_post', [ __CLASS__, 'save_post' ], 10, 3 );
 
 		if ( ! $this->post_id && $result && is_integer( $result ) ) {

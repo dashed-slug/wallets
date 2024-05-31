@@ -36,7 +36,7 @@ For every currency you have installed, the table will show you the following inf
 
 - *[Adapter type][glossary-adapter-type]* - The type of wallet adapter used for this currency, such as Bitcoin-like, Monero-like, etc.
 - *[Currency][glossary-currency]* - The currency, duh!
-- *[Hot Wallet balance][glossary-hot-wallet-balance]* - How many coins you have in your hot wallet. 
+- *[Hot Wallet balance][glossary-hot-wallet-balance]* - How many coins you have in your hot wallet.
 - *[User balances][glossary-user-balance]* - The total of all your users' balances.
 - *% of user balances backed by hot wallet* - Horizontal bar showing the percentage of the *[Sum of User Balances][glossary-sum-of-user-balances]* that is currently backed by the hot wallet balance. 100% means that all the user funds are in the hot wallet.
 
@@ -67,6 +67,10 @@ You may display deposit information for your site using the `[wallets_fiat_depos
 - Bank deposit details (for banks in India):
   - IFSC
   - Account number
+- Bank deposit details (for banks in Africa):
+  - Bank name and address
+  - SWIFT-BIC
+  - Account Number
 - Bank deposit details (for banks in Europe):
   - Bank name and address
   - SWIFT-BIC

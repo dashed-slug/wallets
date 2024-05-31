@@ -70,6 +70,7 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 				),
 				'options' => [
 					'iban'    => __( 'SWIFT/BIC and IBAN (World)', 'wallets' ),
+					'swacc'   => __( 'SWIFT/BIC and Account Number', 'wallets' ),
 					'routing' => __( 'Routing Number and Account Number (USA/Americas)', 'wallets' ),
 					'ifsc'    => __( 'IFSC and Account Number (India)', 'wallets' ),
 				],
@@ -157,7 +158,7 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 	}
 
 	public function get_wallet_version(): string {
-		return '6.2.7';
+		return '6.3.0';
 	}
 
 	public function get_block_height( Currency $currency = null ): int {
@@ -480,6 +481,12 @@ EMAIL
 							$iban      = $body_params['iban'];
 							$label     = "{ \"iban\": \"$iban\", \"swiftBic\": \"$swift_bic\" }";
 
+						} elseif ( 'swacc' == $addressing_method ) {
+
+							$swift_bic      = $body_params['swiftBic'];
+							$account_number = $body_params['accountNumber'];
+							$label          = "{ \"swiftBic\": \"$swift_bic\", \"accountNumber\": \"$account_number\"}";
+
 						} elseif ( 'routing' == $addressing_method ) {
 
 							$routing_number = $body_params['routingNumber'];
@@ -682,7 +689,7 @@ EMAIL
 					'wallets-admin-deposit-tool',
 					get_asset_path( 'wallets-admin-deposit-tool' ),
 					[ 'jquery' ],
-					'6.2.7',
+					'6.3.0',
 					true
 				);
 			}
@@ -881,6 +888,21 @@ EMAIL
 														type="radio"
 														name="wallets_bankaddressingmethod"
 														required="required"
+														value="swacc">
+
+													<?php
+													_e(
+														'SWIFT-<abbr title="Business Identifier Code">BIC</abbr> and Account Number',
+														'wallets'
+													);
+													?>
+												</p>
+
+												<p>
+													<input
+														type="radio"
+														name="wallets_bankaddressingmethod"
+														required="required"
 														value="routing">
 
 													<?php
@@ -918,6 +940,10 @@ EMAIL
 														<?php _e( 'SWIFT-<abbr title="Business Identifier Code">BIC</abbr>', 'wallets' ); ?>
 													</span>
 													<span
+														class="swacc">
+														<?php _e( 'SWIFT-<abbr title="Business Identifier Code">BIC</abbr>', 'wallets' ); ?>
+													</span>
+													<span
 														class="routing">
 														<?php _e( '<abbr title="American Bankers\' Association">ABA</abbr> Routing number', 'wallets' ); ?>
 													</span>
@@ -943,6 +969,10 @@ EMAIL
 													<span
 														class="iban">
 														<?php _e( 'Account <abbr title="International Bank Account Number">IBAN</abbr>', 'wallets' ); ?>
+													</span>
+													<span
+														class="swacc">
+														<?php _e( 'Account Number', 'wallets' ); ?>
 													</span>
 													<span
 														class="routing">
@@ -1130,6 +1160,9 @@ EMAIL
 
 							if ( 'iban' == $addressing_method ) {
 								$label = "{ \"iban\": \"$bank_account\", \"swiftBic\": \"$bank_branch\" }";
+
+							} elseif ( 'swacc' == $addressing_method ) {
+								$label = "{ \"swiftBic\": \"$bank_branch\", \"accountNumber\": \"$bank_account\"}";
 
 							} elseif ( 'routing' == $addressing_method ) {
 								$label = "{ \"routingNumber\": \"$bank_branch\", \"accountNumber\": \"$bank_account\"}";
@@ -1452,12 +1485,16 @@ EMAIL
 
 								$addressing_method = '';
 								$payment_details = json_decode( $wd->address->label );
-								if ( $payment_details && isset( $payment_details->iban ) && isset( $payment_details->swiftBic ) ) {
-									$addressing_method = 'iban';
-								} elseif ( $payment_details && isset( $payment_details->routingNumber ) && isset( $payment_details->accountNumber ) ) {
-									$addressing_method = 'routing';
-								} elseif ( $payment_details && isset( $payment_details->ifsc ) && isset( $payment_details->indianAccNum ) ) {
-									$addressing_method = 'ifsc';
+								if ( $payment_details ) {
+									if ( isset( $payment_details->iban ) && isset( $payment_details->swiftBic ) ) {
+										$addressing_method = 'iban';
+									} elseif ( isset( $payment_details->swiftBic) && isset( $payment_details->accountNumber ) ) {
+										$addressing_method = 'swacc';
+									} elseif ( isset( $payment_details->routingNumber ) && isset( $payment_details->accountNumber ) ) {
+										$addressing_method = 'routing';
+									} elseif ( isset( $payment_details->ifsc ) && isset( $payment_details->indianAccNum ) ) {
+										$addressing_method = 'ifsc';
+									}
 								}
 
 								?>
@@ -1541,9 +1578,10 @@ EMAIL
 												<th>
 													<?php
 													switch( $addressing_method ) {
-														case 'iban': esc_html_e( 'SWIIFT/BIC', 'wallets' ); break;
+														case 'iban':    esc_html_e( 'SWIIFT/BIC',     'wallets' ); break;
+														case 'swacc':   esc_html_e( 'SWIIFT/BIC',     'wallets' ); break;
 														case 'routing': esc_html_e( 'Routing number', 'wallets' ); break;
-														case 'ifsc': esc_html_e( 'IFSC', 'wallets' ); break;
+														case 'ifsc':    esc_html_e( 'IFSC',           'wallets' ); break;
 														default:
 															printf(
 																(string) __( 'Unknown addressing method %s', 'wallets' ),
@@ -1555,9 +1593,10 @@ EMAIL
 												<td>
 													<pre><?php
 													switch( $addressing_method ) {
-														case 'iban': esc_html_e( $payment_details->swiftBic ); break;
+														case 'iban':    esc_html_e( $payment_details->swiftBic );      break;
+														case 'swacc':   esc_html_e( $payment_details->swiftBic );      break;
 														case 'routing': esc_html_e( $payment_details->routingNumber ); break;
-														case 'ifsc': esc_html_e( $payment_details->ifsc ); break;
+														case 'ifsc':    esc_html_e( $payment_details->ifsc );          break;
 														default:
 															printf(
 																(string) __( 'Unknown addressing method %s', 'wallets' ),
@@ -1572,9 +1611,10 @@ EMAIL
 												<th>
 													<?php
 													switch( $addressing_method ) {
-														case 'iban': esc_html_e( 'IBAN', 'wallets' ); break;
+														case 'iban':    esc_html_e( 'IBAN',           'wallets' ); break;
+														case 'swacc':   esc_html_e( 'Account number', 'wallets' ); break;
 														case 'routing': esc_html_e( 'Account number', 'wallets' ); break;
-														case 'ifsc': esc_html_e( 'Account number', 'wallets' ); break;
+														case 'ifsc':    esc_html_e( 'Account number', 'wallets' ); break;
 														default:
 															printf(
 																(string) __( 'Unknown addressing method %s', 'wallets' ),
@@ -1586,9 +1626,10 @@ EMAIL
 												<td>
 													<pre><?php
 													switch( $addressing_method ) {
-														case 'iban': esc_html_e( $payment_details->iban ); break;
+														case 'iban':    esc_html_e( $payment_details->iban ); break;
+														case 'swacc':   esc_html_e( $payment_details->accountNumber ); break;
 														case 'routing': esc_html_e( $payment_details->accountNumber ); break;
-														case 'ifsc': esc_html_e( $payment_details->indianAccNum ); break;
+														case 'ifsc':    esc_html_e( $payment_details->indianAccNum ); break;
 														default:
 															printf(
 																(string) __( 'Unknown addressing method %s', 'wallets' ),

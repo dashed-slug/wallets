@@ -542,7 +542,7 @@ add_action(
 
 		// check if already in the tool page
 		global $pagenow;
-		if ( 'tools.php' == $pagenow && 'wallets_migration' == $_GET['page'] ) {
+		if ( 'tools.php' == $pagenow && array_key_exists( 'page', $_GET ) && 'wallets_migration' === $_GET['page'] ) {
 			return;
 		}
 
@@ -633,4 +633,3 @@ add_action(
 		<?php
 	}
 );
-
