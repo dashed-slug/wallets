@@ -990,7 +990,7 @@ function get_possible_transaction_counterparts( Transaction $tx ): array {
 					AND pm_cur.meta_value = %d
 				)
 		",
-		$tx->currency->post_id
+		$tx->currency->post_id ?? 0
 	);
 
 	$query .= "

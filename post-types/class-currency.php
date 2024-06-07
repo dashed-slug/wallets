@@ -292,10 +292,10 @@ class Currency extends Post_Type {
 		$currency->pattern               = $postmeta['wallets_pattern'] ?? '%f';
 		$currency->coingecko_id          = $postmeta['wallets_coingecko_id'] ?? '';
 		$currency->contract_address      = $postmeta['wallets_contract_address'] ?? '';
-		$currency->rates                 = unserialize( $postmeta['wallets_rates'] ?? [] );
+		$currency->rates                 = unserialize( $postmeta['wallets_rates'] ?? 'a:0:{}' );
 		$currency->min_withdraw          = absint( $postmeta['wallets_min_withdraw'] ?? 0 );
 		$currency->max_withdraw          = absint( $postmeta['wallets_max_withdraw'] ?? 0 );
-		$currency->max_withdraw_per_role = (array) unserialize( $postmeta['wallets_max_withdraw_per_role'] ?? [], [ 'allowed_classes' => false ] );
+		$currency->max_withdraw_per_role = (array) unserialize( $postmeta['wallets_max_withdraw_per_role'] ?? 'a:0:{}', [ 'allowed_classes' => false ] );
 		$currency->fee_deposit_site      = absint( $postmeta['wallets_fee_deposit_site'] ?? 0 );
 		$currency->fee_move_site         = absint( $postmeta['wallets_fee_move_site'] ?? 0 );
 		$currency->fee_withdraw_site     = absint( $postmeta['wallets_fee_withdraw_site'] ?? 0 );
@@ -1892,7 +1892,16 @@ class Currency extends Post_Type {
 				return;
 			}
 
+			// disable Auto-Drafts
+			if ( 'auto-draft' == $post->post_status ) {
+				return;
+			}
+
 			try {
+				if ( isset( self::$object_cache[ $post_id ] ) ) {
+					unset( self::$object_cache[ $post_id ] );
+				};
+
 				$currency = self::load( $post_id );
 
 				$currency->__set( 'name', $_POST['post_title'] ?? '' );

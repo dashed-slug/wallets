@@ -21,7 +21,7 @@ add_action(
 				'wallets-admin-styles',
 				get_asset_path( 'wallets-admin', 'style' ),
 				[],
-				'6.3.0'
+				'6.3.1'
 			);
 
 			wp_register_script(
@@ -51,7 +51,7 @@ add_action(
 				'wallets-admin-menu-item',
 				get_asset_path( 'wallets-admin-menu-item' ),
 				[ 'jquery' ],
-				'6.3.0',
+				'6.3.1',
 				true
 			);
 
@@ -59,7 +59,7 @@ add_action(
 				'wallets-admin-cs-tool',
 				get_asset_path( 'wallets-admin-cs-tool' ),
 				[ 'jquery-qrcode' ],
-				'6.3.0',
+				'6.3.1',
 				true
 			);
 
@@ -74,7 +74,7 @@ add_action(
 				'wallets-admin-capabilities',
 				get_asset_path( 'wallets-admin-capabilities' ),
 				[ 'jquery-ui-tabs' ],
-				'6.3.0',
+				'6.3.1',
 				true
 			);
 
@@ -82,7 +82,7 @@ add_action(
 				'wallets-admin-dashboard',
 				get_asset_path( 'wallets-admin-dashboard' ),
 				[ 'jquery-ui-tabs', 'jqcloud' ],
-				'6.3.0',
+				'6.3.1',
 				true
 			);
 
@@ -90,7 +90,7 @@ add_action(
 				'wallets-admin-docs',
 				get_asset_path( 'wallets-admin-docs' ),
 				[ 'jquery' ],
-				'6.3.0',
+				'6.3.1',
 				true
 			);
 
@@ -98,7 +98,7 @@ add_action(
 				'wallets-admin-editor',
 				get_asset_path( 'wallets-admin-editor' ),
 				[ 'suggest' ],
-				'6.3.0',
+				'6.3.1',
 				true
 			);
 

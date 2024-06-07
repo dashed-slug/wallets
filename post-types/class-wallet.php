@@ -664,9 +664,17 @@ class Wallet extends Post_Type {
 				return;
 			}
 
-			try {
-				$wallet = self::load( $post_id );
+			// disable Auto-Drafts
+			if ( 'auto-draft' == $post->post_status ) {
+				return;
+			}
 
+			try {
+				if ( isset( self::$object_cache[ $post_id ] ) ) {
+					unset( self::$object_cache[ $post_id ] );
+				};
+
+				$wallet = self::load( $post_id );
 
 				$wallet->__set( 'name', $_POST['post_title'] ?? '' );
 

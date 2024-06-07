@@ -352,10 +352,11 @@ class Transaction extends Post_Type {
 				$tx->status = $tx->error ? 'failed' : 'cancelled';
 				break;
 			default:
-				throw new \Exception( sprintf( "Invalid transaction post status $post->post_status" ) );
+				throw new \Exception( sprintf( "Invalid transaction post status $post_status" ) );
 		}
 
 		$user_id = absint( $postmeta['wallets_user'] );
+
 		if ( $user_id ) {
 			$tx->user = new \WP_User( $user_id );
 		}
@@ -481,8 +482,25 @@ class Transaction extends Post_Type {
 
 		global $wpdb;
 
+		$has_meta = false;
 		if ( $this->post_id ) {
-			// If the post already exists in the DB,
+			$has_meta = $wpdb->get_var(
+				$wpdb->prepare( "
+					SELECT
+						COUNT(*)
+					FROM
+						{$wpdb->postmeta}
+					WHERE
+						post_id = %d AND
+						meta_key LIKE 'wallets_%'
+					",
+					$this->post_id
+				)
+			) > 0;
+		}
+
+		if ( $has_meta ) {
+			// If the post already has metadata on the DB,
 			// then we update all the post meta in one go,
 			// which is much faster than wp_insert_post which
 			// loops over each meta and does a separate update.
@@ -2322,10 +2340,25 @@ class Transaction extends Post_Type {
 				return;
 			}
 
+			// disable Auto-Drafts
+			if ( 'auto-draft' == $post->post_status ) {
+				return;
+			}
+
 			try {
-				$tx = self::load( $post_id );
+				if ( $update ) {
+					if ( isset( self::$object_cache[ $post_id ] ) ) {
+						unset( self::$object_cache[ $post_id ] );
+					};
+
+					$tx = self::load( $post_id );
+				} else {
+					$tx = new Transaction;
+				}
 
 				if ( 'editpost' == ( $_POST['action'] ?? '' ) ) {
+
+					$tx->post_id = $post_id;
 
 					$tx->__set( 'category', $_POST['wallets_category'] ?? $tx->category );
 

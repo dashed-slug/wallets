@@ -236,8 +236,25 @@ class Address extends Post_Type {
 
 		global $wpdb;
 
+		$has_meta = false;
 		if ( $this->post_id ) {
-			// If the post already exists in the DB,
+			$has_meta = $wpdb->get_var(
+				$wpdb->prepare( "
+					SELECT
+						COUNT(*)
+					FROM
+						{$wpdb->postmeta}
+					WHERE
+						post_id = %d AND
+						meta_key LIKE 'wallets_%'
+					",
+					$this->post_id
+				)
+			) > 0;
+		}
+
+		if ( $has_meta ) {
+			// If the post already has metadata on the DB,
 			// then we update all the post meta in one go,
 			// which is much faster than wp_insert_post which
 			// loops over each meta and does a separate update.
@@ -1282,7 +1299,16 @@ add_action(
 				return;
 			}
 
+			// disable Auto-Drafts
+			if ( 'auto-draft' == $post->post_status ) {
+				return;
+			}
+
 			try {
+				if ( isset( self::$object_cache[ $post_id ] ) ) {
+					unset( self::$object_cache[ $post_id ] );
+				};
+
 				$address = self::load( $post_id );
 
 				if ( 'editpost' == ( $_POST['action'] ?? '' ) ) {
