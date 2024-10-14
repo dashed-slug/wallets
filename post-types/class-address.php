@@ -238,6 +238,9 @@ class Address extends Post_Type {
 
 		$has_meta = false;
 		if ( $this->post_id ) {
+
+			$wpdb->flush();
+
 			$has_meta = $wpdb->get_var(
 				$wpdb->prepare( "
 					SELECT
@@ -631,8 +634,8 @@ class Address extends Post_Type {
 
 						$links[ "wallets_author_$author->ID" ] = sprintf(
 							'<a href="%s" class="current wallets_author current" aria-current="page">%s</a>',
-							$url,
-							$link_text
+							esc_attr( $url ),
+							esc_html( $link_text )
 						);
 
 					}
@@ -658,9 +661,9 @@ class Address extends Post_Type {
 
 						$links[ "wallets_type_$type" ] = sprintf(
 							$pattern,
-							$url,
-							$type,
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $type ),
+							esc_html( $link_text )
 						);
 					}
 
@@ -688,9 +691,9 @@ class Address extends Post_Type {
 
 						$links[ "wallets_currency_$currency->post_id" ] = sprintf(
 							$pattern,
-							$url,
-							"currency_{$currency->post_id}",
-							$link_text
+							esc_attr( $url ),
+							esc_attr( "currency_{$currency->post_id}" ),
+							esc_html( $link_text )
 						);
 					}
 
@@ -714,9 +717,9 @@ class Address extends Post_Type {
 
 						$links[ "wallets_address_tag_$term->slug" ] = sprintf(
 							$pattern,
-							$url,
-							$term->slug,
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $term->slug ),
+							esc_html( $link_text )
 						);
 
 					}
@@ -747,8 +750,8 @@ class Address extends Post_Type {
 
 						$actions['author'] = sprintf(
 							'<a href="%s">%s</a>',
-							$url,
-							$link_text
+							esc_attr( $url ),
+							esc_html( $link_text )
 						);
 					}
 

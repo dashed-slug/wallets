@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, custodial
 Requires at least: 6.0
-Tested up to: 6.5.4
+Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 6.3.1
+Stable tag: 6.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -337,6 +337,11 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
+= 6.3.2 =
+- Fix: Security issue where a logged in user with access to the admin screens could perform XSS attacks is now fixed.
+- Fix: Deprecation warnings in PHP8.4 about implicitly nullable types are now squashed.
+- Improve: Along with easycron, the plugin also now suggests cron-job.org which is a free alternative.
+
 = 6.3.1 =
 - Fix: Issue regarding editing addresses/transactions via the admin screens, introduced in 6.2.6, is now fixed.
 
@@ -503,7 +508,7 @@ Please state your request on the forums or over email, and I will respond within
 
 == Upgrade Notice ==
 
-Version `6.3.1` fixes an issue with editing addresses and transactions via the admin screens.
+Version `6.3.2` is a security patch. Please upgrade ASAP.
 
 == Donating ==
 

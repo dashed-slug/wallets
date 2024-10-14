@@ -67,7 +67,7 @@ Add a line like the following:
 
 Option 2: If you are on a hosting provider that supports it, you can use cPanel or any other software that the hosting provider offers to set up a cron job, like the one above.
 
-Option 3: You can use a service like *[EasyCron](https://www.easycron.com/?ref=124245)*.
+Option 3: You can use a service like *[EasyCron](https://www.easycron.com/?ref=124245)* or [cron-job.org](https://cron-job.org).
 
 1. Sign up and login.
 
@@ -254,7 +254,7 @@ Check to see if the cron jobs are running OK. You can check by navigating to _Da
 
 These two entries specify commands that the wallet will run whenever a new transaction or block is discovered. Go to your Wallet, and on the right hand side of the screen you will find suggestions for these entries in a metabox. These suggestions are `curl` commands containing values based on the site's URL and the associated currency's post ID.
 
-For example, the entry: 
+For example, the entry:
 
 > walletnotify=curl -s 'https://www.example.com/wp-json/dswallets/v1/walletnotify/123/%s' >/dev/null
 

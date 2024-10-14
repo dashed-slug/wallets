@@ -367,9 +367,9 @@ class Wallet extends Post_Type {
 
 						$links[ $class_class_name ] = sprintf(
 							$pattern,
-							$url,
-							$class_name,
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $class_name ),
+							esc_html( $link_text )
 						);
 					}
 

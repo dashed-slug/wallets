@@ -352,7 +352,11 @@ class Transaction extends Post_Type {
 				$tx->status = $tx->error ? 'failed' : 'cancelled';
 				break;
 			default:
-				throw new \Exception( sprintf( "Invalid transaction post status $post_status" ) );
+				throw new \Exception( sprintf( "Transaction $post_id has invalid post status $post_status" ) );
+		}
+
+		if ( ! isset( $postmeta['wallets_user'] ) ) {
+			throw new \Exception( sprintf( "Transaction $post_id has no user field" ) );
 		}
 
 		$user_id = absint( $postmeta['wallets_user'] );
@@ -484,6 +488,9 @@ class Transaction extends Post_Type {
 
 		$has_meta = false;
 		if ( $this->post_id ) {
+
+			$wpdb->flush();
+
 			$has_meta = $wpdb->get_var(
 				$wpdb->prepare( "
 					SELECT
@@ -1179,8 +1186,8 @@ class Transaction extends Post_Type {
 
 						$links[ "wallets_author_$author->ID" ] = sprintf(
 							'<a href="%s" class="current wallets_author current" aria-current="page">%s</a>',
-							$url,
-							$link_text
+							esc_attr( $url ),
+							esc_html( $link_text )
 						);
 
 					}
@@ -1211,9 +1218,9 @@ class Transaction extends Post_Type {
 
 						$links[ "wallets_category_$cat" ] = sprintf(
 							$pattern,
-							$url,
-							$cat,
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $cat ),
+							esc_html( $link_text )
 						);
 					}
 
@@ -1242,9 +1249,9 @@ class Transaction extends Post_Type {
 
 						$links[ "wallets_status_$status" ] = sprintf(
 							$pattern,
-							$url,
-							$status,
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $status ),
+							esc_html( $link_text )
 						);
 					}
 
@@ -1271,9 +1278,9 @@ class Transaction extends Post_Type {
 
 						$links[ "wallets_currency_$currency->post_id" ] = sprintf(
 							$pattern,
-							$url,
-							"currency_{$currency->post_id}",
-							$link_text
+							esc_attr( $url ),
+							esc_attr( "currency_{$currency->post_id}" ),
+							esc_html( $link_text )
 						);
 					}
 
@@ -1296,9 +1303,9 @@ class Transaction extends Post_Type {
 
 						$links[ "wallets_tx_tag_$term->slug" ] = sprintf(
 							$pattern,
-							$url,
-							$term->slug,
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $term->slug ),
+							esc_attr( $link_text )
 						);
 
 					}
@@ -1329,8 +1336,8 @@ class Transaction extends Post_Type {
 
 						$actions['author'] = sprintf(
 							'<a href="%s">%s</a>',
-							$url,
-							$link_text
+							esc_attr( $url ),
+							esc_html( $link_text )
 						);
 					}
 

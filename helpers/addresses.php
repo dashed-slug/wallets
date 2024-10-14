@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || die( -1 );
  *
  * return Address|null The address found, or null if no address was found.
  */
-function get_deposit_address_by_strings( string $address, string $extra = null ): ?Address {
+function get_deposit_address_by_strings( string $address, ?string $extra = null ): ?Address {
 	return get_address_by_strings( $address, $extra, 'deposit' );
 }
 
@@ -38,7 +38,7 @@ function get_deposit_address_by_strings( string $address, string $extra = null )
  *
  * return Address|null The address found, or null if no address was found.
  */
-function get_withdrawal_address_by_strings( string $address, string $extra = null ): ?Address {
+function get_withdrawal_address_by_strings( string $address, ?string $extra = null ): ?Address {
 	return get_address_by_strings( $address, $extra, 'withdrawal' );
 }
 
@@ -54,7 +54,7 @@ function get_withdrawal_address_by_strings( string $address, string $extra = nul
  *
  * return Address|null The address found, or null if no address was found.
  */
-function get_address_by_strings( string $address, string $extra = null, string $type = '' ): ?Address {
+function get_address_by_strings( string $address, ?string $extra = null, string $type = '' ): ?Address {
 	if ( 'withdrawal' != $type && 'deposit' != $type ) {
 		throw new \InvalidArgumentException( 'Type can only be "deposit" or "withdrawal".' );
 	}
@@ -118,14 +118,14 @@ function get_address_by_strings( string $address, string $extra = null, string $
  * This function features pagination.
  *
  * @param int $user_id The ID of the user to query.
- * @param int $page The page to request.
- * @param int $rows The amount of rows per page.
+ * @param ?int $page The page to request.
+ * @param ?int $rows The amount of rows per page.
  * @param bool $include_archived Whether to include addresses that have the `archived` tag in the `wallets_address_tags` taxonomy.
  * @return array
  * @since 6.0.0 Introduced.
  * @since 6.1.3 Added argument `$include_archived`.
  */
-function get_all_addresses_for_user_id( int $user_id, int $page = null, int $rows = null, bool $include_archived = false ): array {
+function get_all_addresses_for_user_id( int $user_id, ?int $page = null, ?int $rows = null, bool $include_archived = false ): array {
 	maybe_switch_blog();
 
 	$query_args = [

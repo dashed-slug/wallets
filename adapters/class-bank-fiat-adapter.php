@@ -158,10 +158,10 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 	}
 
 	public function get_wallet_version(): string {
-		return '6.3.1';
+		return '6.3.2';
 	}
 
-	public function get_block_height( Currency $currency = null ): int {
+	public function get_block_height( ?Currency $currency = null ): int {
 		throw new \Exception( 'Not applicable' );
 	}
 
@@ -169,15 +169,15 @@ class Bank_Fiat_Adapter extends Fiat_Adapter {
 		return true;
 	}
 
-	public function get_new_address( Currency $currency = null ): Address {
+	public function get_new_address( ?Currency $currency = null ): Address {
 		throw new \Exception( 'Not applicable' );
 	}
 
-	public function get_hot_balance( Currency $currency = null ): int {
+	public function get_hot_balance( ?Currency $currency = null ): int {
 		return 0;
 	}
 
-	public function get_hot_locked_balance( Currency $currency = null ): int {
+	public function get_hot_locked_balance( ?Currency $currency = null ): int {
 		return 0;
 	}
 
@@ -689,7 +689,7 @@ EMAIL
 					'wallets-admin-deposit-tool',
 					get_asset_path( 'wallets-admin-deposit-tool' ),
 					[ 'jquery' ],
-					'6.3.1',
+					'6.3.2',
 					true
 				);
 			}

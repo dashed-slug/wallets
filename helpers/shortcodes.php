@@ -180,7 +180,7 @@ function parse_atts_for_user( array &$atts ): void {
  * @link https://pippinsplugins.com/template-file-loaders-plugins/
  *
  */
-function get_template_part( string $slug, string $name = null, bool $load = false, string $plugin_slug = 'wallets' ): string {
+function get_template_part( string $slug, ?string $name = null, bool $load = false, string $plugin_slug = 'wallets' ): string {
 	do_action( "get_template_part_$slug", $slug, $name );
 
 	$templates = [];

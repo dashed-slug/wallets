@@ -435,7 +435,7 @@ function get_first_currency_by_coingecko_id( string $coingecko_id ): ?Currency {
  * This is useful for quickly getting the post_ids of currencies belonging to a specific group.
  * e.g. Fixer currencies, fiat currencies, CP currencies, etc.
  *
- * @param string|array $having_tag A term slug or array of term slugs.
+ * @param string|array|null $having_tag A term slug or array of term slugs.
  * @param string|array $having_status A post status (publish,draft,pending,trash) or array of post statuses.
  * @return array Integer post ids for currencies found matching the query.
  */

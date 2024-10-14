@@ -113,7 +113,7 @@ function get_transaction_by_txid( string $txid ): ?Transaction {
  *
  * return Transaction|null The transaction  found, or null if no transaction  was found.
  */
-function get_deposit_transaction_by_txid_and_address( string $txid, string $address, string $extra = null ): ?Transaction {
+function get_deposit_transaction_by_txid_and_address( string $txid, string $address, ?string $extra = null): ?Transaction {
 
 	$address = get_deposit_address_by_strings( $address, $extra );
 
@@ -228,7 +228,7 @@ function get_pending_transactions_by_currency_and_category( Currency $currency, 
  * @param ?int $offset How many txs to skip for pagination. If set, $page is ignored.
  * @return array|NULL
  */
-function get_transactions( int $user_id = null, Currency $currency = null, array $categories = [ 'all' ], array $tags = [], int $page = null, int $rows = null, int $offset = null ): ?array {
+function get_transactions( ?int $user_id = null, ?Currency $currency = null, array $categories = [ 'all' ], array $tags = [], ?int $page = null, ?int $rows = null, ?int $offset = null ): ?array {
 	maybe_switch_blog();
 
 	$query_args = [
@@ -647,7 +647,7 @@ function get_tx_with_parent( int $post_id ): ?Transaction {
 	return $tx;
 }
 
-function get_latest_fiat_withdrawal_by_user( int $user_id = null ): ?Transaction {
+function get_latest_fiat_withdrawal_by_user( ?int $user_id = null ): ?Transaction {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}
@@ -879,7 +879,7 @@ function get_todays_withdrawal_counters( int $user_id, $current_day = '' ): arra
 	return $wd_counters;
 }
 
-function increment_todays_withdrawal_counters( Transaction $wd, string $current_day = null ): void {
+function increment_todays_withdrawal_counters( Transaction $wd, ?string $current_day = null ): void {
 	if ( ! $current_day ) {
 		$current_day = date( 'Y-m-d' );
 	}

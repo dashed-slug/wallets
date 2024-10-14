@@ -42,7 +42,7 @@ abstract class Post_Type {
 	 *
 	 * @since 6.2.6 Introduced.
 	 */
-	public static function load_many( array $post_ids, ?string $post_type = null ): array {
+	public static function load_many( array $post_ids, ?string $post_type = null): array {
 
 		global $wpdb;
 

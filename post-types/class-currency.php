@@ -803,7 +803,7 @@ class Currency extends Post_Type {
 	 * @param ?\WP_User $user The user whose limit to return. If not set, function returns the hard daily limit for this currency.
 	 * @return int The applicable daily withdrawal limit.
 	 */
-	public function get_max_withdraw( \WP_User $user = null ): int {
+	public function get_max_withdraw( ?\WP_User $user = null ): int {
 		$max_withdraw = $this->max_withdraw;
 
 		if ( $user && $user->exists() ) {
@@ -1033,12 +1033,14 @@ class Currency extends Post_Type {
 
 					$links['wallets_wallet_none'] = sprintf(
 						'<a href="%s" class="wallets_wallet %s">%s</a>',
-						add_query_arg(
-							'wallets_wallet_id',
-							'none',
-							$_SERVER['REQUEST_URI']
+						esc_attr(
+							add_query_arg(
+								'wallets_wallet_id',
+								'none',
+								$_SERVER['REQUEST_URI']
+							)
 						),
-						'none' == ( $_GET['wallets_wallet_id'] ?? '' ) ? 'current' : '',
+						esc_attr( 'none' == ( $_GET['wallets_wallet_id'] ?? '' ) ? 'current' : '' ),
 						sprintf( __( '%s Wallet: %s', 'wallets' ), '&#128091;', __( 'none', 'wallets' ) )
 					);
 
@@ -1064,9 +1066,9 @@ class Currency extends Post_Type {
 
 						$links["wallets_wallet_$wallet->post_id"] = sprintf(
 							$pattern,
-							$url,
-							"wallet_{$wallet->post_id}",
-							$link_text
+							esc_attr( $url ),
+							esc_attr( "wallet_{$wallet->post_id}" ),
+							esc_html( $link_text )
 						);
 					}
 
@@ -1089,9 +1091,9 @@ class Currency extends Post_Type {
 
 						$links["wallets_currency_tag_$term->slug"] = sprintf(
 							$pattern,
-							$url,
-							$term->term_id == ( $_GET['wallets_currency_tag'] ?? '' ) ? 'current' : '',
-							$link_text
+							esc_attr( $url ),
+							esc_attr( $term->term_id == ( $_GET['wallets_currency_tag'] ?? '' ) ? 'current' : '' ),
+							esc_html( $link_text )
 						);
 
 					}

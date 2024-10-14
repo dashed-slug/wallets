@@ -35,10 +35,10 @@ function resolve_recipient( string $recipient ): ?\WP_User {
  * Gets a list of user names that the specified user has previously sent
  * internal transfers (moves) to.
  *
- * @param int|null $user_id The sender's user id or null for current user.
+ * @param ?int $user_id The sender's user id or null for current user.
  * @return array A list of user names.
  */
-function get_move_recipient_suggestions( $user_id = null ): array {
+function get_move_recipient_suggestions( ?int $user_id = null ): array {
 	$suggestions = [];
 
 	if ( ! $user_id ) {
@@ -126,7 +126,7 @@ function create_random_nonce( int $length ): string {
  * @param ?int $user_id The user whose API key to generate or retrieve.
  * @return string The user's API key, which is a HEX string of 32 bytes.
  */
-function get_legacy_api_key( int $user_id = null ): string {
+function get_legacy_api_key( ?int $user_id = null ): string {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}

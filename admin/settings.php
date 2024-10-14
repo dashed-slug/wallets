@@ -1260,14 +1260,16 @@ function tab_cron_cb( $arg ) {
 		?></p>
 		<p class="card">&#x1F6C8; <?php printf(
 			esc_html__(
-				'If you need a good cron job third-party service, you can use %s.',
+				'If you need a good cron job third-party service, you can use %s or %s.',
 				'wallets'
 			),
 			sprintf(
 				'<a href="%s" title="%s" rel="sponsored">EasyCron</a>',
 				'https://www.easycron.com/?ref=124245',
 				(string) __( 'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.', 'wallets' )
-			)
+			),
+			'<a href="https://cron-job.org">cron-job.org</a>'
+
 		);
 		?></p>
 
@@ -1296,11 +1298,12 @@ function tab_cron_cb( $arg ) {
 			<?php
 			printf(
 				__(
-					'Looking for an easy to setup cron job service? Try <a href="%s" title="%s">EasyCron</a>!',
+					'Looking for an easy to setup cron job service? Try <a href="%s" title="%s">EasyCron</a> or <a href="%s">cron-job.org</a>!',
 					'wallets'
 				),
 				'https://www.easycron.com/?ref=124245',
-				'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.'
+				'This affiliate link supports the development of dashed-slug.net plugins. Thanks for clicking.',
+				'https://cron-job.org/'
 			);
 			?>
 		</p>

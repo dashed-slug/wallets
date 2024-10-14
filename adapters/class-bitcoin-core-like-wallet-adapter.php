@@ -341,7 +341,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 		return $result['walletversion'] ?? __( 'n/a', 'wallets' );
 	}
 
-	public function get_block_height( Currency $currency = null ): int {
+	public function get_block_height( ?Currency $currency = null ): int {
 
 		foreach ( ['getblockchaininfo', 'getinfo'] as $method ) {
 			try {
@@ -592,7 +592,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 		}
 	}
 
-	public function get_new_address( Currency $currency = null ): Address {
+	public function get_new_address( ?Currency $currency = null ): Address {
 		try {
 			$result = $this->rpc( 'getnewaddress' );
 
@@ -626,7 +626,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 	 * {@inheritDoc}
 	 * @see \DSWallets\Wallet_Adapter::get_hot_balance()
 	 */
-	public function get_hot_balance( Currency $currency = null ): int {
+	public function get_hot_balance( ?Currency $currency = null ): int {
 		$balance = false;
 
 		$result = $this->rpc( 'getbalance' );
@@ -643,7 +643,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 		return (int) round( $result * 10 ** $currency->decimals );
 	}
 
-	public function get_hot_locked_balance( Currency $currency = null ): int {
+	public function get_hot_locked_balance( ?Currency $currency = null ): int {
 		$result = [];
 
 		foreach ( ['getinfo', 'getwalletinfo'] as $method ) {
@@ -737,7 +737,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				$this->get_url( true ),
 				[
 					'timeout'     => absint( get_ds_option( 'wallets_http_timeout', 5 ) ),
-					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.3.1',
+					'user-agent'  => 'Bitcoin and Altcoin Wallets version 6.3.2',
 					'headers'     => [
 						'Accept-Encoding: gzip',
 						'Content-type: application/json',
@@ -981,7 +981,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 		}
 	}
 
-	public function do_cron( callable $log = null ): void {
+	public function do_cron( ?callable $log = null ): void {
 		if ( ! $log ) {
 			$log = 'error_log';
 		}

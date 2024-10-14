@@ -144,10 +144,12 @@ abstract class Wallet_Adapter {
 	 * Adapters can optionally perform arbitrary periodic tasks, as needed.
 	 * Add here any housekeeping tasks specific to the type of wallet that this adapter connects to.
 	 *
+	 * @param ?callable $log The log function.
+	 *
 	 * @since 6.0.0 Introduced.
 	 * @api
 	 */
-	public function do_cron( callable $log = null ): void { }
+	public function do_cron( ?callable $log = null ): void { }
 
 	/**
 	 * Render a short description of what this adapter is about.
@@ -164,12 +166,12 @@ abstract class Wallet_Adapter {
 	 *
 	 * For example: Destination Tag, Payment ID, Memo, etc.
 	 *
-	 * @param Currency $currency The currency to query for. Useful only for adapters to multi-currency wallets.
+	 * @param ?Currency $currency The currency to query for. Useful only for adapters to multi-currency wallets.
 	 * @return null|string The name of the field, or null if the field is not used.
 	 * @since 6.0.0 Introduced.
 	 * @api
 	 */
-	public function get_extra_field_name( $currency = null ): ?string {
+	public function get_extra_field_name( ?Currency $currency = null ): ?string {
 		return null;
 	}
 
@@ -207,7 +209,7 @@ abstract class Wallet_Adapter {
 	 * @since 6.0.0 Introduced.
 	 * @api
 	 */
-	public abstract function get_block_height( Currency $currency = null ): ?int;
+	public abstract function get_block_height( ?Currency $currency = null ): ?int;
 
 	/**
 	 * Determines if withdrawals are locked.
@@ -526,7 +528,7 @@ abstract class Wallet_Adapter {
 	 * @since 6.0.0 Introduced.
 	 * @api
 	 */
-	public abstract function get_new_address( Currency $currency = null ): Address;
+	public abstract function get_new_address( ?Currency $currency = null ): Address;
 
 	/**
 	 * Retrieve the hot wallet balance.
@@ -538,7 +540,7 @@ abstract class Wallet_Adapter {
 	 * @since 6.0.0 Introduced.
 	 * @api
 	 */
-	public abstract function get_hot_balance( Currency $currency = null ): int;
+	public abstract function get_hot_balance( ?Currency $currency = null ): int;
 
 	/**
 	 * Retrieve the hot wallet balance that is available for immediate use.
@@ -554,11 +556,11 @@ abstract class Wallet_Adapter {
 	 * @since 6.0.0 Introduced.
 	 * @api
 	 */
-	public function get_hot_available_balance( Currency $currency = null ): int {
+	public function get_hot_available_balance( ?Currency $currency = null ): int {
 		return $this->get_hot_balance( $currency ) - $this->get_hot_locked_balance( $currency );
 	}
 
-	public abstract function get_hot_locked_balance( Currency $currency = null ): int;
+	public abstract function get_hot_locked_balance( ?Currency $currency = null ): int;
 
 	/**
 	 * Validate an IP address.
