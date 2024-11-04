@@ -355,14 +355,13 @@ class Transaction extends Post_Type {
 				throw new \Exception( sprintf( "Transaction $post_id has invalid post status $post_status" ) );
 		}
 
-		if ( ! isset( $postmeta['wallets_user'] ) ) {
-			throw new \Exception( sprintf( "Transaction $post_id has no user field" ) );
-		}
+		if ( isset( $postmeta['wallets_user'] ) ) {
 
-		$user_id = absint( $postmeta['wallets_user'] );
+			$user_id = absint( $postmeta['wallets_user'] );
 
-		if ( $user_id ) {
-			$tx->user = new \WP_User( $user_id );
+			if ( $user_id ) {
+				$tx->user = new \WP_User( $user_id );
+			}
 		}
 
 		$tx->tags = $tags;
