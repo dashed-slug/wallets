@@ -283,6 +283,17 @@ When the cron jobs run, a cron task executes withdrawals. This setting specifies
 When the cron jobs run, a cron task executes pending internal transfers (moves). This setting specifies how many moves to execute on each run. Do not set this value too high, since placing moves usually takes some time. The user balances are being re-checked, transaction posts are being processed on the DB, and email notifications are being rendered from their templates, and enqueued for sending asynchronously. All of this takes time.
 
 
+### Old transaction aggregation
+
+|     |     |
+| --- | --- |
+| *Option* | `wallets_cron_aggregate` |
+| *Default* | `'0'` (Never) |
+| *Possible values* | `0 (Never)`, `1 month`, `2 months`, `3 months`, `6 months`, `1 year` |
+| *Description* | *Completed internal transactions (moves) that are older than this, will be aggregated into one per user and currency. This saves DB space and improves frontend performance. Will only work on transactional DB engines such as InnoDB. On DB engines such as MyISAM this does nothing.* |
+
+When this time interval is set, old internal (move) transactions that have completed are grouped into one. This is done on the cron job runs with an optimized fast algorithm. For each user and for each currency, all such transactions older than the interval are grouped into one. This has the downside that some transaction history is lost, but the benefit is that the posts and post meta tables in the database will shrink. This feature is useful if there are multiple thousands of transactions on the system, slowing down the API calls.
+
 ### Transaction auto-cancel
 
 |     |     |

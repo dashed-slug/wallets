@@ -377,7 +377,6 @@ It is possible that your wallet's default transaction fees are currently not set
 
 That's a good idea. Simply go to Addresses and to Transactions, and throw everything into the trash!
 
-
 ## When I activate the plugin, my WordPress becomes extremely slow and is unusable, or I get a white screen of death, or I get a 5xx HTTP error.
 
 If WordPress has become unusable right after installing this plugin:
@@ -398,6 +397,21 @@ Here's a few things to check if you suspect that the delays are caused by connec
 - Only enable Tor settings if your know that your site is a hidden site running on Tor.
 - If you are connecting to an RPC wallet situated on a different machine than your WordPress server, make sure that your webhost allows outgoing connections to TCP ports other than `80` and `443`.
 - If you are the administrator of the WordPress machine, check your firewalls for any rules that may interfere with outgoing connections. This can include hardware firewalls, software system firewalls and any WordPress security plugins.
+
+## After running the plugin for a long time, thousands of transactions have made the database too big, and API calls to the plugin are slow.
+
+This is because some API calls that calculate balances must sum over post meta-data of many post transactions. There is caching around this, but still, reducing the table sizes will significantly improve performance, on installations with many transactions.
+
+The best solution is to aggregate old transactions to save DB space.
+
+To do this, visit _Settings_ &rarr; _Bitcoin &amp; Altcoin Wallets_ &rarr; _⌛ Cron tasks_ &rarr; _🗜 Old transaction aggregation_ and set an interval.
+
+For each user and for each currency, all such transactions older than the interval are grouped into one. This has the downside that some transaction history is lost, but the benefit is that the posts and post meta tables in the database will shrink. This is done on the cron job runs with an optimized fast algorithm. The effect will gradually become apparent over the next hours/days, as the table sizes are reduced.
+
+> **NOTICE**: This transaction aggregation is not safe to perform, if your database uses a non-transactional engine such as MyISAM.
+> If this is the case in your installation, to ensure data integrity, the plugin will not perform aggregation.
+> Most WordPress installations will be using a database with transactional InnoDB tables, in which case aggregation can be safely performed.
+
 
 ## I cannot find how to edit the text for the notification emails. In previous versions before 6.0.0, there were edit boxes in the settings for this.
 

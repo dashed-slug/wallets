@@ -2,7 +2,7 @@
 /*
  * Plugin Name:			Bitcoin and Altcoin Wallets
  * Description:			Custodial cryptocurrency wallets.
- * Version:				6.3.3
+ * Version:				6.4.0
  * Plugin URI:			https://www.dashed-slug.net/bitcoin-altcoin-wallets-wordpress-plugin
  * Requires at least:	6.0
  * Requires PHP:		7.2
@@ -115,6 +115,7 @@ add_action(
 		include_once DSWALLETS_PATH . '/cron/class-withdrawals-task.php';
 		include_once DSWALLETS_PATH . '/cron/class-moves-task.php';
 		include_once DSWALLETS_PATH . '/cron/class-adapters-task.php';
+		include_once DSWALLETS_PATH . '/cron/class-aggregation-task.php';
 		include_once DSWALLETS_PATH . '/cron/class-autocancel-task.php';
 		include_once DSWALLETS_PATH . '/cron/class-fixerio-task.php';
 		include_once DSWALLETS_PATH . '/cron/class-currency-icons-task.php';
@@ -189,4 +190,35 @@ add_filter(
 	},
 	10,
 	2
+);
+
+// Improve plugin performance by adding an index
+// on the columns post_id and meta_key of the wp_postmeta table,
+// if no such index already exists.
+register_activation_hook(
+	__FILE__,
+	function() {
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT DISTINCT INDEX_NAME
+			 FROM information_schema.STATISTICS
+			 WHERE TABLE_SCHEMA = %s
+			 AND TABLE_NAME = %s
+			 AND (COLUMN_NAME = 'post_id' OR COLUMN_NAME = 'meta_key')
+			 GROUP BY INDEX_NAME
+			 HAVING COUNT(DISTINCT COLUMN_NAME) = 2",
+			DB_NAME,
+			$wpdb->postmeta,
+		);
+
+		$index_exists = $wpdb->get_results($query);
+
+		if ( empty( $index_exists ) ) {
+			$wpdb->query(
+				"CREATE INDEX post_id_meta_key_index ON {$wpdb->postmeta} (post_id,meta_key)"
+			);
+			error_log( "Created post_id_meta_key_index ON table {$wpdb->postmeta} to improve performance" );
+		}
+	}
 );

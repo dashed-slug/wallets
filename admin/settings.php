@@ -22,6 +22,7 @@ const DEFAULT_CRON_INTERVAL = 'wallets_one_minute';
 const DEFAULT_CRON_VERBOSE = '';
 const DEFAULT_CRON_APPROVE_WITHDRAWALS = '';
 const DEFAULT_CRON_AUTOCANCEL_INTERVAL = 0;
+const DEFAULT_CRON_AGGREGATE_INTERVAL = 0;
 const DEFAULT_HTTP_TIMEOUT = 10;
 const DEFAULT_HTTP_REDIRECTS = 2;
 const DEFAULT_HTTP_TOR_ENABLED = false;
@@ -49,6 +50,7 @@ register_activation_hook( DSWALLETS_FILE, function() {
 	add_ds_option( 'wallets_cron_verbose',                  DEFAULT_CRON_VERBOSE );
 	add_ds_option( 'wallets_cron_approve_withdrawals',      DEFAULT_CRON_APPROVE_WITHDRAWALS );
 	add_ds_option( 'wallets_cron_autocancel',               DEFAULT_CRON_AUTOCANCEL_INTERVAL );
+	add_ds_option( 'wallets_cron_aggregate',                DEFAULT_CRON_AGGREGATE_INTERVAL );
 	add_ds_option( 'wallets_http_timeout',                  DEFAULT_HTTP_TIMEOUT );
 	add_ds_option( 'wallets_http_redirects',                DEFAULT_HTTP_REDIRECTS );
 	add_ds_option( 'wallets_http_tor_enabled',              get_option( 'wallets_rates_tor_enabled', DEFAULT_HTTP_TOR_ENABLED ) );
@@ -382,7 +384,7 @@ add_action(
 					'description' => __( 'How often the frontend UIs are polling the WP REST API of this plugin to refresh the data shown. If you do not want the frontend to poll your server, choose "never".', 'wallets' ),
 					'default'   => DEFAULT_FRONTEND_POLLING_INTERVAL,
 					'options'   => [
-						'0' => __( '(never)', 'wallets' ),
+						'0'   => __( '(never)', 'wallets' ),
 						'15'  => __( '15 seconds', 'wallets' ),
 						'30'  => __( '30 seconds', 'wallets' ),
 						'45'  => __( '45 seconds', 'wallets' ),
@@ -734,6 +736,32 @@ add_action(
 			register_setting(
 				"wallets_{$tab}_section",
 				'wallets_moves_max_batch_size'
+			);
+
+			add_settings_field(
+				'wallets_cron_aggregate',
+				sprintf( (string) __( '%s Old transaction aggregation', 'wallets' ), '&#x1F5DC;' ),
+				__NAMESPACE__ . '\select_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for' => 'wallets_cron_aggregate',
+					'description' => __( 'Completed internal transactions (moves) that are older than this, will be aggregated into one per user and currency. This saves DB space and improves frontend performance. Will only work on transactional DB engines such as InnoDB. On DB engines such as MyISAM this does nothing.', 'wallets' ),
+					'default'   => DEFAULT_CRON_AGGREGATE_INTERVAL,
+					'options'   => [
+						'0'   => __( '(never)', 'wallets' ),
+						'1'  => __( '1 month', 'wallets' ),
+						'2'  => __( '2 months', 'wallets' ),
+						'3'  => __( '3 months', 'wallets' ),
+						'6'  => __( '6 months', 'wallets' ),
+						'12' => __( '1 year', 'wallets' ),
+					],
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_cron_aggregate'
 			);
 
 			add_settings_field(

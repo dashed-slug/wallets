@@ -53,6 +53,8 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			}
 			foreach ( [
 				'wallets_email_queue',
+				'wallets_cron_aggregate_uidx',
+				'wallets_cron_aggregate_cidx'
 			] as $o ) {
 				if ( delete_option( $o ) ) {
 					error_log( "Deleted option: $o" );

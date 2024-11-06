@@ -5,7 +5,7 @@ Tags: wallet, bitcoin, cryptocurrency, altcoin, custodial
 Requires at least: 6.0
 Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 6.3.3
+Stable tag: 6.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -337,6 +337,10 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
+= 6.4.0 =
+- Add: New feature allowing old transactions to be aggregated to reduce DB table sizes and improve performance.
+- Add: Upon plugin activation, an index is added to the postmeta table's columns post_id and meta_key, to improve performance.
+
 = 6.3.3 =
 - Fix: Issue affecting creating new transactions from admin, introduced in 6.3.2, now fixed.
 
@@ -511,7 +515,7 @@ Please state your request on the forums or over email, and I will respond within
 
 == Upgrade Notice ==
 
-Version `6.3.3` fixes a bug in the admin screens.
+Version `6.4.0` improves performance of the plugin.
 
 == Donating ==
 
