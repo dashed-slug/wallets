@@ -3,9 +3,9 @@ Contributors: dashedslug
 Donate link: https://flattr.com/profile/dashed-slug
 Tags: wallet, bitcoin, cryptocurrency, altcoin, custodial
 Requires at least: 6.0
-Tested up to: 6.6.2
+Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 6.4.0
+Stable tag: 6.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -337,6 +337,9 @@ Please state your request on the forums or over email, and I will respond within
 
 == Changelog ==
 
+= 6.4.1 =
+- Add: New filterable setting "Outgoing e-mails recipient batch size". For emails with multiple recipients, the recipients are batched and the email is sent multiple times to work around the max recipient limitats of SMTP servers.
+
 = 6.4.0 =
 - Add: New feature allowing old transactions to be aggregated to reduce DB table sizes and improve performance.
 - Add: Upon plugin activation, an index is added to the postmeta table's columns post_id and meta_key, to improve performance.
@@ -515,7 +518,7 @@ Please state your request on the forums or over email, and I will respond within
 
 == Upgrade Notice ==
 
-Version `6.4.0` improves performance of the plugin.
+Version `6.4.1` adresses an issue where emails with too many recipients would be rejected by SMTP servers.
 
 == Donating ==
 

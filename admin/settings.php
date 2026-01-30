@@ -30,6 +30,7 @@ const DEFAULT_HTTP_TOR_IP = '127.0.0.1';
 const DEFAULT_HTTP_TOR_PORT = 9050;
 const DEFAULT_RATES_VS = [ 'btc', 'usd' ];
 const DEFAULT_CRON_EMAILS_MAX_BATCH_SIZE = 8;
+const DEFAULT_CRON_EMAILS_MAX_RECIPIENTS_BATCH_SIZE = 20;
 const DEFAULT_DISABLE_CACHE = false;
 const DEFAULT_TRANSIENTS_BROKEN = false;
 const DEFAULT_FIAT_FIXERIO_CURRENCIES = [ 'USD' ];
@@ -467,6 +468,27 @@ add_action(
 			register_setting(
 				"wallets_{$tab}_section",
 				'wallets_emails_max_batch_size'
+			);
+
+			add_settings_field(
+				'wallets_emails_max_recipients_batch_size',
+				sprintf( (string) __( '%s Outgoing e-mails recipient batch size', 'wallets' ), '&#x1F4E7;' ),
+				__NAMESPACE__ . '\numeric_cb',
+				"wallets_settings_{$tab}_page",
+				"wallets_{$tab}_section",
+				[
+					'label_for'   => 'wallets_emails_max_recipients_batch_size',
+					'description' => __( 'How many recipients are allowed per email, when emails are send from the email queue on each cron run. If the recipients are too many, then the email is sent multiple times, once for each recipient batch.', 'wallets' ),
+					'min'         => 1,
+					'max'         => 100,
+					'step'        => 1,
+					'default'     => DEFAULT_CRON_EMAILS_MAX_RECIPIENTS_BATCH_SIZE,
+				]
+			);
+
+			register_setting(
+				"wallets_{$tab}_section",
+				'wallets_emails_max_recipients_batch_size'
 			);
 
 			add_settings_field(

@@ -175,6 +175,17 @@ When the plugin sends notifications via emails, it first adds the emails to an o
 Sending emails normally requires a functioning PHP `mail()` on the server. However, you can setup WordPress to use an external SMTP server, such as that of Gmail. To do this, you can use the [WP Mail SMTP][wp-mail-smtp] plugin.
 
 
+### Outgoing e-mails recipient batch size
+
+|     |     |
+| --- | --- |
+| *Option* | `wallets_emails_max_recipients_batch_size` |
+| *Default* | `20` |
+| *Description* | *How many emails to send from the email queue on each cron run.* |
+
+How many recipients are allowed per email, when emails are send from the email queue on each cron run. If the recipients are too many, then the email is sent multiple times, once for each recipient batch.
+
+
 ### Move confirm links
 
 |     |     |
