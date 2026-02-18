@@ -155,7 +155,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				class="wallets-clipboard-copy"
 				style="float:right;font-size:large;"
 				onClick="jQuery(this).next()[0].select();document.execCommand('copy');"
-				title="<?php esc_attr__( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
+				title="<?php esc_attr_e( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
 
 			<input
 				style="clear:right;width:100%;"
@@ -195,7 +195,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				class="wallets-clipboard-copy"
 				style="float:right;font-size:large;"
 				onClick="jQuery(this).next()[0].select();document.execCommand('copy');"
-				title="<?php esc_attr__( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
+				title="<?php esc_attr_e( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
 
 			<input
 				style="clear:right;width:100%;"
@@ -221,7 +221,7 @@ class Bitcoin_Core_Like_Wallet_Adapter extends Wallet_Adapter {
 				class="wallets-clipboard-copy"
 				style="float:right;font-size:large;"
 				onClick="jQuery(this).next()[0].select();document.execCommand('copy');"
-				title="<?php esc_attr__( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
+				title="<?php esc_attr_e( 'Copy to clipboard', 'wallets' ); ?>">&#x1F4CB;</span>
 
 			<input
 				style="clear:right;width:100%;"
